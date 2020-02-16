@@ -1,78 +1,126 @@
 import inspect
+import itertools
+import math
 import os
+from fpdf import FPDF
+from PIL import Image
 import sys
-import pickle
+import h5py
+import numpy as np
+from datetime import datetime
 from timeit import default_timer as timer
 
-def check_rename_file(filename):
-    if os.path.exists(filename):
-        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        print("The file", filename, "already exists.")
-        file, extension = os.path.splitext(filename)
-        filename = file+"_"+now+extension
-        print("In order not to overwrite saving to the file", filename)
-    else:
-        print("Saving to the file", filename)
-    return filename
+#class InputError(Exception):
+#    """Base class for data error exceptions"""
+#    pass#
 
-def save_samples(allsamples, logprob_values, data_sample_filename, name):
+#class DataError(Exception):
+#    """Base class for data error exceptions"""
+#    pass#
+
+#class MissingModule(Exception):
+#    """Base class for missing package exceptions"""
+#    pass
+
+def flatten_list(l):
+    l = [item for sublist in l for item in sublist]
+    return l
+
+def make_pdf_from_img(img):
+    """Make pdf from image
+    Used to circumvent bud in plot_model which does not allow to export pdf"""
+    img_pdf = os.path.splitext(img)[0]+".pdf"
+    cover = Image.open(img)
+    width, height = cover.size
+    pdf = FPDF(unit = "pt", format = [width, height])
+    pdf.add_page()
+    pdf.image(img, 0, 0)
+    pdf.output(img_pdf, "F")
+
+def chunks(lst, n):
+    """Return list of chunks from lst."""
+    res = []
+    for i in range(0, len(lst), n):
+        res.append(lst[i:i + n])
+    return res
+
+def check_rename_file(path):
+    if os.path.exists(path):
+        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        print("The file", path, "already exists.")
+        file, extension = os.path.splitext(path)
+        path = file+"_"+now+extension
+        print("New file name set to", path)
+    return path
+
+def check_rename_folder(path):
+    if os.path.exists(path):
+        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        print("The folder", path, "already exists.")
+        path = path+"_"+now
+        print("New folder name set to", path)
+    return path
+
+def save_samples(allsamples, logpdf_values, data_sample_filename, name):
+    start = timer()
     data_sample_filename = check_rename_file(data_sample_filename)
     data_sample_shape = np.shape(allsamples)
-    data_sample_name = name+"_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-    pickle_out = open(data_sample_filename, "wb")
-    start = timer()
-    pickle.dump(data_sample_timestamp, pickle_out, protocol=4)
-    pickle.dump(data_sample_shape, pickle_out, protocol=4)
-    pickle.dump(allsamples, pickle_out, protocol=4)
-    pickle.dump(logprob_values, pickle_out, protocol=4)
-    end = timer()
-    pickle_out.close()
+    #data_sample_timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    #data_sample_name = name+"_"+data_sample_timestamp
+    h5_out = h5py.File(data_sample_filename, "w")
+    grp = h5_out.create_group(name)
+    grp["shape"] = data_sample_shape
+    grp["allsamples"] = allsamples
+    grp["logpdf_values"] = logpdf_values
+    h5_out.close()
     statinfo = os.stat(data_sample_filename)
+    end = timer()
     print("File saved in", end-start,"seconds.\nFile size is", statinfo.st_size, ".")
 
-def set_param(obj_name, par_name):
-    if eval(par_name) is None:
-        exec("%s = %s" % (par_name, obj_name+"."+par_name))
-    else:
-        setattr(eval(obj_name), par_name, eval(par_name))
-    return eval(par_name)
-#
-#class BlockPrints:
-#    def __init__(self):
-#        self.initial_stout = sys.stdout
-#        self.status = "unblocked"
-#    def blockPrint(self):
-#        self.initial_stout = sys.stdout
-#        sys.stdout = open(os.devnull, 'w')
-#        self.status = "blocked"
-#    def resetPrint(self):
-#        sys.stdout.close()
-#        sys.stdout = self.initial_stout
-#        self.status = "unblocked"
-#    def __enter__(self):
-#        self.blockPrint()
-#    def __exit__(self, exc_type, exc_val, exc_tb):
-#        self.resetPrint()
-#    def setprints(self, verbose):
-#        if verbose:
-#            if self.status == "blocked":
-#                self.resetPrint()
-#        else:
-#            self.blockPrint()
+#def set_param(obj_name, par_name):
+#    if eval(par_name) is None:
+#        exec("%s = %s" % (par_name, obj_name+"."+par_name))
+#    else:
+#        setattr(eval(obj_name), par_name, eval(par_name))
+#    return eval(par_name)
 
-#class BlockPrints:
-#    def __enter__(self):
-#        self._original_stdout = sys.stdout
-#        sys.stdout = open(os.devnull, "w")
-#    def __exit__(self, exc_type, exc_val, exc_tb):
-#        sys.stdout.close()
-#        sys.stdout = self._original_stdout
-#
-#class HandlePrint():
-#    def __init__(self):
-#        self.initial_stout = sys.stdout
-#    def blockPrint(self):
-#        sys.stdout = open(os.devnull, 'w')
-#    # Restore
-#    def resetPrint(self):
-#        sys.stdout = self.initial_stout
+def check_repeated_elements_at_start(list):
+    x0 = list[0]
+    n = 0
+    for x in list[1:]:
+        if x == x0:
+            n += 1
+        else:
+            return n
+    return n
+
+def get_spaced_elements(array, numElems=5):
+    out = array[np.round(np.linspace(0, len(array)-1, numElems)).astype(int)]
+    return out
+
+def next_power_of_two(n):
+    i = 1
+    while i < n:
+        i = i << 1
+    return i
+
+def closest_power_of_two(x):
+    op = math.floor if bin(int(x))[3] != "1" else math.ceil
+    return 2**(op(math.log(x, 2)))
+
+def product_dict(**kwargs):
+    keys = kwargs.keys()
+    vals = kwargs.values()
+    for instance in itertools.product(*vals):
+        yield dict(zip(keys, instance))
+
+def dic_minus_keys(keys, dictionary):
+    if type(keys) is str:
+        shallow_copy = dict(dictionary)
+        del shallow_copy[keys]
+        return shallow_copy
+    elif type(keys) is list:
+        shallow_copy = dict(dictionary)
+        for i in keys:
+            del shallow_copy[i]
+        return shallow_copy

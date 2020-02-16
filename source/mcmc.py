@@ -1,35 +1,36 @@
 __all__ = ["MCMC"]
 
-import builtins
-ShowPrints = True
-
-def print(*args, **kwargs):
-    global ShowPrints
-    if ShowPrints:
-        return builtins.print(*args, **kwargs)
-    else:
-        return None  
-        
-# print("This should print")
-#ShowPrints = False
-#print("This should not print")
-#ShowPrints = True
+from . import utility
 
 import os
 from timeit import default_timer as timer
 from datetime import datetime
 import sys
-
-from jupyterthemes import jtplot
+from scipy.optimize import minimize
+import builtins
 import matplotlib.pyplot as plt
+try:
+    from jupyterthemes import jtplot
+except:
+    print("No module named 'jupyterthemes'. Continuing without.\nIf you wish to customize jupyter notebooks please install 'jupyterthemes'.")
 import numpy as np
-import pickle
 import psutil
 from multiprocessing import Pool
 
 import emcee
 from .data_sample import Data_sample
-from . import utility
+
+ShowPrints = True
+def print(*args, **kwargs):
+    global ShowPrints
+    if type(ShowPrints) is bool:
+        if ShowPrints:
+            return builtins.print(*args, **kwargs)
+    if type(ShowPrints) is int:
+        if ShowPrints != 0:
+            return builtins.print(*args, **kwargs)
+
+mplstyle_path = str(os.path.split(os.path.realpath(__file__))[0])+"\\matplotlib.mplstyle"
 
 class MCMC(object):
     """Class defining MCMC sampling based on the emcee3 sampler.
@@ -39,56 +40,38 @@ class MCMC(object):
         A function that takes a vector in the parameter space as input
         and returns the natural logarithm of the posterior probability 
         (up to an additive constant) for that position.
-        It assumes that all parameters ar input as a single vector of
-        length 'n_pars_phys+n_pars_nuis' with the first n_pars_phys being
-        the physical parameters and the next n_pars_nuis the nuisance
+        It assumes that all parameters are input as a single vector of
+        length 'n_pars_poi+n_pars_nuis' with parameters at positions 
+        'pars_pos_poi' being the parameters of interest (poi) and the  
+        parameters at positions 'pars_pos_nuis' being the nuisance
         parameters.
-        It may have additional arguments logprob_fn_args.
+        It may have additional arguments logprob_fn_args. Notice that
+        on some system configuration, when logprob_fn is constructed to
+        accept the additional arguments
         In case vectorize=True, emcee accepts a function which returns
         a list of lenght nwalkers.
         See also emcee documentation (https://emcee.readthedocs.io/en/stable/user/sampler/)
 
     logprob_fn_args (optional) : array_like[args]
         List (or array) of additional arguments of the logprob_fn function.
-        In case a DNN 'model' is provided, this list is automatically
-        parsed as
-        [model, scalerX, scalerY, nwalkers, logprob_threshold]
         See also emcee documentation (https://emcee.readthedocs.io/en/stable/user/sampler/)
 
-    biased (optional) : bool
-        Choose between an unbiased sampling and a sampling biased
-        towards maxima of the logprob profiled over the nuisance 
-        parameters computed for random points of the physical parameters
-        (generated according to their distribution).
-        If moves parameters is not given 'biased' acts by fixing the 
-        moves parameter either to
-        moves = emcee.moves.StretchMove()
-        for unbiased sampling ('biased=False') or to
-        emcee.moves.GaussianMove(0.0005, mode="random", factor=None)
-        for biased sampling ('biased=True'). Independently from the moves parameters, 
-        'biased' also determines walkers initialization. For 'biased=False'
-        the walkers initialization is chosen as random points of all the parameters 
-        (generated according to their distribution), while for 'biased=True' as points
-        corresponding to maxima of the logprob function profiled over the nuisance 
-        parameters computed for random points of the physical parameters 
-        (generated according to their distribution).
-        
-    n_pars_phys : int
-        Number of physical parameters. It should be the first n_pars_phys
-        parameters in the 'n_pars_phys+n_pars_nuis' dimensional 
+    n_pars_poi : int
+        Number of physical parameters. It should be the first n_pars_poi
+        parameters in the 'n_pars_poi+n_pars_nuis' dimensional 
         parameters vector.
         
     n_pars_nuis : int
         Number of nuisance parameters. It should be the last n_pars_nuis
-        parameters in the 'n_pars_phys+n_pars_nuis' dimensional 
+        parameters in the 'n_pars_poi+n_pars_nuis' dimensional 
         parameters vector.
 
-    pars_distrib : array_like[args]
-       List (or array) of distributions from the scipy.stats module
-       indicating the distribution of the parameters in the same order
-       as in the parameters vector.
+    pars_init : array_like[args]
+       List (or array) of np.arrays of parameter values in the same order
+       as in the parameters vector. The list should have the same length as
+       the number of walkers nwalkers
        Ex.
-       pars_distrib = [stats.uniform(..),stats.norm(...),...]
+       pars_init = [np.array(pars),np.array(pars),...]
 
     nwalkers : inf
        Number of walkers for the emcee sampler.
@@ -120,24 +103,6 @@ class MCMC(object):
        [(emcee.moves.StretchMove(), 0.1), ...]
        When running, the sampler will randomly select a move from this list 
        (optionally with weights) for each proposal.
-       
-    model : keras.model
-       This is an optional argument of logprob_fn to compute the logprobability
-       using a pre-trained DNNLikelihood
-    
-    scalerX, scalerY : StandardScaler objects (from sklearn.preprocessing)
-       This are optional arguments of logprob_fn to compute the logprobability
-       using a pre-trained DNNLikelihood. They scale X and Y data properly to make inference
-       with the same scale as training and scale them back to deliver result.
-       If no scaler has been applied to data this can be set to
-       Ex.
-       scalerX = StandardScaler(with_mean=False, with_std=False)
-       scalerX.fit(X_train)
-    
-    logprob_threshold : float
-       This are optional arguments of logprob_fn to compute the logprobability
-       using a pre-trained DNNLikelihood. It is the minimum value of logprob
-       used to train the given DNNLikelihood model.
     
     vectorize : bool
        If True, log_prob_fn is expected to accept a list of parameter vectors
@@ -146,7 +111,7 @@ class MCMC(object):
     Attributes
     ----------
     ndim : int
-       Number of dimensions given by 'n_pars_phys + n_pars_nuis'
+       Number of dimensions given by 'n_pars_poi + n_pars_nuis'
     
     backend_filename : str
        Name of the file containing the emcee backend. It is set from
@@ -164,11 +129,10 @@ class MCMC(object):
     def __init__(self,
                  logprob_fn=None,
                  logprob_fn_args=None,
-                 biased=False,
-                 n_pars_phys=None,
-                 n_pars_nuis=None,
-                 labels=None,
-                 pars_distrib=None,
+                 pars_pos_poi=None,
+                 pars_pos_nuis=None,
+                 pars_init=None,
+                 pars_labels=None,
                  nwalkers=None,
                  nsteps=None,
                  basefilename=None,
@@ -176,54 +140,51 @@ class MCMC(object):
                  new_sampler=True,
                  moves=None,
                  parallel_CPU=False,
-                 model=None,
-                 scalerX=None,
-                 scalerY=None,
-                 logprob_threshold=None,
                  vectorize=False,
-                 #backend = None,
-                 #sampler = None
+                 seed=1
                  ):
         self.logprob_fn = logprob_fn
-        self.biased = biased
-        self.n_pars_phys = n_pars_phys
-        self.n_pars_nuis = n_pars_nuis
-        self.ndim = self.n_pars_phys + self.n_pars_nuis
-        self.labels = labels
-        self.pars_distrib = pars_distrib
-        self.nwalkers = nwalkers
+        self.logprob_fn_args = logprob_fn_args
+        self.pars_pos_poi = pars_pos_poi
+        self.pars_pos_nuis = pars_pos_nuis
+        self.pars_init = pars_init
+        self.ndim = len(self.pars_pos_poi) + len(self.pars_pos_nuis)
+        self.pars_labels = pars_labels
         self.nsteps = nsteps
         self.basefilename = os.path.splitext(basefilename)[0]
         self.backend_filename = basefilename+"_backend.h5"
-        self.data_sample_filename = basefilename+"_data_sample.pickle"
+        self.data_sample_filename = basefilename+"_data_sample.h5"
+        self.figure_basefilename = basefilename+"_figure"
         self.chains_name = chains_name
         self.new_sampler = new_sampler
         self.moves = moves
         self.parallel_CPU = parallel_CPU
-        self.model = model
-        self.scalerX = scalerX
-        self.scalerY = scalerY
-        self.logprob_threshold = logprob_threshold
         self.vectorize = vectorize
+        self.seed = seed
         self.backend = None
         self.sampler = None
-        if self.model != None:
-            self.logprob_fn_args = [
-                self.model, self.scalerX, self.scalerY, self.nwalkers, self.logprob_threshold]
+        if nwalkers is None:
+            self.nwalkers = len(self.pars_init)
         else:
-            self.logprob_fn_args = None
+            self.nwalkers = nwalkers
         if self.vectorize:
             self.parallel_CPU = False
+            print("Since vectorize=True the parameter parallel_CPU has been set to False.")
         if moves is None:
-            if self.biased:
-                self.moves = [(emcee.moves.StretchMove(), 0), (emcee.moves.GaussianMove(
-                    0.0005, mode="random", factor=None), 1)]
-            else:
-                self.moves = [(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(
-                    0.0005, mode="random", factor=None), 0)]
-        if labels is None:
-            self.labels = [r"$\theta_{%d}$" % i for i in range(
-                n_pars_phys)]+[r"$\nu_{%d}$" % i for i in range(n_pars_nuis)]
+            self.moves = [(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode="random", factor=None), 0)]
+            print("No moves parameter has been specified. moves has been set to the default StretchMove() of emcee")                
+        if pars_labels is None:
+            self.pars_labels = []
+            i_poi = 1
+            i_nuis = 1
+            for i in range(len(pars_pos_poi)+len(pars_pos_nuis)):
+                if i in pars_pos_poi:
+                    self.pars_labels.append(r"$\theta_{%d}$" % i_poi)
+                    i_poi = i_poi+1
+                else:
+                    self.pars_labels.append(r"$\nu_{%d}$" % i_nuis)
+                    i_nuis = i_nuis+1
+            del(i_poi,i_nuis)
         if self.new_sampler:
             if os.path.exists(self.backend_filename):
                 now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -239,14 +200,22 @@ class MCMC(object):
             else:
                 print("Loading existing sampler from backend file",self.backend_filename)
                 self.load_sampler()
+                self.nsteps = nsteps
+                self.check_params_backend()
+        if self.pars_init is None:
+            print("To perform sampling you need to specify initialization for the parameters (pars_init).")
+
+    #def __set_param__(self, par_name, par_val):
+    #    if par_val is not None:
+    #        setattr(self, par_name, par_val)
+    #    #return par_val
 
     def __set_param__(self, par_name, par_val):
         if par_val is None:
             par_val = eval("self."+par_name)
-            print("No parameter"+par_val+"specified. Its value has been set to",
-                  par_val, ".")
         else:
-            setattr(self, par_name,par_val)
+            setattr(self, par_name, par_val)
+        return par_val
 
     def check_params_backend(self):
         global ShowPrints
@@ -258,12 +227,12 @@ class MCMC(object):
             self.nwalkers = nwalkers_from_backend
         if ndim_from_backend != self.ndim:
             print("Specified number of dimensions (ndim) is inconsitent with loaded backend. ndim has been set to",ndim_from_backend, ".")
-            print("Please check n_pars_phys, n_pars_nuis and labels, which cannot be inferred from backend.")
+            print("Please check pars_pos_poi, pars_pos_nuis and pars_labels, which cannot be inferred from backend.")
 ####### We can think of a sidecar of backend where we also write other parameters of our object. In other words, extend the emcee backend
 ####### to save our parameters too
             self.ndim = ndim_from_backend
         if nsteps_from_backend != self.nsteps:
-            print("Specified number of steps (nsteps) is inconsitent with loaded backend. nsteps has been set to",nsteps_from_backend, ".")
+            print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",nsteps_from_backend, ".")
             self.nsteps = nsteps_from_backend
 
     def set_steps_to_run(self,verbose=True):
@@ -276,7 +245,6 @@ class MCMC(object):
         if self.nsteps <= nsteps_current:
             print("Please increase nsteps to run for more steps")
             nsteps_to_run = 0
-            progress = False
         else:
             nsteps_to_run = self.nsteps-nsteps_current
         return nsteps_to_run
@@ -290,26 +258,15 @@ class MCMC(object):
             print("Initialize backend in file", self.backend_filename)
             self.backend = emcee.backends.HDFBackend(self.backend_filename, name=self.chains_name)
             self.backend.reset(self.nwalkers, self.ndim)
-            start = timer()
-            if self.biased:
-                print("Computing maximum of profiled likelihood for random valued of the physical parameters to initialize chains.\nThis may take a while depending on the complexity of the likelihood function.")
-                p0_pars_phys = np.transpose(
-                    np.array([i.rvs(nwalkers) for i in self.pars_distrib[0:self.n_pars_phys]]))
-                p0 = list(map(lambda p: np.concatenate((np.array(p), minimize(lambda delta: - self.logprob_fn(
-                    np.concatenate((np.array(p), delta))), np.full(self.n_pars_nuis, 0), method="Powell")["x"])), p0_pars_phys))
-            else:
-                print("Initialize chains randomly according to parameters distributions")
-                p0 = np.transpose(
-                    np.array([i.rvs(self.nwalkers) for i in self.pars_distrib])).tolist()
-            end = timer()
-            print(str(self.nwalkers), "chains initialized in", end-start, "s.")
+            p0 = self.pars_init
         else:
             if self.backend is None:
                 try:
                     print("Initialize backend in file", self.backend_filename)
                     self.backend = emcee.backends.HDFBackend(
                         self.backend_filename, name=self.chains_name)
-                    self.check_params_backend()
+                    #print(self.backend.iteration)
+                    #print(self.nsteps)
                     ShowPrints = verbose
                 except FileNotFoundError:
                     print("Backend file does not exist. Please either change the filename or run with new_sampler=True.")
@@ -319,6 +276,7 @@ class MCMC(object):
         # Defines sampler and runs the chains
         start = timer()
         nsteps_to_run = self.set_steps_to_run(verbose=verbose)
+        #print(nsteps_to_run)
         if nsteps_to_run == 0:
             progress = False
         if self.parallel_CPU:
@@ -337,12 +295,10 @@ class MCMC(object):
         print("Done in", end-start, "seconds.")
         print("Final number of steps: {0}.".format(self.backend.iteration))
 
-    def load_sampler(self, backend_filename=None, chains_name=None, verbose=True):
+    def load_sampler(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
         print("Notice: when loading sampler from backend, all parameters of the sampler but the 'logprob_fn', its args 'logprob_fn_args', and 'moves' are set by the backend. All other parameters are set consistently with the MCMC class attributes.\nPay attention that they are consistent with the parameters used to produce the sampler saved in backend.")
-        self.__set_param__("backend_filename", backend_filename)
-        self.__set_param__("chains_name", chains_name)
         self.new_sampler = False
         self.nsteps = 0
         start = timer()
@@ -354,93 +310,56 @@ class MCMC(object):
               self.backend_filename, "loaded in", end-start, "seconds.")
         print("Available number of steps: {0}.".format(self.backend.iteration))
 
-    def get_data_sample(self, nsamples="all", burnin=0, save=True, data_sample_filename=None):
-        if save:
-            self.__set_param__("data_sample_filename", data_sample_filename)
-        else:
-            if data_sample_filename is not None:
-                data_sample_filename = None
-                print("Save flag set to False. Sample file name has been set to None.")
+    def get_data_sample(self, nsamples="all", test_fraction=1, burnin=0, thin=1, save=False):
         print("Notice: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.")
         start = timer()
-        print("Computing availanle number of samples")
-        logprobs = self.sampler.get_log_prob()
-        logprobsflat = logprobs.flatten()
-        logprobsflatminusburnin = logprobs[burnin:, :].flatten()
-        logprobs2 = logprobsflat[logprobsflat > -np.inf]
-        logprobs2minusburnin = logprobsflatminusburnin[logprobsflatminusburnin > -np.inf]
-        logprobs3 = np.unique(logprobs2, return_index=False)
-        logprobs3minusburnin = np.unique(
-            logprobs2minusburnin, return_index=False)
-        print("There are", len(logprobsflat), "total samples, of which", len(
-            logprobs2), "have finite logprob, of which", len(logprobs3), "are unique.")
-        maxsamples = len(logprobs3)
-        maxsamplesminusburnin = len(logprobs3minusburnin)
         if nsamples is "all":
-            nsamples = maxsamplesminusburnin
-        elif maxsamplesminusburnin < nsamples:
-            print("Total available samples (with required burnin) is", maxsamplesminusburnin,
-                  ", which is smaller than the required number of samples.\n")
-            if maxsamples < nsamples:
-                  print("Total available samples (witout burnin) is", maxsamples,
-                        "and is also smaller than the required number of samples.\nPlease request less samples or run generate_sampler for more steps.\n")
+            allsamples = self.sampler.get_chain(discard=burnin, thin=thin, flat=True)
+            logpdf_values = self.sampler.get_log_prob(discard=burnin, thin=thin, flat=True)
+        else:
+            if nsamples > (self.nsteps-burnin)*self.nwalkers/thin:
+                print("Less samples than available are requested. Returning all available samples:",
+                  str((self.nsteps-burnin)*self.nwalkers/thin),"\nYou may try to reduce burnin and/or thin to get more samples.")
+                allsamples = self.sampler.get_chain(discard=burnin, thin=thin, flat=True)
+                logpdf_values = self.sampler.get_log_prob(discard=burnin, thin=thin, flat=True)
             else:
-                  print("Total available samples (witout burnin) is", maxsamples,
-                        "which is larger than the required number of samples.\nPlease require less samples, reduce burnin or run generate_sampler for more steps.\n")
-            return None
-        print("Generating unique samples.")
-        chains = self.sampler.get_chain()
-        allsamples_tmp = chains[burnin:, :, :].reshape(
-            [(self.nsteps-burnin)*self.nwalkers, self.ndim])
-        logprob_values_tmp = logprobs[burnin:, :].reshape(
-            (self.nsteps-burnin)*self.nwalkers)
-        allsamples_tmp2 = np.transpose(np.append(np.transpose(
-            allsamples_tmp), np.array([logprob_values_tmp]), axis=0))
-        allsamples_tmp2 = allsamples_tmp2[allsamples_tmp2[:, -1] > -np.inf]
-        allsamples_unique = np.unique(
-            allsamples_tmp2, axis=0, return_index=False)
-        indices = np.arange(len(allsamples_unique))
-        rnd_indices = np.random.choice(indices, size=nsamples, replace=False)
-        allsamples = allsamples_unique[rnd_indices]
-        logprob_values = allsamples[:, -1]
-        allsamples = allsamples[:, :-1]
+                burnin = self.nsteps-nsamples*thin/self.nwalkers
+                allsamples=self.sampler.get_chain(discard = burnin, thin = thin, flat = True)
+                logpdf_values=self.sampler.get_log_prob(discard = burnin, thin = thin, flat = True)
+        if len(np.unique(logpdf_values, axis=0, return_index=False)) < len(logpdf_values):
+            print("There are non-unique samples")
+        if np.count_nonzero(np.isfinite(logpdf_values)) < len(logpdf_values):
+            print("There are non-numeric logpdf values.")
         end = timer()
         print(len(allsamples), "unique samples generated in", end-start, "s.")
+        data_sample_timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        ds = Data_sample(data_X=allsamples,
+                         data_Y=logpdf_values,
+                         test_fraction=test_fraction,
+                         name=self.chains_name+"_"+data_sample_timestamp,
+                         data_sample_input_filename=None,
+                         data_sample_output_filename=self.data_sample_filename,
+                         load_on_RAM=False)
         if save:
-            utility.save_samples(allsamples, logprob_values,data_sample_filename, chains_name)
-            self.data_sample_filename = data_sample_filename
-        return Data_sample(data_X=allsamples,
-                           data_logprob=logprob_values,
-                           name=self.chains_name,
-                           data_sample_filename=data_sample_filename,
-                           import_from_file=False,
-                           npoints=len(allsamples),
-                           shuffle=False)
-
-    ##### Functions from the emcee documentation #####
-
-    def next_pow_two(self,n):
-        i = 1
-        while i < n:
-            i = i << 1
-        return i
+            ds.save_samples()
+        return ds
+    
+    ##### Functions from the emcee documentation (with some modifications) #####
 
     def autocorr_func_1d(self,x, norm=True):
         x = np.atleast_1d(x)
         if len(x.shape) != 1:
-            raise ValueError(
-                "invalid dimensions for 1D autocorrelation function")
-        n = self.next_pow_two(len(x))
-
+            raise ValueError( "invalid dimensions for 1D autocorrelation function")
+        if len(np.unique(x)) == 1:
+            print("Chain does not change in "+str(len(x))+" steps. Autocorrelation for this chain may return nan.")
+        n = utility.next_power_of_two(len(x))
         # Compute the FFT and then (from that) the auto-correlation function
         f = np.fft.fft(x - np.mean(x), n=2*n)
         acf = np.fft.ifft(f * np.conjugate(f))[:len(x)].real
         acf /= 4*n
-
         # Optionally normalize
         if norm:
             acf /= acf[0]
-
         return acf
 
     # Automated windowing procedure following Sokal (1989)
@@ -459,71 +378,365 @@ class MCMC(object):
 
     def autocorr_new(self,y, c=5.0):
         f = np.zeros(y.shape[1])
+        counter=0
         for yy in y:
-            f += self.autocorr_func_1d(yy)
+            fp = self.autocorr_func_1d(yy)
+            if np.isnan(np.sum(fp)):
+                print("Chain",counter,"returned nan. Values changed to 0 to proceed.")
+                fp = np.full(len(fp),0)
+            f += fp
+            counter += 1
         f /= len(y)
         taus = 2.0*np.cumsum(f)-1.0
         window = self.auto_window(taus, c)
         return taus[window]
 
-    def plot_dist_and_autocorr(self, pars=0, labels=None, filename=None, save=True, verbose=False):
-        jtplot.reset()
+    def autocorr_ml(self, y, thin=1, c=5.0, bound=5.0):
+        from celerite import terms, GP
+        # Compute the initial estimate of tau using the standard method
+        init = self.autocorr_new(y, c=c)
+        z = y[:, ::thin]
+        N = z.shape[1]
+
+        # Build the GP model
+        tau = max(1.0, init / thin)
+        kernel = terms.RealTerm(
+            np.log(0.9 * np.var(z)), 
+            -np.log(tau), 
+            bounds=[(-bound, bound), (-np.log(N), 0.0)]
+        )
+        kernel += terms.RealTerm(
+            np.log(0.1 * np.var(z)),
+            -np.log(0.5 * tau),
+            bounds=[(-bound, bound), (-np.log(N), 0.0)],
+        )
+        gp = GP(kernel, mean=np.mean(z))
+        gp.compute(np.arange(z.shape[1]))
+
+        # Define the objective
+        def nll(p):
+            # Update the GP model
+            gp.set_parameter_vector(p)
+
+            # Loop over the chains and compute likelihoods
+            v, g = zip(*(gp.grad_log_likelihood(z0, quiet=True) for z0 in z))
+
+            # Combine the datasets
+            return -np.sum(v), -np.sum(g, axis=0)
+
+        # Optimize the model
+        p0 = gp.get_parameter_vector()
+        bounds = gp.get_parameter_bounds()
+        soln = minimize(nll, p0, jac=True, bounds=bounds)
+        gp.set_parameter_vector(soln.x)
+
+        # Compute the maximum likelihood tau
+        a, c = kernel.coefficients[:2]
+        tau = thin * 2 * np.sum(a / c) / np.sum(a)
+        return tau
+
+    def gelman_rubin(self, pars=0, steps="all"):
+        res = []
+        pars = np.array([pars]).flatten()
+        for par in pars:
+            if steps is "all":
+                chain = self.sampler.get_chain()[:, :, par]
+                si2 = np.var(chain, axis=0, ddof=1)
+                W = np.mean(si2, axis=0)
+                ximean = np.mean(chain, axis=0)
+                xmean = np.mean(ximean, axis=0)
+                n = chain.shape[0]
+                m = chain.shape[1]
+                B = n / (m - 1) * np.sum((ximean - xmean)**2, axis=0)
+                sigmahat2 = (n - 1) / n * W + 1 / n * B
+                # Exact
+                Vhat = sigmahat2+B/m/n
+                varVhat = ((n-1)/n)**2 * 1/m * np.var(si2, axis=0)+((m+1)/(m*n))**2 * 2/(m-1) * B**2 + 2*(
+                    (m+1)*(n-1)/(m*(n**2)))*n/m * (np.cov(si2, ximean**2)[0, 1]-2*xmean*np.cov(si2, ximean)[0, 1])
+                df = (2*Vhat**2) / varVhat
+                Rh = np.sqrt((Vhat / W)*(df+3)/(df+1))  # correct Brooks-Gelman df
+                res.append([par, n, Rh, Vhat, W])
+            else:
+                steps = np.array([steps]).flatten()
+                for step in steps:
+                    chain = self.sampler.get_chain()[:step, :, par]
+                    si2 = np.var(chain, axis=0, ddof=1)
+                    W = np.mean(si2, axis=0)
+                    ximean = np.mean(chain, axis=0)
+                    xmean = np.mean(ximean, axis=0)
+                    n = chain.shape[0]
+                    m = chain.shape[1]
+                    B = n / (m - 1) * np.sum((ximean - xmean)**2, axis=0)
+                    sigmahat2 = (n - 1) / n * W + 1 / n * B
+                    # Exact
+                    Vhat = sigmahat2+B/m/n
+                    varVhat = ((n-1)/n)**2 * 1/m * np.var(si2, axis=0)+((m+1)/(m*n))**2 * 2/(m-1) * B**2 + 2*((m+1)*(n-1)/(m*(n**2)))*n/m *(np.cov(si2,ximean**2)[0,1]-2*xmean*np.cov(si2,ximean)[0,1])
+                    df = (2*Vhat**2) / varVhat
+                    Rh = np.sqrt((Vhat / W)*(df+3)/(df+1)) #correct Brooks-Gelman df
+                    res.append([par, n, Rh, Vhat, W])
+        return np.array(res)
+
+    def plot_gelman_rubin(self, pars=0, npoints=5, labels=None, filename=None, save=False, verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
         try:
-            plt.style.use("matplotlib.mplstyle")
+            jtplot.reset()
+        except:
+            pass
+        try:
+            plt.style.use(mplstyle_path)
         except:
             pass
         pars = np.array([pars]).flatten()
-        self.__set_param__("labels", labels)
+        if labels is None:
+            labels = self.pars_labels
         if filename is None:
-            filename = self.basefilename+"_figure"
+            filename = self.figure_basefilename
+        for par in pars:
+            idx = np.sort([(i)*(10**j) for i in range(1, 11) for j in range(int(np.ceil(np.log10(self.nsteps))))])
+            idx = np.unique(idx[idx <= self.nsteps])
+            idx = utility.get_spaced_elements(idx, numElems=npoints+1)
+            idx = idx[1:]
+            gr = self.gelman_rubin(par, steps=idx)
+            plt.plot(gr[:,1], gr[:,2], '-', alpha=0.8)
+            plt.xlabel("number of steps, $S$")
+            plt.ylabel(r"$\hat{R}_{c}(%s)$" % (labels[par].replace('$', '')))
+            plt.xscale('log')
+            plt.tight_layout()
+            if save:
+                figure_filename = filename+"_GR_Rc_"+str(par)+".pdf"
+                figure_filename = utility.check_rename_file(figure_filename)
+                plt.savefig(figure_filename)
+                print('Saved figure', figure_filename+'.')
+            if verbose:
+                plt.show()
+            plt.close()
+            plt.plot(gr[:, 1], np.sqrt(gr[:, 3]), '-', alpha=0.8)
+            plt.xlabel("number of steps, $S$")
+            plt.ylabel(r"$\sqrt{\hat{V}}(%s)$"% (labels[par].replace('$', '')))
+            plt.xscale('log')
+            plt.tight_layout()
+            if save:
+                figure_filename = filename+"_GR_sqrtVhat_"+str(par)+".pdf"
+                figure_filename = utility.check_rename_file(figure_filename)
+                plt.savefig(figure_filename)
+                print('Saved figure', figure_filename+'.')
+            if verbose:
+                plt.show()
+            plt.close()
+            plt.plot(gr[:, 1], np.sqrt(gr[:, 4]), '-', alpha=0.8)
+            plt.xlabel("number of steps, $S$")
+            plt.ylabel(r"$\sqrt{W}(%s)$"% (labels[par].replace('$', '')))
+            plt.xscale('log')
+            plt.tight_layout()
+            if save:
+                figure_filename = filename+"_GR_sqrtW_"+str(par)+".pdf"
+                figure_filename = utility.check_rename_file(figure_filename)
+                plt.savefig(figure_filename)
+                print('Saved figure', figure_filename+'.')
+            if verbose:
+                plt.show()
+            plt.close()
+            
+
+    def plot_dist(self, pars=0, labels=None, filename=None, save=False, verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        try:
+            jtplot.reset()
+        except:
+            pass
+        try:
+            plt.style.use(mplstyle_path)
+        except:
+            pass
+        pars = np.array([pars]).flatten()
+        if labels is None:
+            labels = self.pars_labels
+        if filename is None:
+            filename = self.figure_basefilename
         for par in pars:
             chain = self.sampler.get_chain()[:, :, par].T
             counts, bins = np.histogram(chain.flatten(), 100)
             integral = counts.sum()
-            plt.grid(linestyle="--", dashes=(5, 5))
+            #plt.grid(linestyle="--", dashes=(5, 5))
             plt.step(bins[:-1], counts/integral, where='post')
             plt.xlabel(r"$%s$" % (labels[par].replace('$', '')))
             plt.ylabel(r"$p(%s)$" % (labels[par].replace('$', '')))
             plt.tight_layout()
             if save:
-                distr_filename = filename+"_distr_"+str(par)+".pdf"
-                distr_filename = utility.check_rename_file(distr_filename)
-                plt.savefig(distr_filename)
-                print('Saved figure', distr_filename+'.')
+                figure_filename = filename+"_distr_"+str(par)+".pdf"
+                figure_filename = utility.check_rename_file(figure_filename)
+                plt.savefig(figure_filename)
+                print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
-            #    print(r"%s"%(folder + "/" + modname + '_results_' + figname + ".pdf" +
-            #      " created and saved."))
             plt.close()
 
-            N = np.exp(np.linspace(np.log(100), np.log(
-                chain.shape[1]), 10)).astype(int)
-            gw2010 = np.empty(len(N))
-            new = np.empty(len(N))
-            for i, n in enumerate(N):
-                gw2010[i] = self.autocorr_gw2010(chain[:, :n])
-                new[i] = self.autocorr_new(chain[:, :n])
+    def plot_autocorr(self, pars=0, labels=None, filename=None, save=False, verbose=True, methods=["G&W 2010", "DFM 2017", "DFM 2017: ML"]):
+        global ShowPrints
+        ShowPrints = verbose
+        try:
+            jtplot.reset()
+        except:
+            pass
+        try:
+            plt.style.use(mplstyle_path)
+        except:
+            pass
+        pars = np.array([pars]).flatten()
+        if labels is None:
+            labels = self.pars_labels
+        if filename is None:
+            filename = self.figure_basefilename
+        for par in pars:
+            chain = self.sampler.get_chain()[:, :, par].T
+            # Compute the largest number of duplicated at the beginning of chains
+            n_dupl = []
+            for c in chain:
+                n_dupl.append(utility.check_repeated_elements_at_start(c))
+            n_start = max(n_dupl)+10
+            if n_start > 100:
+                print("There is at least one chain starting with", str(
+                        n_start-10), "duplicate steps. Autocorrelation will be computer starting at", str(n_start), "steps.")
+            else:
+                n_start = 100
+            N = np.exp(np.linspace(np.log(n_start), np.log(chain.shape[1]), 10)).astype(int)
+            # GW10 method
+            if "G&W 2010" in methods:
+                gw2010 = np.empty(len(N))
+            # New method
+            if "DFM 2017" in methods:
+                new = np.empty(len(N))
+            # Approx method (Maximum Likelihood)
+            if "DFM 2017: ML" in methods:
+                new = np.empty(len(N))
+                ml = np.empty(len(N))
+                ml[:] = np.nan
 
+            for i, n in enumerate(N):
+                # GW10 method
+                if "G&W 2010" in methods:
+                    gw2010[i] = self.autocorr_gw2010(chain[:, :n])
+                # New method
+                if "DFM 2017" in methods or "DFM 2017: ML" in methods:
+                    new[i] = self.autocorr_new(chain[:, :n])
+                # Approx method (Maximum Likelihood)
+            if "DFM 2017: ML" in methods:
+                succeed = None
+                bound = 5.0
+                while succeed is None:
+                    try:
+                        for i, n in enumerate(N[1:-1]):
+                            k = i + 1
+                            thin = max(1, int(0.05 * new[k]))
+                            ml[k] = self.autocorr_ml(chain[:, :n], thin=thin, bound=bound)
+                        succeed = True
+                        if bound > 5.0:
+                            print("Succeeded with bounds (",str(-(bound)), ",", str(bound), ").")
+                    except:
+                        print("Bounds (", str(-(bound)), ",", str(bound), ") delivered non-finite log-prior. Increasing bound to (",
+                              str(-(bound+5)), ",", str(bound+5), ") and retrying.")
+                        bound = bound+5
             # Plot the comparisons
-            plt.rc('text', usetex=True)
-            plt.rc('font', family='serif')
-            plt.grid(linestyle="--", dashes=(5, 5))
             plt.plot(N, N / 50.0, "--k", label=r"$\tau = S/50$")
-            plt.loglog(N, gw2010, "o-", label=r"G\&W 2010")
-            plt.loglog(N, new, "o-", label="new")
+            #plt.plot(N, N / 100.0, "--k", label=r"$\tau = S/100$")
+            # GW10 method
+            if "G&W 2010" in methods:
+                plt.loglog(N, gw2010, "o-", label=r"G\&W 2010")
+            # New method
+            if "DFM 2017" in methods:
+                plt.loglog(N, new, "o-", label="DFM 2017")
+            # Approx method (Maximum Likelihood)
+            if "DFM 2017: ML" in methods:
+                plt.loglog(N, ml, "o-", label="DFM 2017: ML")
             ylim = plt.gca().get_ylim()
             plt.ylim(ylim)
             plt.xlabel("number of steps, $S$")
-            plt.ylabel(r"$\tau_{%s}$ estimates" %
-                       (labels[par].replace('$', '')))
+            plt.ylabel(r"$\tau_{%s}$ estimates" % (labels[par].replace('$', '')))
             plt.legend()
             plt.tight_layout()
             if save:
-                autocorr_filename = filename+"_autocorr_"+str(par)+".pdf"
-                autocorr_filename = utility.check_rename_file(autocorr_filename)
-                plt.savefig(autocorr_filename)
-                if verbose:
-                    print('Saved figure', autocorr_filename+'.')
+                figure_filename = filename+"_autocorr_"+str(par)+".pdf"
+                figure_filename = utility.check_rename_file(figure_filename)
+                plt.savefig(figure_filename)
+                print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
+
+    def plot_chains(self, pars=0, n_chains=100, labels=None, filename=None, save=False, verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        try:
+            jtplot.reset()
+        except:
+            pass
+        try:
+            plt.style.use(mplstyle_path)
+        except:
+            pass
+        pars = np.array([pars]).flatten()
+        if labels is None:
+            labels = self.pars_labels
+        if filename is None:
+            filename = self.figure_basefilename
+        if n_chains > self.nwalkers:
+            n_chains = np.min([n_chains, self.nwalkers])
+            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.")
+        rnd_chains = np.sort(np.random.choice(np.arange(
+            self.nwalkers), n_chains, replace=False))
+        for par in pars:
+            chain = self.sampler.get_chain()[:, :, par]
+            idx = np.sort([(i)*(10**j) for i in range(1, 11)
+                           for j in range(int(np.ceil(np.log10(self.nsteps))))])
+            idx = np.unique(idx[idx < len(chain)])
+            plt.plot(idx,chain[idx][:,rnd_chains], '-', alpha=0.8)
+            plt.xlabel("number of steps, $S$")
+            plt.ylabel(r"$%s$" %(labels[par].replace('$', '')))
+            plt.xscale('log')
+            plt.tight_layout()
+            if save:
+                figure_filename = filename+"_chains_"+str(par)+".pdf"
+                figure_filename = utility.check_rename_file(figure_filename)
+                plt.savefig(figure_filename)
+                print('Saved figure', figure_filename+'.')
+            if verbose:
+                plt.show()
+            plt.close()
+
+    def plot_chains_logprob(self, n_chains=100, filename=None, save=False, verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        try:
+            jtplot.reset()
+        except:
+            pass
+        try:
+            plt.style.use(mplstyle_path)
+        except:
+            pass
+        if filename is None:
+            filename = self.figure_basefilename
+        if n_chains > self.nwalkers:
+            n_chains = np.min([n_chains, self.nwalkers])
+            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.")
+        rnd_chains = np.sort(np.random.choice(np.arange(
+            self.nwalkers), n_chains, replace=False))
+        chain_lp = self.sampler.get_log_prob()
+        idx = np.sort([(i)*(10**j) for i in range(1, 11)
+                       for j in range(int(np.ceil(np.log10(self.nsteps))))])
+        idx = np.unique(idx[idx < len(chain_lp)])
+        plt.plot(idx, -chain_lp[:, rnd_chains][idx], '-', alpha=0.8)
+        plt.xlabel("number of steps, $S$")
+        plt.ylabel(r"-logpdf")
+        plt.xscale('log')
+        plt.tight_layout()
+        if save:
+            figure_filename = filename+"_chains_logpdf.pdf"
+            figure_filename = utility.check_rename_file(figure_filename)
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
+        if verbose:
+            plt.show()
+        plt.close()
