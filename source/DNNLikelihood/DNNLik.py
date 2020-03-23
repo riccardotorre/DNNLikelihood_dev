@@ -47,6 +47,7 @@ def print(*args, **kwargs):
             return builtins.print(*args, **kwargs)
 
 class DNNLik(object):
+    """The DNNLik class."""
     def __init__(self,
                  DNNLik_input_folder=None,
                  ensemble_name=None,

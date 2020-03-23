@@ -16,6 +16,11 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+import os
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path('../source').resolve()))
+
 def setup(app):
     app.add_stylesheet(
         'https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css'
@@ -58,6 +63,10 @@ extensions = [
     'sphinx_issues',
     'sphinx_copybutton',
 ]
+
+# Generate the API documentation when building
+autosummary_generate = True
+numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
