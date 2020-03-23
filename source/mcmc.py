@@ -145,8 +145,8 @@ class MCMC(object):
                  ):
         self.logprob_fn = logprob_fn
         self.logprob_fn_args = logprob_fn_args
-        self.pars_pos_poi = pars_pos_poi
-        self.pars_pos_nuis = pars_pos_nuis
+        self.pars_pos_poi = np.array(pars_pos_poi)
+        self.pars_pos_nuis = np.array(pars_pos_nuis)
         self.pars_init = pars_init
         self.ndim = len(self.pars_pos_poi) + len(self.pars_pos_nuis)
         self.pars_labels = pars_labels
@@ -173,18 +173,7 @@ class MCMC(object):
         if moves is None:
             self.moves = [(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode="random", factor=None), 0)]
             print("No moves parameter has been specified. moves has been set to the default StretchMove() of emcee")                
-        if pars_labels is None:
-            self.pars_labels = []
-            i_poi = 1
-            i_nuis = 1
-            for i in range(len(pars_pos_poi)+len(pars_pos_nuis)):
-                if i in pars_pos_poi:
-                    self.pars_labels.append(r"$\theta_{%d}$" % i_poi)
-                    i_poi = i_poi+1
-                else:
-                    self.pars_labels.append(r"$\nu_{%d}$" % i_nuis)
-                    i_nuis = i_nuis+1
-            del(i_poi,i_nuis)
+        self.__check_define_pars_labels()
         if self.new_sampler:
             if os.path.exists(self.backend_filename):
                 now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
@@ -205,17 +194,30 @@ class MCMC(object):
         if self.pars_init is None:
             print("To perform sampling you need to specify initialization for the parameters (pars_init).")
 
-    #def __set_param__(self, par_name, par_val):
+    #def __set_param(self, par_name, par_val):
     #    if par_val is not None:
     #        setattr(self, par_name, par_val)
     #    #return par_val
 
-    def __set_param__(self, par_name, par_val):
-        if par_val is None:
-            par_val = eval("self."+par_name)
-        else:
-            setattr(self, par_name, par_val)
-        return par_val
+    #def __set_param(self, par_name, par_val):
+    #    if par_val is None:
+    #        par_val = eval("self."+par_name)
+    #    else:
+    #        setattr(self, par_name, par_val)
+    #    return par_val
+
+    def __check_define_pars_labels(self):
+        if self.pars_labels is None:
+            self.pars_labels = []
+            i_poi = 1
+            i_nuis = 1
+            for i in range(len(self.pars_pos_poi)+len(self.pars_pos_nuis)):
+                if i in self.pars_pos_poi:
+                    self.pars_labels.append(r"$\theta_{%d}$" % i_poi)
+                    i_poi = i_poi+1
+                else:
+                    self.pars_labels.append(r"$\nu_{%d}$" % i_nuis)
+                    i_nuis = i_nuis+1
 
     def check_params_backend(self):
         global ShowPrints
@@ -310,7 +312,7 @@ class MCMC(object):
               self.backend_filename, "loaded in", end-start, "seconds.")
         print("Available number of steps: {0}.".format(self.backend.iteration))
 
-    def get_data_sample(self, nsamples="all", test_fraction=1, burnin=0, thin=1, save=False):
+    def get_data_sample(self, nsamples="all", test_fraction=1, burnin=0, thin=1, dtype='float64', save=False):
         print("Notice: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.")
         start = timer()
         if nsamples is "all":
@@ -335,6 +337,10 @@ class MCMC(object):
         data_sample_timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         ds = Data_sample(data_X=allsamples,
                          data_Y=logpdf_values,
+                         dtype=dtype,
+                         pars_pos_poi=self.pars_pos_poi,
+                         pars_pos_nuis=self.pars_pos_nuis,
+                         pars_labels=self.pars_labels,
                          test_fraction=test_fraction,
                          name=self.chains_name+"_"+data_sample_timestamp,
                          data_sample_input_filename=None,

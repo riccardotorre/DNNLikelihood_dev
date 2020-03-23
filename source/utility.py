@@ -1,5 +1,6 @@
 import inspect
 import itertools
+import json
 import math
 import os
 from fpdf import FPDF
@@ -104,6 +105,52 @@ def next_power_of_two(n):
         i = i << 1
     return i
 
+def convert_types_dict(d):
+    for k, v in d.items():
+        if isinstance(v, dict):
+            convert_types_dict(v)
+        elif type(v) is np.ndarray:
+            d[k] = v.tolist()
+        elif type(v) is list:
+            try:
+                tmp = flatten_list(v)
+            except:
+                tmp = v
+            if str in [type(q) for q in tmp]:
+                d[k] = np.array(v, dtype=object).tolist()
+            else:
+                d[k] = np.array(v).tolist()
+        else:
+            d[k] = np.array(v).tolist()
+    return d
+
+def sort_dict(d):
+    return json.loads(json.dumps(d,sort_keys=True))
+
+#def convert_types_dic(dic):
+#    new_dic = {}
+#    for key in list(dic.keys()):
+#        if type(dic[key]) == np.ndarray:
+#            new_dic[key] == dic[key].tolist()
+#        elif type(dic[key]) == list:
+#            #"float" in str(
+#            if "numpy.float" in str(type(dic[key][0])):
+#                new_dic[key] = list(map(float, dic[key]))
+#            if "numpy.int" in str(type(dic[key][0])):
+#                new_dic[key] = list(map(int, dic[key]))
+#            else:
+#                new_dic[key] = dic[key]
+#        elif "numpy.float" in str(type(dic[key])):
+#            new_dic[key] = float(dic[key])
+#        elif "numpy.int" in str(type(dic[key])):
+#            new_dic[key] = int(dic[key])
+#        else:
+#            new_dic[key] = dic[key]
+#    return new_dic
+
+def normalize_weights(x):
+    return x/np.sum(x)*len(x)
+
 def closest_power_of_two(x):
     op = math.floor if bin(int(x))[3] != "1" else math.ceil
     return 2**(op(math.log(x, 2)))
@@ -114,13 +161,33 @@ def product_dict(**kwargs):
     for instance in itertools.product(*vals):
         yield dict(zip(keys, instance))
 
-def dic_minus_keys(keys, dictionary):
+def dic_minus_keys(dictionary, keys):
     if type(keys) is str:
         shallow_copy = dict(dictionary)
-        del shallow_copy[keys]
+        try:
+            del shallow_copy[keys]
+        except:
+            pass
         return shallow_copy
     elif type(keys) is list:
         shallow_copy = dict(dictionary)
         for i in keys:
-            del shallow_copy[i]
+            try:
+                del shallow_copy[i]
+            except:
+                pass
         return shallow_copy
+
+def metric_name_abbreviate(name):
+    name_dict = {"accuracy": "acc", "mean_error": "me", "mean_percentage_error": "mpe", "mean_squared_error": "mse",
+                 "mean_absolute_error": "mae", "mean_absolute_percentage_error": "mape", "mean_squared_logarithmic_error": "msle"}
+    for key in name_dict:
+        name = name.replace(key, name_dict[key])
+    return name
+
+def metric_name_unabbreviate(name):
+    name_dict = {"acc": "accuracy", "me": "mean_error", "mpe": "mean_percentage_error", "mse": "mean_squared_error",
+                 "mae": "mean_absolute_error", "mape": "mean_absolute_percentage_error", "msle": "mean_squared_logarithmic_error"}
+    for key in name_dict:
+        name = name.replace(key, name_dict[key])
+    return name

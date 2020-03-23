@@ -1,10 +1,14 @@
 __all__ = ["DNNLik_ensemble"]
 
+import json
+#import ndjson as json
+import codecs
 import numpy as np
 import os
 import shutil
 from timeit import default_timer as timer
 import time
+from datetime import datetime
 import builtins
 import tensorflow as tf
 from tensorflow.python.client import device_lib
@@ -34,46 +38,99 @@ def print(*args, **kwargs):
 
 class DNNLik_ensemble(object):
     def __init__(self,
+                 DNNLik_ensemble_input_folder=None,
                  ensemble_name=None,
                  data_sample=None,
                  data_sample_input_filename=None,
-                 ensemble_results_folder=None,
-                 load_on_RAM=None,
+                 ensemble_folder=None,
+                 load_on_RAM=False,
                  seed=1,
+                 dtype = None,
                  same_data=True,
                  model_data_ensemble_kwargs=None,
                  model_define_ensemble_kwargs=None,
                  model_optimizers_ensemble_kwargs=None,
                  model_compile_ensemble_kwargs=None,
                  model_callbacks_ensemble_kwargs=None,
-                 model_train_ensemble_kwargs=None
+                 model_train_ensemble_kwargs=None,
+                 verbose=True
                  ):
-        ############ Initialize input parameters
-        #### Set main inputs and DataSample
-        self.ensemble_name = ensemble_name
-        self.data_sample = data_sample
-        self.data_sample_input_filename = data_sample_input_filename
-        self.ensemble_results_folder = ensemble_results_folder
-        self.load_on_RAM = load_on_RAM
-        self.seed = seed
-        self.same_data = same_data
-        self.__set_data_sample() # This also fixes self.ndim and self.ensemble_name if not given
-        self.__set_ensemble_results_folder() 
-        self.__model_data_ensemble_kwargs = model_data_ensemble_kwargs
-        self.__model_define_ensemble_kwargs = model_define_ensemble_kwargs
-        self.__model_optimizers_ensemble_kwargs = model_optimizers_ensemble_kwargs
-        self.__model_compile_ensemble_kwargs = model_compile_ensemble_kwargs
-        self.__model_callbacks_ensemble_kwargs = model_callbacks_ensemble_kwargs
-        self.__model_train_ensemble_kwargs = model_train_ensemble_kwargs
-        self.members = {}
-        self.stacks = {}
-        self.get_available_gpus()
+        ############ Check wheather to create a new DNNLik_ensemble object from inputs or from files
+        self.DNNLik_ensemble_input_folder = DNNLik_ensemble_input_folder
+        if self.DNNLik_ensemble_input_folder is None:
+            ############ Initialize input parameters from arguments
+            #### Set main inputs and DataSample
+            self.ensemble_name = ensemble_name
+            self.data_sample = data_sample
+            self.data_sample_input_filename = os.path.abspath(data_sample_input_filename)
+            self.ensemble_folder = ensemble_folder
+            self.load_on_RAM = load_on_RAM
+            self.seed = seed
+            if dtype is None:
+                self.dtype = "float64"
+            else:
+                self.dtype = dtype
+            self.same_data = same_data
+            self.__set_seed()
+            self.__set_dtype()
+            # This also fixes self.ndim and self.ensemble_name if not given
+            self.__set_data_sample()
+            self.__set_ensemble_folder()
+            self.__set_ensemble_results_folder()
+            self.__model_data_ensemble_kwargs = model_data_ensemble_kwargs
+            self.__model_define_ensemble_kwargs = model_define_ensemble_kwargs
+            self.__model_optimizers_ensemble_kwargs = model_optimizers_ensemble_kwargs
+            self.__model_compile_ensemble_kwargs = model_compile_ensemble_kwargs
+            self.__model_callbacks_ensemble_kwargs = model_callbacks_ensemble_kwargs
+            self.__model_train_ensemble_kwargs = model_train_ensemble_kwargs
+            self.members = {}
+            self.stacks = {}
+            self.get_available_gpus()
+            self.summary_log_json_filename = self.ensemble_results_folder + \
+                "/"+self.ensemble_name+"_summary_log.json"
+        else:
+            ############ Initialize input parameters from file
+            #### Load summary_log dictionary
+            print("When providing DNNLik input folder all arguments but load_on_RAM and dtype are ignored and the object is constructed from saved data")
+            summary_log = self.__load_summary_log()
+
+            #### Set main inputs and DataSample
+            self.ensemble_name = summary_log['ensemble_name']
+            self.data_sample = None
+            self.data_sample_input_filename = summary_log['data_sample_input_filename']
+            self.ensemble_folder = summary_log['ensemble_folder']
+            self.load_on_RAM = load_on_RAM
+            self.seed = summary_log['seed']
+            self.dtype = dtype
+            if self.dtype is None:
+                self.dtype = summary_log['dtype']
+            self.same_data = summary_log['same_data']
+            self.__set_seed()
+            self.__set_dtype()
+            # This also fixes self.ndim and self.ensemble_name if not given
+            self.__set_data_sample()
+            self.ensemble_folder = summary_log['ensemble_folder']
+            self.ensemble_results_folder = summary_log['ensemble_results_folder']
+            self.__model_data_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_data_ensemble_kwargs']
+            self.__model_define_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_define_ensemble_kwargs']
+            self.__model_optimizers_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_optimizers_ensemble_kwargs']
+            self.__model_compile_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_compile_ensemble_kwargs']
+            self.__model_callbacks_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_callbacks_ensemble_kwargs']
+            self.__model_train_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_train_ensemble_kwargs']
+            self.n_members = summary_log['n_members']
+            self.seeds = np.array(summary_log['seeds'])
+            # Here I should import members
+            self.members = {}
+            self.stacks = {}
+            self.get_available_gpus()
+            self.summary_log_json_filename = self.ensemble_results_folder + \
+                "/"+self.ensemble_name+"_summary_log.json"
 
         #### Set model_data_ensemble_kwargs
-        # example: model_data_ensemble_kwargs = {'npoints_list': [[1000,300,600],[2000,600,1000],[3000,1000,1500]]}
+        # example: model_data_ensemble_kwargs = {'npoints_list': [[1000,300],[2000,600],[3000,1000]]}
         self.__check_model_data_ensemble_kwargs()
-        self.model_data_ensemble_kwargs_list = list(utility.product_dict(**self.__model_data_ensemble_kwargs))
-        self.model_data_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.model_data_ensemble_kwargs_list]
+        self.__model_data_ensemble_kwargs_list = list(utility.product_dict(**self.__model_data_ensemble_kwargs))
+        self.__model_data_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_data_ensemble_kwargs_list]
 
         #### Set model_define_ensemble_kwargs
         # example: model_define_ensemble_kwargs={"hid_layers_list": [[[50, "selu"], [50, "selu"]],[[100, "selu"], [100, "selu"]], ...],
@@ -82,8 +139,8 @@ class DNNLik_ensemble(object):
         #                                        "batch_norm_list": [True], 
         #                                        "kernel_initializer_list": ['glorot_uniform']}
         self.__check_model_define_ensemble_kwargs()
-        self.model_define_ensemble_kwargs_list = list(utility.product_dict(**self.__model_define_ensemble_kwargs))
-        self.model_define_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.model_define_ensemble_kwargs_list]
+        self.__model_define_ensemble_kwargs_list = list(utility.product_dict(**self.__model_define_ensemble_kwargs))
+        self.__model_define_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_define_ensemble_kwargs_list]
 
         #### Set model_optimizers_ensemble_kwargs
         # example: model_optimizers_ensemble_kwargs={"optimizers_list": [{"Adam": {"learning_rate": 0.001,
@@ -94,17 +151,17 @@ class DNNLik_ensemble(object):
         #                                                                         "momentum": 0.0, 
         #                                                                         "nesterov": False}}]}
         self.__check_model_optimizers_ensemble_kwargs()
-        self.model_optimizers_ensemble_kwargs_list = list(utility.product_dict(**self.__model_optimizers_ensemble_kwargs))
-        self.model_optimizers_ensemble_kwargs_list = [{k.replace("optimizers_list", "optimizer"): v for k, v in i.items()} for i in self.model_optimizers_ensemble_kwargs_list]
+        self.__model_optimizers_ensemble_kwargs_list = list(utility.product_dict(**self.__model_optimizers_ensemble_kwargs))
+        self.__model_optimizers_ensemble_kwargs_list = [{k.replace("optimizers_list", "optimizer"): v for k, v in i.items()} for i in self.__model_optimizers_ensemble_kwargs_list]
 
         #### Set model_compile_ensemble_kwargs
         # example: model_compile_ensemble_kwargs={"losses_list": ["mae","mse",...],
         #                                         "optimizers_list": [optimizers.Adam(lr=0.001, beta_1=0.95, beta_2=0.999, epsilon=1e-10, decay=0.0, amsgrad=False),...],
         #                                         "metrics":["mse","msle",...]}
         self.__check_model_compile_ensemble_kwargs()
-        self.model_compile_ensemble_kwargs_list = list(utility.product_dict(**utility.dic_minus_keys("metrics", self.__model_compile_ensemble_kwargs)))
-        self.model_compile_ensemble_kwargs_list = [{**{k.replace("_list", "").replace("losses", "loss"): v for k, v in i.items()}, **{
-            "metrics": self.__model_compile_ensemble_kwargs["metrics"]}} for i in self.model_compile_ensemble_kwargs_list]
+        self.__model_compile_ensemble_kwargs_list = list(utility.product_dict(**utility.dic_minus_keys(self.__model_compile_ensemble_kwargs,"metrics")))
+        self.__model_compile_ensemble_kwargs_list = [{**{k.replace("_list", "").replace("losses", "loss"): v for k, v in i.items()}, **{
+            "metrics": self.__model_compile_ensemble_kwargs["metrics"]}} for i in self.__model_compile_ensemble_kwargs_list]
 
         #### Set model_callbacks_ensemble_kwargs
         # example: model_callbacks_ensemble_kwargs={"callbacks_list": [{"PlotLossesKeras": True,
@@ -119,27 +176,46 @@ class DNNLik_ensemble(object):
         #                                                          "TerminateOnNaN": True,
         #                                                          ...}]
         self.__check_model_callbacks_ensemble_kwargs()
-        #self.__import_callbacks()
-        self.model_callbacks_ensemble_kwargs_list = [
+        self.__model_callbacks_ensemble_kwargs_list = [
             {"callbacks": i} for i in self.__model_callbacks_ensemble_kwargs["callbacks_list"]]
 
         #### Set model_train_ensemble_kwargs
         # example: model_train_ensemble_kwargs={"epochs_list": [200,1000],
         #                                       "batch_size_list": [512,1024,2048],
         self.__check_model_train_ensemble_kwargs()
-        self.model_train_ensemble_kwargs_list = list(utility.product_dict(**self.__model_train_ensemble_kwargs))
-        self.model_train_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.model_train_ensemble_kwargs_list]
+        self.__model_train_ensemble_kwargs_list = list(utility.product_dict(**self.__model_train_ensemble_kwargs))
+        self.__model_train_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_train_ensemble_kwargs_list]
+
+        #### Generate or import members (and save summary_log)
+        #
+        if self.DNNLik_ensemble_input_folder is None:
+            self.generate_members(verbose=-1)
+        else:
+            self.__import_members()
+        self.save_summary_log_json()
+
+    def __set_seed(self):
+        np.random.seed(self.seed)
+        tf.random.set_seed(self.seed)
+
+    def __set_dtype(self):
+        K.set_floatx(self.dtype)
+        print("Working with",self.dtype,"precision.")
+        #tf.DType = ""
 
     def __set_data_sample(self):
         if self.data_sample is not None and self.data_sample_input_filename is not None:
-            print("Either a DataSample object or a dataset input file name should be passed while you passed both.\nPlease input only one and retry.")
-            return
+            print("Input file is ignored when a data_sample object is provided")
         elif self.data_sample is None and self.data_sample_input_filename is None:
-            print("Either a DataSample object or a dataset input file name should be passed while you passed none.\nPlease input one and retry.")
-            return
+            raise Exception("Either a DataSample object or a dataset input file name should be passed while you passed none.\nPlease input one and retry.")
         elif self.data_sample is None and self.data_sample_input_filename is not None:
             self.data_sample = Data_sample(data_X=None,
                                            data_Y=None,
+                                           dtype=self.dtype,
+                                           pars_pos_poi=None,
+                                           pars_pos_nuis=None,
+                                           pars_labels=None,
+                                           test_fraction=None,
                                            name=None,
                                            data_sample_input_filename=self.data_sample_input_filename,
                                            data_sample_output_filename=None,
@@ -147,17 +223,46 @@ class DNNLik_ensemble(object):
         if self.ensemble_name is None:
             self.ensemble_name = "DNNLikEnsemble_"+self.data_sample.name
         self.ndim = self.data_sample.ndim
-        self.n_available_points = self.data_sample.npoints
+
+    def __check_npoints(self):
+        available_points_tot = self.data_sample.npoints
+        available_points_train = (1-self.data_sample.test_fraction)*available_points_tot
+        available_points_test = self.data_sample.test_fraction*available_points_tot
+        max_required_points_train = np.max(np.array(self.__model_data_ensemble_kwargs['npoints_list'])[:,0]+np.array(self.__model_data_ensemble_kwargs['npoints_list'])[:,1])
+        if max_required_points_train > available_points_train:
+            raise Exception("For some models requiring more training points than available in data_sample. Please reduce npoints_train+npoints_val.")
+        max_required_points_test=np.max(np.array(self.__model_data_ensemble_kwargs['npoints_list'])[:,2])
+        if max_required_points_test > available_points_test:
+            raise Exception("For some models requiring more test points than available in data_sample. Please reduce npoints_test.")
+        
+    def __set_ensemble_folder(self, verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        if self.ensemble_folder is not None:
+            self.ensemble_folder = utility.check_rename_folder(self.ensemble_folder).replace('\\', '/')
+        else:
+            self.ensemble_folder = utility.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
+        os.mkdir(self.ensemble_folder)
+        print("Ensemble folder", self.ensemble_folder, "created.")
 
     def __set_ensemble_results_folder(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        if self.ensemble_results_folder is not None:
-            self.ensemble_results_folder = utility.check_rename_folder(self.ensemble_results_folder).replace('\\', '/')
-        else:
-            self.ensemble_results_folder = utility.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
+        self.ensemble_results_folder = self.ensemble_folder+"/ensemble"
         os.mkdir(self.ensemble_results_folder)
-        print("All results will be saved in the folder", self.ensemble_results_folder)
+        print("Ensemble results will be saved in the folder",self.ensemble_results_folder, ".")
+
+    def __load_summary_log(self):
+        summary_log_files = []
+        for _, _, f in os.walk(self.DNNLik_ensemble_input_folder+"/ensemble"):
+            for file in f:
+                if "summary_log.json" in file:
+                    summary_log_files.append(file)
+        summary_log_file = os.path.join(
+            self.DNNLik_ensemble_input_folder+"/ensemble", summary_log_files[-1])
+        with open(summary_log_file) as json_file:
+            summary_log = json.load(json_file)
+        return summary_log
 
     def __check_model_data_ensemble_kwargs(self):
         try:
@@ -170,8 +275,11 @@ class DNNLik_ensemble(object):
         for npoints in self.__model_data_ensemble_kwargs["npoints_list"]:
             if npoints[1] <= 1:
                 npoints[1] = round(npoints[1]*npoints[0])
-            if npoints[2] <= 1:
-                npoints[2] = round(npoints[2]*npoints[0])
+        max_npoints_train = int(np.max(np.array(self.__model_data_ensemble_kwargs["npoints_list"])[:, 0]))
+        for npoints in self.__model_data_ensemble_kwargs["npoints_list"]:
+            if len(npoints)==2:
+                npoints.append(max_npoints_train)
+        self.__check_npoints()
         try:
             self.__model_train_ensemble_kwargs["scaleX_list"]
         except:
@@ -268,36 +376,38 @@ class DNNLik_ensemble(object):
             print(
                 "model_fit_kwargs dictionary should contain the keywords 'epochs_list' and 'batch_size_list'.")
 
-    def __import_callbacks(self, verbose=True):
+    def __check_member_existence(self, DNNLik_input_folder):
+        summary_log_files = []
+        for _, _, f in os.walk(DNNLik_input_folder):
+            for file in f:
+                if "summary_log.json" in file:
+                    summary_log_files.append(file)
+        if len(summary_log_files) > 0:
+            return True
+        else:
+            return False
+
+    def __import_members(self,verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        list_of_callbacks = []
-        for i in self.__model_callbacks_ensemble_kwargs["callbacks_list"]:
-            list_of_callbacks = list_of_callbacks+list(i.keys())
-        list_of_callbacks = list(dict.fromkeys(list_of_callbacks))
-        list_of_callbacks_done = []
-        for string in list_of_callbacks:
-            try:
-                exec(string)
-                print(string, " correctly imported")
-                list_of_callbacks_done.append(string)
-            except:
-                pass
-            try:
-                exec("from keras.callbacks import "+string)
-                print(string, "correctly imported from 'keras.callbacks'")
-                list_of_callbacks_done.append(string)
-            except:
-                pass
-            try:
-                exec("from livelossplot import "+string)
-                print(string, "correctly imported from 'livelossplot'")
-                list_of_callbacks_done.append(string)
-            except:
-                pass
-        list_of_callbacks_failed = [item for item in list_of_callbacks if item not in list_of_callbacks_done]
-        if not list_of_callbacks_failed == []:
-            print("Import of modules", str(list_of_callbacks), "failed.")
+        start = timer()
+        n_with_results = []
+        n_without_results = []
+        for n in range(self.n_members):
+            DNNLik_input_folder = self.ensemble_folder+"/member_"+str(n)
+            if self.__check_member_existence(DNNLik_input_folder):
+                self.members[n] = DNNLik(DNNLik_input_folder=DNNLik_input_folder,
+                                         data_sample=self.data_sample,
+                                         verbose=False)
+                n_with_results.append(n)
+            else:
+                self.generate_members(n=n, verbose=False)
+                n_without_results.append(n)
+        end = timer()
+        ShowPrints=verbose
+        print("Results available for members",n_with_results,".")
+        print("Results not available for members",n_without_results,".")
+        print(self.n_members,"members imported in", end-start, "s.")
 
     def get_available_gpus(self):
         self.available_gpus = set_resources.get_available_gpus()
@@ -312,11 +422,15 @@ class DNNLik_ensemble(object):
         global ShowPrints
         ShowPrints = verbose
         start = timer()
-        self.members[n] = DNNLik(ensemble_name=self.ensemble_name,
+        self.members[n] = DNNLik(DNNLik_input_folder=None,
+                                 ensemble_name=self.ensemble_name,
                                  member_number=n,
                                  data_sample=self.data_sample,
-                                 ensemble_results_folder=self.ensemble_results_folder,
+                                 data_sample_input_filename=self.data_sample_input_filename,
+                                 ensemble_folder=self.ensemble_folder,
+                                 load_on_RAM=False,
                                  seed=seed,
+                                 dtype=self.dtype,
                                  same_data=self.same_data,
                                  model_data_member_kwargs=model_data_member_kwargs,
                                  model_define_member_kwargs=model_define_member_kwargs,
@@ -329,7 +443,7 @@ class DNNLik_ensemble(object):
         ShowPrints = verbose
         print("DNN Likelihood member",str(n),"created in",end-start,"s.")
 
-    def generate_members(self,verbose=-1):
+    def generate_members(self,n="all",verbose=-1):
         global ShowPrints
         ShowPrints = verbose
         if verbose < 0:
@@ -337,14 +451,18 @@ class DNNLik_ensemble(object):
         else:
             verbose_2 = verbose
         start = timer()
-        all_kwargs = [[A, B, C, D, E, F] for A in self.model_data_ensemble_kwargs_list for B in self.model_define_ensemble_kwargs_list for C in self.model_optimizers_ensemble_kwargs_list for D in self.model_compile_ensemble_kwargs_list for E in self.model_callbacks_ensemble_kwargs_list for F in self.model_train_ensemble_kwargs_list]
+        all_kwargs = [[A, B, C, D, E, F] for A in self.__model_data_ensemble_kwargs_list for B in self.__model_define_ensemble_kwargs_list for C in self.__model_optimizers_ensemble_kwargs_list for D in self.__model_compile_ensemble_kwargs_list for E in self.__model_callbacks_ensemble_kwargs_list for F in self.__model_train_ensemble_kwargs_list]
         self.n_members = len(all_kwargs)
         if self.same_data:
             self.seeds = np.full(self.n_members,self.seed)
         else:
             np.random.seed(self.seed)
             self.seeds = np.random.choice(np.arange(100*self.n_members),self.n_members,replace=False)
-        for i in range(self.n_members):
+        if n is "all":
+            members_to_generate = range(self.n_members)
+        else:
+            members_to_generate = np.array([n]).flatten()
+        for i in members_to_generate:
             model_data_member_kwargs, model_define_member_kwargs, model_optimizer_member_kwargs, model_compile_member_kwargs, model_callbacks_member_kwargs, model_train_member_kwargs = all_kwargs[i]
             self.generate_member(i, 
                                  self.seeds[i], 
@@ -355,12 +473,13 @@ class DNNLik_ensemble(object):
                                  model_callbacks_member_kwargs,
                                  model_train_member_kwargs, 
                                  verbose=verbose_2)
+        #self.save_summary_log_json(verbose=False)
         end = timer()
         ShowPrints = verbose
         print(self.n_members,"members (DNNLikelihoods) generated in", end-start, "s.")
         print("Results for member 'n' will be saved in the folders",self.ensemble_name,"_member_n.")
 
-    def generate_data_members(self, members_list="all",force=False,verbose=False):
+    def generate_data_members(self, members_list="all",force=False,test=False,verbose=False):
         global ShowPrints
         ShowPrints = verbose
         if verbose < 0:
@@ -386,7 +505,9 @@ class DNNLik_ensemble(object):
         if proceed:
             print("Generating data may require some time, depending on the required number of samples.")
             for i in members_list:
-                self.members[i].generate_data(verbose=verbose_2)
+                self.members[i].generate_train_data(verbose=verbose_2)
+                if test:
+                    self.members[i].generate_test_data(verbose=verbose_2)
             end = timer()
             ShowPrints = verbose
             print("Data for", len(members_list), "models generated in",end-start,"s.")
@@ -401,7 +522,8 @@ class DNNLik_ensemble(object):
             gpu = 0
         device = self.available_gpus[gpu][0]
         strategy = tf.distribute.OneDeviceStrategy(device=device)
-        time.sleep(0.1)
+        time.sleep(1)
+        print("Training member",member,"on device",device)
         with strategy.scope():
             self.members[member].model_define(verbose=verbose)
             self.members[member].model_compile(verbose=verbose)
@@ -410,22 +532,33 @@ class DNNLik_ensemble(object):
             #tf.compat.v1.reset_default_graph()
         ############ Should save history somewhere and close the tf.session to free up GPU memory
 
-    def train_members_in_parallel_joblib(self, members_list, gpus_list="all", verbose=2):
-        """At the moment this does not work. Use train_members_in_parallel_concurrent instead."""
-        global ShowPrints
-        ShowPrints = verbose
-        if gpus_list is "all":
-            gpus_list = list(range(len(self.available_gpus)))
-        if len(members_list) < len(gpus_list):
-            gpus_list = gpus_list[:len(members_list)]
-        members_chunks = utility.chunks(members_list, len(gpus_list))
-        for chunk in members_chunks:
-            if len(chunk) < len(gpus_list):
-                gpus_list = gpus_list[:len(chunk)]
-            gpu_member_map_dictionary = dict(zip(np.array(gpus_list), np.array(chunk)))
-            with parallel_backend('threading', n_jobs=len(gpus_list)):
-                Parallel()(delayed(self.train_member_on_device)
-                        (member=gpu_member_map_dictionary[gpu], gpu=gpu, verbose=verbose) for gpu in gpus_list)
+    #def train_members_in_parallel_joblib(self, members_list, gpus_list="all", verbose=2):
+    #    """At the moment this does not work. Use train_members_in_parallel_concurrent instead."""
+    #    global ShowPrints
+    #    ShowPrints = verbose
+    #    if gpus_list is "all":
+    #        gpus_list = list(range(len(self.available_gpus)))
+    #    if len(members_list) < len(gpus_list):
+    #        gpus_list = gpus_list[:len(members_list)]
+    #    members_chunks = utility.chunks(members_list, len(gpus_list))
+    #    for chunk in members_chunks:
+    #        if len(chunk) < len(gpus_list):
+    #            gpus_list = gpus_list[:len(chunk)]
+    #        gpu_member_map_dictionary = dict(zip(np.array(gpus_list), np.array(chunk)))
+    #        with parallel_backend('threading', n_jobs=len(gpus_list)):
+    #            Parallel()(delayed(self.train_member_on_device)
+    #                    (member=gpu_member_map_dictionary[gpu], gpu=gpu, verbose=verbose) for gpu in gpus_list)
+    #    failed_members_list = []
+    #    for member in members_list:
+    #        try:
+    #            self.members[member].model
+    #        except:
+    #            print("Training of member", member,
+    #                  "failed. Trying again.")
+    #            failed_members_list.append(member)
+    #    if len(failed_members_list) != 0:
+    #        self.train_members_in_parallel_joblib(
+    #            failed_members_list, gpus_list=gpus_list, verbose=verbose)
 
     def train_members_in_parallel_concurrent(self, members_list, gpus_list="all", verbose=2):
         """Function that trains and stores members in parallel."""
@@ -442,6 +575,58 @@ class DNNLik_ensemble(object):
             gpu_member_map_dictionary = dict(zip(np.array(gpus_list), np.array(chunk)))
             with ThreadPoolExecutor(len(gpus_list)) as executor:
                 executor.map(lambda gpu: self.train_member_on_device(member=gpu_member_map_dictionary[gpu], gpu=gpu, verbose=verbose), gpus_list)
+        failed_members_list = []
+        for member in members_list:
+            try:
+                self.members[member].model
+            except:
+                print("Training of member", member,
+                      "failed. Trying again.")
+                failed_members_list.append(member)
+        if len(failed_members_list) != 0:
+            self.train_members_in_parallel_concurrent(failed_members_list, gpus_list=gpus_list, verbose=verbose)
+
+
+    def get_files_list_in_ensemble(self, string=""):
+        folders = [self.members[i].member_results_folder for i in range(self.n_members)]
+        mylist = []
+        i = 0
+        for thisdir in folders:
+            # r=root, d=directories, f = files
+            for r, _, f in os.walk(thisdir):
+                for file in f:
+                    if string in file:
+                        current_file = os.path.join(r, file)
+                        mylist.append(current_file.replace('\\', '/'))
+                        i = i + 1
+        print(str(i)+' files')
+        return mylist
+
+    def save_summary_log_json(self, verbose=True):
+        """ Save summary log (history plus model specifications) to json
+        """
+        global ShowPrints
+        ShowPrints = verbose
+        print("Saving summary_log to json file",
+              self.summary_log_json_filename)
+        start = timer()
+        now = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
+        history = {**{'Date time': str(now)}, **utility.dic_minus_keys(self.__dict__, ['data_sample',
+                                                                                       'members', 'stacks',
+                                                                                       '_DNNLik_ensemble__model_data_ensemble_kwargs_list',
+                                                                                       '_DNNLik_ensemble__model_define_ensemble_kwargs_list',
+                                                                                       '_DNNLik_ensemble__model_optimizers_ensemble_kwargs_list',
+                                                                                       '_DNNLik_ensemble__model_compile_ensemble_kwargs_list',
+                                                                                       '_DNNLik_ensemble__model_callbacks_ensemble_kwargs_list',
+                                                                                       '_DNNLik_ensemble__model_train_ensemble_kwargs_list'])}
+        new_hist = utility.convert_types_dict(history)
+        self.summary_log_json_filename = utility.check_rename_file(self.summary_log_json_filename)
+        with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
+            json.dump(new_hist, f, separators=(
+                ',', ':'), sort_keys=True, indent=4)
+        end = timer()
+        print(self.summary_log_json_filename,
+              "created and saved.", end-start, "s.")
 
     ###### In the future define the DNNStack object to contain stacked models (plus all related methods)
     def model_define_stacked(self, members_list):

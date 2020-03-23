@@ -86,119 +86,6 @@ reds = sns.color_palette("Reds", 30)
 greens = sns.color_palette("Greens", 30)
 blues = sns.color_palette("Blues", 30)
 
-
-def model_define_stacked(members):
-	for i in range(len(members)):
-		model = members[i][0]
-		for layer in model.layers:
-			layer.trainable = False
-			layer.name = 'ensemble_' + str(i+1) + '_' + layer.name
-	ensemble_visible = [model[0].input for model in members]
-	ensemble_outputs = [model[0].output for model in members]
-	merge = concatenate(ensemble_outputs)
-	hidden = Dense(8, activation='selu')(merge)
-	output = Dense(1, activation='linear')(hidden)
-	model = Model(inputs=ensemble_visible, outputs=output)
-	#plot_model(model, show_shapes=True, to_file='model_graph.png')
-	return model
-
-def model_params(model): # Compute number of params in a model (the actual number of floats)
-    return int(model.count_params())
-def model_trainable_params(model): # Compute number of params in a model (the actual number of floats)
-    return int(np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
-def model_non_trainable_params(model):
-    return int(np.sum([K.count_params(p) for p in set(model.non_trainable_weights)]))
-
-def model_compile(model,loss,optimizer,metrics,multi_gpu,verbose=False):
-    availableGPUs = K.tensorflow_backend._get_available_gpus()
-    availableCPUCoresNumber = multiprocessing.cpu_count()
-    if len(availableGPUs)>1:
-        if verbose:
-            print(str(len(availableGPUs))+" GPUs available")
-        if multi_gpu:
-            if verbose:
-                print("Compiling model on available GPUs")
-            # Replicates `model` on 2 GPUs.
-            # This assumes that your machine has 8 available GPUs.
-            parallel_model = multi_gpu_model(model, gpus=len(availableGPUs))
-            parallel_model.compile(loss=loss, optimizer=optimizer,metrics=metrics)
-            return parallel_model
-        else:
-            if verbose:
-                print("MULTI_GPU flag False: Compiling model on single GPU")
-            model.compile(loss=loss, optimizer=optimizer,metrics=metrics)
-            return model
-    elif len(availableGPUs)==1:
-        if verbose:
-            print("1 GPU available")
-            print("Compiling model on single GPU")
-        model.compile(loss=loss, optimizer=optimizer,metrics=metrics)
-        return model
-    else:
-        if verbose:
-            print("no GPU available, proceeding with CPUs")
-            print("Compiling model for CPU")
-            print(str(availableCPUCoresNumber)+" CPU cores available")
-    #config = K.tf.ConfigProto(device_count={"CPU": availableCPUCoresNumber})
-    #K.set_session(K.tf.Session(config=config))
-    ##K.set_session(K.tf.Session(config=K.tf.ConfigProto(device_count={"CPU": availableCPUCoresNumber}, intra_op_parallelism_threads=availableCPUCoresNumber, inter_op_parallelism_threads=availableCPUCoresNumber)))
-        model.compile(loss=loss, optimizer=optimizer,metrics=metrics)
-        return model
-    
-def model_train(model,X_train,Y_train,X_val,Y_val,scalerX,scalerY,epochs,batch_size,sample_weights=None,folder=None,title=None,monitored_metric='loss',plotlosses=False, model_checkpoint=False,early_stopping=False,restore_best_weights=False,reduceLR=True,reduce_LR_patience=5,min_delta=1e-4,verbose=False):
-    jtplot.reset()
-    try:
-        plt.style.use('matplotlib.mplstyle')
-    except:
-        plt.style.use(r"%s" % ('/'.join(folder.rstrip('/').split('/')
-                                    [:-1])+'/matplotlib.mplstyle'))
-    folder = folder.rstrip('/')
-    modname = title.replace(": ", "_")
-    checkpoint_filename = r"%s" % (folder + "/" + modname + "_best_model.{epoch:02d}-{"+monitored_metric+":.2f}.hdf5")
-    figname = modname + "_figure_training_livelossplot.pdf"
-    if monitored_metric == 'loss':
-        monitored_metric = 'val_loss'
-    else:
-        monitored_metric = "val_"+metric_name_unabbreviate(monitored_metric)
-    X_train = scalerX.transform(X_train)
-    X_val = scalerX.transform(X_val)
-    Y_train = scalerY.transform(Y_train.reshape(-1, 1)).reshape(len(Y_train))
-    Y_val = scalerY.transform(Y_val.reshape(-1, 1)).reshape(len(Y_val))
-    if type(model.input_shape) == list:
-        X_train = [X_train for _ in range(len(model.input_shape))]
-        X_val = [X_val for _ in range(len(model.input_shape))]
-    start = timer()
-    #def remove_previous_checkpoints(folder,modname):
-    #    files_minus_last = list()
-    #    for r, _, f in os.walk(folder):
-    #        for file in f:
-    #            if folder + "/" + modname + "_best_model" in file:
-    #                files_minus_last.append(file)
-    #    if len(files_minus_last) > 1:
-    #        for file in files_minus_last[:-1]:
-    #            os.remove(FOLDER+file)
-    #DeletePreviousCheckpoints = LambdaCallback(on_epoch_end=lambda folder,modname: #remove_previous_checkpoints(folder,modname))
-    callbacks = []
-    if plotlosses:
-        callbacks.append(PlotLossesKeras(fig_path=r"%s" %(folder + "/" + figname)))
-    if early_stopping:
-        callbacks.append(EarlyStopping(monitor=monitored_metric, mode="min", patience=1.2*reduce_LR_patience, min_delta=min_delta, restore_best_weights=restore_best_weights, verbose=verbose))
-    if reduceLR:
-        callbacks.append(ReduceLROnPlateau(monitor=monitored_metric, mode="min", factor=0.2, min_lr=0.000002,patience=reduce_LR_patience, min_delta=min_delta, verbose=verbose))
-    if model_checkpoint:
-        callbacks.append(ModelCheckpoint(checkpoint_filename,monitor=monitored_metric, mode="min", save_best_only=True, period=1))
-    callbacks.append(TerminateOnNaN())
-    #print(callbacks)
-    if type(sample_weights) == np.ndarray:
-        history = model.fit(X_train, Y_train, sample_weight=sample_weights, epochs=epochs, batch_size=batch_size, verbose = verbose,
-                validation_data=(X_val, Y_val),callbacks = callbacks)
-    else:
-        history = model.fit(X_train, Y_train, epochs=epochs, batch_size=batch_size, verbose = verbose,
-                validation_data=(X_val, Y_val),callbacks = callbacks)
-    end = timer()
-    training_time = end - start
-    return [history, training_time]
-    
 def model_save_fig(folder,history,title,summary_text,metrics=['loss'], yscale='log',verbose=True):
     folder = folder.rstrip('/')
     modname = title.replace(": ", "_")
@@ -243,13 +130,6 @@ def model_save_fig(folder,history,title,summary_text,metrics=['loss'], yscale='l
                            " created and saved."))
         plt.close()
     
-def save_data_indices(file,idx_train,idx_val,idx_test):
-    pickle_out = open(file, 'wb')
-    pickle.dump(idx_train, pickle_out, protocol=4)
-    pickle.dump(idx_val, pickle_out, protocol=4)
-    pickle.dump(idx_test, pickle_out, protocol=4)
-    pickle_out.close()
-
 def load_data_indices(file):
     file = file.replace('model.h5', 'samples_indices.pickle')
     pickle_in = open(file, 'rb')
@@ -259,97 +139,6 @@ def load_data_indices(file):
     pickle_in.close()
     return [idx_train,idx_val,idx_test]
     
-def saveHistory(path,history):
-    new_hist = {}
-    for key in list(history.keys()):
-        if type(history[key]) == np.ndarray:
-            new_hist[key] == history[key].tolist()
-        elif type(history[key]) == list:
-            if  type(history[key][0]) == np.float64:
-                new_hist[key] = list(map(float, history[key]))
-            elif  type(history[key][0]) == np.float32:
-                new_hist[key] = list(map(float, history[key]))
-            else:
-                new_hist[key] = history[key]
-        else:
-            new_hist[key] = history[key]
-    with codecs.open(path, 'w', encoding='utf-8') as f:
-        json.dump(new_hist, f, separators=(',', ':'), sort_keys=True, indent=4) 
-
-def model_store(folder, idx_train, idx_val, idx_test, model, scalerX, scalerY, history, title, summary_log, verbose=True):
-    #history = [i.history for i in history]
-    folder = folder.rstrip('/')
-    modname = title.replace(": ", "_")  # .replace(" - ","_")
-    model_json = model.to_json()
-    #Save samples indices
-    save_data_indices(r"%s"%(folder + "/" + modname + "_samples_indices.pickle"),idx_train,idx_val,idx_test)
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_samples_indices.pickle" +
-              " created and saved."))
-    #Save model as JSON
-    with open(r"%s"%(folder + "/" + modname + "_model.json"), "w") as json_file:
-        json_file.write(model_json)
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_model.json" +
-              " created and saved."))
-    #Save Keras model
-    model.save(r"%s"%(folder + "/" + modname + "_model.h5"))
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_model.h5" +
-              " created and saved."))
-    #Save Onnx model
-    onnx_model = keras2onnx.convert_keras(model, modname)
-    onnx.save_model(onnx_model, r"%s"%(folder + "/" + modname + "_model.onnx"))
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_model.onnx" +
-              " created and saved."))
-    #Save history as json
-    if type(history) is dict:
-        saveHistory(r"%s"%(folder + "/" + modname + "_history.json"),
-                    {**summary_log, **history})
-    else:
-        saveHistory(r"%s"%(folder + "/" + modname + "_history.json"),
-                    {**summary_log, **history.history})
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_history.json" +
-              " created and saved."))
-    #Save scalers
-    joblib.dump(scalerX, r"%s"%(folder + "/" + modname + "_scalerX.jlib"))
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_scalerX.jlib" +
-              " created and saved."))
-    joblib.dump(scalerY, r"%s"%(folder + "/" + modname + "_scalerY.jlib"))
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_scalerY.jlib" +
-              " created and saved."))
-    plot_model(model, show_shapes=True, show_layer_names=True,
-               to_file= r"%s"%(folder + "/" + modname + "_model_graph.pdf"))
-    if verbose:
-        print(r"%s"%(folder + "/" + modname + "_model_graph.pdf" +
-              " created and saved."))
-
-def model_predict(model,scalerX,scalerY,X,batch_size=1,steps=None,verbose=0):
-    start = timer()
-    X = scalerX.transform(X)
-    X_len = len(X)
-    if type(model.input_shape) == list:
-        X = [X for _ in range(len(model.input_shape))]
-    pred = scalerY.inverse_transform(model.predict(X, batch_size=batch_size, steps=steps, verbose = verbose)).reshape(X_len)
-    end = timer()
-    prediction_time = end - start
-    return [pred, prediction_time]
-
-def model_evaluate(model,scalerX,scalerY,X,Y,batch_size=1,steps=None,verbose=0):
-    start = timer()
-    X = scalerX.transform(X)
-    Y = scalerY.transform(Y.reshape(-1, 1)).reshape(len(Y))
-    if type(model.input_shape) == list:
-        X = [X for _ in range(len(model.input_shape))]
-    pred =  model.evaluate(X, Y, batch_size=batch_size, verbose=verbose)
-    end = timer()
-    prediction_time = end - start
-    return pred
-
 def highlight_cols(s, coldict):
     if s.name in coldict.keys():
         return ['background-color: {}'.format(coldict[s.name])] * len(s)
@@ -493,20 +282,6 @@ def import_results(folders):
     mydataframe = pd.DataFrame.from_dict(mylist)
     return mydataframe
 
-def get_model_files_list(folders):
-    mylist = []
-    i = 0
-    for thisdir in folders:
-        # r=root, d=directories, f = files
-        for r, _, f in os.walk(thisdir):
-            for file in f:
-                if "model.h5" in file:
-                    current_file = os.path.join(r, file)
-                    mylist.append(current_file.replace('\\', '/'))
-                    i = i + 1
-    print(str(i)+' files')
-    return mylist
-
 def import_model(folders):
     mylist = []
     i=0
@@ -601,7 +376,6 @@ def tmu_DNN(mu,model, scalerX, scalerY):
     L_mu_deltahat_DNN = -minus_logprob_DNN(minimum_logprob_delta_DNN,model,scalerX,scalerY)
     #print([mu, L_mu_deltahat_DNN,-2*(L_mu_deltahat_DNN-L_muhat_deltahat_DNN)])
     return np.array([mu,L_muhat_deltahat_DNN,L_mu_deltahat_DNN,-2*(L_mu_deltahat_DNN-L_muhat_deltahat_DNN)])
-
 
 def extend_corner_range(S1,S2,ilist,percent):
     res = []
@@ -954,158 +728,6 @@ def save_results(folder, model, scalerX, scalerY, title, summary_text, X_train, 
                   " created and saved."))
         plt.close()
 
-def get_CI_from_sigma(sigma):
-    np.array(sigma)
-    return 2*stats.norm.cdf(sigma)-1
-
-def get_sigma_from_CI(CI):
-    np.array(CI)
-    return stats.norm.ppf(CI/2+1/2)
-
-def get_delta_chi2_from_CI(CI, dof = 1):
-    np.array(CI)
-    return stats.chi2.ppf(CI,dof)
-
-def ks_w(data1, data2, wei1=False, wei2=False):
-    ix1 = np.argsort(data1)
-    ix2 = np.argsort(data2)
-    data1 = data1[ix1]
-    data2 = data2[ix2]
-    n1 = len(data1)
-    n2 = len(data2)
-    wei1 = wei1[ix1]
-    wei2 = wei2[ix2]
-    data = np.concatenate([data1, data2])
-    cwei1 = np.hstack([0, np.cumsum(wei1)/sum(wei1)])
-    cwei2 = np.hstack([0, np.cumsum(wei2)/sum(wei2)])
-    cdf1we = cwei1[[np.searchsorted(data1, data, side='right')]]
-    cdf2we = cwei2[[np.searchsorted(data2, data, side='right')]]
-    d = np.max(np.abs(cdf1we - cdf2we))
-    en = np.sqrt(n1 * n2 / (n1 + n2))
-    prob = stats.distributions.kstwobign.sf(en * d)
-    return [d, prob]
-
-def sort_consecutive(data, stepsize=1):
-    return np.split(data, np.where(np.diff(data) != stepsize)[0]+1)
-
-def HPD_intervals(data, intervals=0.68, weights=None, nbins=25, print_hist=False, reduce_binning=True):
-    intervals = np.array([intervals]).flatten()
-    if weights is None:
-        weights = np.ones(len(data))
-    weights = np.array(weights)
-    counter = 0
-    results = []
-    for interval in intervals:
-        hist = np.histogram(data, nbins, weights=weights, density=True)
-        counts, bins = hist
-        nbins_val = len(counts)
-        if print_hist:
-            integral = counts.sum()
-            plt.step(bins[:-1], counts/integral, where='post',
-                     color='green', label=r"train")
-            plt.show()
-        binwidth = bins[1]-bins[0]
-        arr0 = np.transpose(np.concatenate(
-            ([counts*binwidth], [(bins+binwidth/2)[0:-1]])))
-        arr0 = np.transpose(np.append(np.arange(nbins_val),
-                                      np.transpose(arr0)).reshape((3, nbins_val)))
-        arr = np.flip(arr0[arr0[:, 1].argsort()], axis=0)
-        q = 0
-        bin_labels = np.array([])
-        for i in range(nbins_val):
-            if q <= interval:
-                q = q + arr[i, 1]
-                bin_labels = np.append(bin_labels, arr[i, 0])
-            else:
-                bin_labels = np.sort(bin_labels)
-                result = [[arr0[tuple([int(k[0]), 2])], arr0[tuple([int(k[-1]), 2])]]
-                          for k in sort_consecutive(bin_labels)]
-                result_previous = result
-                binwidth_previous = binwidth
-                if reduce_binning:
-                    while (len(result) == 1 and nbins_val+nbins < np.sqrt(len(data))):
-                        nbins_val = nbins_val+nbins
-                        #print(nbins_val)
-                        result_previous = result
-                        binwidth_previous = binwidth
-                        nbins_val_previous = nbins_val
-                        with BlockPrints():
-                            HPD_int_val = HPD_intervals(data, intervals=interval, weights=weights, nbins=nbins_val, print_hist=False)
-                        result = HPD_int_val[0][1]
-                        binwidth = HPD_int_val[0][3]
-                        #print(binwidth)
-                break
-        results.append([interval, result_previous, nbins_val, binwidth_previous])
-        counter = counter + 1
-    return results
-
-def HPD_quotas(data, intervals=0.68, weights=None, nbins=25, from_top=True):
-    hist2D = np.histogram2d(data[:,0], data[:,1], bins=nbins, range=None, normed=None, weights=weights, density=None)
-    intervals = np.array([intervals]).flatten()
-    counts, binsX, binsY = hist2D
-    integral = counts.sum()
-    counts_sorted = np.flip(np.sort(flatten_list(counts)))
-    quotas = intervals
-    q = 0
-    j = 0
-    for i in range(len(counts_sorted)):
-        if q < intervals[j] and i<len(counts_sorted)-1:
-            q = q + counts_sorted[i]/integral
-        elif q >= intervals[j] and i<len(counts_sorted)-1:
-            if from_top:
-                quotas[j] = 1-counts_sorted[i]/counts_sorted[0]
-            else:
-                quotas[j] = counts_sorted[i]/counts_sorted[0]
-            j = j + 1
-        else:
-            for k in range(j,len(intervals)):
-                quotas[k] = 0
-            j = len(intervals)
-        if j == len(intervals):
-            return quotas
-
-def weighted_quantiles(data, quantiles, weights=None,
-                       data_sorted=False, onesided=False):
-    """ Very close to numpy.percentile, but supports weights.
-    NOTE: quantiles should be in [0, 1]!
-    :param data: numpy.array with data
-    :param quantiles: array-like with many quantiles needed
-    :param weights: array-like of the same length as `array`
-    :param data_sorted: bool, if True, then will avoid sorting of
-        initial array
-    :return: numpy.array with computed quantiles.
-    """
-    if onesided:
-        data = np.array(data[data > 0])
-    else:
-        data = np.array(data)
-    quantiles = np.array([quantiles]).flatten()
-    if weights is None:
-        weights = np.ones(len(data))
-    weights = np.array(weights)
-    assert np.all(quantiles >= 0) and np.all(quantiles <= 1), \
-        'quantiles should be in [0, 1]'
-
-    if not data_sorted:
-        sorter = np.argsort(data)
-        data = data[sorter]
-        weights = weights[sorter]
-
-    w_quantiles = np.cumsum(weights) - 0.5 * weights
-    w_quantiles -= w_quantiles[0]
-    w_quantiles /= w_quantiles[-1]
-    result = np.transpose(np.concatenate((quantiles, np.interp(
-        quantiles, w_quantiles, data))).reshape(2, len(quantiles))).tolist()
-    return result
-
-
-def weighted_central_quantiles(data, intervals=0.68, weights=None, onesided=False):
-    intervals = np.array([intervals]).flatten()
-    if not onesided:
-        return [[i, [weighted_quantiles(data, (1-i)/2, weights), weighted_quantiles(data, 0.5, weights), weighted_quantiles(data, 1-(1-i)/2, weights)]] for i in intervals]
-    else:
-        data = data[data > 0]
-        return [[i, [weighted_quantiles(data, (1-i)/2, weights), weighted_quantiles(data, 0.5, weights), weighted_quantiles(data, 1-(1-i)/2, weights)]] for i in intervals]
 
 #def abs_error_quantiles(data, intervals=0.68, weights=None, onesided=False):
 #    intervals = np.array([intervals]).flatten()
