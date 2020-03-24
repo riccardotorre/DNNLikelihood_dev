@@ -34,6 +34,7 @@ except:
 
 from .data_sample import Data_sample
 from . import utility
+from . import set_resources
 from . import inference
 
 ShowPrints = True
@@ -64,10 +65,23 @@ class DNNLik(object):
                  model_compile_member_kwargs=None,
                  model_callbacks_member_kwargs=None,
                  model_train_member_kwargs=None,
+                 resources_member_kwargs=None,
                  verbose=True
                  ):
+        #### Set global verbosity
         global ShowPrints
-        ShowPrints = verbose
+        self.member_verbose_mode = verbose
+        ShowPrints = self.member_verbose_mode
+        #### Set resources
+        if resources_member_kwargs is None:
+            self.get_available_gpus()
+            self.get_available_cpu()
+            self.set_gpus(gpus_list="all")
+        else:
+            self.available_gpus = resources_member_kwargs["available_gpus"]
+            self.available_cpu = resources_member_kwargs["available_cpu"]
+            self.active_gpus = resources_member_kwargs["active_gpus"]
+            self.gpu_mode = resources_member_kwargs["gpu_mode"]
         ############ Check wheather to create a new DNNLik object from inputs or from files
         self.DNNLik_input_folder = DNNLik_input_folder
         if self.DNNLik_input_folder is None:
@@ -110,7 +124,7 @@ class DNNLik(object):
         else:
             ############ Initialize input parameters from file
             #### Load summary_log dictionary
-            print("When providing DNNLik input folder all arguments but load_on_RAM and dtype are ignored and the object is constructed from saved data")
+            print("When providing DNNLik input folder all arguments but data_sample, load_on_RAM and dtype are ignored and the object is constructed from saved data")
             summary_log = self.__load_summary_log()
             
             #### Set main inputs and DataSample
@@ -181,6 +195,11 @@ class DNNLik(object):
             self.__load_scalers()
             self.__load_indices()
             self.__load_predictions()
+            self.model_params = summary_log['model_params']
+            self.model_trainable_params = summary_log['model_trainable_params']
+            self.model_non_trainable_params = summary_log['model_non_trainable_params']
+            self.training_time = summary_log['training_time']
+            self.final_epochs = summary_log['final_epochs']
 
     def __set_seed(self):
         np.random.seed(self.seed)
@@ -225,14 +244,12 @@ class DNNLik(object):
     def __check_create_ensemble_folder(self,verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        if not os.path.exists(self.ensemble_folder):
-            os.mkdir(self.ensemble_folder)
-            print("Ensemble folder", self.ensemble_folder,"did not exist and has been created.")
+        utility.check_create_folder(self.ensemble_folder)
 
-    def __check_create_member_results_folder(self):
-        if not os.path.exists(self.member_results_folder):
-        #self.member_results_folder = utility.check_rename_folder(self.member_results_folder).replace('\\', '/')
-            os.mkdir(self.member_results_folder)
+    def __check_create_member_results_folder(self, verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        utility.check_create_folder(self.member_results_folder)
 
     def __load_summary_log(self):
         summary_log_files = []
@@ -249,9 +266,11 @@ class DNNLik(object):
             return None
 
     def __load_history(self):
-        with open(self.history_json_filename) as json_file:
-            history = json.load(json_file)
-        self.history = history
+        try:
+            with open(self.history_json_filename) as json_file:
+                self.history = json.load(json_file)
+        except:
+            self.history = {}
 
     def __load_model(self):
         self.model = load_model(self.model_h5_filename, custom_objects={'R2_metric': self.R2_metric, 'Rt_metric': self.Rt_metric})
@@ -281,8 +300,24 @@ class DNNLik(object):
         h5_in.close()
 
     def __load_predictions(self):
-        with open(self.predictions_json_filename) as json_file: 
-            self.predictions = json.load(json_file)
+        try:
+            with open(self.predictions_json_filename) as json_file: 
+                self.predictions = json.load(json_file)
+        except:
+            self.predictions = {}
+
+    def get_available_gpus(self,verbose=False):
+        self.available_gpus = set_resources.get_available_gpus(verbose=verbose)
+
+    def get_available_cpu(self,verbose=False):
+        self.available_cpu_cores = set_resources.get_available_cpu(verbose=verbose)
+
+    def set_gpus(self, gpus_list, verbose=False):
+        self.active_gpus = set_resources.set_gpus(gpus_list, verbose=verbose)
+        if self.active_gpus != []:
+            self.gpu_mode = True
+        else:
+            self.gpu_mode = False
 
     def compute_sample_weights(self, bins=100, power=1):
         # Generate weights
@@ -426,8 +461,7 @@ class DNNLik(object):
         ShowPrints = verbose
         # Compile model
         start = timer()
-        self.model.compile(
-            loss=self.loss, optimizer=self.optimizer, metrics=self.metrics)
+        self.model.compile(loss=self.loss, optimizer=self.optimizer, metrics=self.metrics)
         end = timer()
         print("Model for member",self.member_number,"compiled in",end-start,"s.")
 
@@ -450,10 +484,10 @@ class DNNLik(object):
                 self.model_checkpoints_filename = self.member_results_folder+"/"+self.member_name+ "_checkpoint.{epoch:02d}-{val_loss:.2f}.h5"
                 string = "callbacks.ModelCheckpoint(filepath='" + self.model_checkpoints_filename+"')"
             elif cb == "TensorBoard":
-                self.tensorboard_log_dir = self.member_results_folder+"/"+"logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-                os.mkdir(self.member_results_folder+"/" +"logs")
-                os.mkdir(self.member_results_folder+"/" +"logs/fit")
-                os.mkdir(self.tensorboard_log_dir)
+                self.tensorboard_log_dir = self.member_results_folder+"/"+"logs/fit"# +"/"+ datetime.now().strftime("%Y%m%d-%H%M%S")
+                utility.check_create_folder(self.member_results_folder+"/" + "logs")
+                utility.check_create_folder(self.member_results_folder+"/" +"logs/fit")
+                #utility.check_create_folder(self.tensorboard_log_dir)
                 string = "callbacks.TensorBoard(log_dir='" + \
                     self.tensorboard_log_dir+"')"
             else:
@@ -472,10 +506,10 @@ class DNNLik(object):
                 string = "filepath = '"+self.model_checkpoints_filename+"', "
                 key1 = "callbacks."+key1
             elif key1 == "TensorBoard":
-                self.tensorboard_log_dir = self.member_results_folder+"/"+"logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-                os.mkdir(self.member_results_folder+"/" +"logs")
-                os.mkdir(self.member_results_folder+"/" +"logs/fit")
-                os.mkdir(self.tensorboard_log_dir)
+                self.tensorboard_log_dir = self.member_results_folder+"/"+"logs/fit"# +"/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+                utility.check_create_folder(self.member_results_folder+"/" +"logs")
+                utility.check_create_folder(self.member_results_folder+"/" +"logs/fit")
+                #utility.check_create_folder(self.tensorboard_log_dir)
                 string = "log_dir = '"+self.tensorboard_log_dir+"', "
                 key1 = "callbacks."+key1
             else:
@@ -501,6 +535,38 @@ class DNNLik(object):
         self.callbacks_strings = callbacks_strings
         self.callbacks = [eval(callback) for callback in callbacks_strings]
 
+    def model_build(self, gpu="auto", verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        if verbose < 0:
+            verbose_tf = 0
+        else:
+            verbose_tf = verbose
+        if self.gpu_mode:
+            if gpu is "auto":
+                gpu = 0
+            elif gpu > len(self.available_gpus):
+                print("gpu", gpu, "does not exist. Continuing on first gpu.")
+                gpu = 0
+            self.training_device = self.available_gpus[gpu]
+            device_id = self.training_device[0]
+        else:
+            if gpu is not "auto":
+                print(
+                    "GPU mode selected without any active GPU. Proceeding with CPU support.")
+            self.training_device = self.available_cpu
+            device_id = self.training_device[0]
+        strategy = tf.distribute.OneDeviceStrategy(device=device_id)
+        print("Building tf model for member", self.member_number,
+              "on device", self.training_device)
+        with strategy.scope():
+            #try:
+            #    self.model
+            #except:
+            self.model_define(verbose=verbose_tf)
+            #if not self.model._is_compiled:
+            self.model_compile(verbose=verbose_tf)
+
     def model_train(self,verbose=2):
         """
         Train the Keras Model 'self.model'. Uses parameters from the dictionary 'self.__model_train_member_kwargs'.
@@ -513,6 +579,12 @@ class DNNLik(object):
             verbose_tf=verbose
         # Scale data
         start = timer()
+        #print("Checking data")
+        try:
+            self.X_train
+        except:
+            #print("Generate test data")
+            self.generate_train_data()
         print("Scaling training data.")
         X_train = self.scalerX.transform(self.X_train)
         X_val = self.scalerX.transform(self.X_val)
@@ -583,13 +655,12 @@ class DNNLik(object):
         start = timer()
         print("Scaling data.")
         X = self.scalerX.transform(X)
-        pred = self.scalerY.inverse_transform(self.model.predict(
-            X, batch_size=batch_size, steps=steps, verbose=verbose_tf)).reshape(len(X))
+        pred = self.scalerY.inverse_transform(self.model.predict(X, batch_size=batch_size, steps=steps, verbose=verbose_tf)).reshape(len(X))
         end = timer()
         prediction_time = end - start
         return [pred, prediction_time]
 
-    def model_predict_scalar(self, x, steps=None, verbose=False):
+    def model_predict_scalar(self, x, steps=None, gpu="auto", verbose=False):
         """
         Predict with the Keras Model 'self.model'.
         """
@@ -649,12 +720,12 @@ class DNNLik(object):
         try:
             self.X_train
         except:
-            print("Loading train data")
+            #print("Loading train data")
             self.generate_train_data()
         try:
             self.X_test
         except:
-            print("Generate test data")
+            #print("Generate test data")
             self.generate_test_data()
             self.save_test_data_indices()
         ShowPrints = verbose
@@ -861,7 +932,7 @@ class DNNLik(object):
                                                                         )}
         new_hist = utility.convert_types_dict(history)
         with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
-            json.dump(new_hist, f, separators=(',', ':'), sort_keys=True, indent=4)
+            json.dump(new_hist, f, separators=(',', ':'), indent=4)
         end = timer()
         print(self.summary_log_json_filename, "created and saved.", end-start, "s.")
 

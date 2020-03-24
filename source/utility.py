@@ -23,9 +23,18 @@ from timeit import default_timer as timer
 #    """Base class for missing package exceptions"""
 #    pass
 
+#def flatten_list(l):
+#    l = [item for sublist in l for item in sublist]
+#    return l
+
 def flatten_list(l):
-    l = [item for sublist in l for item in sublist]
-    return l
+    out = []
+    for item in l:
+        if isinstance(item, (list, tuple)):
+            out.extend(flatten_list(item))
+        else:
+            out.append(item)
+    return out
 
 def make_pdf_from_img(img):
     """Make pdf from image
@@ -44,6 +53,11 @@ def chunks(lst, n):
     for i in range(0, len(lst), n):
         res.append(lst[i:i + n])
     return res
+
+def check_create_folder(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+        #print("Folder",path,"has been created.")
 
 def check_rename_file(path):
     if os.path.exists(path):
@@ -112,11 +126,7 @@ def convert_types_dict(d):
         elif type(v) is np.ndarray:
             d[k] = v.tolist()
         elif type(v) is list:
-            try:
-                tmp = flatten_list(v)
-            except:
-                tmp = v
-            if str in [type(q) for q in tmp]:
+            if str in [type(q) for q in flatten_list(v)]:
                 d[k] = np.array(v, dtype=object).tolist()
             else:
                 d[k] = np.array(v).tolist()

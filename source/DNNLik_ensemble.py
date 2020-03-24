@@ -53,8 +53,17 @@ class DNNLik_ensemble(object):
                  model_compile_ensemble_kwargs=None,
                  model_callbacks_ensemble_kwargs=None,
                  model_train_ensemble_kwargs=None,
+                 gpus_id_list='all',
                  verbose=True
                  ):
+        #### Set global verbosity
+        global ShowPrints
+        self.ensemble_verbose_mode = verbose
+        #### Set resources
+        self.get_available_gpus(verbose=True)
+        self.get_available_cpu(verbose=True)
+        self.set_gpus(gpus_id_list,verbose=True)
+        ShowPrints = self.ensemble_verbose_mode
         ############ Check wheather to create a new DNNLik_ensemble object from inputs or from files
         self.DNNLik_ensemble_input_folder = DNNLik_ensemble_input_folder
         if self.DNNLik_ensemble_input_folder is None:
@@ -73,8 +82,7 @@ class DNNLik_ensemble(object):
             self.same_data = same_data
             self.__set_seed()
             self.__set_dtype()
-            # This also fixes self.ndim and self.ensemble_name if not given
-            self.__set_data_sample()
+            self.__set_data_sample() # This also fixes self.ndim and self.ensemble_name if not given
             self.__set_ensemble_folder()
             self.__set_ensemble_results_folder()
             self.__model_data_ensemble_kwargs = model_data_ensemble_kwargs
@@ -83,11 +91,6 @@ class DNNLik_ensemble(object):
             self.__model_compile_ensemble_kwargs = model_compile_ensemble_kwargs
             self.__model_callbacks_ensemble_kwargs = model_callbacks_ensemble_kwargs
             self.__model_train_ensemble_kwargs = model_train_ensemble_kwargs
-            self.members = {}
-            self.stacks = {}
-            self.get_available_gpus()
-            self.summary_log_json_filename = self.ensemble_results_folder + \
-                "/"+self.ensemble_name+"_summary_log.json"
         else:
             ############ Initialize input parameters from file
             #### Load summary_log dictionary
@@ -107,8 +110,7 @@ class DNNLik_ensemble(object):
             self.same_data = summary_log['same_data']
             self.__set_seed()
             self.__set_dtype()
-            # This also fixes self.ndim and self.ensemble_name if not given
-            self.__set_data_sample()
+            self.__set_data_sample() # This also fixes self.ndim and self.ensemble_name if not given
             self.ensemble_folder = summary_log['ensemble_folder']
             self.ensemble_results_folder = summary_log['ensemble_results_folder']
             self.__model_data_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_data_ensemble_kwargs']
@@ -119,12 +121,12 @@ class DNNLik_ensemble(object):
             self.__model_train_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_train_ensemble_kwargs']
             self.n_members = summary_log['n_members']
             self.seeds = np.array(summary_log['seeds'])
-            # Here I should import members
-            self.members = {}
-            self.stacks = {}
-            self.get_available_gpus()
-            self.summary_log_json_filename = self.ensemble_results_folder + \
-                "/"+self.ensemble_name+"_summary_log.json"
+
+        #### Set other attributes
+        self.members = {}
+        self.stacks = {}
+        self.summary_log_json_filename = self.ensemble_results_folder + \
+            "/"+self.ensemble_name+"_summary_log.json"
 
         #### Set model_data_ensemble_kwargs
         # example: model_data_ensemble_kwargs = {'npoints_list': [[1000,300],[2000,600],[3000,1000]]}
@@ -249,7 +251,7 @@ class DNNLik_ensemble(object):
         global ShowPrints
         ShowPrints = verbose
         self.ensemble_results_folder = self.ensemble_folder+"/ensemble"
-        os.mkdir(self.ensemble_results_folder)
+        utility.check_create_folder(self.ensemble_results_folder)
         print("Ensemble results will be saved in the folder",self.ensemble_results_folder, ".")
 
     def __load_summary_log(self):
@@ -367,14 +369,14 @@ class DNNLik_ensemble(object):
             self.__model_callbacks_ensemble_kwargs["callbacks_list"] = [["TerminateOnNaN"]]
 
     def __check_model_train_ensemble_kwargs(self):
-        # example: model_fit_kwargs_list={"epochs_list": [200,1000],
+        # example: model_train_kwargs_list={"epochs_list": [200,1000],
         #                                 "batch_size_list": [512,1024,2048],
         try:
             self.__model_train_ensemble_kwargs["epochs_list"]
             self.__model_train_ensemble_kwargs["batch_size_list"]
         except:
             print(
-                "model_fit_kwargs dictionary should contain the keywords 'epochs_list' and 'batch_size_list'.")
+                "model_train_kwargs dictionary should contain the keywords 'epochs_list' and 'batch_size_list'.")
 
     def __check_member_existence(self, DNNLik_input_folder):
         summary_log_files = []
@@ -393,12 +395,15 @@ class DNNLik_ensemble(object):
         start = timer()
         n_with_results = []
         n_without_results = []
+        #gpus_id_list = [eval(s.split(":")[-1]) for s in np.array(self.active_gpus)[:, 0]]
         for n in range(self.n_members):
             DNNLik_input_folder = self.ensemble_folder+"/member_"+str(n)
             if self.__check_member_existence(DNNLik_input_folder):
                 self.members[n] = DNNLik(DNNLik_input_folder=DNNLik_input_folder,
                                          data_sample=self.data_sample,
-                                         verbose=False)
+                                         resources_member_kwargs=self.get_resources_member_kwargs(),
+                                         verbose=False
+                                         )
                 n_with_results.append(n)
             else:
                 self.generate_members(n=n, verbose=False)
@@ -409,19 +414,30 @@ class DNNLik_ensemble(object):
         print("Results not available for members",n_without_results,".")
         print(self.n_members,"members imported in", end-start, "s.")
 
-    def get_available_gpus(self):
-        self.available_gpus = set_resources.get_available_gpus()
+    def get_resources_member_kwargs(self):
+        return {"available_cpu": self.available_cpu, 
+                "available_gpus": self.available_gpus, 
+                "active_gpus": self.active_gpus,
+                "gpu_mode": self.gpu_mode}
 
-    def get_available_cpus(self):
-        self.available_cpu_cores = set_resources.get_available_cpus()
+    def get_available_gpus(self, verbose=0):
+        self.available_gpus = set_resources.get_available_gpus(verbose=verbose)
 
-    def setGPUs(self, n, multi_gpu=False):
-        self.available_gpus = set_resources.setGPUs(n, multi_gpu=multi_gpu)
+    def get_available_cpu(self, verbose=0):
+        self.available_cpu = set_resources.get_available_cpu(verbose=verbose)
+
+    def set_gpus(self, gpus_id_list, verbose=0):
+        self.active_gpus = set_resources.set_gpus(gpus_id_list, verbose=verbose)
+        if self.active_gpus != []:
+            self.gpu_mode = True
+        else:
+            self.gpu_mode = False
 
     def generate_member(self, n, seed, model_data_member_kwargs, model_define_member_kwargs, model_optimizer_member_kwargs, model_compile_member_kwargs, model_callbacks_member_kwargs, model_train_member_kwargs, verbose=False):
         global ShowPrints
         ShowPrints = verbose
         start = timer()
+        #gpus_id_list = [eval(s.split(":")[-1]) for s in np.array(self.active_gpus)[:, 0]]
         self.members[n] = DNNLik(DNNLik_input_folder=None,
                                  ensemble_name=self.ensemble_name,
                                  member_number=n,
@@ -437,7 +453,9 @@ class DNNLik_ensemble(object):
                                  model_optimizer_member_kwargs=model_optimizer_member_kwargs,
                                  model_compile_member_kwargs=model_compile_member_kwargs,
                                  model_callbacks_member_kwargs=model_callbacks_member_kwargs,
-                                 model_train_member_kwargs=model_train_member_kwargs
+                                 model_train_member_kwargs=model_train_member_kwargs,
+                                 resources_member_kwargs=self.get_resources_member_kwargs(),
+                                 verbose=False
                                  )
         end = timer()
         ShowPrints = verbose
@@ -532,22 +550,22 @@ class DNNLik_ensemble(object):
             #tf.compat.v1.reset_default_graph()
         ############ Should save history somewhere and close the tf.session to free up GPU memory
 
-    #def train_members_in_parallel_joblib(self, members_list, gpus_list="all", verbose=2):
+    #def train_members_in_parallel_joblib(self, members_list, gpus_id_list="all", verbose=2):
     #    """At the moment this does not work. Use train_members_in_parallel_concurrent instead."""
     #    global ShowPrints
     #    ShowPrints = verbose
-    #    if gpus_list is "all":
-    #        gpus_list = list(range(len(self.available_gpus)))
-    #    if len(members_list) < len(gpus_list):
-    #        gpus_list = gpus_list[:len(members_list)]
-    #    members_chunks = utility.chunks(members_list, len(gpus_list))
+    #    if gpus_id_list is "all":
+    #        gpus_id_list = list(range(len(self.available_gpus)))
+    #    if len(members_list) < len(gpus_id_list):
+    #        gpus_id_list = gpus_id_list[:len(members_list)]
+    #    members_chunks = utility.chunks(members_list, len(gpus_id_list))
     #    for chunk in members_chunks:
-    #        if len(chunk) < len(gpus_list):
-    #            gpus_list = gpus_list[:len(chunk)]
-    #        gpu_member_map_dictionary = dict(zip(np.array(gpus_list), np.array(chunk)))
-    #        with parallel_backend('threading', n_jobs=len(gpus_list)):
+    #        if len(chunk) < len(gpus_id_list):
+    #            gpus_id_list = gpus_id_list[:len(chunk)]
+    #        gpu_member_map_dictionary = dict(zip(np.array(gpus_id_list), np.array(chunk)))
+    #        with parallel_backend('threading', n_jobs=len(gpus_id_list)):
     #            Parallel()(delayed(self.train_member_on_device)
-    #                    (member=gpu_member_map_dictionary[gpu], gpu=gpu, verbose=verbose) for gpu in gpus_list)
+    #                    (member=gpu_member_map_dictionary[gpu], gpu=gpu, verbose=verbose) for gpu in gpus_id_list)
     #    failed_members_list = []
     #    for member in members_list:
     #        try:
@@ -558,23 +576,23 @@ class DNNLik_ensemble(object):
     #            failed_members_list.append(member)
     #    if len(failed_members_list) != 0:
     #        self.train_members_in_parallel_joblib(
-    #            failed_members_list, gpus_list=gpus_list, verbose=verbose)
+    #            failed_members_list, gpus_id_list=gpus_id_list, verbose=verbose)
 
-    def train_members_in_parallel_concurrent(self, members_list, gpus_list="all", verbose=2):
+    def train_members_in_parallel_concurrent(self, members_list, gpus_id_list="all", verbose=2):
         """Function that trains and stores members in parallel."""
         global ShowPrints
         ShowPrints = verbose
-        if gpus_list is "all":
-            gpus_list = list(range(len(self.available_gpus)))
-        if len(members_list) < len(gpus_list):
-            gpus_list = gpus_list[:len(members_list)]
-        members_chunks = utility.chunks(members_list, len(gpus_list))
+        if gpus_id_list is "all":
+            gpus_id_list = list(range(len(self.available_gpus)))
+        if len(members_list) < len(gpus_id_list):
+            gpus_id_list = gpus_id_list[:len(members_list)]
+        members_chunks = utility.chunks(members_list, len(gpus_id_list))
         for chunk in members_chunks:
-            if len(chunk) < len(gpus_list):
-                gpus_list = gpus_list[:len(chunk)]
-            gpu_member_map_dictionary = dict(zip(np.array(gpus_list), np.array(chunk)))
-            with ThreadPoolExecutor(len(gpus_list)) as executor:
-                executor.map(lambda gpu: self.train_member_on_device(member=gpu_member_map_dictionary[gpu], gpu=gpu, verbose=verbose), gpus_list)
+            if len(chunk) < len(gpus_id_list):
+                gpus_id_list = gpus_id_list[:len(chunk)]
+            gpu_member_map_dictionary = dict(zip(np.array(gpus_id_list), np.array(chunk)))
+            with ThreadPoolExecutor(len(gpus_id_list)) as executor:
+                executor.map(lambda gpu: self.train_member_on_device(member=gpu_member_map_dictionary[gpu], gpu=gpu, verbose=verbose), gpus_id_list)
         failed_members_list = []
         for member in members_list:
             try:
@@ -584,7 +602,7 @@ class DNNLik_ensemble(object):
                       "failed. Trying again.")
                 failed_members_list.append(member)
         if len(failed_members_list) != 0:
-            self.train_members_in_parallel_concurrent(failed_members_list, gpus_list=gpus_list, verbose=verbose)
+            self.train_members_in_parallel_concurrent(failed_members_list, gpus_id_list=gpus_id_list, verbose=verbose)
 
 
     def get_files_list_in_ensemble(self, string=""):
@@ -623,7 +641,7 @@ class DNNLik_ensemble(object):
         self.summary_log_json_filename = utility.check_rename_file(self.summary_log_json_filename)
         with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(
-                ',', ':'), sort_keys=True, indent=4)
+                ',', ':'), indent=4)
         end = timer()
         print(self.summary_log_json_filename,
               "created and saved.", end-start, "s.")
