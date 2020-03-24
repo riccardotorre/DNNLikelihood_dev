@@ -17,10 +17,3 @@ from .DNNLik import DNNLik
 #   verbose argument is passed to the function and set to zero if verbose = -1.
 #   !!!!!!!!!!!!! Should review the ShowPrints strategy: check if it's useful or if we can get rid of it
 
-print("stronzo1")
-
-def stronzo():
-    """                                                                                                                                                        Ciao stronzo 
-    """
-    print("stronzo2")
-

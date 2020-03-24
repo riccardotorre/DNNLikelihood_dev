@@ -1,13 +1,17 @@
 Python code
 ===========
 
-Top-Level
----------
+DNNLikelihood
+-------------
 
-.. currentmodule:: DNNLikelihood
+.. autoclass:: DNNLikelihood.DNNLik
+   :members:
 
-.. autosummary::
-   :toctree: _generated/
 
-   DNNLik.DNNLik
-   stronzo  
+DNNLikelihoodEnsemble
+---------------------
+
+.. autoclass:: DNNLikelihood.DNNLik_ensemble
+   :members:
+
+
