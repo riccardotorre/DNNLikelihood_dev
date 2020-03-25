@@ -8,7 +8,9 @@ from timeit import default_timer as timer
 import time
 import multiprocessing
 import builtins
+from decimal import Decimal
 from datetime import datetime
+import re
 import joblib
 import numpy as np
 import matplotlib.pyplot as plt
@@ -72,6 +74,8 @@ class DNNLik(object):
         global ShowPrints
         self.member_verbose_mode = verbose
         ShowPrints = self.member_verbose_mode
+        #### Set model date time
+        self.member_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         #### Set resources
         if resources_member_kwargs is None:
             self.get_available_gpus()
@@ -104,7 +108,8 @@ class DNNLik(object):
 
             ### Set name, folders and files names
             self.member_number = member_number
-            self.member_name = self.ensemble_name +"_member_"+str(self.member_number)
+            self.__set_member_name()
+            #self.member_name = self.ensemble_name +"_member_"+str(self.member_number)
             self.ensemble_folder = ensemble_folder
             self.ensemble_results_folder = ensemble_folder+"/ensemble"
             self.member_results_folder = self.ensemble_folder + "/member_"+str(self.member_number)
@@ -120,7 +125,7 @@ class DNNLik(object):
             self.scalerX_jlib_filename = self.member_results_folder+"/"+self.member_name+"_scalerX.jlib"
             self.scalerY_jlib_filename = self.member_results_folder+"/"+self.member_name+"_scalerY.jlib"
             self.model_graph_pdf_filename = self.member_results_folder+"/"+self.member_name+"_model_graph.pdf"
-
+            self.figures_training_filenames = []
         else:
             ############ Initialize input parameters from file
             #### Load summary_log dictionary
@@ -128,6 +133,7 @@ class DNNLik(object):
             summary_log = self.__load_summary_log()
             
             #### Set main inputs and DataSample
+            self.member_date_time = summary_log['member_date_time']
             self.ensemble_name = summary_log['ensemble_name']
             self.data_sample = data_sample
             self.data_sample_input_filename = summary_log['data_sample_input_filename']
@@ -161,6 +167,7 @@ class DNNLik(object):
             self.scalerX_jlib_filename = summary_log['scalerX_jlib_filename']
             self.scalerY_jlib_filename = summary_log['scalerY_jlib_filename']
             self.model_graph_pdf_filename = summary_log['model_graph_pdf_filename']
+            self.figures_training_filenames = summary_log['figures_training_filenames']
 
         #### Set additional inputs
         self.__set_seed()
@@ -229,6 +236,14 @@ class DNNLik(object):
         if self.ensemble_name is None:
             self.ensemble_name = "DNNLikEnsemble_"+self.data_sample.name
         self.__check_npoints()
+
+    def __set_member_name(self):
+        string = self.ensemble_name
+        try:
+            match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', string).group()
+        except:
+            match = ""
+        self.member_name = "DNNLik_"+string.replace(match, "").replace("DNNLikEnsemble","")+self.member_date_time+ "_member_"+str(self.member_number)
 
     def __check_npoints(self):
         available_points_tot = self.data_sample.npoints
@@ -448,8 +463,12 @@ class DNNLik(object):
                 metrics_obj[i] = metrics.deserialize(metrics_string[i])
                 print(metrics_string[i], "ok.")
             except:
-                print("Exception for", metrics_string[i], ".")
-                metrics_obj[i] = eval("self."+metrics_string[i])
+                try:
+                    print("Exception for", metrics_string[i], ".")
+                    metrics_obj[i] = eval("self."+metrics_string[i])
+                except:
+                    print("Exception for", metrics_string[i], ".")
+                    metrics_obj[i] = eval("self."+utility.metric_name_unabbreviate(metrics_string[i]))
         self.metrics_string = metrics_string
         self.metrics = metrics_obj
 
@@ -647,8 +666,6 @@ class DNNLik(object):
             plt.close()
         ShowPrints = verbose
         print("Model for member",self.member_number,"successfully trained for",self.required_epochs, "epochs in", self.training_time,"s.")
-        #print("Generating summary log")
-        #self.generate_summary_log()
 
     def model_predict(self, X, batch_size=None, steps=None, verbose=False):
         """
@@ -705,6 +722,48 @@ class DNNLik(object):
         end = timer()
         prediction_time = end - start
         return [pred, prediction_time]
+
+    def generate_fig_base_title(self):
+        title = self.member_date_time + " - "
+        title = title + "Ndim: " + str(self.ndim) + " - "
+        title = title + "Nevt: " + '%.E' % Decimal(str(self.npoints_train)) + " - "
+        title = title + "Layers: " + str(len(self.hid_layers)) + " - "
+        title = title + "Nodes: " + str(self.hid_layers[0][0]) + " - "
+        title = title.replace("+", "") + "Loss: " + str(self.loss_string)
+        self.fig_base_title = title
+
+    def model_save_training_fig(self, metrics=['loss'], yscale='log',verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        metrics = np.unique(metrics)
+        for metric in metrics:
+            metric = utility.metric_name_unabbreviate(metric)
+            val_metric = 'val_'+ metric
+            figname = self.member_results_folder + "/" + self.member_name+"_figure_training_" + metric+".pdf"
+            self.figures_training_filenames.append(figname)
+            jtplot.reset()
+            try:
+                plt.style.use('matplotlib.mplstyle')
+            except:
+                print("Custom matplotlib style not available")
+            plt.plot(self.history[metric])
+            plt.plot(self.history[val_metric])
+            plt.yscale(yscale)
+            #plt.grid(linestyle="--", dashes=(5, 5))
+            plt.title(r"%s" % self.fig_base_title, fontsize=10)
+            plt.xlabel(r"epoch")
+            ylabel = (metric.replace("_", "-"))
+            plt.ylabel(r"%s" % ylabel)
+            plt.legend([r"training", r"validation"])
+            plt.tight_layout()
+            ax = plt.axes()
+            #x1, x2, y1, y2 = plt.axis()
+            plt.text(0.965, 0.2, r"%s" % self.summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
+                                                                              edgecolor='black', boxstyle='round,pad=0.5'), ha='right', ma='left', transform=ax.transAxes)
+            plt.savefig(r"%s" % (figname))
+            #plt.show()
+            print(r"%s" % (figname + " created and saved."))
+            plt.close()
 
     def model_compute_predictions(self, 
                                   CI=inference.CI_from_sigma([inference.sigma_from_CI(0.5), 1, 2, 3]), 
@@ -793,25 +852,29 @@ class DNNLik(object):
         KS_test_pred_train = [[inference.ks_w(self.X_test[:, q], self.X_train[:, q], np.ones(len(self.X_test)), W_train)] for q in range(len(self.X_train[0]))]
         KS_test_pred_val = [[inference.ks_w(self.X_test[:, q], self.X_val[:, q], np.ones(len(self.X_test)), W_val)] for q in range(len(self.X_train[0]))]
         KS_val_pred_test = [[inference.ks_w(self.X_val[:, q], self.X_test[:, q], np.ones(len(self.X_val)), W_test)] for q in range(len(self.X_train[0]))]
-        KS_train_test = [[inference.ks_w(self.X_train[:, q], self.X_test[:, q], np.ones(len(self.X_train)), np.ones(len(self.X_train)))] for q in range(len(self.X_train[0]))]
+        KS_train_pred_train = [[inference.ks_w(self.X_train[:, q], self.X_train[:, q], np.ones(len(self.X_train)), W_train)] for q in range(len(self.X_train[0]))]
         KS_test_pred_train_median = np.median(np.array(KS_test_pred_train)[:, 0][:, 1]).tolist()
         KS_test_pred_val_median = np.median(np.array(KS_test_pred_val)[:, 0][:, 1]).tolist()
         KS_val_pred_test_median = np.median(np.array(KS_val_pred_test)[:, 0][:, 1]).tolist()
-        KS_train_test_median = np.median(np.array(KS_train_test)[:, 0][:, 1]).tolist()
+        KS_train_pred_train_median = np.median(np.array(KS_train_pred_train)[:, 0][:, 1]).tolist()
         self.predictions = {**self.predictions, **{"KS": {"Test vs pred on train": KS_test_pred_train,
                                                           "Test vs pred on val": KS_test_pred_val,
                                                           "Val vs pred on test": KS_val_pred_test,
-                                                          "Train vs pred on train": KS_train_test}},
+                                                          "Train vs pred on train": KS_train_pred_train}},
                                                 **{"KS medians": {"Test vs pred on train": KS_test_pred_train_median,
                                                                   "Test vs pred on val": KS_test_pred_val_median,
                                                                   "Val vs pred on test": KS_val_pred_test_median,
-                                                                  "Train vs pred on train": KS_train_test_median}}}
+                                                                  "Train vs pred on train": KS_train_pred_train_median}}}
         self.predictions = utility.convert_types_dict(self.predictions)
         # Sort nested dictionary by keys
         self.predictions = utility.sort_dict(self.predictions)
         end = timer()
         print('Bayesian inference benchmarks computed in', end-start, 's.')
-        self.save_predictions_json(verbose=True)
+        self.save_predictions_json()
+        self.generate_summary_text()
+        self.generate_fig_base_title()
+        self.model_save_training_fig()
+        self.save_summary_log_json()
         end_global = timer()
         print("All predictions done in",end_global-start_global,"s.")
         #[tmuexact, tmuDNN, tmusample001, tmusample005, tmusample01, tmusample02,
@@ -834,7 +897,7 @@ class DNNLik(object):
         #        #one_sised_quantiles_train, one_sised_quantiles_val, one_sised_quantiles_test, one_sised_quantiles_pred_train, one_sised_quantiles_pred_val, one_sised_quantiles_pred_test,
         #        #central_quantiles_train, central_quantiles_val, central_quantiles_test, central_quantiles_pred_train, central_quantiles_pred_val, central_quantiles_pred_test,
         #        HPDI_train, HPDI_val, HPDI_test, HPDI_pred_train, HPDI_pred_val, HPDI_pred_test, one_sigma_HPDI_rel_err_train, one_sigma_HPDI_rel_err_val, one_sigma_HPDI_rel_err_test, one_sigma_HPDI_rel_err_train_test,
-        #        KS_test_pred_train, KS_test_pred_val, KS_val_pred_test, KS_train_test, KS_test_pred_train_median, KS_test_pred_val_median, KS_val_pred_test_median, KS_train_test_median,
+        #        KS_test_pred_train, KS_test_pred_val, KS_val_pred_test, KS_train_pred_train, KS_test_pred_train_median, KS_test_pred_val_median, KS_val_pred_test_median, KS_train_pred_train_median,
         #        tmuexact, tmuDNN, tmusample001, tmusample005, tmusample01, tmusample02, tmu_err_mean, prediction_time]
 
     def save_train_data_indices(self, verbose=True):
@@ -947,6 +1010,36 @@ class DNNLik(object):
         end = timer()
         print(self.summary_log_json_filename, "created and saved.", end-start, "s.")
 
+    def generate_summary_text(self):
+        summary_text = "Sample file: " + str(os.path.split(self.data_sample_input_filename)[1].replace("_", r"$\_$")) + "\n"
+        summary_text = summary_text + "Layers: " + str(self.hid_layers) + "\n"
+        summary_text = summary_text + "Pars: " + str(self.ndim) + "\n"
+        summary_text = summary_text + "Trainable pars: " + str(self.model_trainable_params) + "\n"
+        summary_text = summary_text + "Scaled X/Y: " + str(self.scalerX_bool) +"/"+ str(self.scalerY_bool) + "\n"
+        summary_text = summary_text + "Dropout: " + str(self.dropout_rate) + "\n"
+        summary_text = summary_text + "AF out: " + self.act_func_out_layer + "\n"
+        summary_text = summary_text + "Batch norm: " + str(self.batch_norm) + "\n"
+        summary_text = summary_text + "Loss: " + self.loss_string + "\n"
+        summary_text = summary_text + "Optimizer: " + utility.string_add_newline_at_char(self.optimizer_string,",").replace("_", "-") + "\n"
+        summary_text = summary_text + "Batch size: " + str(self.batch_size) + "\n"
+        summary_text = summary_text + "Epochs: " + str(self.final_epochs) + "\n"
+        summary_text = summary_text + "GPU(s): " + utility.string_add_newline_at_char(str(self.training_device),",") + "\n"
+        summary_text = summary_text + "Best losses: " + '[' + '{0:1.2e}'.format(self.predictions["Metrics on scaled data"]["loss_best"]) + ',' + \
+                                                              '{0:1.2e}'.format(self.predictions["Metrics on scaled data"]["val_loss_best"]) + ',' + \
+                                                              '{0:1.2e}'.format(self.predictions["Metrics on scaled data"]["test_loss_best"]) + ']' + "\n"
+        summary_text = summary_text + "Best losses scaled: " + '[' + '{0:1.2e}'.format(self.predictions["Metrics on unscaled data"]["loss_best_unscaled"]) + ',' + \
+                                                                     '{0:1.2e}'.format(self.predictions["Metrics on unscaled data"]["val_loss_best_unscaled"]) + ',' + \
+                                                                     '{0:1.2e}'.format(self.predictions["Metrics on unscaled data"]["test_loss_best_unscaled"]) + ']' + "\n"
+        summary_text = summary_text + "KS $p$-median: " + '[' + '{0:1.2e}'.format(self.predictions["KS medians"]["Test vs pred on train"]) + ',' + \
+                                                                '{0:1.2e}'.format(self.predictions["KS medians"]["Test vs pred on val"]) + ',' + \
+                                                                '{0:1.2e}'.format(self.predictions["KS medians"]["Val vs pred on test"]) + ',' + \
+                                                                '{0:1.2e}'.format(self.predictions["KS medians"]["Train vs pred on train"]) + ']' + "\n"
+        #if FREQUENTISTS_RESULTS:
+        #    summary_text = summary_text + "Mean error on tmu: "+ str(summary_log['Frequentist mean error on tmu']) + "\n"
+        summary_text = summary_text + "Train time: " + str(round(self.training_time,1)) + "s" + "\n"
+        summary_text = summary_text + "Pred time: " + str(round(self.predictions["Prediction time"],1)) + "s"
+        self.summary_text = summary_text
+
     def save_predictions_json(self,verbose=True):
         """ Save summary log (history plus model specifications) to json
         """
@@ -1043,7 +1136,21 @@ class DNNLik(object):
         MAPE_baseline = K.sum(K.abs( 1-K.mean(y_true)/(y_true+ K.epsilon()) ) ) 
         return ( 1 - MAPE_model/(MAPE_baseline + K.epsilon()))
 
-    #def model_save_fig(self, folder,history,title,summary_text,metrics=['loss'], yscale='log',verbose=True):
+    def mean_error(self, y_true, y_pred):
+        y_true = tf.convert_to_tensor(y_true)
+        y_pred = tf.convert_to_tensor(y_pred)
+        ME_model = K.mean(y_true-y_pred)
+        return K.abs(ME_model)
+
+    def mean_percentage_error(self, y_true, y_pred):
+        y_true = tf.convert_to_tensor(y_true)
+        y_pred = tf.convert_to_tensor(y_pred)
+        MPE_model = K.mean((y_true-y_pred)/(K.sign(y_true)*K.clip(K.abs(y_true),
+                                              K.epsilon(),
+                                              None)))
+        return 100. * K.abs(MPE_model)
+
+    #def model_save_training_fig(self, folder,history,title,summary_text,metrics=['loss'], yscale='log',verbose=True):
     #    folder = folder.rstrip('/')
     #    modname = title.replace(": ", "_")
     #    metrics = np.unique(metrics)
@@ -1072,8 +1179,8 @@ class DNNLik(object):
     #        plt.grid(linestyle="--", dashes=(5, 5))
     #        plt.title(r"%s" % title, fontsize=10)
     #        plt.xlabel(r"epoch")
-    #        ylable = (metric.replace("_", "-"))
-    #        plt.ylabel(r"%s" % ylable)
+    #        ylabel = (metric.replace("_", "-"))
+    #        plt.ylabel(r"%s" % ylabel)
     #        plt.legend([r"training", r"validation"])
     #        plt.tight_layout()
     #        ax = plt.axes()

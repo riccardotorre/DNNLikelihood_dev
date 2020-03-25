@@ -188,6 +188,20 @@ def dic_minus_keys(dictionary, keys):
                 pass
         return shallow_copy
 
+def string_split_at_char(s, c):
+    mid = len(s)//2
+    try:
+        break_at = mid + min(-s[mid::-1].index(c), s[mid:].index(c), key=abs)
+    except ValueError:  # if '\n' not in s
+        break_at = len(s)
+    firstpart, secondpart = s[:break_at +
+                              1].rstrip(), s[break_at:].lstrip(c).rstrip()
+    return [firstpart, secondpart]
+
+def string_add_newline_at_char(s, c):
+    firstpart, secondpart = string_split_at_char(s, c)
+    return firstpart+"\n"+"\t"+secondpart
+
 def metric_name_abbreviate(name):
     name_dict = {"accuracy": "acc", "mean_error": "me", "mean_percentage_error": "mpe", "mean_squared_error": "mse",
                  "mean_absolute_error": "mae", "mean_absolute_percentage_error": "mape", "mean_squared_logarithmic_error": "msle"}

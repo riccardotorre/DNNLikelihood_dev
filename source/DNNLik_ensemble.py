@@ -9,6 +9,7 @@ import shutil
 from timeit import default_timer as timer
 import time
 from datetime import datetime
+import re
 import builtins
 import tensorflow as tf
 from tensorflow.python.client import device_lib
@@ -60,6 +61,8 @@ class DNNLik_ensemble(object):
         #### Set global verbosity
         global ShowPrints
         self.ensemble_verbose_mode = verbose
+        #### Set model date time
+        self.ensemble_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         #### Set resources
         self.get_available_gpus(verbose=True)
         self.get_available_cpu(verbose=True)
@@ -83,7 +86,8 @@ class DNNLik_ensemble(object):
             self.same_data = same_data
             self.__set_seed()
             self.__set_dtype()
-            self.__set_data_sample() # This also fixes self.ndim and self.ensemble_name if not given
+            self.__set_data_sample()
+            self.__set_ensemble_name()
             self.__set_ensemble_folder()
             self.__set_ensemble_results_folder()
             self.__model_data_ensemble_kwargs = model_data_ensemble_kwargs
@@ -223,9 +227,18 @@ class DNNLik_ensemble(object):
                                            data_sample_input_filename=self.data_sample_input_filename,
                                            data_sample_output_filename=None,
                                            load_on_RAM=self.load_on_RAM)
-        if self.ensemble_name is None:
-            self.ensemble_name = "DNNLikEnsemble_"+self.data_sample.name
         self.ndim = self.data_sample.ndim
+        
+    def __set_ensemble_name(self):
+        if self.ensemble_name is None:
+            string = self.data_sample.name
+            try:
+                match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', string).group()
+            except:
+                match = ""
+            self.ensemble_name = "DNNLikEnsemble_"+string.replace(match,"")+self.ensemble_date_time
+        else:
+            self.ensemble_name = self.ensemble_name+"_"+self.ensemble_date_time
 
     def __check_npoints(self):
         available_points_tot = self.data_sample.npoints
