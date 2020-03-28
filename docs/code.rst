@@ -4,14 +4,23 @@ Python code
 DNNLikelihood
 -------------
 
-.. autoclass:: DNNLikelihood.DNNLik
-   :members:
-
+.. automodapi:: DNNLikelihood.DNNLik
+   :no-inheritance-diagram:
+   :no-heading:
 
 DNNLikelihoodEnsemble
 ---------------------
 
-.. autoclass:: DNNLikelihood.DNNLik_ensemble
-   :members:
+.. automodapi:: DNNLikelihood.DNNLik_ensemble
+   :no-inheritance-diagram:
+   :no-heading:
+
+data_sample
+---------------------
+
+.. automodapi:: DNNLikelihood.data_sample
+   :no-inheritance-diagram:
+   :no-heading:
+
 
 

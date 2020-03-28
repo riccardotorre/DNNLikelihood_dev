@@ -63,6 +63,7 @@ extensions = [
     'm2r',
     'sphinx_issues',
     'sphinx_copybutton',
+    'sphinx_automodapi.automodapi',
 ]
 
 # Generate the API documentation when building
