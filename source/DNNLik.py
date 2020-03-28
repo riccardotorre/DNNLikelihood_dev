@@ -7,10 +7,12 @@ import h5py
 from timeit import default_timer as timer
 import time
 import multiprocessing
+from scipy import optimize
 import builtins
 from decimal import Decimal
 from datetime import datetime
 import re
+import seaborn as sns
 import joblib
 import numpy as np
 import matplotlib.pyplot as plt
@@ -30,7 +32,6 @@ except:
     print("No module named 'jupyterthemes'. Continuing without.\nIf you wish to customize jupyter notebooks please install 'jupyterthemes'.")
 try:
     from livelossplot import PlotLossesTensorFlowKeras as PlotLossesKeras
-
 except:
     print("No module named 'livelossplot'. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
 
@@ -38,6 +39,7 @@ from .data_sample import Data_sample
 from . import utility
 from . import set_resources
 from . import inference
+from .corner import corner
 
 ShowPrints = True
 def print(*args, **kwargs):
@@ -125,7 +127,14 @@ class DNNLik(object):
             self.scalerX_jlib_filename = self.member_results_folder+"/"+self.member_name+"_scalerX.jlib"
             self.scalerY_jlib_filename = self.member_results_folder+"/"+self.member_name+"_scalerY.jlib"
             self.model_graph_pdf_filename = self.member_results_folder+"/"+self.member_name+"_model_graph.pdf"
-            self.figures_training_filenames = []
+            self.figure_base_filename = self.member_results_folder + "/" + self.member_name +"_figure"
+            self.figures_training_history = []
+            self.figures_pars_coverage = []
+            self.figure_lik_distribution_filename = self.figure_base_filename+"_lik_distribution.pdf"
+            self.figure_loglik_distribution_filename = self.figure_base_filename+"_loglik_distribution.pdf"
+            self.figure_corner_pars_train = self.figure_base_filename+"_corner_pars_train.pdf"
+            self.figure_corner_pars_test = self.figure_base_filename+"_corner_pars_test.pdf"
+            self.figure_corner_pars_train_vs_test = self.figure_base_filename+"_corner_pars_train_vs_test.pdf"
         else:
             ############ Initialize input parameters from file
             #### Load summary_log dictionary
@@ -167,7 +176,14 @@ class DNNLik(object):
             self.scalerX_jlib_filename = summary_log['scalerX_jlib_filename']
             self.scalerY_jlib_filename = summary_log['scalerY_jlib_filename']
             self.model_graph_pdf_filename = summary_log['model_graph_pdf_filename']
-            self.figures_training_filenames = summary_log['figures_training_filenames']
+            self.figure_base_filename = summary_log['figure_base_filename']
+            self.figures_training_history = summary_log['figures_training_history']
+            self.figures_pars_coverage = summary_log['figures_pars_coverage']
+            self.figure_lik_distribution_filename = summary_log['figure_lik_distribution_filename']
+            self.figure_loglik_distribution_filename = summary_log['figure_loglik_distribution_filename']
+            self.figure_corner_pars_train = summary_log['figure_corner_pars_train']
+            self.figure_corner_pars_test = summary_log['figure_corner_pars_test']
+            self.figure_corner_pars_train_vs_test = summary_log['figure_corner_pars_train_vs_test']
 
         #### Set additional inputs
         self.__set_seed()
@@ -206,6 +222,7 @@ class DNNLik(object):
             self.model_trainable_params = summary_log['model_trainable_params']
             self.model_non_trainable_params = summary_log['model_non_trainable_params']
             self.training_time = summary_log['training_time']
+            self.training_device = summary_log['training_device']
             self.final_epochs = summary_log['final_epochs']
 
     def __set_seed(self):
@@ -233,9 +250,13 @@ class DNNLik(object):
                                            data_sample_input_filename=self.data_sample_input_filename,
                                            data_sample_output_filename=None,
                                            load_on_RAM=self.load_on_RAM)
-        if self.ensemble_name is None:
-            self.ensemble_name = "DNNLikEnsemble_"+self.data_sample.name
         self.__check_npoints()
+        self.__set_pars_info()
+
+    def __set_pars_info(self):
+        self.pars_pos_poi = self.data_sample.pars_pos_poi.tolist()
+        self.pars_pos_nuis = self.data_sample.pars_pos_nuis.tolist()
+        self.pars_labels = self.data_sample.pars_labels
 
     def __set_member_name(self):
         string = self.ensemble_name
@@ -288,7 +309,10 @@ class DNNLik(object):
             self.history = {}
 
     def __load_model(self):
-        self.model = load_model(self.model_h5_filename, custom_objects={'R2_metric': self.R2_metric, 'Rt_metric': self.Rt_metric})
+        self.model = load_model(self.model_h5_filename, custom_objects={"mean_error": self.mean_error,
+                                                                        "mean_percentage_error": self.mean_percentage_error,
+                                                                        "R2_metric": self.R2_metric, 
+                                                                        "Rt_metric": self.Rt_metric})
 
     def __load_scalers(self):
         self.scalerX = joblib.load(self.scalerX_jlib_filename)
@@ -418,7 +442,7 @@ class DNNLik(object):
         self.model_trainable_params = int(np.sum([K.count_params(p) for p in self.model.trainable_weights]))
         self.model_non_trainable_params = int(np.sum([K.count_params(p) for p in self.model.non_trainable_weights]))
         end = timer()
-        print("Model for member",self.member_number,"defined in", end-start, "s.")
+        print("Model for member",self.member_number,"defined in", str(end-start), "s.")
         if ShowPrints > 0:
             print(self.model.summary())
 
@@ -482,7 +506,7 @@ class DNNLik(object):
         start = timer()
         self.model.compile(loss=self.loss, optimizer=self.optimizer, metrics=self.metrics)
         end = timer()
-        print("Model for member",self.member_number,"compiled in",end-start,"s.")
+        print("Model for member",self.member_number,"compiled in",str(end-start),"s.")
 
     def set_callbacks(self, verbose=False):
         """
@@ -688,20 +712,122 @@ class DNNLik(object):
         prediction_time = end - start
         return [pred, prediction_time]
 
-    def model_predict_scalar(self, x, steps=None, gpu="auto", verbose=False):
+    def model_predict_scalar(self, x, steps=None):
         """
         Predict with the Keras Model 'self.model'.
         """
-        global ShowPrints
-        ShowPrints = verbose
-        if verbose < 0:
-            verbose_2 = 0
-        else:
-            verbose_2 = verbose
         if len(x.shape) == 1:
             x = x.reshape(1,-1)
-        pred = self.model_predict(x, batch_size=1, steps=None, verbose=verbose_2)[0][0]
+        pred = self.model_predict(x, batch_size=1, steps=None, verbose=False)[0][0]
         return pred
+
+    def model_compute_max_logpdf(self,pars_init=None,pars_bounds=None,nsteps=10000,tolerance=0.0001,optimizer=None,verbose=True):
+        global ShowPrints
+        ShowPrints = verbose
+        start = timer()
+        ## Parameters initialization
+        if pars_init is None:
+            pars_init = np.zeros(self.ndim)
+        else:
+            pars_init = np.array(pars_init).flatten()
+        if optimizer is "scipy":
+            print("Optimizing with scipy.optimize.")
+            def minus_loglik(x):
+                return -self.model_predict_scalar(x)
+            if pars_bounds is None:
+                ml = optimize.minimize(minus_loglik, pars_init, method='Powell')
+            else:
+                pars_bounds = np.array(pars_bounds)
+                bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
+                ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds,method='SLSQP')
+            x_final, y_final = [ml['x'], ml['fun']]
+            self.X_max_logpdf = x_final
+            self.Y_max_logpdf = y_final
+            end = timer()
+            print("Optimized in",str(end-start),"s.")
+            return
+        else:
+            ## Set optimizer
+            def set_optimizer(optimizer):
+                if optimizer is None:
+                    lr = 0.1
+                    opt = tf.keras.optimizers.SGD(lr)
+                    return opt
+                elif type(optimizer) is dict:
+                    name = list(optimizer.keys())[0]
+                    string = name+"("
+                    for key, value in optimizer[name].items():
+                        if type(value) is str:
+                            value = "'"+value+"'"
+                        string = string+str(key)+"="+str(value)+", "
+                    opt_string = str("optimizers."+string+")").replace(", )", ")")
+                    opt = eval(opt_string)
+                    return opt
+                elif type(optimizer) is str:
+                    opt = eval(optimizer)
+                    return opt
+                else:
+                    opt = optimizer
+                    return opt
+            optimizer = set_optimizer(optimizer)
+            print("Optimizing with tensorflow.")
+            ## Scalers
+            sX = self.scalerX
+            sY = self.scalerY        
+            x_var = tf.Variable(sX.transform(pars_init.reshape(1,-1)), dtype=tf.float32)
+            f = lambda: tf.reshape(-1*(self.model(x_var)),[])
+            ##### Should add the possibility to parse optimizer in different ways #####
+            if optimizer is None:
+                lr = 0.1
+                optimizer = tf.keras.optimizers.SGD(lr)
+            run_lenght = 500
+            nruns = int(nsteps/run_lenght)
+            last_run_length = nsteps-run_lenght*nruns
+            if last_run_length != 0:
+                nruns = nruns+1
+            for i in range(nruns):
+                step_before = i*run_lenght+1
+                value_before = sY.inverse_transform([-f().numpy()])[0]
+                if i+1<nruns:
+                    for _ in range(1,run_lenght):
+                        optimizer.minimize(f,var_list=[x_var])
+                    step_after = (i+1)*run_lenght
+                else:
+                    for _ in range(1,last_run_length):
+                        optimizer.minimize(f,var_list=[x_var])
+                    step_after = i*run_lenght+last_run_length
+                value_after = sY.inverse_transform([-f().numpy()])[0]
+                variation = np.abs(value_before-value_after)/np.abs(value_before)
+                if value_after<value_before:
+                    lr = optimizer._hyper['learning_rate']
+                    optimizer = tf.keras.optimizers.SGD(lr/2)
+                    print("Optimizer learning rate reduced.")
+                print("Step:",step_before,"Value:",value_before,"-- Step:",step_after,"Value:",value_after,r"-- % Variation",variation)
+                if variation < tolerance:
+                    end = timer()
+                    print("Converged to tolerance",tolerance,"in",str(end-start),"s.")
+                    x_final = sX.inverse_transform(x_var.numpy())[0]
+                    y_final = sY.inverse_transform([-f().numpy()])[0]
+                    self.X_max_logpdf = x_final
+                    self.Y_max_logpdf = y_final
+                    return
+            end = timer()
+            print("Did not converge to tolerance",tolerance,"using",nsteps,"steps.")
+            print("Best tolerance",variation,"reached in",str(end-start),"s.")
+            self.X_max_logpdf = x_final
+            self.Y_max_logpdf = y_final
+            return
+
+    def maximum_loglik(self, loglik, npars=None, pars_init=None, pars_bounds=None):
+        def minus_loglik(x): return -loglik(x)
+        if pars_bounds is None:
+            print("Optimizing")
+            ml = optimize.minimize(minus_loglik, pars_init, method='Powell')
+        else:
+            pars_bounds = np.array(pars_bounds)
+            bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
+            ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds)
+        return [ml['x'], ml['fun']]
 
     def model_evaluate(self, X, Y, batch_size=1, steps=None, verbose=False):
         """
@@ -732,20 +858,21 @@ class DNNLik(object):
         title = title.replace("+", "") + "Loss: " + str(self.loss_string)
         self.fig_base_title = title
 
-    def model_save_training_fig(self, metrics=['loss'], yscale='log',verbose=True):
+    def model_plot_training_history(self, metrics=['loss'], yscale='log',verbose=True, show_plot=False):
         global ShowPrints
         ShowPrints = verbose
+        jtplot.reset()
+        try:
+            plt.style.use('matplotlib.mplstyle')
+        except:
+            print("Custom matplotlib style not available")
         metrics = np.unique(metrics)
         for metric in metrics:
+            start = timer()
             metric = utility.metric_name_unabbreviate(metric)
             val_metric = 'val_'+ metric
-            figname = self.member_results_folder + "/" + self.member_name+"_figure_training_" + metric+".pdf"
-            self.figures_training_filenames.append(figname)
-            jtplot.reset()
-            try:
-                plt.style.use('matplotlib.mplstyle')
-            except:
-                print("Custom matplotlib style not available")
+            figname = self.figure_base_filename+"_training_history_" + metric+".pdf"
+            self.figures_training_history.append(figname)
             plt.plot(self.history[metric])
             plt.plot(self.history[val_metric])
             plt.yscale(yscale)
@@ -758,13 +885,253 @@ class DNNLik(object):
             plt.tight_layout()
             ax = plt.axes()
             #x1, x2, y1, y2 = plt.axis()
-            plt.text(0.965, 0.2, r"%s" % self.summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
+            plt.text(0.967, 0.2, r"%s" % self.summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
                                                                               edgecolor='black', boxstyle='round,pad=0.5'), ha='right', ma='left', transform=ax.transAxes)
             plt.savefig(r"%s" % (figname))
-            #plt.show()
-            print(r"%s" % (figname + " created and saved."))
+            if show_plot:
+                plt.show()
             plt.close()
+            end = timer()
+            print(r"%s" %(figname),"created and saved in",str(end-start),"s.")
+            
+    def model_plot_pars_coverage(self, pars_list=None, loglik=True, verbose=True, show_plot=False):
+        global ShowPrints
+        ShowPrints = verbose
+        jtplot.reset()
+        try:
+            plt.style.use('matplotlib.mplstyle')
+        except:
+            print("Custom matplotlib style not available")
+        if pars_list is None:
+            pars_list = self.pars_pos_poi
+        else:
+            pars_list = pars_list
+        for par in pars_list:
+            start=timer()
+            if loglik:
+                figname = self.figure_base_filename+"_par_loglik_coverage_" + str(par) +".pdf"
+            else:
+                figname = self.figure_base_filename+"_par_lik_coverage_" + str(par) +".pdf"
+            self.figures_pars_coverage.append(figname)
+            nnn = min(1000,len(self.X_train),len(self.X_test))
+            rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
+            rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
+            Y_pred_test, _ = self.model_predict(self.X_test[rnd_idx_test], batch_size=self.batch_size)
+            if loglik:
+                curve_train = np.array([self.X_train[rnd_idx_train,par],self.Y_train[rnd_idx_train]]).transpose()
+                curve_test = np.array([self.X_test[rnd_idx_test,par],self.Y_test[rnd_idx_test]]).transpose()
+                curve_test_pred = np.array([self.X_test[rnd_idx_test,par],Y_pred_test]).transpose()
+            else:
+                curve_train = np.array([self.X_train[rnd_idx_train,par],np.exp(self.Y_train[rnd_idx_train])]).transpose()
+                curve_test = np.array([self.X_test[rnd_idx_test,par],np.exp(self.Y_test[rnd_idx_test])]).transpose()
+                curve_test_pred = np.array([self.X_test[rnd_idx_test,par],np.exp(Y_pred_test)]).transpose()
+            curve_train = curve_train[curve_train[:, 0].argsort()]
+            curve_test = curve_test[curve_test[:, 0].argsort()]
+            curve_test_pred = curve_test_pred[curve_test_pred[:,0].argsort()]
+            plt.plot(curve_train[:,0], curve_train[:,1], color='green', marker='o', linestyle='dashed', linewidth=2, markersize=3, label=r"train")
+            plt.plot(curve_test[:,0], curve_test[:,1], color='blue', marker='o', linestyle='dashed', linewidth=2, markersize=3, label=r"test")
+            plt.plot(curve_test_pred[:,0], curve_test_pred[:,1], color='red', marker='o', linestyle='dashed', linewidth=2, markersize=3, label=r"pred")
+            plt.xlabel(r"%s"%(self.pars_labels[par]))
+            if loglik:
+                plt.ylabel(r"logprob ($\log\mathcal{L}+\log\mathcal{P}$)")
+            else:
+                plt.yscale('log')
+                plt.ylabel(r"prob ($\mathcal{L}\cdot\mathcal{P}$)")
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(r"%s" %figname)
+            if show_plot:
+                plt.show()
+            plt.close()
+            end = timer()
+            print(r"%s" %(figname),"created and saved in",str(end-start),"s.")
 
+    def model_plot_lik_distribution(self, verbose=True, loglik=True, show_plot=False):
+        global ShowPrints
+        ShowPrints = verbose
+        jtplot.reset()
+        try:
+            plt.style.use('matplotlib.mplstyle')
+        except:
+            print("Custom matplotlib style not available")
+        start = timer()
+        if loglik:
+            figname = self.figure_loglik_distribution_filename
+        else:
+            figname = self.figure_lik_distribution_filename
+        nnn = min(10000, len(self.X_train), len(self.X_test))
+        rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
+        rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
+        Y_pred_test, _ = self.model_predict(self.X_test[rnd_idx_test], batch_size=self.batch_size)
+        if loglik:
+            bins = np.histogram(self.Y_train[rnd_idx_train], 50)[1]
+            counts, _ = np.histogram(self.Y_train[rnd_idx_train], bins)
+            integral = 1  # counts.sum()
+            plt.step(bins[:-1], counts/integral, where='post',color='green', label=r"train")
+            counts, _ = np.histogram(self.Y_test[rnd_idx_test], bins)
+            integral = 1  # counts.sum()
+            plt.step(bins[:-1], counts/integral,where='post', color='blue', label=r"val")
+            counts, _ = np.histogram(Y_pred_test, bins)
+            integral = 1  # counts.sum()
+        else:
+            bins = np.exp(np.histogram(self.Y_train[rnd_idx_train], 50)[1])
+            counts, _ = np.histogram(np.exp(self.Y_train[rnd_idx_train]), bins)
+            integral = 1  # counts.sum()
+            plt.step(bins[:-1], counts/integral, where='post',color='green', label=r"train")
+            counts, _ = np.histogram(np.exp(self.Y_test[rnd_idx_test]), bins)
+            integral = 1  # counts.sum()
+            plt.step(bins[:-1], counts/integral,where='post', color='blue', label=r"val")
+            counts, _ = np.histogram(np.exp(Y_pred_test), bins)
+            integral = 1  # counts.sum()
+        plt.step(bins[:-1], counts/integral,where='post', color='red', label=r"pred")
+        if loglik:
+            plt.xlabel(r"logprob ($\log\mathcal{L}+\log\mathcal{P}$)")
+        else:
+            plt.xlabel(r"prob ($\mathcal{L}\cdot\mathcal{P}$)")
+            plt.xscale('log')
+        plt.ylabel(r"counts")
+        plt.legend()
+        plt.yscale('log')
+        plt.tight_layout()
+        plt.savefig(r"%s" %figname)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        print(r"%s" % (figname), "created and saved in", str(end-start),"s.")
+
+    def model_plot_corners_pars(self, pars_list=None, verbose=True, show_plot=False):
+        global ShowPrints
+        ShowPrints = verbose
+        jtplot.reset()
+        try:
+            plt.style.use('matplotlib.mplstyle')
+        except:
+            print("Custom matplotlib style not available")
+        start = timer()
+        if pars_list is None:
+            pars_list = self.pars_pos_poi[:min(len(self.pars_pos_poi),5)]
+            if len(pars_list) == 1:
+                pars_list = pars_list + np.random.choice(self.pars_pos_nuis,min(4,len(self.pars_pos_nuis))).tolist()
+        else:
+            pars_list = pars_list
+        pars_labels = np.array(self.pars_labels)[pars_list].tolist()
+        nndim = len(pars_list)
+        ######### TRAIN
+        figname = self.figure_corner_pars_train
+        nnn = len(self.X_train)
+        rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
+        Y_pred_train, _ = self.model_predict(self.X_train[rnd_idx_train], batch_size=self.batch_size)
+        if np.amax(Y_pred_train) > 0:
+            print('There are positive values of log-likelihood')
+        W_train = utility.normalize_weights(np.exp(Y_pred_train)/np.exp(self.Y_train[rnd_idx_train]))
+        distr_train = self.X_train[rnd_idx_train][:, pars_list]
+        mean_train = np.mean(distr_train, 0)
+        mean_pred_train = np.average(distr_train, 0, weights=W_train)
+        fig, axes = plt.subplots(nndim, nndim, figsize=(3*nndim, 3*nndim))
+        figure1 = corner(distr_train, bins=50, labels=[r"%s" % s for s in pars_labels], fig=fig, max_n_ticks=6, color='green', plot_contours=True, smooth=True, smooth1d=True, range=np.full(nndim, 0.9999),
+                         hist_kwargs={'color': 'green', 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18})
+        _ = corner(distr_train, bins=50, weights=W_train, labels=[r"%s" % s for s in pars_labels], fig=fig, max_n_ticks=6, color='red', plot_contours=True, smooth=True, smooth1d=True, range=np.full(nndim, 0.9999),
+                   hist_kwargs={'color': 'red', 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18})
+        axes = np.array(figure1.axes).reshape((nndim, nndim))
+        for i in range(nndim):
+                ax = axes[i, i]
+                ax.axvline(mean_train[i], color="green", alpha=1)
+                ax.axvline(mean_pred_train[i], color="red", alpha=1)
+                ax.grid(True, linestyle='--', linewidth=1)
+                ax.tick_params(axis='both', which='major', labelsize=16)
+        for yi in range(nndim):
+            for xi in range(yi):
+                ax = axes[yi, xi]
+                ax.axvline(mean_train[xi], color="green", alpha=1)
+                ax.axvline(mean_pred_train[xi], color="red", alpha=1)
+                ax.axhline(mean_train[yi], color="green", alpha=1)
+                ax.axhline(mean_pred_train[yi], color="red", alpha=1)
+                ax.plot(mean_train[xi], mean_train[yi], color="green", alpha=1)
+                ax.plot(mean_pred_train[xi], mean_pred_train[yi], color="red", alpha=1)
+                ax.grid(True, linestyle='--', linewidth=1)
+                ax.tick_params(axis='both', which='major', labelsize=16)
+        #plt.text(-0.1,5.3,'Parameters contours', fontsize=26, transform = ax.transAxes, ha='right',ma='left')
+        plt.savefig(r"%s" %figname)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        print(r"%s" %(figname),"created and saved in", str(end-start),"s.")
+        ######### TEST
+        figname = self.figure_corner_pars_test
+        nnn = len(self.X_test)
+        rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
+        Y_pred_test, _ = self.model_predict(self.X_test[rnd_idx_test], batch_size=self.batch_size)
+        if np.amax(Y_pred_test) > 0:
+            print('There are positive values of log-likelihood')
+        W_test = utility.normalize_weights(np.exp(Y_pred_test)/np.exp(self.Y_test[rnd_idx_test]))
+        distr_test = self.X_test[rnd_idx_test][:, pars_list]
+        mean_test = np.mean(distr_test, 0)
+        mean_pred_test = np.average(distr_test, 0, weights=W_test)
+        fig, axes = plt.subplots(nndim, nndim, figsize=(3*nndim, 3*nndim))
+        figure1 = corner(distr_test, bins=50, labels=[r"%s" % s for s in pars_labels], fig=fig, max_n_ticks=6, color='green', plot_contours=True, smooth=True, smooth1d=True, range=np.full(nndim, 0.9999),
+                         hist_kwargs={'color': 'green', 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18})
+        _ = corner(distr_test, bins=50, weights=W_test, labels=[r"%s" % s for s in pars_labels], fig=fig, max_n_ticks=6, color='red', plot_contours=True, smooth=True, smooth1d=True, range=np.full(nndim, 0.9999),
+                   hist_kwargs={'color': 'red', 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18})
+        axes = np.array(figure1.axes).reshape((nndim, nndim))
+        for i in range(nndim):
+                ax = axes[i, i]
+                ax.axvline(mean_test[i], color="green", alpha=1)
+                ax.axvline(mean_pred_test[i], color="red", alpha=1)
+                ax.grid(True, linestyle='--', linewidth=1)
+                ax.tick_params(axis='both', which='major', labelsize=16)
+        for yi in range(nndim):
+            for xi in range(yi):
+                ax = axes[yi, xi]
+                ax.axvline(mean_test[xi], color="green", alpha=1)
+                ax.axvline(mean_pred_test[xi], color="red", alpha=1)
+                ax.axhline(mean_test[yi], color="green", alpha=1)
+                ax.axhline(mean_pred_test[yi], color="red", alpha=1)
+                ax.plot(mean_test[xi], mean_test[yi], color="green", alpha=1)
+                ax.plot(mean_pred_test[xi], mean_pred_test[yi], color="red", alpha=1)
+                ax.grid(True, linestyle='--', linewidth=1)
+                ax.tick_params(axis='both', which='major', labelsize=16)
+        #plt.text(-0.1,5.3,'Parameters contours', fontsize=26, transform = ax.transAxes, ha='right',ma='left')
+        plt.savefig(r"%s" %figname)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        print(r"%s" %(figname),"created and saved in", str(end-start),"s.")
+        ######### TRAIN VS TEST
+        figname = self.figure_corner_pars_train_vs_test
+        fig, axes = plt.subplots(nndim, nndim, figsize=(3*nndim, 3*nndim))
+        figure1 = corner(distr_train, bins = 50, labels=[r"%s" % s for s in pars_labels], fig=fig, max_n_ticks=6, color='green', plot_contours=True, smooth=True, smooth1d=True, range = np.full(nndim,0.9999),
+                        hist_kwargs={'color': 'green', 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18})
+        _ = corner(distr_test, bins=50, labels=[r"%s" % s for s in pars_labels], fig=fig, max_n_ticks=6, color='red', plot_contours=True, smooth=True, smooth1d=True, range=np.full(nndim, 0.9999),
+                        hist_kwargs={'color': 'red', 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18})
+        axes = np.array(figure1.axes).reshape((nndim, nndim))
+        for i in range(nndim):
+                ax = axes[i, i]
+                ax.axvline(mean_train[i], color="green",alpha=1)
+                ax.axvline(mean_test[i], color="red",alpha=1)
+                ax.grid(True, linestyle='--', linewidth=1)
+                ax.tick_params(axis='both', which='major', labelsize=16)
+        for yi in range(nndim):
+            for xi in range(yi):
+                ax = axes[yi, xi]
+                ax.axvline(mean_train[xi], color="green",alpha=1)
+                ax.axvline(mean_test[xi], color="red",alpha=1)
+                ax.axhline(mean_train[yi], color="green",alpha=1)
+                ax.axhline(mean_test[yi], color="red",alpha=1)
+                ax.plot(mean_train[xi], mean_train[yi], color="green", alpha=1)
+                ax.plot(mean_test[xi], mean_test[yi], color="red",alpha=1)
+                ax.grid(True, linestyle='--', linewidth=1)
+                ax.tick_params(axis='both', which='major', labelsize=16)
+        #plt.text(-0.1,5.3,'Parameters contours', fontsize=26, transform = ax.transAxes, ha='right',ma='left')
+        plt.savefig(r"%s" %figname)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        print(r"%s" %(figname),"created and saved in", str(end-start),"s.")
+        
     def model_compute_predictions(self, 
                                   CI=inference.CI_from_sigma([inference.sigma_from_CI(0.5), 1, 2, 3]), 
                                   pars_list=None, 
@@ -783,7 +1150,6 @@ class DNNLik(object):
             pars_list = self.data_sample.pars_pos_poi.tolist()
         else:
             pars_list = pars_list
-        pars_labels = np.array(self.data_sample.pars_labels)[pars_list].tolist()
         if batch_size is None:
             batch_size = self.batch_size
         print('Compute predictions')
@@ -828,7 +1194,7 @@ class DNNLik(object):
         print("Compute exp(Y_true) and exp(Y_pred) for train/val/test samples")
         [Y_train_exp, Y_val_exp, Y_test_exp, Y_pred_train_exp, Y_pred_val_exp, Y_pred_test_exp] = [np.exp(Y) for Y in [self.Y_train, self.Y_val, self.Y_test, Y_pred_train, Y_pred_val, Y_pred_test]]
         end = timer()
-        print("Prediction on ("+str(self.npoints_train)+","+str(self.npoints_val)+","+str(self.npoints_test)+")", "(train,val,test) points done in", end-start, "s.")
+        print("Prediction on ("+str(self.npoints_train)+","+str(self.npoints_val)+","+str(self.npoints_test)+")", "(train,val,test) points done in", str(end-start), "s.")
         print("Compute Bayesian inference benchmarks")
         start = timer()
         print("Computing weights (pred vs true) for reweighting of distributions")
@@ -869,11 +1235,14 @@ class DNNLik(object):
         # Sort nested dictionary by keys
         self.predictions = utility.sort_dict(self.predictions)
         end = timer()
-        print('Bayesian inference benchmarks computed in', end-start, 's.')
+        print('Bayesian inference benchmarks computed in', str(end-start), 's.')
         self.save_predictions_json()
         self.generate_summary_text()
         self.generate_fig_base_title()
-        self.model_save_training_fig()
+        self.model_plot_training_history()
+        self.model_plot_pars_coverage()
+        self.model_plot_lik_distribution()
+        self.model_plot_corners_pars()
         self.save_summary_log_json()
         end_global = timer()
         print("All predictions done in",end_global-start_global,"s.")
@@ -916,7 +1285,7 @@ class DNNLik(object):
         data["idx_val"] = self.idx_val
         h5_out.close()
         end = timer()
-        print(self.idx_filename, "created and saved in", end-start, "s.")
+        print(self.idx_filename, "created and saved in", str(end-start), "s.")
 
     def save_test_data_indices(self, verbose=True):
         """ Save indices to member_n_idx.h5 as h5 file
@@ -933,7 +1302,7 @@ class DNNLik(object):
             pass
         h5_out.close()
         end = timer()
-        print(self.idx_filename, "modified and saved in", end-start, "s.")
+        print(self.idx_filename, "modified and saved in", str(end-start), "s.")
 
     def save_model_json(self, verbose=True):
         """ Save model to json
@@ -946,7 +1315,7 @@ class DNNLik(object):
         with open(self.model_json_filename, "w") as json_file:
             json_file.write(model_json)
         end = timer()
-        print(self.model_json_filename, "created and saved.", end-start, "s.")
+        print(self.model_json_filename, "created and saved.", str(end-start), "s.")
 
     def save_model_h5(self, verbose=True):
         """ Save model to h5
@@ -957,7 +1326,7 @@ class DNNLik(object):
         start = timer()
         self.model.save(self.model_h5_filename)
         end = timer()
-        print(self.model_h5_filename,"created and saved.", end-start, "s.")
+        print(self.model_h5_filename,"created and saved.", str(end-start), "s.")
 
     def save_model_onnx(self, verbose=True):
         """ Save model to onnx
@@ -969,7 +1338,7 @@ class DNNLik(object):
         onnx_model = keras2onnx.convert_keras(self.model, self.member_name)
         onnx.save_model(onnx_model, self.model_onnx_filename)
         end = timer()
-        print(self.model_onnx_filename,"created and saved.", end-start, "s.")
+        print(self.model_onnx_filename,"created and saved.", str(end-start), "s.")
 
     def save_history_json(self,verbose=True):
         """ Save summary log (history plus model specifications) to json
@@ -985,7 +1354,7 @@ class DNNLik(object):
         with codecs.open(self.history_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(',', ':'), sort_keys=True, indent=4)
         end = timer()
-        print(self.history_json_filename, "created and saved.", end-start, "s.")
+        print(self.history_json_filename, "created and saved.", str(end-start), "s.")
 
     def save_summary_log_json(self,verbose=True):
         """ Save summary log (history plus model specifications) to json
@@ -1008,7 +1377,7 @@ class DNNLik(object):
         with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(',', ':'), indent=4)
         end = timer()
-        print(self.summary_log_json_filename, "created and saved.", end-start, "s.")
+        print(self.summary_log_json_filename, "created and saved.", str(end-start), "s.")
 
     def generate_summary_text(self):
         summary_text = "Sample file: " + str(os.path.split(self.data_sample_input_filename)[1].replace("_", r"$\_$")) + "\n"
@@ -1053,7 +1422,7 @@ class DNNLik(object):
             json.dump(self.predictions, f, separators=(
                 ',', ':'), sort_keys=True, indent=4)
         end = timer()
-        print(self.predictions_json_filename, "created and saved.", end-start, "s.")
+        print(self.predictions_json_filename, "created and saved.", str(end-start), "s.")
 
     def save_performance_log_json(self, verbose=True):
         """ Save performance log (metrics and figures of merit) to json
@@ -1070,8 +1439,8 @@ class DNNLik(object):
         joblib.dump(self.scalerX, self.scalerX_jlib_filename)
         joblib.dump(self.scalerY, self.scalerY_jlib_filename)
         end = timer()
-        print(self.scalerX_jlib_filename, " createdverbose_tf and saved in", end-start, "s.")
-        print(self.scalerY_jlib_filename, " created and saved in", end-start, "s.")
+        print(self.scalerX_jlib_filename, " createdverbose_tf and saved in", str(end-start), "s.")
+        print(self.scalerY_jlib_filename, " created and saved in", str(end-start), "s.")
 
     def save_model_graph_pdf(self, verbose=True):
         """ Save model graph to pdf
@@ -1094,7 +1463,7 @@ class DNNLik(object):
             except:
                 print('Cannot remove png file',png_file,'.')
         end = timer()
-        print(self.model_graph_pdf_filename," created and saved in", end-start, "s.")
+        print(self.model_graph_pdf_filename," created and saved in", str(end-start), "s.")
 
     def model_store(self, verbose=True):
         """ Save all model information
@@ -1122,6 +1491,30 @@ class DNNLik(object):
         self.save_scalers_jlib(verbose=verbose)
         self.save_model_graph_pdf(verbose=verbose)
 
+
+    def show_figures(self,fig_list):
+        fig_list = np.array(fig_list).flatten().tolist()
+        for fig in fig_list:
+            try:
+                os.startfile(r'%s'%fig)
+                print('File', fig, 'opened.')
+            except:
+                print('File',fig,'not found.')
+
+    def mean_error(self, y_true, y_pred):
+        y_true = tf.convert_to_tensor(y_true)
+        y_pred = tf.convert_to_tensor(y_pred)
+        ME_model = K.mean(y_true-y_pred)
+        return K.abs(ME_model)
+
+    def mean_percentage_error(self, y_true, y_pred):
+        y_true = tf.convert_to_tensor(y_true)
+        y_pred = tf.convert_to_tensor(y_pred)
+        MPE_model = K.mean((y_true-y_pred)/(K.sign(y_true)*K.clip(K.abs(y_true),
+                                                                  K.epsilon(),
+                                                                  None)))
+        return 100. * K.abs(MPE_model)
+
     def R2_metric(self, y_true, y_pred):
         y_true = tf.convert_to_tensor(y_true)
         y_pred = tf.convert_to_tensor(y_pred)
@@ -1136,60 +1529,4 @@ class DNNLik(object):
         MAPE_baseline = K.sum(K.abs( 1-K.mean(y_true)/(y_true+ K.epsilon()) ) ) 
         return ( 1 - MAPE_model/(MAPE_baseline + K.epsilon()))
 
-    def mean_error(self, y_true, y_pred):
-        y_true = tf.convert_to_tensor(y_true)
-        y_pred = tf.convert_to_tensor(y_pred)
-        ME_model = K.mean(y_true-y_pred)
-        return K.abs(ME_model)
 
-    def mean_percentage_error(self, y_true, y_pred):
-        y_true = tf.convert_to_tensor(y_true)
-        y_pred = tf.convert_to_tensor(y_pred)
-        MPE_model = K.mean((y_true-y_pred)/(K.sign(y_true)*K.clip(K.abs(y_true),
-                                              K.epsilon(),
-                                              None)))
-        return 100. * K.abs(MPE_model)
-
-    #def model_save_training_fig(self, folder,history,title,summary_text,metrics=['loss'], yscale='log',verbose=True):
-    #    folder = folder.rstrip('/')
-    #    modname = title.replace(": ", "_")
-    #    metrics = np.unique(metrics)
-    #    for metric in metrics:
-    #        metric = metric_name_unabbreviate(metric)
-    #        val_metric = 'val_'+ metric
-    #        figname = modname + "_figure_training_"+ metric+".pdf"
-    #        jtplot.reset()
-    #        try:
-    #            plt.style.use('matplotlib.mplstyle')
-    #        except:
-    #            plt.style.use(r"%s" % ('/'.join(folder.split('/')
-    #                                        [:-1])+'/matplotlib.mplstyle'))
-    #        #fig = plt.figure(1,figsize=(9.5,7))
-    #        #ax = fig.add_subplot(111)
-    #        #plt.figure()
-    #        #ax.tick_params(axis='both', which='major', labelsize=10)
-    #        #ax.tick_params(axis='both', which='minor', labelsize=8)
-    #        if type(history) is dict:
-    #            plt.plot(history[metric])
-    #            plt.plot(history[val_metric])
-    #        else:
-    #            plt.plot(history.history[metric])
-    #            plt.plot(history.history[val_metric])
-    #        plt.yscale(yscale)
-    #        plt.grid(linestyle="--", dashes=(5, 5))
-    #        plt.title(r"%s" % title, fontsize=10)
-    #        plt.xlabel(r"epoch")
-    #        ylabel = (metric.replace("_", "-"))
-    #        plt.ylabel(r"%s" % ylabel)
-    #        plt.legend([r"training", r"validation"])
-    #        plt.tight_layout()
-    #        ax = plt.axes()
-    #        x1, x2, y1, y2 = plt.axis()
-    #        plt.text(0.965, 0.06, r"%s" % summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
-    #                                                                          edgecolor='black', boxstyle='round,pad=0.5'), ha='right', ma='left', transform=ax.transAxes)
-    #        plt.savefig(r"%s" % (folder + "/" + figname))
-    #        if verbose:
-    #            #plt.show()
-    #            print(r"%s" % (folder + "/" + figname +
-    #                           " created and saved."))
-    #        plt.close()

@@ -179,9 +179,23 @@ def weighted_central_quantiles(data, intervals=0.68, weights=None, onesided=Fals
         data = np.array(data)
     return [[i, [weighted_quantiles(data, (1-i)/2, weights), weighted_quantiles(data, 0.5, weights), weighted_quantiles(data, 1-(1-i)/2, weights)]] for i in intervals]
 
-def maximum_loglik(loglik,npars=0,pars_bounds=None):
-    ml = optimize.minimize(-loglik, np.full(npars, 0), method='Powell')
-    return ml
+def maximum_loglik(loglik, npars=None, pars_init=None, pars_bounds=None):
+    def minus_loglik(x): return -loglik(x)
+    if npars is None and pars_init is not None:
+        npars = len(pars_init)
+    elif npars is not None and pars_init is None:
+        pars_init = np.full(npars, 0)
+    elif npars is None and pars_init is None:
+        print("Please specify npars or pars_init or both")
+    if pars_bounds is None:
+        print("Optimizing")
+        ml = optimize.minimize(minus_loglik, pars_init, method='Powell')
+    else:
+        pars_bounds = np.array(pars_bounds)
+        bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
+        ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds)
+    return [ml['x'], ml['fun']]
+
 #
 #def tmu(mu):
 #    minimum_logprob = optimize.minimize(minus_logprob,np.full(95,0),method='Powell')['x']

@@ -109,6 +109,15 @@ def check_repeated_elements_at_start(list):
             return n
     return n
 
+def show_figures(fig_list):
+    fig_list = np.array(fig_list).flatten().tolist()
+    for fig in fig_list:
+        try:
+            os.startfile(r'%s'%fig)
+            print('File', fig, 'opened.')
+        except:
+            print('File',fig,'not found.')
+
 def get_spaced_elements(array, numElems=5):
     out = array[np.round(np.linspace(0, len(array)-1, numElems)).astype(int)]
     return out

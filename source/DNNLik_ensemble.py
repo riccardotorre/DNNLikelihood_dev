@@ -228,6 +228,12 @@ class DNNLik_ensemble(object):
                                            data_sample_output_filename=None,
                                            load_on_RAM=self.load_on_RAM)
         self.ndim = self.data_sample.ndim
+        self.__set_pars_info()
+
+    def __set_pars_info(self):
+        self.pars_pos_poi = self.data_sample.pars_pos_poi.tolist()
+        self.pars_pos_nuis = self.data_sample.pars_pos_nuis.tolist()
+        self.pars_labels = self.data_sample.pars_labels
         
     def __set_ensemble_name(self):
         if self.ensemble_name is None:
@@ -426,7 +432,7 @@ class DNNLik_ensemble(object):
         ShowPrints=verbose
         print("Results available for members",n_with_results,".")
         print("Results not available for members",n_without_results,".")
-        print(self.n_members,"members imported in", end-start, "s.")
+        print(self.n_members,"members imported in", str(end-start), "s.")
 
     def get_resources_member_kwargs(self):
         return {"available_cpu": self.available_cpu, 
@@ -473,7 +479,7 @@ class DNNLik_ensemble(object):
                                  )
         end = timer()
         ShowPrints = verbose
-        print("DNN Likelihood member",str(n),"created in",end-start,"s.")
+        print("DNN Likelihood member",str(n),"created in",str(end-start),"s.")
 
     def generate_members(self,n="all",verbose=-1):
         global ShowPrints
@@ -508,7 +514,7 @@ class DNNLik_ensemble(object):
         #self.save_summary_log_json(verbose=False)
         end = timer()
         ShowPrints = verbose
-        print(self.n_members,"members (DNNLikelihoods) generated in", end-start, "s.")
+        print(self.n_members,"members (DNNLikelihoods) generated in", str(end-start), "s.")
         print("Results for member 'n' will be saved in the folders",self.ensemble_name,"_member_n.")
 
     def generate_data_members(self, members_list="all",force=False,test=False,verbose=False):
@@ -542,7 +548,7 @@ class DNNLik_ensemble(object):
                     self.members[i].generate_test_data(verbose=verbose_2)
             end = timer()
             ShowPrints = verbose
-            print("Data for", len(members_list), "models generated in",end-start,"s.")
+            print("Data for", len(members_list), "models generated in",str(end-start),"s.")
 
     def train_member_on_device(self, member, gpu="auto", verbose=2):
         global ShowPrints
@@ -721,8 +727,7 @@ class DNNLik_ensemble(object):
             json.dump(new_hist, f, separators=(
                 ',', ':'), indent=4)
         end = timer()
-        print(self.summary_log_json_filename,
-              "created and saved.", end-start, "s.")
+        print(self.summary_log_json_filename, "created and saved.", str(end-start), "s.")
 
     ###### In the future define the DNNStack object to contain stacked models (plus all related methods)
     def model_define_stacked(self, members_list):
