@@ -30,7 +30,7 @@ def print(*args, **kwargs):
         if ShowPrints != 0:
             return builtins.print(*args, **kwargs)
 
-mplstyle_path = str(os.path.split(os.path.realpath(__file__))[0])+"\\matplotlib.mplstyle"
+mplstyle_path = os.path.join(os.path.split(os.path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 class MCMC(object):
     """Class defining MCMC sampling based on the emcee3 sampler.

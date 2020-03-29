@@ -51,6 +51,8 @@ def print(*args, **kwargs):
         if ShowPrints != 0:
             return builtins.print(*args, **kwargs)
 
+mplstyle_path = os.path.join(os.path.split(os.path.realpath(__file__))[0],"matplotlib.mplstyle")
+
 class DNNLik(object):
     def __init__(self,
                  DNNLik_input_folder=None,

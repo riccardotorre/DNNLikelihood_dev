@@ -188,18 +188,35 @@ def maximum_loglik(loglik, npars=None, pars_init=None, pars_bounds=None):
     elif npars is None and pars_init is None:
         print("Please specify npars or pars_init or both")
     if pars_bounds is None:
-        print("Optimizing")
+        #print("Optimizing")
         ml = optimize.minimize(minus_loglik, pars_init, method='Powell')
     else:
+        #print("Optimizing")
         pars_bounds = np.array(pars_bounds)
         bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
         ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds)
     return [ml['x'], ml['fun']]
 
-#
-#def tmu(mu):
-#    minimum_logprob = optimize.minimize(minus_logprob,np.full(95,0),method='Powell')['x']
-#    L_muhat_deltahat = -minus_logprob(minimum_logprob)
-#    minimum_logprob_delta = np.concatenate((np.array([mu]), optimize.minimize(lambda x: minus_logprob_delta(x, mu), np.full(94, 0), method='Powell')['x']))
-#    L_mu_deltahat = -minus_logprob(minimum_logprob_delta)
-#    return np.array([mu,L_muhat_deltahat,L_mu_deltahat,-2*(L_mu_deltahat-L_muhat_deltahat)])
+def maximum_prof_loglik(loglik, npars=None, pars_init=None, pars_bounds=None, pars_fixed_pos=None, pars_fixed_val=None):
+    # Add check that fixed param is within bounds
+    pars_fixed_pos = np.sort(pars_fixed_pos)
+    pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))
+    if npars is None and pars_init is not None:
+        npars = len(pars_init)
+    elif npars is not None and pars_init is None:
+        pars_init = np.full(npars, 0)
+    elif npars is None and pars_init is None:
+        print("Please specify npars or pars_init or both")
+    pars_init_reduced = np.delete(pars_init, pars_fixed_pos)
+    def minus_loglik(x):
+        return -loglik(np.insert(x, pars_fixed_pos_insert, pars_fixed_val))
+    if pars_bounds is None:
+        #print("Optimizing")
+        ml=optimize.minimize(minus_loglik, pars_init_reduced, method='Powell')
+    else:
+        #print("Optimizing")
+        pars_bounds_reduced = np.delete(pars_bounds, pars_fixed_pos,axis=0)
+        pars_bounds_reduced = np.array(pars_bounds_reduced)
+        bounds=optimize.Bounds(pars_bounds_reduced[:, 0], pars_bounds_reduced[:, 1])
+        ml=optimize.minimize(minus_loglik, pars_init_reduced, bounds=bounds)
+    return [np.insert(ml['x'], pars_fixed_pos_insert, pars_fixed_val, axis=0), ml['fun']]

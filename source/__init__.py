@@ -5,6 +5,7 @@ from .mcmc import MCMC
 from .data_sample import Data_sample
 from .DNNLik_ensemble import DNNLik_ensemble
 from .DNNLik import DNNLik
+from .histfactory import histfactory
 
 #from .DNNLik import DNNLik
 #from . import files
