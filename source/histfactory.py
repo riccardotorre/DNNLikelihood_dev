@@ -5,6 +5,7 @@ import builtins
 from os import listdir, path, stat
 import ipywidgets as widgets
 import pickle
+import cloudpickle
 from datetime import datetime
 #from os.path import abspath, isdir, isfile, join
 import ipywidgets as widgets
@@ -32,12 +33,12 @@ def print(*args, **kwargs):
 class histfactory(object):
     """Basic class to import ATLAS HistFactory format likelihoods"""
     def __init__(self,
-            workspace_folder = None,
-            histfactory_name = None,
-            regions_folders_base_name = "Region",
-            bkg_files_base_name = "Bkg",
-            patch_files_base_name ="patch",
-            histfactory_input_file = None):
+                 workspace_folder = None,
+                 histfactory_name = None,
+                 regions_folders_base_name = "Region",
+                 bkg_files_base_name = "Bkg",
+                 patch_files_base_name ="patch",
+                 histfactory_input_file = None):
         if histfactory_input_file is None:
             self.workspace_folder = path.abspath(workspace_folder)
             if histfactory_name is None:
@@ -47,7 +48,7 @@ class histfactory(object):
             self.regions_folders_base_name = regions_folders_base_name
             self.bkg_files_base_name = bkg_files_base_name
             self.patch_files_base_name = patch_files_base_name
-            self.output_file_base_name = path.abspath(histfactory_name)
+            self.output_file_base_name = path.abspath("histfactory_"+histfactory_name)
             subfolders = [path.join(self.workspace_folder,f) for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder,f))]
             regions = [f.replace(regions_folders_base_name, "") for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder, f))]
             self.regions = dict(zip(regions,subfolders))
@@ -110,9 +111,6 @@ class histfactory(object):
                         pars_mapping = {**pars_mapping, **{ii: k+"_"+str(j)}}
                         pars_settings = {**pars_settings, **{ii: model.config.suggested_bounds()[ii]}}
                         ii = ii+1
-                del(ii)
-                #self.likelihoods_dict[n]["pars_mapping"] = pars_mapping
-                #self.likelihoods_dict[n]["pars_settings"] = pars_settings
                 obs_data = pyhf.tensorlib.astensor(ws.data(model))
                 self.likelihoods_dict[n]["obs_data"] = obs_data
                 self.likelihoods_dict[n]["pars_init"] = np.array(model.config.suggested_init())
@@ -120,8 +118,8 @@ class histfactory(object):
                 self.likelihoods_dict[n]["pars_labels"] = list(pars_mapping.values())
                 self.likelihoods_dict[n]["pars_pos_poi"] = np.array([model.config.poi_index]).flatten()
                 self.likelihoods_dict[n]["pars_pos_nuis"] = np.array([i for i in range(len(self.likelihoods_dict[n]["pars_init"])) if i not in np.array([model.config.poi_index]).flatten().tolist()])
-                self.likelihoods_dict[n]["logpdf"] = lambda x: model.logpdf(x, obs_data)[0]
                 self.likelihoods_dict[n]["model_loaded"] = True
+                self.likelihoods_dict[n]["logpdf"] = self.get_logpdf(n)
                 schema = requests.get('https://scikit-hep.org/pyhf/schemas/1.0.0/workspace.json').json()
                 jsonschema.validate(instance=spec, schema=schema)
                 end_patch = timer()
@@ -131,21 +129,23 @@ class histfactory(object):
         end = timer()
         print("Imported",len(lik_number_list),"likelihoods in ", str(end-start), "s.")
 
+    def get_logpdf(self,n):
+        if not self.likelihoods_dict[n]["model_loaded"]:
+            print("Model for likelihood", n,"not loaded. Attempting to load it.")
+            self.import_likelihoods(lik_number_list=[n], verbose=True)
+        model = self.likelihoods_dict[n]["model"]
+        obs_data = self.likelihoods_dict[n]["obs_data"]
+        return lambda x: model.logpdf(x, obs_data)[0]
+
     def save_likelihoods(self, lik_number_list=None, out_file=None, verbose=True):
         global ShowPrints
         ShowPrints = verbose
         start = timer()
         if lik_number_list is None:
-            #sub_dict = dict([i for i in self.likelihoods_dict.items() if i[1]['model_loaded']==True])
-            #lik_number_list = list(sub_dict.keys())
-            sub_dict = self.likelihoods_dict
-            for key in sub_dict.keys():
-                sub_dict[key] = utility.dic_minus_keys(sub_dict[key], ["logpdf"])
+            sub_dict = dict(self.likelihoods_dict)
         else:
             tmp1 = {i: self.likelihoods_dict[i] for i in lik_number_list}
             tmp2 = utility.dic_minus_keys(self.likelihoods_dict,lik_number_list)
-            for key in tmp1.keys():
-                tmp1[key] = utility.dic_minus_keys(tmp1[key], ["logpdf"])
             for key in tmp2.keys():
                 tmp2[key] = utility.dic_minus_keys(tmp2[key], ["model", "obs_data", "pars_init", 
                                                            "pars_bounds", "pars_labels", "pars_pos_poi",
@@ -159,14 +159,14 @@ class histfactory(object):
         else:
             out_file = out_file.replace(".pickle", "")+".pickle"
         pickle_out = open(out_file, 'wb')
-        pickle.dump(self.workspace_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.histfactory_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.regions_folders_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.bkg_files_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.patch_files_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.output_file_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.regions, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.workspace_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.histfactory_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.regions_folders_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.bkg_files_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.patch_files_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.output_file_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.regions, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         statinfo = stat(out_file)
         end = timer()
@@ -191,14 +191,7 @@ class histfactory(object):
         pickle_in.close()
         statinfo = stat(in_file)
         end = timer()
-        for k in self.likelihoods_dict.keys():
-            if self.likelihoods_dict[k]["model_loaded"]:
-                self.update_logpdf(lik_number=k)
-        #self.likelihoods_dict[n]["logpdf"] = lambda x: model.logpdf(x, obs_da)
         print('Likelihoods loaded in', str(end-start),'seconds.\nFile size is ', statinfo.st_size, '.')
-
-    def update_logpdf(self, lik_number=0):
-        self.likelihoods_dict[lik_number]["logpdf"] = lambda x: self.likelihoods_dict[lik_number]["model"].logpdf(x, self.likelihoods_dict[lik_number]["obs_data"])[0]
 
     def get_lik_object(self, lik_number=0):
         lik = self.likelihoods_dict[lik_number]
@@ -211,9 +204,8 @@ class histfactory(object):
                       pars_pos_nuis = lik["pars_pos_nuis"],
                       pars_init=lik["pars_init"],
                       pars_labels=lik["pars_labels"],
-                      pars_bounds=lik["pars_bounds"])
+                      pars_bounds=lik["pars_bounds"],
+                      lik_input_file=None)
         return lik_obj
-            
 
-        
 

@@ -36,7 +36,7 @@ class MCMC(object):
     """Class defining MCMC sampling based on the emcee3 sampler.
     Parameters
     ----------
-    logprob_fn : callable
+    logpdf : callable
         A function that takes a vector in the parameter space as input
         and returns the natural logarithm of the posterior probability 
         (up to an additive constant) for that position.
@@ -45,15 +45,15 @@ class MCMC(object):
         'pars_pos_poi' being the parameters of interest (poi) and the  
         parameters at positions 'pars_pos_nuis' being the nuisance
         parameters.
-        It may have additional arguments logprob_fn_args. Notice that
-        on some system configuration, when logprob_fn is constructed to
+        It may have additional arguments logpdf_args. Notice that
+        on some system configuration, when logpdf is constructed to
         accept the additional arguments
         In case vectorize=True, emcee accepts a function which returns
         a list of lenght nwalkers.
         See also emcee documentation (https://emcee.readthedocs.io/en/stable/user/sampler/)
 
-    logprob_fn_args (optional) : array_like[args]
-        List (or array) of additional arguments of the logprob_fn function.
+    logpdf_args (optional) : array_like[args]
+        List (or array) of additional arguments of the logpdf function.
         See also emcee documentation (https://emcee.readthedocs.io/en/stable/user/sampler/)
 
     n_pars_poi : int
@@ -127,8 +127,8 @@ class MCMC(object):
     """
 
     def __init__(self,
-                 logprob_fn=None,
-                 logprob_fn_args=None,
+                 logpdf=None,
+                 logpdf_args=None,
                  pars_pos_poi=None,
                  pars_pos_nuis=None,
                  pars_init=None,
@@ -143,8 +143,8 @@ class MCMC(object):
                  vectorize=False,
                  seed=1
                  ):
-        self.logprob_fn = logprob_fn
-        self.logprob_fn_args = logprob_fn_args
+        self.logpdf = logpdf
+        self.logpdf_args = logpdf_args
         self.pars_pos_poi = np.array(pars_pos_poi)
         self.pars_pos_nuis = np.array(pars_pos_nuis)
         self.pars_init = pars_init
@@ -287,11 +287,11 @@ class MCMC(object):
             if progress:
                 print("Running", n_processes, "parallel processes.")
             with Pool(n_processes) as pool:
-                self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logprob_fn, moves=self.moves, pool=pool, backend=self.backend, args=self.logprob_fn_args)
+                self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logpdf, moves=self.moves, pool=pool, backend=self.backend, args=self.logpdf_args)
                 self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress)
         else:
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logprob_fn, moves=self.moves,
-                                                 args=self.logprob_fn_args, backend=self.backend, vectorize=self.vectorize)
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logpdf, moves=self.moves,
+                                                 args=self.logpdf_args, backend=self.backend, vectorize=self.vectorize)
             self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress)
         end = timer()
         print("Done in", end-start, "seconds.")
@@ -300,7 +300,7 @@ class MCMC(object):
     def load_sampler(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        print("Notice: when loading sampler from backend, all parameters of the sampler but the 'logprob_fn', its args 'logprob_fn_args', and 'moves' are set by the backend. All other parameters are set consistently with the MCMC class attributes.\nPay attention that they are consistent with the parameters used to produce the sampler saved in backend.")
+        print("Notice: when loading sampler from backend, all parameters of the sampler but the 'logpdf', its args 'logpdf_args', and 'moves' are set by the backend. All other parameters are set consistently with the MCMC class attributes.\nPay attention that they are consistent with the parameters used to produce the sampler saved in backend.")
         self.new_sampler = False
         self.nsteps = 0
         start = timer()
