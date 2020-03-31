@@ -1,4 +1,4 @@
-__all__ = ["Lik"]
+__all__ = ["likelihood"]
 
 from os import path, stat, sep
 import builtins
@@ -29,8 +29,10 @@ def print(*args, **kwargs):
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
-class Lik(object):
-    """Container class for the original likelihood"""
+class likelihood(object):
+    """Container class for the original likelihood
+    .. _likelihood_class:
+    """
     def __init__(self,
                  name = None,
                  logpdf = None,
@@ -179,7 +181,7 @@ class Lik(object):
             out_file.write("import sys\n"+
                    "sys.path.append('../DNNLikelihood_dev')\n"+
                    "import source\n"+"\n"+
-                   "lik = source.Lik(name=None,\n"+
+                   "lik = source.likelihood(name=None,\n"+
                    "\tlik_input_file="+r"'"+ r"%s" % (path.join(self.out_folder,self.output_file_base_name+".pickle").replace(sep,'/'))+r"')"+"\n"+"\n"+
                    "pars_pos_poi = lik.pars_pos_poi\n"+
                    "pars_pos_nuis = lik.pars_pos_nuis\n"+
