@@ -1,6 +1,7 @@
 __all__ = ["histfactory"]
 
 import sys
+import copy
 import builtins
 from os import listdir, path, stat
 import ipywidgets as widgets
@@ -31,24 +32,36 @@ def print(*args, **kwargs):
             return builtins.print(*args, **kwargs)
 
 class histfactory(object):
-    """Basic class to import ATLAS HistFactory format likelihoods"""
+    """Basic class to import ATLAS HistFactory format likelihoods
+    This class is a container for a 'histfactory' object which allows one to
+    import histfactory workspaces and read parameters and logpdf using the pyhf
+    package. In particular the class instantiate an object containing the following attributes:
+    ----------
+
+    
+    
+    """
     def __init__(self,
                  workspace_folder = None,
-                 histfactory_name = None,
+                 name = None,
                  regions_folders_base_name = "Region",
                  bkg_files_base_name = "Bkg",
                  patch_files_base_name ="patch",
+                 out_folder = None,
                  histfactory_input_file = None):
         if histfactory_input_file is None:
             self.workspace_folder = path.abspath(workspace_folder)
-            if histfactory_name is None:
-                self.histfactory_name = path.split(self.workspace_folder)[1]
+            if name is None:
+                self.name = path.split(self.workspace_folder)[1]
             else:
-                self.histfactory_name = histfactory_name
+                self.name = name
             self.regions_folders_base_name = regions_folders_base_name
             self.bkg_files_base_name = bkg_files_base_name
             self.patch_files_base_name = patch_files_base_name
-            self.output_file_base_name = path.abspath("histfactory_"+histfactory_name)
+            if out_folder is None:
+                out_folder = ""
+            self.out_folder = path.abspath(out_folder)
+            self.output_file_base_name = name+"_histfactory"
             subfolders = [path.join(self.workspace_folder,f) for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder,f))]
             regions = [f.replace(regions_folders_base_name, "") for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder, f))]
             self.regions = dict(zip(regions,subfolders))
@@ -75,6 +88,8 @@ class histfactory(object):
                 likelihoods_dict = {**likelihoods_dict, **dict_region}
             else:
                 print("Likelihoods import from folder",self.regions[region]," failed. Please check background and patch files base name.")
+        for n in list(likelihoods_dict.keys()):
+            likelihoods_dict[n]["name"] = "likelihood_"+self.name+"_"+str(n)+"_"+likelihoods_dict[n]["name"]
         self.likelihoods_dict = likelihoods_dict
         print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())),"regions.")
 
@@ -119,7 +134,7 @@ class histfactory(object):
                 self.likelihoods_dict[n]["pars_pos_poi"] = np.array([model.config.poi_index]).flatten()
                 self.likelihoods_dict[n]["pars_pos_nuis"] = np.array([i for i in range(len(self.likelihoods_dict[n]["pars_init"])) if i not in np.array([model.config.poi_index]).flatten().tolist()])
                 self.likelihoods_dict[n]["model_loaded"] = True
-                self.likelihoods_dict[n]["logpdf"] = self.get_logpdf(n)
+                #self.likelihoods_dict[n]["logpdf"] = self.def_logpdf(n)
                 schema = requests.get('https://scikit-hep.org/pyhf/schemas/1.0.0/workspace.json').json()
                 jsonschema.validate(instance=spec, schema=schema)
                 end_patch = timer()
@@ -129,15 +144,24 @@ class histfactory(object):
         end = timer()
         print("Imported",len(lik_number_list),"likelihoods in ", str(end-start), "s.")
 
-    def get_logpdf(self,n):
-        if not self.likelihoods_dict[n]["model_loaded"]:
-            print("Model for likelihood", n,"not loaded. Attempting to load it.")
-            self.import_likelihoods(lik_number_list=[n], verbose=True)
-        model = self.likelihoods_dict[n]["model"]
-        obs_data = self.likelihoods_dict[n]["obs_data"]
-        return lambda x: model.logpdf(x, obs_data)[0]
+    #def def_logpdf(self,n):
+    #    def logpdf(x, y):
+    #        if not self.likelihoods_dict[n]["model_loaded"]:
+    #            print("Model for likelihood", n,"not loaded. Attempting to load it.")
+    #            self.import_likelihoods(lik_number_list=[n], verbose=True)
+    #        model = self.likelihoods_dict[n]["model"]
+    #        return model.logpdf(x, y)[0]
+    #    return logpdf
 
-    def save_likelihoods(self, lik_number_list=None, out_file=None, verbose=True):
+    #def logpdf(self,x,obs_data,n):
+    #    if not self.likelihoods_dict[n]["model_loaded"]:
+    #        print("Model for likelihood", n,"not loaded. Attempting to load it.")
+    #        self.import_likelihoods(lik_number_list=[n], verbose=True)
+    #    model = self.likelihoods_dict[n]["model"]
+    #    obs_data = self.likelihoods_dict[n]["obs_data"]
+    #    return model.logpdf(x, obs_data)[0]
+
+    def save_likelihoods(self, lik_number_list=None, overwrite=False, verbose=True):
         global ShowPrints
         ShowPrints = verbose
         start = timer()
@@ -149,24 +173,39 @@ class histfactory(object):
             for key in tmp2.keys():
                 tmp2[key] = utility.dic_minus_keys(tmp2[key], ["model", "obs_data", "pars_init", 
                                                            "pars_bounds", "pars_labels", "pars_pos_poi",
-                                                           "pars_pos_poi","pars_pos_nuis", "logpdf"])
+                                                           "pars_pos_poi","pars_pos_nuis"])
                 tmp2[key]["model_loaded"] = False
             sub_dict = {**tmp1, **tmp2}
         sub_dict = dict(sorted(sub_dict.items()))
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        if out_file is None:
-            out_file = self.output_file_base_name+"_"+timestamp+".pickle"
+        if self.out_folder is None:
+            if overwrite:
+                out_file = path.abspath(self.output_file_base_name+".pickle")
+            else:
+                out_file = utility.check_rename_file(path.abspath(self.output_file_base_name+".pickle"))
         else:
-            out_file = out_file.replace(".pickle", "")+".pickle"
+            if overwrite:
+                out_file = path.join(self.out_folder,self.output_file_base_name+".pickle")
+            else:
+                out_file = path.join(self.out_folder,self.output_file_base_name+".pickle")
         pickle_out = open(out_file, 'wb')
-        cloudpickle.dump(self.workspace_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        cloudpickle.dump(self.histfactory_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        cloudpickle.dump(self.regions_folders_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        cloudpickle.dump(self.bkg_files_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        cloudpickle.dump(self.patch_files_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        cloudpickle.dump(self.output_file_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        cloudpickle.dump(self.regions, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        cloudpickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(self.workspace_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(self.name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(self.regions_folders_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(self.bkg_files_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(self.patch_files_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(self.output_file_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(self.regions, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        #cloudpickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.workspace_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.regions_folders_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.bkg_files_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.patch_files_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.out_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.output_file_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.regions, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         statinfo = stat(out_file)
         end = timer()
@@ -181,10 +220,11 @@ class histfactory(object):
             return
         pickle_in = open(in_file, 'rb')
         self.workspace_folder = pickle.load(pickle_in)
-        self.histfactory_name = pickle.load(pickle_in)
+        self.name = pickle.load(pickle_in)
         self.regions_folders_base_name = pickle.load(pickle_in)
         self.bkg_files_base_name = pickle.load(pickle_in)
         self.patch_files_base_name = pickle.load(pickle_in)
+        self.out_folder = pickle.load(pickle_in)
         self.output_file_base_name = pickle.load(pickle_in)
         self.regions = pickle.load(pickle_in)
         self.likelihoods_dict = pickle.load(pickle_in)
@@ -194,17 +234,29 @@ class histfactory(object):
         print('Likelihoods loaded in', str(end-start),'seconds.\nFile size is ', statinfo.st_size, '.')
 
     def get_lik_object(self, lik_number=0):
-        lik = self.likelihoods_dict[lik_number]
+        lik = dict(self.likelihoods_dict[lik_number])
         if not lik["model_loaded"]:
             print("Model for likelihood",lik_number,"not loaded. Attempting to load it.")
             self.import_likelihoods(lik_number_list=[lik_number], verbose=True)
-        lik_obj = Lik(lik_name = lik["name"],
-                      logpdf=lik["logpdf"],
-                      pars_pos_poi = lik["pars_pos_poi"],
-                      pars_pos_nuis = lik["pars_pos_nuis"],
-                      pars_init=lik["pars_init"],
-                      pars_labels=lik["pars_labels"],
-                      pars_bounds=lik["pars_bounds"],
+        name = lik["name"]
+        def logpdf(x,y):
+            return lik["model"].logpdf(x, y)[0]
+        logpdf_args = [lik["obs_data"]]
+        pars_pos_poi = lik["pars_pos_poi"]
+        pars_pos_nuis = lik["pars_pos_nuis"]
+        pars_init = lik["pars_init"]
+        pars_labels = lik["pars_labels"]
+        pars_bounds = lik["pars_bounds"]
+        out_folder = self.out_folder
+        lik_obj = Lik(name=name,
+                      logpdf=logpdf,
+                      logpdf_args=logpdf_args,
+                      pars_pos_poi=pars_pos_poi,
+                      pars_pos_nuis=pars_pos_nuis,
+                      pars_init=pars_init,
+                      pars_labels=pars_labels,
+                      pars_bounds=pars_bounds,
+                      out_folder=out_folder,
                       lik_input_file=None)
         return lik_obj
 

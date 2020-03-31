@@ -224,3 +224,6 @@ def metric_name_unabbreviate(name):
     for key in name_dict:
         name = name.replace(key, name_dict[key])
     return name
+
+#def callable_logpdf(x):
+    

@@ -2,7 +2,9 @@ __all__ = ["MCMC"]
 
 from . import utility
 
-import os
+from os import path
+import importlib
+import sys
 from timeit import default_timer as timer
 from datetime import datetime
 import sys
@@ -30,7 +32,7 @@ def print(*args, **kwargs):
         if ShowPrints != 0:
             return builtins.print(*args, **kwargs)
 
-mplstyle_path = os.path.join(os.path.split(os.path.realpath(__file__))[0],"matplotlib.mplstyle")
+mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 class MCMC(object):
     """Class defining MCMC sampling based on the emcee3 sampler.
@@ -66,12 +68,12 @@ class MCMC(object):
         parameters in the 'n_pars_poi+n_pars_nuis' dimensional 
         parameters vector.
 
-    pars_init : array_like[args]
+    pars_init_vec : array_like[args]
        List (or array) of np.arrays of parameter values in the same order
        as in the parameters vector. The list should have the same length as
        the number of walkers nwalkers
        Ex.
-       pars_init = [np.array(pars),np.array(pars),...]
+       pars_init_vec = [np.array(pars),np.array(pars),...]
 
     nwalkers : inf
        Number of walkers for the emcee sampler.
@@ -84,8 +86,8 @@ class MCMC(object):
     basefilename : str
        Base name of the file containing the backend and the sampling.
        From this two attributes are constructes:
-       backend_filename = os.path.splitext(basefilename)[0]+"_backend.h5"
-       data_sample_filename = os.path.splitext(basefilename)[0]+"_data_sample.pickle"
+       backend_filename = path.splitext(basefilename)[0]+"_backend.h5"
+       data_sample_filename = path.splitext(basefilename)[0]+"_data_sample.pickle"
        For backend_filename see also emcee documentation 
        (https://emcee.readthedocs.io/en/stable/user/sampler/)
 
@@ -115,11 +117,11 @@ class MCMC(object):
     
     backend_filename : str
        Name of the file containing the emcee backend. It is set from
-       basefilename as os.path.splitext(basefilename)[0]+"_backend.h5"
+       basefilename as path.splitext(basefilename)[0]+"_backend.h5"
        
     data_sample_filename : str
        Name of the file containing the emcee backend. It is determined from
-       basefilename as os.path.splitext(basefilename)[0]+"_data_sample.pickle"
+       basefilename as path.splitext(basefilename)[0]+"_data_sample.pickle"
     
     Methods
     ----------
@@ -127,63 +129,83 @@ class MCMC(object):
     """
 
     def __init__(self,
+                 logpdf_input_file=None,
                  logpdf=None,
                  logpdf_args=None,
                  pars_pos_poi=None,
                  pars_pos_nuis=None,
-                 pars_init=None,
+                 pars_init_vec=None,
                  pars_labels=None,
                  nwalkers=None,
                  nsteps=None,
-                 basefilename=None,
+                 out_folder=None,
                  chains_name=None,
                  new_sampler=True,
-                 moves=None,
+                 moves_str=None,
                  parallel_CPU=False,
                  vectorize=False,
                  seed=1
                  ):
-        self.logpdf = logpdf
-        self.logpdf_args = logpdf_args
-        self.pars_pos_poi = np.array(pars_pos_poi)
-        self.pars_pos_nuis = np.array(pars_pos_nuis)
-        self.pars_init = pars_init
-        self.ndim = len(self.pars_pos_poi) + len(self.pars_pos_nuis)
-        self.pars_labels = pars_labels
+        self.logpdf_input_file = logpdf_input_file
+        if self.logpdf_input_file is None:
+            self.logpdf = logpdf
+            self.logpdf_args = logpdf_args
+            self.pars_pos_poi = np.array(pars_pos_poi)
+            self.pars_pos_nuis = np.array(pars_pos_nuis)
+            self.pars_init_vec = pars_init_vec
+            self.pars_labels = pars_labels
+            if nwalkers is None:
+                self.nwalkers = len(self.pars_init_vec)
+            else:
+                self.nwalkers = nwalkers
+            self.chains_name = chains_name
+        else:
+            print("logpdf input file has been specified. Arguments logpdf, logpdf_args, pars_pos_poi, pars_pos_nuis, pars_init_vec, pars_labels, nwalkers, and chaisn_name will be ignored and set from file.")
+            in_folder,in_file = path.split(self.logpdf_input_file)
+            in_file = in_file.replace(".py","")
+            sys.path.append(in_folder)
+            lik = importlib.import_module(in_file)
+            self.logpdf = lik.logpdf
+            self.logpdf_args = lik.logpdf_args
+            self.pars_pos_poi = lik.pars_pos_poi
+            self.pars_pos_nuis = lik.pars_pos_nuis
+            self.pars_init_vec = lik.pars_init_vec
+            self.pars_labels = lik.pars_labels
+            self.nwalkers = len(lik.pars_init_vec)
+            self.chains_name = lik.chains_name
+        self.ndim = len(self.pars_init_vec[0])
         self.nsteps = nsteps
-        self.basefilename = os.path.splitext(basefilename)[0]
-        self.backend_filename = basefilename+"_backend.h5"
-        self.data_sample_filename = basefilename+"_data_sample.h5"
-        self.figure_basefilename = basefilename+"_figure"
-        self.chains_name = chains_name
+        self.out_folder = out_folder
+        self.basefilename = path.abspath(path.join(self.out_folder,self.chains_name))
+        self.backend_filename = self.basefilename+"_mcmc_backend.h5"
+        self.data_sample_filename = self.basefilename+"_mcmc_data_sample.h5"
+        self.figure_basefilename = self.basefilename+"_mcmc_figure"
         self.new_sampler = new_sampler
-        self.moves = moves
         self.parallel_CPU = parallel_CPU
         self.vectorize = vectorize
         self.seed = seed
         self.backend = None
         self.sampler = None
-        if nwalkers is None:
-            self.nwalkers = len(self.pars_init)
-        else:
-            self.nwalkers = nwalkers
+        
         if self.vectorize:
             self.parallel_CPU = False
             print("Since vectorize=True the parameter parallel_CPU has been set to False.")
-        if moves is None:
+        if moves_str is None:
             self.moves = [(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode="random", factor=None), 0)]
-            print("No moves parameter has been specified. moves has been set to the default StretchMove() of emcee")                
+            print("No moves parameter has been specified. moves has been set to the default StretchMove() of emcee")
+        else:
+            self.moves = eval(moves_str)
         self.__check_define_pars_labels()
         if self.new_sampler:
-            if os.path.exists(self.backend_filename):
+            if path.exists(self.backend_filename):
                 now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
                 print("Backend file", self.backend_filename, "already exists.")
-                self.backend_filename = os.path.splitext(
+                self.backend_filename = path.splitext(
                     self.backend_filename)[0]+"_"+now+".h5"
                 print("In order not to overwrite previous results the backend filename will be changed to",
                       self.backend_filename)     
         else:
-            if not os.path.exists(self.backend_filename):
+            if not path.exists(self.backend_filename):
                 print("The new_sampler flag was set to false but the backend file", self.backend_filename, "does not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.")
                 self.new_sampler = True
             else:
@@ -191,8 +213,8 @@ class MCMC(object):
                 self.load_sampler()
                 self.nsteps = nsteps
                 self.check_params_backend()
-        if self.pars_init is None:
-            print("To perform sampling you need to specify initialization for the parameters (pars_init).")
+        if self.pars_init_vec is None:
+            print("To perform sampling you need to specify initialization for the parameters (pars_init_vec).")
 
     #def __set_param(self, par_name, par_val):
     #    if par_val is not None:
@@ -260,7 +282,7 @@ class MCMC(object):
             print("Initialize backend in file", self.backend_filename)
             self.backend = emcee.backends.HDFBackend(self.backend_filename, name=self.chains_name)
             self.backend.reset(self.nwalkers, self.ndim)
-            p0 = self.pars_init
+            p0 = self.pars_init_vec
         else:
             if self.backend is None:
                 try:
