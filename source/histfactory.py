@@ -37,7 +37,15 @@ class histfactory(object):
     import histfactory workspaces and read parameters and logpdf using the pyhf
     package. In particular the class instantiate an object containing the following attributes:
     ----------
-
+    'bkg_files_base_name',
+    'likelihoods_dict',
+    'name',
+    'out_folder',
+    'output_file_base_name',
+    'patch_files_base_name',
+    'regions',
+    'regions_folders_base_name',
+    'workspace_folder'
     
     
     """
