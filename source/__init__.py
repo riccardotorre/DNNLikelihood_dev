@@ -5,8 +5,8 @@ from .histfactory import Histfactory
 from .likelihood import Likelihood
 from .sampler import Sampler
 from .data import Data
-from .DNNLik_ensemble import DNN_likelihood_ensemble
-from .DNNLik import DNN_likelihood
+from .DNN_likelihood_ensemble import DNN_likelihood_ensemble
+from .DNN_likelihood import DNN_likelihood
 
 #from .DNNLik import DNNLik
 #from . import files

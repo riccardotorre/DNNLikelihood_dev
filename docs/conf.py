@@ -19,7 +19,7 @@
 import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path('../source').resolve()))
+sys.path.insert(0, str(Path('../').resolve()))
 
 def setup(app):
     app.add_stylesheet(

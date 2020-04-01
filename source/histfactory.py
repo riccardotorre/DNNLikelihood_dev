@@ -31,8 +31,9 @@ def print(*args, **kwargs):
             return builtins.print(*args, **kwargs)
 
 class Histfactory(object):
-    """ATLAS HistFactory likelihoods container
-    .. _histfactory_class:
+    """
+    .. _histfactory_class: 
+    ATLAS HistFactory likelihoods container
 
     This class is a container for a 'histfactory' object which allows one to import histfactory workspaces, 
     read parameters and logpdf using the pyhf package, create ``likelihood`` objects (see the :ref:`likelihood <_likelihood_class>`) 
