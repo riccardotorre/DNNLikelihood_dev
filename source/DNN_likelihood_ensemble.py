@@ -22,7 +22,7 @@ from joblib import parallel_backend, Parallel, delayed
 from multiprocessing import Pool
 from concurrent.futures import ThreadPoolExecutor
 
-from . import utility
+from . import utils
 from .data import Data
 from .DNN_likelihood import DNN_likelihood
 from . import set_resources
@@ -136,7 +136,7 @@ class DNN_likelihood_ensemble(object):
         #### Set model_data_ensemble_kwargs
         # example: model_data_ensemble_kwargs = {'npoints_list': [[1000,300],[2000,600],[3000,1000]]}
         self.__check_model_data_ensemble_kwargs()
-        self.__model_data_ensemble_kwargs_list = list(utility.product_dict(**self.__model_data_ensemble_kwargs))
+        self.__model_data_ensemble_kwargs_list = list(utils.product_dict(**self.__model_data_ensemble_kwargs))
         self.__model_data_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_data_ensemble_kwargs_list]
 
         #### Set model_define_ensemble_kwargs
@@ -146,7 +146,7 @@ class DNN_likelihood_ensemble(object):
         #                                        "batch_norm_list": [True], 
         #                                        "kernel_initializer_list": ['glorot_uniform']}
         self.__check_model_define_ensemble_kwargs()
-        self.__model_define_ensemble_kwargs_list = list(utility.product_dict(**self.__model_define_ensemble_kwargs))
+        self.__model_define_ensemble_kwargs_list = list(utils.product_dict(**self.__model_define_ensemble_kwargs))
         self.__model_define_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_define_ensemble_kwargs_list]
 
         #### Set model_optimizers_ensemble_kwargs
@@ -158,7 +158,7 @@ class DNN_likelihood_ensemble(object):
         #                                                                         "momentum": 0.0, 
         #                                                                         "nesterov": False}}]}
         self.__check_model_optimizers_ensemble_kwargs()
-        self.__model_optimizers_ensemble_kwargs_list = list(utility.product_dict(**self.__model_optimizers_ensemble_kwargs))
+        self.__model_optimizers_ensemble_kwargs_list = list(utils.product_dict(**self.__model_optimizers_ensemble_kwargs))
         self.__model_optimizers_ensemble_kwargs_list = [{k.replace("optimizers_list", "optimizer"): v for k, v in i.items()} for i in self.__model_optimizers_ensemble_kwargs_list]
 
         #### Set model_compile_ensemble_kwargs
@@ -166,7 +166,7 @@ class DNN_likelihood_ensemble(object):
         #                                         "optimizers_list": [optimizers.Adam(lr=0.001, beta_1=0.95, beta_2=0.999, epsilon=1e-10, decay=0.0, amsgrad=False),...],
         #                                         "metrics":["mse","msle",...]}
         self.__check_model_compile_ensemble_kwargs()
-        self.__model_compile_ensemble_kwargs_list = list(utility.product_dict(**utility.dic_minus_keys(self.__model_compile_ensemble_kwargs,"metrics")))
+        self.__model_compile_ensemble_kwargs_list = list(utils.product_dict(**utils.dic_minus_keys(self.__model_compile_ensemble_kwargs,"metrics")))
         self.__model_compile_ensemble_kwargs_list = [{**{k.replace("_list", "").replace("losses", "loss"): v for k, v in i.items()}, **{
             "metrics": self.__model_compile_ensemble_kwargs["metrics"]}} for i in self.__model_compile_ensemble_kwargs_list]
 
@@ -190,7 +190,7 @@ class DNN_likelihood_ensemble(object):
         # example: model_train_ensemble_kwargs={"epochs_list": [200,1000],
         #                                       "batch_size_list": [512,1024,2048],
         self.__check_model_train_ensemble_kwargs()
-        self.__model_train_ensemble_kwargs_list = list(utility.product_dict(**self.__model_train_ensemble_kwargs))
+        self.__model_train_ensemble_kwargs_list = list(utils.product_dict(**self.__model_train_ensemble_kwargs))
         self.__model_train_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_train_ensemble_kwargs_list]
 
         #### Generate or import members (and save summary_log)
@@ -261,9 +261,9 @@ class DNN_likelihood_ensemble(object):
         global ShowPrints
         ShowPrints = verbose
         if self.ensemble_folder is not None:
-            self.ensemble_folder = utility.check_rename_folder(self.ensemble_folder).replace('\\', '/')
+            self.ensemble_folder = utils.check_rename_folder(self.ensemble_folder).replace('\\', '/')
         else:
-            self.ensemble_folder = utility.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
+            self.ensemble_folder = utils.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
         os.mkdir(self.ensemble_folder)
         print("Ensemble folder", self.ensemble_folder, "created.")
 
@@ -271,7 +271,7 @@ class DNN_likelihood_ensemble(object):
         global ShowPrints
         ShowPrints = verbose
         self.ensemble_results_folder = self.ensemble_folder+"/ensemble"
-        utility.check_create_folder(self.ensemble_results_folder)
+        utils.check_create_folder(self.ensemble_results_folder)
         print("Ensemble results will be saved in the folder",self.ensemble_results_folder, ".")
 
     def __load_summary_log(self):
@@ -579,7 +579,7 @@ class DNN_likelihood_ensemble(object):
                 gpus_id_list = list(range(len(self.active_gpus)))
             if len(members_list) < len(gpus_id_list):
                 gpus_id_list = gpus_id_list[:len(members_list)]
-            members_chunks = utility.chunks(members_list, len(gpus_id_list))
+            members_chunks = utils.chunks(members_list, len(gpus_id_list))
             if method == "auto":
                 try:
                     print("Training with joblib parallel method.")
@@ -671,7 +671,7 @@ class DNN_likelihood_ensemble(object):
                 gpus_id_list = list(range(len(self.active_gpus)))
             if len(members_list) < len(gpus_id_list):
                 gpus_id_list = gpus_id_list[:len(members_list)]
-            members_chunks = utility.chunks(members_list, len(gpus_id_list))
+            members_chunks = utils.chunks(members_list, len(gpus_id_list))
             for chunk in members_chunks:
                 if len(chunk) < len(gpus_id_list):
                     gpus_id_list = gpus_id_list[:len(chunk)]
@@ -713,7 +713,7 @@ class DNN_likelihood_ensemble(object):
               self.summary_log_json_filename)
         start = timer()
         now = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        history = {**{'Date time': str(now)}, **utility.dic_minus_keys(self.__dict__, ['data_sample',
+        history = {**{'Date time': str(now)}, **utils.dic_minus_keys(self.__dict__, ['data_sample',
                                                                                        'members', 'stacks',
                                                                                        '_DNNLik_ensemble__model_data_ensemble_kwargs_list',
                                                                                        '_DNNLik_ensemble__model_define_ensemble_kwargs_list',
@@ -721,8 +721,8 @@ class DNN_likelihood_ensemble(object):
                                                                                        '_DNNLik_ensemble__model_compile_ensemble_kwargs_list',
                                                                                        '_DNNLik_ensemble__model_callbacks_ensemble_kwargs_list',
                                                                                        '_DNNLik_ensemble__model_train_ensemble_kwargs_list'])}
-        new_hist = utility.convert_types_dict(history)
-        self.summary_log_json_filename = utility.check_rename_file(self.summary_log_json_filename)
+        new_hist = utils.convert_types_dict(history)
+        self.summary_log_json_filename = utils.check_rename_file(self.summary_log_json_filename)
         with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(
                 ',', ':'), indent=4)

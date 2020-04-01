@@ -15,7 +15,7 @@ except:
     print("No module named 'jupyterthemes'. Continuing without.\nIf you wish to customize jupyter notebooks please install 'jupyterthemes'.")
 
 from . import inference
-from . import utility
+from . import utils
 
 ShowPrints = True
 def print(*args, **kwargs):
@@ -30,8 +30,9 @@ def print(*args, **kwargs):
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 class Likelihood(object):
-    """Container class for the original likelihood
+    """
     .. _likelihood_class:
+    **The likelihood object**
     """
     def __init__(self,
                  name = None,
@@ -138,12 +139,12 @@ class Likelihood(object):
             if overwrite:
                 out_file = path.abspath(self.output_file_base_name+".pickle")
             else:
-                out_file = utility.check_rename_file(path.abspath(self.output_file_base_name+".pickle"))
+                out_file = utils.check_rename_file(path.abspath(self.output_file_base_name+".pickle"))
         else:
             if overwrite:
                 out_file = path.join(self.out_folder,self.output_file_base_name+".pickle")
             else:
-                out_file = utility.check_rename_file(path.join(self.out_folder,self.output_file_base_name+".pickle"))
+                out_file = utils.check_rename_file(path.join(self.out_folder,self.output_file_base_name+".pickle"))
         pickle_out = open(out_file, 'wb')
         cloudpickle.dump(self, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         #pickle.dump(self, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)

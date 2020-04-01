@@ -3,7 +3,7 @@ from scipy import stats
 import matplotlib.pyplot as plt
 from scipy import optimize
 
-from . import utility
+from . import utils
 
 def CI_from_sigma(sigma):
     np.array(sigma)
@@ -122,7 +122,7 @@ def HPD_quotas(data, intervals=0.68, weights=None, nbins=25, from_top=True):
     counts, _, _ = np.histogram2d(data[:, 0], data[:, 1], bins=nbins, range=None, normed=None, weights=weights, density=None)
     #counts, binsX, binsY = np.histogram2d(data[:, 0], data[:, 1], bins=nbins, range=None, normed=None, weights=weights, density=None)
     integral = counts.sum()
-    counts_sorted = np.flip(np.sort(utility.flatten_list(counts)))
+    counts_sorted = np.flip(np.sort(utils.flatten_list(counts)))
     quotas = intervals
     q = 0
     j = 0

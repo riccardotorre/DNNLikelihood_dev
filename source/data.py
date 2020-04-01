@@ -6,7 +6,7 @@ from datetime import datetime
 from timeit import default_timer as timer
 import builtins
 
-from . import utility
+from . import utils
 
 ShowPrints = True
 def print(*args, **kwargs):
@@ -222,7 +222,7 @@ class Data(object):
         """
         global ShowPrints
         ShowPrints = verbose
-        data_sample_filename = utility.check_rename_file(self.data_sample_output_filename)
+        data_sample_filename = utils.check_rename_file(self.data_sample_output_filename)
         start = timer()     
         h5_out = h5py.File(data_sample_filename,"w")
         h5_out.create_group(self.name)

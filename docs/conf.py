@@ -19,13 +19,16 @@
 import os
 import sys
 from pathlib import Path
+import types
 sys.path.insert(0, str(Path('../').resolve()))
 
+
 def setup(app):
+    """Add stylesheet."""
     app.add_stylesheet(
         'https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css'
     )
-
+    
 # -- Project information -----------------------------------------------------
 
 project = 'DNNLikelihood'
@@ -63,7 +66,7 @@ extensions = [
     'm2r',
     'sphinx_issues',
     'sphinx_copybutton',
-    'sphinx_automodapi.automodapi',
+    'sphinx_automodapi.automodapi'
 ]
 
 # Generate the API documentation when building
@@ -72,6 +75,20 @@ numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+
+# Add all methods to doc.
+#autodoc_default_flags = ['private-members']#, 'private-members', 'special-members', 'undoc-members', 'inherited-members', 'show-inheritance']
+#autodoc_default_options = {
+#    'members': None,
+#    'member-order': 'bysource',
+#    'private-members': None,
+#    'special-members': '__init__',
+#    'undoc-members': True#,
+#    'inherited-members': False,
+#    'show-inheritance': False,
+#    'exclude-members': None
+#}
+#autosummary_generate = True
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -105,6 +122,7 @@ pygments_style = None
 #
 #html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
+html_title = 'DNNLikelihood'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -125,8 +143,10 @@ html_static_path = ['_static']
 # default: ``['localtoc.html', 'relations.html', 'sourcelink.html',
 # 'searchbox.html']``.
 #
-# html_sidebars = {}
-
+html_sidebars = {
+    '**': ['globaltoc.html', 'sourcelink.html', 'searchbox.html'],
+    'using/windows': ['windowssidebar.html', 'searchbox.html'],
+}
 
 # -- Options for HTMLHelp output ---------------------------------------------
 

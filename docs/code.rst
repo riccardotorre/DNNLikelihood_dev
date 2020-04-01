@@ -1,44 +1,10 @@
-Python code
+Python module
 ===========
 
-histfactory
--------------
+The Python code consists of bla bla bla
 
-.. automodapi:: source.histfactory
-   :no-inheritance-diagram:
-   :no-heading:
+.. toctree::
+   :maxdepth: 8
 
-likelihood
--------------
-
-.. automodapi:: source.likelihood
-   :no-inheritance-diagram:
-   :no-heading:
-
-sampler
--------------
-
-.. automodapi:: source.sampler
-   :no-inheritance-diagram:
-   :no-heading:
-
-data
--------------
-
-.. automodapi:: source.data
-   :no-inheritance-diagram:
-   :no-heading:
-
-DNN_likelihood
--------------
-
-.. automodapi:: source.DNN_likelihood
-   :no-inheritance-diagram:
-   :no-heading:   
-
-DNN_likelihood_ensemble
----------------------
-
-.. automodapi:: source.DNN_likelihood_ensemble
-   :no-inheritance-diagram:
-   :no-heading:
+   histfactory
+   likelihood

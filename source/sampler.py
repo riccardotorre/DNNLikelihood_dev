@@ -1,7 +1,5 @@
 __all__ = ["Sampler"]
 
-from . import utility
-
 from os import path
 import importlib
 import sys
@@ -20,6 +18,7 @@ import psutil
 from multiprocessing import Pool
 
 import emcee
+from . import utils
 from .data import Data
 
 ShowPrints = True
@@ -380,7 +379,7 @@ class Sampler(object):
             raise ValueError( "invalid dimensions for 1D autocorrelation function")
         if len(np.unique(x)) == 1:
             print("Chain does not change in "+str(len(x))+" steps. Autocorrelation for this chain may return nan.")
-        n = utility.next_power_of_two(len(x))
+        n = utils.next_power_of_two(len(x))
         # Compute the FFT and then (from that) the auto-correlation function
         f = np.fft.fft(x - np.mean(x), n=2*n)
         acf = np.fft.ifft(f * np.conjugate(f))[:len(x)].real
@@ -523,7 +522,7 @@ class Sampler(object):
         for par in pars:
             idx = np.sort([(i)*(10**j) for i in range(1, 11) for j in range(int(np.ceil(np.log10(self.nsteps))))])
             idx = np.unique(idx[idx <= self.nsteps])
-            idx = utility.get_spaced_elements(idx, numElems=npoints+1)
+            idx = utils.get_spaced_elements(idx, numElems=npoints+1)
             idx = idx[1:]
             gr = self.gelman_rubin(par, steps=idx)
             plt.plot(gr[:,1], gr[:,2], '-', alpha=0.8)
@@ -533,7 +532,7 @@ class Sampler(object):
             plt.tight_layout()
             if save:
                 figure_filename = filename+"_GR_Rc_"+str(par)+".pdf"
-                figure_filename = utility.check_rename_file(figure_filename)
+                figure_filename = utils.check_rename_file(figure_filename)
                 plt.savefig(figure_filename)
                 print('Saved figure', figure_filename+'.')
             if verbose:
@@ -546,7 +545,7 @@ class Sampler(object):
             plt.tight_layout()
             if save:
                 figure_filename = filename+"_GR_sqrtVhat_"+str(par)+".pdf"
-                figure_filename = utility.check_rename_file(figure_filename)
+                figure_filename = utils.check_rename_file(figure_filename)
                 plt.savefig(figure_filename)
                 print('Saved figure', figure_filename+'.')
             if verbose:
@@ -559,7 +558,7 @@ class Sampler(object):
             plt.tight_layout()
             if save:
                 figure_filename = filename+"_GR_sqrtW_"+str(par)+".pdf"
-                figure_filename = utility.check_rename_file(figure_filename)
+                figure_filename = utils.check_rename_file(figure_filename)
                 plt.savefig(figure_filename)
                 print('Saved figure', figure_filename+'.')
             if verbose:
@@ -594,7 +593,7 @@ class Sampler(object):
             plt.tight_layout()
             if save:
                 figure_filename = filename+"_distr_"+str(par)+".pdf"
-                figure_filename = utility.check_rename_file(figure_filename)
+                figure_filename = utils.check_rename_file(figure_filename)
                 plt.savefig(figure_filename)
                 print('Saved figure', figure_filename+'.')
             if verbose:
@@ -622,7 +621,7 @@ class Sampler(object):
             # Compute the largest number of duplicated at the beginning of chains
             n_dupl = []
             for c in chain:
-                n_dupl.append(utility.check_repeated_elements_at_start(c))
+                n_dupl.append(utils.check_repeated_elements_at_start(c))
             n_start = max(n_dupl)+10
             if n_start > 100:
                 print("There is at least one chain starting with", str(
@@ -686,7 +685,7 @@ class Sampler(object):
             plt.tight_layout()
             if save:
                 figure_filename = filename+"_autocorr_"+str(par)+".pdf"
-                figure_filename = utility.check_rename_file(figure_filename)
+                figure_filename = utils.check_rename_file(figure_filename)
                 plt.savefig(figure_filename)
                 print('Saved figure', figure_filename+'.')
             if verbose:
@@ -726,7 +725,7 @@ class Sampler(object):
             plt.tight_layout()
             if save:
                 figure_filename = filename+"_chains_"+str(par)+".pdf"
-                figure_filename = utility.check_rename_file(figure_filename)
+                figure_filename = utils.check_rename_file(figure_filename)
                 plt.savefig(figure_filename)
                 print('Saved figure', figure_filename+'.')
             if verbose:
@@ -762,7 +761,7 @@ class Sampler(object):
         plt.tight_layout()
         if save:
             figure_filename = filename+"_chains_logpdf.pdf"
-            figure_filename = utility.check_rename_file(figure_filename)
+            figure_filename = utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
             print('Saved figure', figure_filename+'.')
         if verbose:

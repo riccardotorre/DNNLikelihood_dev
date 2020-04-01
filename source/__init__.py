@@ -1,5 +1,5 @@
 from . import set_resources
-from . import utility
+from . import utils
 from . import inference
 from .histfactory import Histfactory
 from .likelihood import Likelihood

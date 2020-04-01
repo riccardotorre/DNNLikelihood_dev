@@ -36,7 +36,7 @@ except:
     print("No module named 'livelossplot'. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
 
 from .data import Data
-from . import utility
+from . import utils
 from . import set_resources
 from . import inference
 from .corner import corner
@@ -282,12 +282,12 @@ class DNN_likelihood(object):
     def __check_create_ensemble_folder(self,verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        utility.check_create_folder(self.ensemble_folder)
+        utils.check_create_folder(self.ensemble_folder)
 
     def __check_create_member_results_folder(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        utility.check_create_folder(self.member_results_folder)
+        utils.check_create_folder(self.member_results_folder)
 
     def __load_summary_log(self):
         summary_log_files = []
@@ -494,7 +494,7 @@ class DNN_likelihood(object):
                     metrics_obj[i] = eval("self."+metrics_string[i])
                 except:
                     print("Exception for", metrics_string[i], ".")
-                    metrics_obj[i] = eval("self."+utility.metric_name_unabbreviate(metrics_string[i]))
+                    metrics_obj[i] = eval("self."+utils.metric_name_unabbreviate(metrics_string[i]))
         self.metrics_string = metrics_string
         self.metrics = metrics_obj
 
@@ -530,9 +530,9 @@ class DNN_likelihood(object):
                 string = "callbacks.ModelCheckpoint(filepath='" + self.model_checkpoints_filename+"')"
             elif cb == "TensorBoard":
                 self.tensorboard_log_dir = self.member_results_folder+"/"+"logs/fit"# +"/"+ datetime.now().strftime("%Y%m%d-%H%M%S")
-                utility.check_create_folder(self.member_results_folder+"/" + "logs")
-                utility.check_create_folder(self.member_results_folder+"/" +"logs/fit")
-                #utility.check_create_folder(self.tensorboard_log_dir)
+                utils.check_create_folder(self.member_results_folder+"/" + "logs")
+                utils.check_create_folder(self.member_results_folder+"/" +"logs/fit")
+                #utils.check_create_folder(self.tensorboard_log_dir)
                 string = "callbacks.TensorBoard(log_dir='" + \
                     self.tensorboard_log_dir+"')"
             else:
@@ -552,9 +552,9 @@ class DNN_likelihood(object):
                 key1 = "callbacks."+key1
             elif key1 == "TensorBoard":
                 self.tensorboard_log_dir = self.member_results_folder+"/"+"logs/fit"# +"/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-                utility.check_create_folder(self.member_results_folder+"/" +"logs")
-                utility.check_create_folder(self.member_results_folder+"/" +"logs/fit")
-                #utility.check_create_folder(self.tensorboard_log_dir)
+                utils.check_create_folder(self.member_results_folder+"/" +"logs")
+                utils.check_create_folder(self.member_results_folder+"/" +"logs/fit")
+                #utils.check_create_folder(self.tensorboard_log_dir)
                 string = "log_dir = '"+self.tensorboard_log_dir+"', "
                 key1 = "callbacks."+key1
             else:
@@ -566,7 +566,7 @@ class DNN_likelihood(object):
                     if value2 == 'loss':
                         value2 = 'val_loss'
                     else:
-                        value2 = "val_" + utility.metric_name_unabbreviate(value2)
+                        value2 = "val_" + utils.metric_name_unabbreviate(value2)
                 if type(value2) is str:
                     value2 = "'"+value2+"'"
                 if not "path" in key2:
@@ -871,7 +871,7 @@ class DNN_likelihood(object):
         metrics = np.unique(metrics)
         for metric in metrics:
             start = timer()
-            metric = utility.metric_name_unabbreviate(metric)
+            metric = utils.metric_name_unabbreviate(metric)
             val_metric = 'val_'+ metric
             figname = self.figure_base_filename+"_training_history_" + metric+".pdf"
             self.figures_training_history.append(figname)
@@ -1026,7 +1026,7 @@ class DNN_likelihood(object):
         Y_pred_train, _ = self.model_predict(self.X_train[rnd_idx_train], batch_size=self.batch_size)
         if np.amax(Y_pred_train) > 0:
             print('There are positive values of log-likelihood')
-        W_train = utility.normalize_weights(np.exp(Y_pred_train)/np.exp(self.Y_train[rnd_idx_train]))
+        W_train = utils.normalize_weights(np.exp(Y_pred_train)/np.exp(self.Y_train[rnd_idx_train]))
         distr_train = self.X_train[rnd_idx_train][:, pars_list]
         mean_train = np.mean(distr_train, 0)
         mean_pred_train = np.average(distr_train, 0, weights=W_train)
@@ -1067,7 +1067,7 @@ class DNN_likelihood(object):
         Y_pred_test, _ = self.model_predict(self.X_test[rnd_idx_test], batch_size=self.batch_size)
         if np.amax(Y_pred_test) > 0:
             print('There are positive values of log-likelihood')
-        W_test = utility.normalize_weights(np.exp(Y_pred_test)/np.exp(self.Y_test[rnd_idx_test]))
+        W_test = utils.normalize_weights(np.exp(Y_pred_test)/np.exp(self.Y_test[rnd_idx_test]))
         distr_test = self.X_test[rnd_idx_test][:, pars_list]
         mean_test = np.mean(distr_test, 0)
         mean_pred_test = np.average(distr_test, 0, weights=W_test)
@@ -1200,7 +1200,7 @@ class DNN_likelihood(object):
         print("Compute Bayesian inference benchmarks")
         start = timer()
         print("Computing weights (pred vs true) for reweighting of distributions")
-        [W_train, W_val, W_test] = [utility.normalize_weights(W) for W in [Y_pred_train_exp/Y_train_exp, Y_pred_val_exp/Y_val_exp, Y_pred_test_exp/Y_test_exp]]
+        [W_train, W_val, W_test] = [utils.normalize_weights(W) for W in [Y_pred_train_exp/Y_train_exp, Y_pred_val_exp/Y_val_exp, Y_pred_test_exp/Y_test_exp]]
         print("Computing HPDI (pred vs true) using reweighted distributions")
         #(data, intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True)
         HPDI_result = {}
@@ -1233,9 +1233,9 @@ class DNN_likelihood(object):
                                                                   "Test vs pred on val": KS_test_pred_val_median,
                                                                   "Val vs pred on test": KS_val_pred_test_median,
                                                                   "Train vs pred on train": KS_train_pred_train_median}}}
-        self.predictions = utility.convert_types_dict(self.predictions)
+        self.predictions = utils.convert_types_dict(self.predictions)
         # Sort nested dictionary by keys
-        self.predictions = utility.sort_dict(self.predictions)
+        self.predictions = utils.sort_dict(self.predictions)
         end = timer()
         print('Bayesian inference benchmarks computed in', str(end-start), 's.')
         self.save_predictions_json()
@@ -1351,8 +1351,8 @@ class DNN_likelihood(object):
         start = timer()
         history = self.history
         #for key in list(history.keys()):
-        #    self.history[utility.metric_name_abbreviate(key)] = self.history.pop(key)
-        new_hist = utility.convert_types_dict(history)
+        #    self.history[utils.metric_name_abbreviate(key)] = self.history.pop(key)
+        new_hist = utils.convert_types_dict(history)
         with codecs.open(self.history_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(',', ':'), sort_keys=True, indent=4)
         end = timer()
@@ -1366,7 +1366,7 @@ class DNN_likelihood(object):
         print("Saving summary_log to json file", self.summary_log_json_filename)
         start = timer()
         now = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        history = {**{'Date time': str(now)}, **utility.dic_minus_keys(self.__dict__,['data_sample', 'optimizer', 'loss',
+        history = {**{'Date time': str(now)}, **utils.dic_minus_keys(self.__dict__,['data_sample', 'optimizer', 'loss',
                                                                                       'metrics', 'callbacks',
                                                                                       'history',  'predictions', 'model',
                                                                                       'idx_train', 'idx_val', 'idx_test',
@@ -1375,7 +1375,7 @@ class DNN_likelihood(object):
                                                                                       'scalerX', 'scalerY',
                                                                                       'DNNLik_input_folder']
                                                                         )}
-        new_hist = utility.convert_types_dict(history)
+        new_hist = utils.convert_types_dict(history)
         with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(',', ':'), indent=4)
         end = timer()
@@ -1391,10 +1391,10 @@ class DNN_likelihood(object):
         summary_text = summary_text + "AF out: " + self.act_func_out_layer + "\n"
         summary_text = summary_text + "Batch norm: " + str(self.batch_norm) + "\n"
         summary_text = summary_text + "Loss: " + self.loss_string + "\n"
-        summary_text = summary_text + "Optimizer: " + utility.string_add_newline_at_char(self.optimizer_string,",").replace("_", "-") + "\n"
+        summary_text = summary_text + "Optimizer: " + utils.string_add_newline_at_char(self.optimizer_string,",").replace("_", "-") + "\n"
         summary_text = summary_text + "Batch size: " + str(self.batch_size) + "\n"
         summary_text = summary_text + "Epochs: " + str(self.final_epochs) + "\n"
-        summary_text = summary_text + "GPU(s): " + utility.string_add_newline_at_char(str(self.training_device),",") + "\n"
+        summary_text = summary_text + "GPU(s): " + utils.string_add_newline_at_char(str(self.training_device),",") + "\n"
         summary_text = summary_text + "Best losses: " + '[' + '{0:1.2e}'.format(self.predictions["Metrics on scaled data"]["loss_best"]) + ',' + \
                                                               '{0:1.2e}'.format(self.predictions["Metrics on scaled data"]["val_loss_best"]) + ',' + \
                                                               '{0:1.2e}'.format(self.predictions["Metrics on scaled data"]["test_loss_best"]) + ']' + "\n"
@@ -1419,7 +1419,7 @@ class DNN_likelihood(object):
         print("Saving predictions to json file", self.predictions_json_filename)
         start = timer()
         #history = self.predictions
-        #new_hist = utility.convert_types_dict(history)
+        #new_hist = utils.convert_types_dict(history)
         with codecs.open(self.predictions_json_filename, 'w', encoding='utf-8') as f:
             json.dump(self.predictions, f, separators=(
                 ',', ':'), sort_keys=True, indent=4)
@@ -1455,7 +1455,7 @@ class DNN_likelihood(object):
         ShowPrints = False
         plot_model(self.model, show_shapes=True, show_layer_names=True, to_file=png_file)
         ShowPrints = verbose
-        utility.make_pdf_from_img(png_file)
+        utils.make_pdf_from_img(png_file)
         try:
             os.remove(png_file)
         except:
