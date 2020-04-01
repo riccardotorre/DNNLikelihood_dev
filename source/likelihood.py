@@ -1,4 +1,4 @@
-__all__ = ["likelihood"]
+__all__ = ["Likelihood"]
 
 from os import path, stat, sep
 import builtins
@@ -29,7 +29,7 @@ def print(*args, **kwargs):
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
-class likelihood(object):
+class Likelihood(object):
     """Container class for the original likelihood
     .. _likelihood_class:
     """

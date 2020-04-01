@@ -1,4 +1,4 @@
-__all__ = ["histfactory"]
+__all__ = ["Histfactory"]
 
 import sys
 import copy
@@ -18,7 +18,7 @@ sys.path.insert(0, '../')
 import pyhf
 
 from . import utility
-from .likelihood import likelihood
+from .likelihood import Likelihood
 
 ShowPrints = True
 def print(*args, **kwargs):
@@ -30,12 +30,12 @@ def print(*args, **kwargs):
         if ShowPrints != 0:
             return builtins.print(*args, **kwargs)
 
-class histfactory(object):
+class Histfactory(object):
     """ATLAS HistFactory likelihoods container
     .. _histfactory_class:
 
     This class is a container for a 'histfactory' object which allows one to import histfactory workspaces, 
-    read parameters and logpdf using the pyhf package, create ``likelihood`` objects (see :ref:`_likelihood_class`) 
+    read parameters and logpdf using the pyhf package, create ``likelihood`` objects (see the :ref:`likelihood <_likelihood_class>`) 
     and save them for later use.
 
     Args:
@@ -279,6 +279,8 @@ class histfactory(object):
                 default: ``False``
             - **verbose (bool or int): verbose mode. See :ref:`_verbose_implementation`.
                 default: ``True``
+        Returns:
+            - ``likelihood`` object (see )
         """
         global ShowPrints
         ShowPrints = verbose
@@ -317,26 +319,23 @@ class histfactory(object):
 
     def get_lik_object(self, lik_number=0):
         """
-        Bla bla bla to be written
-        Args:
-            - **lik_numbers_list** (list): list of likelihoods numbers (keys of the ``histfactory.likelihood_dict`` dictionary) that
-                are saved in ``model_loaded=True`` mode. The default value ``None`` implies that all members are saved in
-                ``model_loaded=True`` mode.
-                default: ``None``
-            - **overwrite** (bool): flag that determines whether an existing file gets overwritten or if a new file is created.
-                If ``overwrite=True`` the ``utility.check_rename_file()`` function (see :ref:`_utility_check_rename_file`) is used
-                to append a time-stamp to the file name.
-                default: ``False``
+        Generates a ``likelihood`` object containing all properties needed for further processing. The logpdf method is built from
+        the ``pyhf.Workspace.model.logpdf()`` pyhf method, and it takes two arguments: the array of parameters values ``x`` and
+        the array of observed data ``obs_data``. With respect to the pyhf ``logpdf`` method, the logpdf in the ``likelihood`` object
+        is flattened to output a float (instead of a numpy.ndarray containing a float).
+            - **lik_number** (int): the number of the likelihood for which the ``likelihood`` object is constructed.
+                default: ``0``
             - **verbose (bool or int): verbose mode. See :ref:`_verbose_implementation`.
                 default: ``True``
         """
+        start = timer()
         lik = dict(self.likelihoods_dict[lik_number])
         if not lik["model_loaded"]:
             print("Model for likelihood",lik_number,"not loaded. Attempting to load it.")
             self.import_histfactory(lik_numbers_list=[lik_number], verbose=True)
         name = lik["name"]
-        def logpdf(x,y):
-            return lik["model"].logpdf(x, y)[0]
+        def logpdf(x,obs_data):
+            return lik["model"].logpdf(x, obs_data)[0]
         logpdf_args = [lik["obs_data"]]
         pars_pos_poi = lik["pars_pos_poi"]
         pars_pos_nuis = lik["pars_pos_nuis"]
@@ -344,7 +343,7 @@ class histfactory(object):
         pars_labels = lik["pars_labels"]
         pars_bounds = lik["pars_bounds"]
         out_folder = self.out_folder
-        lik_obj = likelihood(name=name,
+        lik_obj = Likelihood(name=name,
                       logpdf=logpdf,
                       logpdf_args=logpdf_args,
                       pars_pos_poi=pars_pos_poi,
@@ -354,6 +353,9 @@ class histfactory(object):
                       pars_bounds=pars_bounds,
                       out_folder=out_folder,
                       lik_input_file=None)
+        end = timer()
+        print("likelihood object created for likelihood",lik_number,"in",str(end-start),"s.")
         return lik_obj
+
 
 

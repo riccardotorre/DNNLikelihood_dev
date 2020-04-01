@@ -1,4 +1,4 @@
-__all__ = ["MCMC"]
+__all__ = ["Sampler"]
 
 from . import utility
 
@@ -20,7 +20,7 @@ import psutil
 from multiprocessing import Pool
 
 import emcee
-from .data_sample import Data_sample
+from .data import Data
 
 ShowPrints = True
 def print(*args, **kwargs):
@@ -34,8 +34,8 @@ def print(*args, **kwargs):
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
-class MCMC(object):
-    """Class defining MCMC sampling based on the emcee3 sampler.
+class Sampler(object):
+    """Class defining ``sampler`` object based on the emcee3 sampler.
     Parameters
     ----------
     logpdf : callable
@@ -185,7 +185,7 @@ class MCMC(object):
         self.vectorize = vectorize
         self.seed = seed
         self.backend = None
-        self.sampler = None
+        self.Sampler = None
         
         if self.vectorize:
             self.parallel_CPU = False
@@ -309,10 +309,10 @@ class MCMC(object):
             if progress:
                 print("Running", n_processes, "parallel processes.")
             with Pool(n_processes) as pool:
-                self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logpdf, moves=self.moves, pool=pool, backend=self.backend, args=self.logpdf_args)
+                self.Sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logpdf, moves=self.moves, pool=pool, backend=self.backend, args=self.logpdf_args)
                 self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress)
         else:
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logpdf, moves=self.moves,
+            self.Sampler = emcee.EnsembleSampler(self.nwalkers, self.ndim, self.logpdf, moves=self.moves,
                                                  args=self.logpdf_args, backend=self.backend, vectorize=self.vectorize)
             self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress)
         end = timer()
@@ -322,7 +322,7 @@ class MCMC(object):
     def load_sampler(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        print("Notice: when loading sampler from backend, all parameters of the sampler but the 'logpdf', its args 'logpdf_args', and 'moves' are set by the backend. All other parameters are set consistently with the MCMC class attributes.\nPay attention that they are consistent with the parameters used to produce the sampler saved in backend.")
+        print("Notice: when loading sampler from backend, all parameters of the sampler but the 'logpdf', its args 'logpdf_args', and 'moves' are set by the backend. All other parameters are set consistently with the ``sampler class attributes.\nPay attention that they are consistent with the parameters used to produce the sampler saved in backend.")
         self.new_sampler = False
         self.nsteps = 0
         start = timer()

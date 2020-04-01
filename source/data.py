@@ -1,4 +1,4 @@
-__all__ = ["Data_sample"]
+__all__ = ["Data"]
 
 import numpy as np
 import h5py
@@ -25,8 +25,8 @@ def print(*args, **kwargs):
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-class Data_sample(object):
-    """Class to initialize the Data_sample object
+class Data(object):
+    """Class to initialize the data object
     """
     def __init__(self,
                  data_X = None,
@@ -41,7 +41,7 @@ class Data_sample(object):
                  data_sample_output_filename=None,
                  load_on_RAM = False
                  ):
-        """Initializes the Data_sample object
+        """Initializes the ``data`` object
         It has either "mode = 0" (create) or "mode = 1" (load) operation depending on the given 
         inputs (see documentation of __check_define_mode and __init_mode methods for more details).
         """
@@ -147,10 +147,10 @@ class Data_sample(object):
     def __init_mode(self):
         """ Initializes according to self.mode (determined by the method __check_define_mode)
         Mode 0 = create: data_X and data_Y are given as input.
-            Data_sample object is created, defining npoints and ndim.
+            ``data`` object is created, defining npoints and ndim.
         Mode 1 = load as np.array: data_sample_input_filename is given as input. and load_on_RAM is True.
-            If load_on_RAM=True Data_sample object is created, name, data_X, data_Y, npoints and ndim are loaded from file as np.arrays (loaded into RAM).
-            If load_on_RAM=False Data_sample object is created, name, data_X, data_Y, npoints and ndim are read from file as h5py dataset (on disk).
+            If load_on_RAM=True ``data`` object is created, name, data_X, data_Y, npoints and ndim are loaded from file as np.arrays (loaded into RAM).
+            If load_on_RAM=False ``data`` object is created, name, data_X, data_Y, npoints and ndim are read from file as h5py dataset (on disk).
         """
         if self.mode == 0:
             self.__create_samples()

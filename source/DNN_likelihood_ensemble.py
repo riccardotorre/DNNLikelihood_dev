@@ -1,4 +1,4 @@
-__all__ = ["DNNLik_ensemble"]
+__all__ = ["DNN_likelihood_ensemble"]
 
 import json
 #import ndjson as json
@@ -23,8 +23,8 @@ from multiprocessing import Pool
 from concurrent.futures import ThreadPoolExecutor
 
 from . import utility
-from .data_sample import Data_sample
-from .DNNLik import DNNLik
+from .data import Data
+from .DNN_likelihood import DNN_likelihood
 from . import set_resources
 
 
@@ -38,7 +38,7 @@ def print(*args, **kwargs):
         if ShowPrints != 0:
             return builtins.print(*args, **kwargs)
 
-class DNNLik_ensemble(object):
+class DNN_likelihood_ensemble(object):
     def __init__(self,
                  DNNLik_ensemble_input_folder=None,
                  ensemble_name=None,
@@ -419,7 +419,7 @@ class DNNLik_ensemble(object):
         for n in range(self.n_members):
             DNNLik_input_folder = self.ensemble_folder+"/member_"+str(n)
             if self.__check_member_existence(DNNLik_input_folder):
-                self.members[n] = DNNLik(DNNLik_input_folder=DNNLik_input_folder,
+                self.members[n] = DNN_likelihood(DNNLik_input_folder=DNNLik_input_folder,
                                          data_sample=self.data_sample,
                                          resources_member_kwargs=self.get_resources_member_kwargs(),
                                          verbose=False
@@ -458,7 +458,7 @@ class DNNLik_ensemble(object):
         ShowPrints = verbose
         start = timer()
         #gpus_id_list = [eval(s.split(":")[-1]) for s in np.array(self.active_gpus)[:, 0]]
-        self.members[n] = DNNLik(DNNLik_input_folder=None,
+        self.members[n] = DNN_likelihood(DNNLik_input_folder=None,
                                  ensemble_name=self.ensemble_name,
                                  member_number=n,
                                  data_sample=self.data_sample,

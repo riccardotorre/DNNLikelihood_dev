@@ -1,4 +1,4 @@
-__all__ = ["DNNLik"]
+__all__ = ["DNN_likelihood"]
 
 import json
 #import ndjson as json
@@ -35,7 +35,7 @@ try:
 except:
     print("No module named 'livelossplot'. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
 
-from .data_sample import Data_sample
+from .data import Data
 from . import utility
 from . import set_resources
 from . import inference
@@ -53,7 +53,7 @@ def print(*args, **kwargs):
 
 mplstyle_path = os.path.join(os.path.split(os.path.realpath(__file__))[0],"matplotlib.mplstyle")
 
-class DNNLik(object):
+class DNN_likelihood(object):
     def __init__(self,
                  DNNLik_input_folder=None,
                  ensemble_name=None,
