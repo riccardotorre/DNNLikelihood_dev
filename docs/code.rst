@@ -1,5 +1,5 @@
 Python module
-===========
+=============
 
 The Python code consists of bla bla bla
 

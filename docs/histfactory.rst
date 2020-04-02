@@ -1,27 +1,32 @@
 histfactory.py
--------------
+--------------
 
 Summary
-^^^^^^^^^^^^^
+^^^^^^^
+
+The histfactory class is an API to pyhf that can be used to import likelihoods in the ATLAS histfactory format into
+the DNNLikelihood module. The API uses pyhf to parse all relevant information contained in the histfactory workspace
+and to create a ``likelihood`` object (see :ref:`likelihood_class`).
 
 Usage
-^^^^^^^^^^^^^
+^^^^^
 
 Class
-^^^^^^^^^^^^^
+^^^^^
+
 The file histfactoy.py contains a single class.
 
 .. autoclass:: source.histfactory.Histfactory
    :undoc-members:
 
 Arguments
-"""""""""""""
+"""""""""
 
     .. py:attribute:: workspace_folders
 
         Path (either relative to the code execution folder or absolute)
         containing the ATLAS histfactory workspace (usually containing the Regions subfolders).
-        The __init__ method automatically converts the path into an absolute path.  
+        The ``__init__`` method automatically converts the path into an absolute path.  
 
         :type: ``str`` or ``None``
         :return: ``None``   
@@ -87,7 +92,7 @@ Arguments
         :return: ``None``   
 
 Additional attributes
-"""""""""""""
+"""""""""""""""""""""
 
     .. py:attribute:: likelihoods_dict
 
@@ -98,42 +103,42 @@ Additional attributes
         :type: ``dict``
         
         Keys are:
-        a dictionary containing items corresponding to the following keys:  
-        + *"signal_region"* (type: ``str``)
-            Name of the signal region to which the member belongs 
-        + *"bg_only_file"* (type: ``str``)
-            Absolute path to the background file corresponding to the signal_region.
-        + *"patch_file"* (type: ``str``)
-            Absolute path to the patch file for the given likelihood.
-        + *"name"* (type: ``str``)
-            Name of the given likelihood. It is set to "*hf_name*_region_*rn*_patch_*pn*_*lik_n*_likelihood"
-            where *hf_name* is the ``histfactory.name`` attribute, *rn* is the region name determined from the region folder
-            name excluded the string ``regions_folders_base_name``, *pn* is the patch name determined from the patch file name
-            excluded the string ``patch_files_base_name+"."``, and *lik_n* is the likelihood number (the corresponding key
-            in the ``likelihoods_dict``).
-        + *"model_loaded"* (type: ``str``)
-            Flag that returns ``False`` is the model is not loaded, i.e. only the items *"signal_region"*, *"bg_only_file"*, 
-            *"patch_file"*, *"name"*, and *"model_loaded"* are available in the dictionary, and ``True`` if all dictionary items,
-            i.e. full model information and ``pyhf.Workspace.model`` object, are available in the dictionary.
-        + *"model"* (type: ``pyhf.Workspace.model`` object)
-            ``pyhf.Workspace.model()`` object containing the given likelihood parameters and logpdf.
-            See the `pyhf documentation <https://scikit-hep.org/pyhf/>`_.
-        + *"obs_data"* (type: ``numpy.ndarray``, shape: ``(n_bins,)``)
-            Numpy array containing the number of observed events in each of the n_bins bins for the given signal
-            region.
-        + *"pars_init"* (type: ``numpy.ndarray``, shape ``(n_pars,)``)
-            Array with a length equal to the number of parameters n_pars
-            entering in the likelihood (logpdf) function and containing their initial values.
-        + *"pars_bounds"* (type: ``numpy.ndarray``, shape ``(n_pars,2)``)
-            Array with lower and upper limit on each parameter of the n_pars parameters.
-            The logpdf function is constructed such that if any of the parameter has a value outside these bounds, it evaluates
-            to ``-np.inf``.
-        + *"pars_labels"* (type: ``list``)
-            List of strings containing the name of each parameter.
-        + *"pars_pos_poi"* (type: ``numpy.ndarray``, shape: ``(n_pois)``)
-            Array with the list of positions, in the array of parameters, of the n_pois parameters of interest.
-        + *"pars_pos_nuis"* (type: ``numpy.ndarray``, shape: ``(n_nuis)``)
-            Array with the list of positions, in the array of parameters, of the n_nuis nuisance parameters.
+
+            + *"signal_region"* (type: ``str``)
+                Name of the signal region to which the member belongs 
+            + *"bg_only_file"* (type: ``str``)
+                Absolute path to the background file corresponding to the signal_region.
+            + *"patch_file"* (type: ``str``)
+                Absolute path to the patch file for the given likelihood.
+            + *"name"* (type: ``str``)
+                Name of the given likelihood. It is set to "\ *hf_name*\ _region_\ *rn*\ _patch_\ *pn*\ _\ *lik_n*\ _likelihood"
+                where *hf_name* is the ``histfactory.name`` attribute, *rn* is the region name determined from the region folder
+                name excluded the string ``regions_folders_base_name``, *pn* is the patch name determined from the patch file name
+                excluded the string ``patch_files_base_name+"."``, and *lik_n* is the likelihood number (the corresponding key
+                in the ``likelihoods_dict``).
+            + *"model_loaded"* (type: ``str``)
+                Flag that returns ``False`` is the model is not loaded, i.e. only the items *"signal_region"*, *"bg_only_file"*, 
+                *"patch_file"*, *"name"*, and *"model_loaded"* are available in the dictionary, and ``True`` if all dictionary items,
+                i.e. full model information and ``pyhf.Workspace.model`` object, are available in the dictionary.
+            + *"model"* (type: ``pyhf.Workspace.model`` object)
+                ``pyhf.Workspace.model()`` object containing the given likelihood parameters and logpdf.
+                See the `pyhf documentation <https://scikit-hep.org/pyhf/>`_.
+            + *"obs_data"* (type: ``numpy.ndarray``, shape: ``(n_bins,)``)
+                Numpy array containing the number of observed events in each of the n_bins bins for the given signal
+                region.
+            + *"pars_init"* (type: ``numpy.ndarray``, shape ``(n_pars,)``)
+                Array with a length equal to the number of parameters n_pars
+                entering in the likelihood (logpdf) function and containing their initial values.
+            + *"pars_bounds"* (type: ``numpy.ndarray``, shape ``(n_pars,2)``)
+                Array with lower and upper limit on each parameter of the n_pars parameters.
+                The logpdf function is constructed such that if any of the parameter has a value outside these bounds, it evaluates
+                to ``-np.inf``.
+            + *"pars_labels"* (type: ``list``)
+                List of strings containing the name of each parameter.
+            + *"pars_pos_poi"* (type: ``numpy.ndarray``, shape: ``(n_pois)``)
+                Array with the list of positions, in the array of parameters, of the n_pois parameters of interest.
+            + *"pars_pos_nuis"* (type: ``numpy.ndarray``, shape: ``(n_nuis)``)
+                Array with the list of positions, in the array of parameters, of the n_nuis nuisance parameters.
 
     .. py:attribute:: output_file_base_name
 
@@ -151,13 +156,13 @@ Additional attributes
 
 .. _histfactory_methods
 Methods
-"""""""""""""
+"""""""
 
     .. automethod:: source.histfactory.Histfactory.__init__
 
-    .. automethod:: source.histfactory.Histfactory.__import_histfactory
+    .. automethod:: source.histfactory.Histfactory._Histfactory__import_histfactory
 
-    .. automethod:: source.histfactory.Histfactory.__load_histfactory
+    .. automethod:: source.histfactory.Histfactory._Histfactory__load_histfactory
 
     .. automethod:: source.histfactory.Histfactory.import_histfactory
 

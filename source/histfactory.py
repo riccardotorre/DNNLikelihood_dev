@@ -32,12 +32,14 @@ def print(*args, **kwargs):
 
 class Histfactory(object):
     """
+    .. _histfactory_class:
     **The HistFactory object**
 
     This class is a container for a ATLAS histfactory object which allows one to import histfactory workspaces, 
     read parameters and logpdf using the pyhf package, create ``likelihood`` objects (see :ref:`The Likelihood object <likelihood_class>`) 
     and save them for later use.
     """
+#    __slots__ = "workspace_folder"
     def __init__(self,
                  workspace_folder = None,
                  name = None,
@@ -53,7 +55,6 @@ class Histfactory(object):
         Method arguments: see Class arguments
         """
         self.histfactory_input_file = histfactory_input_file
-        """Docstring for instance attribute spam."""
         if self.histfactory_input_file is None:
             self.workspace_folder = path.abspath(workspace_folder)
             if name is None:
