@@ -357,8 +357,8 @@ class Likelihood(object):
         with open(self.define_logpdf_file, 'w') as out_file:
             out_file.write("import sys\n"+
                    "sys.path.append('../DNNLikelihood_dev')\n"+
-                   "import source\n"+"\n"+
-                   "lik = source.likelihood(name=None,\n"+
+                   "import DNNLikelihood\n"+"\n"+
+                   "lik = DNNLikelihood.Likelihood(name=None,\n"+
                    "\tlikelihood_input_file="+r"'"+ r"%s" % (path.join(self.output_folder,self.output_file_base_name+".pickle").replace(sep,'/'))+r"')"+"\n"+"\n"+
                    "pars_pos_poi = lik.pars_pos_poi\n"+
                    "pars_pos_nuis = lik.pars_pos_nuis\n"+

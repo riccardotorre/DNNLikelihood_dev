@@ -6,6 +6,7 @@ The DNNLikelihood project
    :maxdepth: 4
 
    introduction
+   install
    code
    citations
    indices_tables

@@ -14,7 +14,7 @@ import json, jsonpatch, requests, jsonschema
 from timeit import default_timer as timer
 from jsonpatch import JsonPatch
 
-sys.path.insert(0, '../')
+#sys.path.insert(0, '../')
 import pyhf
 
 from . import utils
