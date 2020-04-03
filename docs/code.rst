@@ -11,3 +11,7 @@ The Python code consists of bla bla bla
    sampler
    data
    DNN_likelihood
+   DNN_likelihood_ensemble
+   set_resources
+   inference
+   utils

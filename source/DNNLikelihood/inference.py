@@ -197,7 +197,7 @@ def find_maximum(loglik, npars=None, pars_init=None, pars_bounds=None):
         ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds)
     return [ml['x'], ml['fun']]
 
-def maximum_prof_loglik(loglik, npars=None, pars_init=None, pars_bounds=None, pars_fixed_pos=None, pars_fixed_val=None):
+def find_prof_maximum(loglik, npars=None, pars_init=None, pars_bounds=None, pars_fixed_pos=None, pars_fixed_val=None):
     # Add check that fixed param is within bounds
     pars_fixed_pos = np.sort(pars_fixed_pos)
     pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))

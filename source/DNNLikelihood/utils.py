@@ -128,6 +128,10 @@ def next_power_of_two(n):
         i = i << 1
     return i
 
+def closest_power_of_two(x):
+    op = math.floor if bin(int(x))[3] != "1" else math.ceil
+    return 2**(op(math.log(x, 2)))
+
 def convert_types_dict(d):
     for k, v in d.items():
         if isinstance(v, dict):
@@ -169,10 +173,6 @@ def sort_dict(d):
 
 def normalize_weights(x):
     return x/np.sum(x)*len(x)
-
-def closest_power_of_two(x):
-    op = math.floor if bin(int(x))[3] != "1" else math.ceil
-    return 2**(op(math.log(x, 2)))
 
 def product_dict(**kwargs):
     keys = kwargs.keys()

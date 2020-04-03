@@ -223,7 +223,7 @@ class Likelihood(object):
         par_vals = np.random.uniform(par_min, par_max, npoints)
         res = []
         for par in par_vals:
-            res.append(inference.maximum_prof_loglik(lambda x: self.logpdf(x, *self.logpdf_args),
+            res.append(inference.find_prof_maximum(lambda x: self.logpdf(x, *self.logpdf_args),
                                                      pars_init=self.pars_init,
                                                      pars_bounds=self.pars_bounds, 
                                                      pars_fixed_pos=[par], 
