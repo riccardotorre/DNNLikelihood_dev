@@ -34,7 +34,9 @@ def print(*args, **kwargs):
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 class Sampler(object):
-    """Class defining ``sampler`` object based on the emcee3 sampler.
+    """
+    .. _sampler_class:
+    Class defining ``sampler`` object based on the emcee3 sampler.
     Parameters
     ----------
     logpdf : callable

@@ -179,7 +179,7 @@ def weighted_central_quantiles(data, intervals=0.68, weights=None, onesided=Fals
         data = np.array(data)
     return [[i, [weighted_quantiles(data, (1-i)/2, weights), weighted_quantiles(data, 0.5, weights), weighted_quantiles(data, 1-(1-i)/2, weights)]] for i in intervals]
 
-def maximum_loglik(loglik, npars=None, pars_init=None, pars_bounds=None):
+def find_maximum(loglik, npars=None, pars_init=None, pars_bounds=None):
     def minus_loglik(x): return -loglik(x)
     if npars is None and pars_init is not None:
         npars = len(pars_init)

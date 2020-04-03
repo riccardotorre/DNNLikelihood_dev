@@ -8,3 +8,6 @@ The Python code consists of bla bla bla
 
    histfactory
    likelihood
+   sampler
+   data
+   DNN_likelihood

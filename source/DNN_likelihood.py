@@ -190,7 +190,7 @@ class DNN_likelihood(object):
         #### Set additional inputs
         self.__set_seed()
         self.__set_dtype()
-        self.__set_data_sample()
+        self.__set_data()
         self.ndim = self.data_sample.data_X.shape[1]
 
         ### Set parameters
@@ -236,7 +236,7 @@ class DNN_likelihood(object):
             self.dtype = "float64"
         K.set_floatx(self.dtype)
 
-    def __set_data_sample(self):
+    def __set_data(self):
         if self.data_sample is None and self.data_sample_input_filename is None:
             raise Exception(
                 "Either a DataSample object or a dataset input file name should be passed while you passed none.\nPlease input one and retry.")

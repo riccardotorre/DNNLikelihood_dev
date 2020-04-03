@@ -191,6 +191,12 @@ class Data(object):
             end = timer()
             print("Opened h5py dataset with", str(self.npoints), "(data_X, data_Y) samples from file", self.data_sample_output_filename, "in", end-start, "s.")
 
+    def __check_data(self):
+        """ Checks that data_X and data_Y have the same length
+        """
+        if not (len(self.data_X) == len(self.data_Y)):
+            print("data_X and data_Y have different length.")
+
     def define_test_fraction(self):
         #print(self.npoints)
         #print(self.test_fraction)
@@ -210,12 +216,6 @@ class Data(object):
             print("Closed", self.data_sample_input_filename)
         except:
             print("No dataset to close.")
-
-    def __check_data(self):
-        """ Checks that data_X and data_Y have the same length
-        """
-        if not (len(self.data_X) == len(self.data_Y)):
-            print("data_X and data_Y have different length.")
 
     def save_samples(self,verbose=True):
         """ Save samples to data_sample_output_filename as h5 file
