@@ -12,7 +12,7 @@ Usage
 Class
 ^^^^^
 
-.. autoclass:: source.data.Data
+.. autoclass:: DNNLikelihood.data.Data
    :undoc-members:
 
 Arguments
@@ -26,40 +26,40 @@ Additional attributes
 Methods
 """""""
 
-    .. automethod:: source.data.Data.__init__
+    .. automethod:: DNNLikelihood.data.Data.__init__
 
-    .. automethod:: source.data.Data.__check_define_name
+    .. automethod:: DNNLikelihood.data.Data.__check_define_name
 
-    .. automethod:: source.data.Data.__check_define_pars
+    .. automethod:: DNNLikelihood.data.Data.__check_define_pars
 
-    .. automethod:: source.data.Data.__check_define_mode
+    .. automethod:: DNNLikelihood.data.Data.__check_define_mode
 
-    .. automethod:: source.data.Data.__init_mode
+    .. automethod:: DNNLikelihood.data.Data.__init_mode
 
-    .. automethod:: source.data.Data.__create_samples
+    .. automethod:: DNNLikelihood.data.Data.__create_samples
 
-    .. automethod:: source.data.Data.__load_samples
+    .. automethod:: DNNLikelihood.data.Data.__load_samples
 
-    .. automethod:: source.data.Data.__check_data
+    .. automethod:: DNNLikelihood.data.Data.__check_data
 
-    .. automethod:: source.data.Data.define_test_fraction
+    .. automethod:: DNNLikelihood.data.Data.define_test_fraction
 
-    .. automethod:: source.data.Data.close_samples
+    .. automethod:: DNNLikelihood.data.Data.close_samples
 
-    .. automethod:: source.data.Data.save_samples
+    .. automethod:: DNNLikelihood.data.Data.save_samples
 
-    .. automethod:: source.data.Data.generate_train_indices
+    .. automethod:: DNNLikelihood.data.Data.generate_train_indices
 
-    .. automethod:: source.data.Data.generate_train_data
+    .. automethod:: DNNLikelihood.data.Data.generate_train_data
 
-    .. automethod:: source.data.Data.update_train_indices
+    .. automethod:: DNNLikelihood.data.Data.update_train_indices
 
-    .. automethod:: source.data.Data.update_train_data
+    .. automethod:: DNNLikelihood.data.Data.update_train_data
 
-    .. automethod:: source.data.Data.generate_test_indices
+    .. automethod:: DNNLikelihood.data.Data.generate_test_indices
 
-    .. automethod:: source.data.Data.generate_test_data
+    .. automethod:: DNNLikelihood.data.Data.generate_test_data
 
-    .. automethod:: source.data.Data.compute_sample_weights
+    .. automethod:: DNNLikelihood.data.Data.compute_sample_weights
 
-    .. automethod:: source.data.Data.define_scalers
+    .. automethod:: DNNLikelihood.data.Data.define_scalers

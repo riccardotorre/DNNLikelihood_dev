@@ -16,13 +16,13 @@ Describe the usage of the ``logpdf_fn`` method and the need of the ``generate_de
 Class
 ^^^^^
 
-.. autoclass:: source.likelihood.Likelihood
+.. autoclass:: DNNLikelihood.Likelihood
    :undoc-members:
 
 Arguments
 """""""""
 
-    .. py:attribute:: Likelihood.name   
+    .. py:attribute:: DNNLikelihood.Likelihood.name   
 
             Likelihood name. If ``None`` is passed the name is generated as 
             ``"likelihood_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")``, while if a string is passed, the 
@@ -31,13 +31,13 @@ Arguments
                 - **default**: ``None``
 
     .. _likelihood_logpdf:
-    .. py:method:: Likelihood.logpdf(x_pars,*args)   
+    .. py:method:: DNNLikelihood.Likelihood.logpdf(x_pars,*args)   
 
             Function that calculates the logpdf given parameters values ``x_pars`` and additional 
             arguments ``args``, passed through the ``logpdf_args`` argument.
             As a class argument it should be passed as a callable function without arguments.
             Notice that access to the logpdf function given parameters is provided by the class method 
-            :meth:`Likelihood.logpdf_fn <source.likelihood.Likelihood.logpdf_fn>`.
+            :meth:`Likelihood.logpdf_fn <DNNLikelihood.Likelihood.logpdf_fn>`.
                 - **type**: ``callable`` or ``None``
                 - **default**: ``None`` 
 
@@ -63,35 +63,35 @@ Arguments
 
                 ``float`` or ``numpy.ndarray`` with shape ``(1,)``
 
-    .. py:attribute:: Likelihood.logpdf_args   
+    .. py:attribute:: DNNLikelihood.Likelihood.logpdf_args   
 
             Additional arguments required by ``Likelihood.logpdf``. 
             See :attr:`Likelihood.logpdf <Likelihood.logpdf>`.
                 - **type**: ``list`` or ``None``
                 - **shape of list**: ``[]``
 
-    .. py:attribute:: Likelihood.pars_pos_poi   
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_poi   
 
             Array containing the positions in the parameters list of the
             parameters of interest.
                 - **type**: ``numpy.ndarray``
                 - **shape**: ``(n_poi,)``
 
-    .. py:attribute:: Likelihood.pars_pos_nuis   
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_nuis   
 
             Array containing the positions in the parameters list of the
             nuisance parameters.
                 - **type**: ``numpy.ndarray``
                 - **shape**: ``(n_nuis,)``
 
-    .. py:attribute:: Likelihood.pars_init   
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_init   
 
             Array containing an initial value 
             for the parameters.
                 - **type**: ``numpy.ndarray``
                 - **shape**: ``(n_pars,)``
 
-    .. py:attribute:: Likelihood.pars_labels   
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_labels   
 
             List containing the parameters names
             as string.
@@ -99,14 +99,14 @@ Arguments
                 - **shape**: ``[]``
                 - **length**: ``n_pars``
 
-    .. py:attribute:: Likelihood.pars_bounds   
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_bounds   
 
             Array containing bounds 
             for the parameters.
                 - **type**: ``numpy.ndarray`` or ``None``
                 - **shape**: ``(n_pars,2)``
 
-    .. py:attribute:: Likelihood.output_folder   
+    .. py:attribute:: DNNLikelihood.Likelihood.output_folder   
 
             Path (either relative to the code execution folder or absolute)
             where output files are saved.
@@ -115,7 +115,7 @@ Arguments
                 - **type**: ``str`` or ``None``
                 - **default**: ``None`` 
 
-    .. py:attribute:: Likelihood.likelihood_input_file   
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_file   
 
             File name (either relative to the code execution folder or
             absolute) of a saved ``Likelihood`` object.
@@ -131,7 +131,7 @@ Arguments
 Additional attributes
 """""""""""""""""""""
 
-    .. py:attribute:: Likelihood.output_file_base_name   
+    .. py:attribute:: DNNLikelihood.Likelihood.output_file_base_name   
             
 name.rstrip("_likelihood")+"_likelihood"
 
@@ -140,7 +140,7 @@ name.rstrip("_likelihood")+"_likelihood"
             the output file when saving.
             - **type**: ``str``
 
-    .. py:attribute:: Likelihood.X_logpdf_max
+    .. py:attribute:: DNNLikelihood.Likelihood.X_logpdf_max
             
             Array containing the values of parameters at the global maximum
             of the logpdf computed with the ``Likelihood.compute_maximum_logpdf`` method.
@@ -150,7 +150,7 @@ name.rstrip("_likelihood")+"_likelihood"
                 - **type**: ``numpy.ndarray`` or ``None``
                 - **shape**: ``(n_pars,)``
 
-    .. py:attribute:: Likelihood.Y_logpdf_max  
+    .. py:attribute:: DNNLikelihood.Likelihood.Y_logpdf_max  
 
             Value of logpdf at its global maximum computed with the ``Likelihood.compute_maximum_logpdf`` 
             method. The attribute is ``None`` unless the ``Likelihood.compute_maximum_logpdf`` method
@@ -158,7 +158,7 @@ name.rstrip("_likelihood")+"_likelihood"
             value for the attribute.
                 - **type**: ``float`` or ``None``
 
-    .. py:attribute:: Likelihood.X_prof_logpdf_max
+    .. py:attribute:: DNNLikelihood.Likelihood.X_prof_logpdf_max
 
             Array containing the values of parameters at different local maxima of the logpdf computed
             with the ``Likelihood.compute_profiled_maxima`` method. The attribute is ``None`` unless
@@ -168,7 +168,7 @@ name.rstrip("_likelihood")+"_likelihood"
                 - **type**: ``numpy.ndarray`` or ``None``
                 - **default**: ``np.array(n_points,n_pars)`` 
                 
-    .. py:attribute:: Likelihood.Y_prof_logpdf_max
+    .. py:attribute:: DNNLikelihood.Likelihood.Y_prof_logpdf_max
 
             Array containing the values of logpdf at different local maxima computed
             with the ``Likelihood.compute_profiled_maxima`` method. The attribute is ``None`` unless
@@ -177,7 +177,7 @@ name.rstrip("_likelihood")+"_likelihood"
                 - **type**: ``numpy.ndarray`` or ``None``
                 - **default**: ``np.array(n_points,)``
 
-    .. py:attribute:: Likelihood.define_logpdf_file
+    .. py:attribute:: DNNLikelihood.Likelihood.define_logpdf_file
 
             Name (with absolute path) of the output file containing the code necessary to intantiate a 
             ``Likelihooh`` object and define the corresponing parameters. This file can be generated using 
@@ -191,18 +191,18 @@ name.rstrip("_likelihood")+"_likelihood"
 Methods
 """""""
 
-    .. automethod:: source.likelihood.Likelihood.__init__
+    .. automethod:: DNNLikelihood.Likelihood.__init__
 
-    .. automethod:: source.likelihood.Likelihood.plot_logpdf_par
+    .. automethod:: DNNLikelihood.Likelihood.plot_logpdf_par
 
-    .. automethod:: source.likelihood.Likelihood.compute_maximum_logpdf
+    .. automethod:: DNNLikelihood.Likelihood.compute_maximum_logpdf
 
-    .. automethod:: source.likelihood.Likelihood.compute_profiled_maxima
+    .. automethod:: DNNLikelihood.Likelihood.compute_profiled_maxima
 
-    .. automethod:: source.likelihood.Likelihood.save_likelihood
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood
 
-    .. automethod:: source.likelihood.Likelihood.load_likelihood
+    .. automethod:: DNNLikelihood.Likelihood.load_likelihood
 
-    .. automethod:: source.likelihood.Likelihood.logpdf_fn
+    .. automethod:: DNNLikelihood.Likelihood.logpdf_fn
 
-    .. automethod:: source.likelihood.Likelihood.generate_define_logpdf_file
+    .. automethod:: DNNLikelihood.Likelihood.generate_define_logpdf_file

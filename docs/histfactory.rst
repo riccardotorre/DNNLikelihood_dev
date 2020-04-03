@@ -6,7 +6,7 @@ Summary
 
 The histfactory class is an API to pyhf that can be used to import likelihoods in the ATLAS histfactory format into
 the DNNLikelihood module. The API uses pyhf to parse all relevant information contained in the histfactory workspace
-and to create a ``likelihood`` object (see :class:`The Likelihood object <source.likelihood.Likelihood>`).
+and to create a ``likelihood`` object (see :class:`The Likelihood object <DNNLikelihood.likelihood.Likelihood>`).
 
 Usage
 ^^^^^
@@ -14,13 +14,13 @@ Usage
 Class
 ^^^^^
 
-.. autoclass:: source.Histfactory
+.. autoclass:: DNNLikelihood.Histfactory
    :undoc-members:
 
 Arguments
 """""""""
 
-    .. py:attribute:: source.Histfactory.workspace_folders
+    .. py:attribute:: DNNLikelihood.Histfactory.workspace_folders
 
          Path (either relative to the code execution folder or absolute)
          containing the ATLAS histfactory workspace (usually containing the Regions subfolders).
@@ -28,7 +28,7 @@ Arguments
             - **type**: ``str`` or ``None``
             - **default**: ``None``   
 
-    .. py:attribute:: source.Histfactory.name  
+    .. py:attribute:: DNNLikelihood.Histfactory.name  
 
          Name of the histfactory object. It is used to generate output files and is passed
          to the generated likelihood objects.
@@ -36,7 +36,7 @@ Arguments
             - **type**: ``str`` or ``None``
             - **default**: ``None``   
 
-    .. py:attribute:: source.Histfactory.regions_folders_base_name
+    .. py:attribute:: DNNLikelihood.Histfactory.regions_folders_base_name
 
          Common folder name of the Region folders contained in the 
          workspace_folder (these folders are usually named 'RegionA', 'RegionB', etc.)
@@ -46,7 +46,7 @@ Arguments
             - **type**: ``str``
             - **default**: ``Region``  
 
-    .. py:attribute:: source.Histfactory.bkg_files_base_name   
+    .. py:attribute:: DNNLikelihood.Histfactory.bkg_files_base_name   
 
          Name (without .json extension) of the 'background' json files 
          in the region folders (e.g. 'BkgOnly')
@@ -54,7 +54,7 @@ Arguments
             - **type**: ``str``
             - **default**: ``BkgOnly`` 
 
-    .. py:attribute:: source.Histfactory.patch_files_base_name 
+    .. py:attribute:: DNNLikelihood.Histfactory.patch_files_base_name 
 
          Base name (without .json extension) of the 'signal' patchx
          json files in the region folders (e.g. 'patch'). Patch files are extracted taking 
@@ -62,7 +62,7 @@ Arguments
             - **type**: ``str``
             - **default**: ``patch`` 
 
-    .. py:attribute:: source.Histfactory.output_folder    
+    .. py:attribute:: DNNLikelihood.Histfactory.output_folder    
 
          Path (either relative to the code execution folder or absolute)
          where output files are saved.
@@ -71,7 +71,7 @@ Arguments
             - **type**: ``str`` or ``None``
             - **default**: ``None`` 
 
-    .. py:attribute:: source.Histfactory.histfactory_input_file    
+    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_file    
 
          File name (either relative to the code execution folder or
          absolute) of a saved ``Histfactory`` object.
@@ -86,7 +86,7 @@ Arguments
 Additional attributes
 """""""""""""""""""""
 
-    .. py:attribute:: source.Histfactory.likelihoods_dict
+    .. py:attribute:: DNNLikelihood.Histfactory.likelihoods_dict
 
          Main dictionary containing likelihoods parameters and properties for all regions/signal 
          hypotheses. All available likelihoods from the workspace are enumerated so that the dictionary integer keys corresponding
@@ -118,14 +118,14 @@ Additional attributes
                - *"pars_pos_poi"* (type: ``numpy.ndarray``, shape: ``(n_pois)``): array with the list of positions, in the array of parameters, of the n_pois parameters of interest.
                - *"pars_pos_nuis"* (type: ``numpy.ndarray``, shape: ``(n_nuis)``): array with the list of positions, in the array of parameters, of the n_nuis nuisance parameters.
 
-    .. py:attribute:: source.Histfactory.output_file_base_name
+    .. py:attribute:: DNNLikelihood.Histfactory.output_file_base_name
 
          Base name of the output file of the ``Histfactory.save_likelihoods()`` method. It is set to 
          ``name.rstrip("_histfactory")+"_histfactory"``. The extension .pickle is not included and is added to 
          the output file when saving.
             - **type**: ``str`` 
 
-    .. py:attribute:: source.Histfactory.regions
+    .. py:attribute:: DNNLikelihood.Histfactory.regions
          
          Dictionary containing region names (str) as keys 
          and region folders full path (str) as values.
@@ -135,14 +135,14 @@ Additional attributes
 Methods
 """""""
 
-    .. automethod:: source.Histfactory.__init__
+    .. automethod:: DNNLikelihood.Histfactory.__init__
 
-    .. automethod:: source.Histfactory._Histfactory__import_histfactory
+    .. automethod:: DNNLikelihood.Histfactory._Histfactory__import_histfactory
 
-    .. automethod:: source.Histfactory._Histfactory__load_histfactory
+    .. automethod:: DNNLikelihood.Histfactory._Histfactory__load_histfactory
 
-    .. automethod:: source.Histfactory.import_histfactory
+    .. automethod:: DNNLikelihood.Histfactory.import_histfactory
 
-    .. automethod:: source.Histfactory.save_histfactory
+    .. automethod:: DNNLikelihood.Histfactory.save_histfactory
 
-    .. automethod:: source.Histfactory.get_lik_object
+    .. automethod:: DNNLikelihood.Histfactory.get_lik_object

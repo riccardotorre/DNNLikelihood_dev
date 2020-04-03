@@ -12,13 +12,13 @@ Usage
 Class
 ^^^^^
 
-.. autoclass:: source.sampler.Sampler
+.. autoclass:: DNNLikelihood.Sampler
    :undoc-members:
 
 Arguments
 """""""""
 
-    .. py:attribute:: Sampler.pippo
+    .. py:attribute:: DNNLikelihood.Sampler.pippo
 
         Bla bla
 
@@ -29,7 +29,7 @@ Arguments
 Additional attributes
 """""""""""""""""""""
 
-    .. py:attribute:: Sampler.pippo
+    .. py:attribute:: DNNLikelihood.Sampler.pippo
 
         Bla bla
 
