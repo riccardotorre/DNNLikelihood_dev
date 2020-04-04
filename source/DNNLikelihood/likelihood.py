@@ -317,14 +317,18 @@ class Likelihood(object):
             self.X_prof_logpdf_max = X_tmp
             self.Y_prof_logpdf_max = Y_tmp
         else:
-            if np.shape(self.X_prof_logpdf_max)[1] == np.shape(X_tmp)[1]:
-                self.X_prof_logpdf_max = np.concatenate((self.X_prof_logpdf_max, X_tmp))
-                self.Y_prof_logpdf_max = np.concatenate((self.Y_prof_logpdf_max, Y_tmp))
-                print("New values have been appended to the existing ones.")
+            if append:
+                if np.shape(self.X_prof_logpdf_max)[1] == np.shape(X_tmp)[1]:
+                    self.X_prof_logpdf_max = np.concatenate((self.X_prof_logpdf_max, X_tmp))
+                    self.Y_prof_logpdf_max = np.concatenate((self.Y_prof_logpdf_max, Y_tmp))
+                    print("New values have been appended to the existing ones.")
+                else:
+                    self.X_prof_logpdf_max_tmp = X_tmp
+                    self.Y_prof_logpdf_max_tmp = Y_tmp
+                    print("New values and existing ones have different shape and cannot be concatenated. New values stored in the temporary attributes 'X_prof_logpdf_max_tmp' and 'Y_prof_logpdf_max_tmp'.")
             else:
-                self.X_prof_logpdf_max_tmp = X_tmp
-                self.Y_prof_logpdf_max_tmp = Y_tmp
-                print("New values and existing ones have different shape and cannot be concatenated. New values stored in the temporary attributes 'X_prof_logpdf_max_tmp' and 'Y_prof_logpdf_max_tmp'.")
+                self.X_prof_logpdf_max = X_tmp
+                self.Y_prof_logpdf_max = Y_tmp
         end = timer()
         print("Log-pdf values lie in the range [",np.min(self.Y_prof_logpdf_max),",",np.max(self.Y_prof_logpdf_max),"]")
         print(len(pars_vals_bounded),"local maxima computed in", end-start, "s.")
