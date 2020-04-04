@@ -53,3 +53,13 @@ Functions
 .. autofunction:: DNNLikelihood.utils.metric_name_abbreviate
 
 .. autofunction:: DNNLikelihood.utils.metric_name_unabbreviate
+
+.. autofunction:: DNNLikelihood.utils.strip_suffix
+
+.. autofunction:: DNNLikelihood.utils.check_add_suffix
+
+.. autofunction:: DNNLikelihood.utils.strip_prefix
+
+.. autofunction:: DNNLikelihood.utils.check_add_prefix
+
+.. autofunction:: DNNLikelihood.utils.get_sorted_grid

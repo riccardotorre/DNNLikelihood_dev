@@ -2,7 +2,6 @@ __all__ = ["Sampler"]
 
 from os import path
 import importlib
-from copy import copy
 import sys
 from timeit import default_timer as timer
 from datetime import datetime
@@ -43,43 +42,63 @@ class Sampler(object):
     that can be used to train and test the DNNLikelihood.
     """
     def __init__(self,
-                 new_sampler=True,
-                 likelihood_script_file=None,
-                 likelihood=None,
+                 name=None,
+                 logpdf_input_file=None,
+                 logpdf=None,
+                 logpdf_args=None,
+                 pars_pos_poi=None,
+                 pars_pos_nuis=None,
+                 pars_init_vec=None,
+                 pars_labels=None,
+                 nwalkers=None,
                  nsteps=None,
+                 output_folder=None,
+                 new_sampler=True,
                  moves_str=None,
                  parallel_CPU=False,
                  vectorize=False,
                  seed=1
                  ):
-        self.new_sampler = new_sampler
-        self.likelihood_script_file = likelihood_script_file
-        if self.likelihood_script_file is None:
-            tmp_likelihood = copy(likelihood)
-            self.likelihood_script_file = tmp_likelihood.likelihood_script_file.replace(".py", "_from_sampler.py")
-            tmp_likelihood.likelihood_script_file = self.likelihood_script_file
-            tmp_likelihood.generate_likelihood_script_file()
+        self.logpdf_input_file = logpdf_input_file
+        if self.logpdf_input_file is None:
+            if name is None:
+                self.name = "sampler_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            else:
+                self.name = utils.check_add_suffix(name, "_sampler")
+            self.logpdf = logpdf
+            self.logpdf_args = logpdf_args
+            self.pars_pos_poi = np.array(pars_pos_poi)
+            self.pars_pos_nuis = np.array(pars_pos_nuis)
+            self.pars_init_vec = pars_init_vec
+            self.pars_labels = pars_labels
+            if nwalkers is None:
+                self.nwalkers = len(self.pars_init_vec)
+            else:
+                self.nwalkers = nwalkers
         else:
-            self.likelihood_script_file = path.abspath(self.likelihood_script_file)
-        in_folder, in_file = path.split(self.likelihood_script_file)
-        in_file = in_file.replace(".py","")
-        sys.path.insert(0, in_folder)
-        lik = importlib.import_module(in_file)
-        self.name = lik.name.replace("likelihood","sampler")
-        self.logpdf = lik.logpdf
-        self.logpdf_args = lik.logpdf_args
-        self.pars_pos_poi = lik.pars_pos_poi
-        self.pars_pos_nuis = lik.pars_pos_nuis
-        self.pars_init_vec = lik.pars_init_vec
-        self.pars_labels = lik.pars_labels
-        self.output_folder = lik.output_folder
-        self.nwalkers = len(lik.pars_init_vec)
+            print("logpdf input file has been specified. Arguments logpdf, logpdf_args, pars_pos_poi, pars_pos_nuis, pars_init_vec, pars_labels, nwalkers, and chaisn_name will be ignored and set from file.")
+            in_folder,in_file = path.split(self.logpdf_input_file)
+            in_file = in_file.replace(".py","")
+            sys.path.append(in_folder)
+            lik = importlib.import_module(in_file)
+            self.logpdf = lik.logpdf
+            self.logpdf_args = lik.logpdf_args
+            self.pars_pos_poi = lik.pars_pos_poi
+            self.pars_pos_nuis = lik.pars_pos_nuis
+            self.pars_init_vec = lik.pars_init_vec
+            self.pars_labels = lik.pars_labels
+            self.nwalkers = len(lik.pars_init_vec)
+            self.name = lik.name
         self.ndim = len(self.pars_init_vec[0])
         self.nsteps = nsteps
-        self.output_base_filename = path.join(self.output_folder, self.name)
+        if output_folder is None:
+                output_folder = ""
+        self.output_folder = path.abspath(output_folder)
+        self.output_base_filename = path.join(self.output_folder, name)
         self.backend_filename = self.output_base_filename+"_backend.h5"
         self.data_sample_filename = self.output_base_filename+"_data.h5"
         self.figure_base_filename = self.output_base_filename+"_figure"
+        self.new_sampler = new_sampler
         self.moves_str = moves_str
         if moves_str is None:
             self.moves = [(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(
@@ -95,9 +114,10 @@ class Sampler(object):
         self.seed = seed
         self.backend = None
         self.sampler = None
-        #self.__check_define_pars_labels()
+        self.__check_define_pars_labels()
         if self.new_sampler:
-            self.backend_filename = utils.check_rename_file(self.backend_filename)
+            self.backend_filename = utils.check_rename_file(
+                self.backend_filename)
         else:
             if not path.exists(self.backend_filename):
                 print("The new_sampler flag was set to false but the backend file", self.backend_filename, "does not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.")
@@ -107,6 +127,8 @@ class Sampler(object):
                 self.load_sampler()
                 self.nsteps = nsteps
                 self.check_params_backend()
+        if self.pars_init_vec is None:
+            print("To perform sampling you need to specify initialization for the parameters (pars_init_vec).")
 
     #def __set_param(self, par_name, par_val):
     #    if par_val is not None:
@@ -120,18 +142,18 @@ class Sampler(object):
     #        setattr(self, par_name, par_val)
     #    return par_val
 
-    #def __check_define_pars_labels(self):
-    #    if self.pars_labels is None:
-    #        self.pars_labels = []
-    #        i_poi = 1
-    #        i_nuis = 1
-    #        for i in range(len(self.pars_pos_poi)+len(self.pars_pos_nuis)):
-    #            if i in self.pars_pos_poi:
-    #                self.pars_labels.append(r"$\theta_{%d}$" % i_poi)
-    #                i_poi = i_poi+1
-    #            else:
-    #                self.pars_labels.append(r"$\nu_{%d}$" % i_nuis)
-    #                i_nuis = i_nuis+1
+    def __check_define_pars_labels(self):
+        if self.pars_labels is None:
+            self.pars_labels = []
+            i_poi = 1
+            i_nuis = 1
+            for i in range(len(self.pars_pos_poi)+len(self.pars_pos_nuis)):
+                if i in self.pars_pos_poi:
+                    self.pars_labels.append(r"$\theta_{%d}$" % i_poi)
+                    i_poi = i_poi+1
+                else:
+                    self.pars_labels.append(r"$\nu_{%d}$" % i_nuis)
+                    i_nuis = i_nuis+1
 
     def check_params_backend(self):
         global ShowPrints
@@ -249,7 +271,7 @@ class Sampler(object):
         end = timer()
         print(len(allsamples), "unique samples generated in", end-start, "s.")
         data_sample_timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        ds = Data(data_X=allsamples,
+        ds = Data_sample(data_X=allsamples,
                          data_Y=logpdf_values,
                          dtype=dtype,
                          pars_pos_poi=self.pars_pos_poi,

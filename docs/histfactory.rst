@@ -64,8 +64,7 @@ Arguments
 
     .. py:attribute:: DNNLikelihood.Histfactory.output_folder    
 
-         Path (either relative to the code execution folder or absolute)
-         where output files are saved.
+         Path (either relative to the code execution folder or absolute) where output files are saved.
          The __init__ method automatically converts the path into an absolute path.
          If no output folder is specified, ``output_folder`` is set to the code execution folder.
             - **type**: ``str`` or ``None``
@@ -118,11 +117,10 @@ Additional attributes
                - *"pars_pos_poi"* (type: ``numpy.ndarray``, shape: ``(n_pois)``): array with the list of positions, in the array of parameters, of the n_pois parameters of interest.
                - *"pars_pos_nuis"* (type: ``numpy.ndarray``, shape: ``(n_nuis)``): array with the list of positions, in the array of parameters, of the n_nuis nuisance parameters.
 
-    .. py:attribute:: DNNLikelihood.Histfactory.output_file_base_name
+    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_file
 
-         Base name of the output file of the ``Histfactory.save_likelihoods()`` method. It is set to 
-         ``name.rstrip("_histfactory")+"_histfactory"``. The extension .pickle is not included and is added to 
-         the output file when saving.
+         Base name of the output file of the ``Histfactory.save_likelihoods`` method. It is set to 
+         ``path.join(Histfactory.output_folder, utils.check_add_suffix(name, "_histfactory")+".pickle")``. 
             - **type**: ``str`` 
 
     .. py:attribute:: DNNLikelihood.Histfactory.regions

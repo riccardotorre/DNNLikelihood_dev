@@ -70,13 +70,13 @@ class Histfactory(object):
             if output_folder is None:
                 output_folder = ""
             self.output_folder = path.abspath(output_folder)
-            self.output_file_base_name = name.rstrip("_histfactory")+"_histfactory"
+            self.histfactory_output_file = path.join(self.output_folder, utils.check_add_suffix(name, "_histfactory")+".pickle")
             subfolders = [path.join(self.workspace_folder,f) for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder,f))]
             regions = [f.replace(regions_folders_base_name, "") for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder, f))]
             self.regions = dict(zip(regions,subfolders))
             self.__import_histfactory()
         else:
-            self.histfactory_input_file = self.histfactory_input_file.replace(".pickle","")+".pickle"
+            self.histfactory_input_file = path.abspath(utils.check_add_suffix(self.histfactory_input_file, ".pickle"))
             self.__load_histfactory()
 
     def __import_histfactory(self):
@@ -97,7 +97,7 @@ class Histfactory(object):
                 dict_region = dict(zip(range_region, [{"signal_region": region, 
                                                        "bg_only_file": bgonly_file, 
                                                        "patch_file": x,
-                                                       "name": "region_" + region + "_patch_" + path.split(x)[1].replace(self.patch_files_base_name+".",""),
+                                                       "name": "region_" + region + "_patch_" + path.split(x)[1].replace(self.patch_files_base_name+".","").split(".")[0],
                                                        "model_loaded": False} for x in signal_patch_files]))
                 likelihoods_dict = {**likelihoods_dict, **dict_region}
             else:
@@ -120,7 +120,7 @@ class Histfactory(object):
         self.bkg_files_base_name = pickle.load(pickle_in)
         self.patch_files_base_name = pickle.load(pickle_in)
         self.output_folder = pickle.load(pickle_in)
-        self.output_file_base_name = pickle.load(pickle_in)
+        self.histfactory_output_file = pickle.load(pickle_in)
         self.regions = pickle.load(pickle_in)
         self.likelihoods_dict = pickle.load(pickle_in)
         pickle_in.close()
@@ -205,11 +205,12 @@ class Histfactory(object):
 
     def save_histfactory(self, lik_numbers_list=None, overwrite=False, verbose=True):
         """
-        Saves the ``Histfactory`` object in the file ``path.join(Histfactory.output_folder,self.output_file_base_name+".pickle")`` using pickle.
-        In particular it does a picle.dump of each of the attribuses ``workspace_folder``, name regions_folders_base_name bkg_files_base_name, patch_files_base_name,
-        output_folder, output_file_base_name, regions, likelihood_dict in sequence. To save space, in the likelihood_dict the members corresponding
-        to the keys ``lik_numbers_list`` are saved in the ``model_loaded=True`` mode (so with full model included), while the others
-        are saved in ``model_loaded=False`` mode.
+        Saves the ``Histfactory`` object in the file ``Histfactory.histfactory_output_file`` using pickle.
+        In particular it does a picle.dump of each of the attribuses ``workspace_folder``, ``name``, ``regions_folders_base_name``,
+        ``bkg_files_base_name``, ``patch_files_base_name``, ``output_folder``, ``histfactory_output_file``, ``regions``, 
+        ``likelihood_dict`` in this order. To save space, in the likelihood_dict the members corresponding to the keys 
+        ``lik_numbers_list`` are saved in the ``model_loaded=True`` mode (so with full model included), 
+        while the others are saved in ``model_loaded=False`` mode.
 
         - **Arguments**
 
@@ -253,17 +254,17 @@ class Histfactory(object):
         sub_dict = dict(sorted(sub_dict.items()))
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         if overwrite:
-            out_file = path.join(self.output_folder,self.output_file_base_name+".pickle")
+            out_file = self.histfactory_output_file
         else:
-            out_file = utils.check_rename_file(path.join(self.output_folder, self.output_file_base_name+".pickle"))
+            out_file = utils.check_rename_file(self.histfactory_output_file)
         pickle_out = open(out_file, 'wb')
         pickle.dump(self.workspace_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.regions_folders_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.bkg_files_base_name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.patch_files_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.output_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        pickle.dump(self.output_file_base_name, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.output_folder, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.histfactory_output_file, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.regions, pickle_out,protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
@@ -314,15 +315,15 @@ class Histfactory(object):
         pars_bounds = lik["pars_bounds"]
         output_folder = self.output_folder
         lik_obj = Likelihood(name=name,
-                      logpdf=logpdf,
-                      logpdf_args=logpdf_args,
-                      pars_pos_poi=pars_pos_poi,
-                      pars_pos_nuis=pars_pos_nuis,
-                      pars_init=pars_init,
-                      pars_labels=pars_labels,
-                      pars_bounds=pars_bounds,
-                      output_folder=output_folder,
-                      lik_input_file=None)
+                             logpdf=logpdf,
+                             logpdf_args=logpdf_args,
+                             pars_pos_poi=pars_pos_poi,
+                             pars_pos_nuis=pars_pos_nuis,
+                             pars_init=pars_init,
+                             pars_labels=pars_labels,
+                             pars_bounds=pars_bounds,
+                             output_folder=output_folder,
+                             likelihood_input_file=None)
         end = timer()
         print("likelihood object created for likelihood",lik_number,"in",str(end-start),"s.")
         return lik_obj

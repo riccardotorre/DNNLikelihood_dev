@@ -25,12 +25,11 @@ Arguments
     .. py:attribute:: DNNLikelihood.Likelihood.name   
 
             Likelihood name. If ``None`` is passed the name is generated as 
-            ``"likelihood_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")``, while if a string is passed, the 
+            ``"sampler_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")``, while if a string is passed, the 
             ``"_likelihood"`` suffix is appended (preventing duplication if it is already present).
                 - **type**: ``str`` or ``None``
                 - **default**: ``None``
 
-    .. _likelihood_logpdf:
     .. py:method:: DNNLikelihood.Likelihood.logpdf(x_pars,*args)   
 
             Function that calculates the logpdf given parameters values ``x_pars`` and additional 
@@ -66,9 +65,10 @@ Arguments
     .. py:attribute:: DNNLikelihood.Likelihood.logpdf_args   
 
             Additional arguments required by ``Likelihood.logpdf``. 
-            See :attr:`Likelihood.logpdf <Likelihood.logpdf>`.
+            See :attr:`Likelihood.logpdf <DNNLikelihood.Likelihood.logpdf>`.
                 - **type**: ``list`` or ``None``
                 - **shape of list**: ``[]``
+                - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_poi   
 
@@ -76,6 +76,7 @@ Arguments
             parameters of interest.
                 - **type**: ``numpy.ndarray``
                 - **shape**: ``(n_poi,)``
+                - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_nuis   
 
@@ -83,6 +84,7 @@ Arguments
             nuisance parameters.
                 - **type**: ``numpy.ndarray``
                 - **shape**: ``(n_nuis,)``
+                - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_init   
 
@@ -90,6 +92,7 @@ Arguments
             for the parameters.
                 - **type**: ``numpy.ndarray``
                 - **shape**: ``(n_pars,)``
+                - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_labels   
 
@@ -98,6 +101,7 @@ Arguments
                 - **type**: ``list``
                 - **shape**: ``[]``
                 - **length**: ``n_pars``
+                - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_bounds   
 
@@ -105,6 +109,7 @@ Arguments
             for the parameters.
                 - **type**: ``numpy.ndarray`` or ``None``
                 - **shape**: ``(n_pars,2)``
+                - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.output_folder   
 
@@ -117,13 +122,11 @@ Arguments
 
     .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_file   
 
-            File name (either relative to the code execution folder or
-            absolute) of a saved ``Likelihood`` object.
+            File name (either relative to the code execution folder or absolute) of a saved ``Likelihood`` object.
             Whenever this parameter is not ``None``` all other parameters are ignored and the object is
-            reconstructed from the imported file. 
-            The ``Likelihood`` objects is saved using pickle wit the file containing the .pickle extension. 
-            ``likelihood_input_file`` can contain or not the extension. In case it does not, the extension 
-            is added by the ``__init__`` method.
+            reconstructed from the imported file using the ``Likelihood.__load_likelihood`` private method.
+            The attribute ``Likelihood.likelihood_input_file`` can contain or not the ".pickle" extension. In case it does not, 
+            the extension is added by the ``__init__`` method, which also adds the full path.
             - **type**: ``str`` or ``None``
             - **default**: ``None`` 
 
@@ -131,13 +134,11 @@ Arguments
 Additional attributes
 """""""""""""""""""""
 
-    .. py:attribute:: DNNLikelihood.Likelihood.output_file_base_name   
-            
-name.rstrip("_likelihood")+"_likelihood"
+    .. py:attribute:: DNNLikelihood.Likelihood.output_base_filename   
 
-            Base name of the output file of the ``Likelihood.load_likelihood()`` method. It is set to 
-            ``name.rstrip("_likelihood")+"_likelihood"``. The extension .pickle is not included and is added to 
-            the output file when saving.
+            Base name (with full path) of the output files for the ``Likelihood.plot_logpdf_par``,
+            ``Likelihood.save_likelihood``, and ``Likelihood.generate_define_logpdf_file``` methods. 
+            It is set to ``path.join(self.output_foldermutils.check_add_suffix(name,"_likselihood"))``. 
             - **type**: ``str``
 
     .. py:attribute:: DNNLikelihood.Likelihood.X_logpdf_max
@@ -166,7 +167,8 @@ name.rstrip("_likelihood")+"_likelihood"
             object has been imported from file and already contained a value for the attribute.
             This attribute can be used to initialize walkers in the :ref:``Sampler <sampler_class>`` object.
                 - **type**: ``numpy.ndarray`` or ``None``
-                - **default**: ``np.array(n_points,n_pars)`` 
+                - **shape**: ``np.array(n_points,n_pars)``
+                - **default**: ``None``
                 
     .. py:attribute:: DNNLikelihood.Likelihood.Y_prof_logpdf_max
 
@@ -175,7 +177,26 @@ name.rstrip("_likelihood")+"_likelihood"
             the ``Likelihood.compute_profiled_maxima`` method has been called or the ``Likelihood`` 
             object has been imported from file and already contained a value for the attribute.
                 - **type**: ``numpy.ndarray`` or ``None``
-                - **default**: ``np.array(n_points,)``
+                - **shape**: ``np.array(n_points,)``
+                - **default**: ``None``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.X_prof_logpdf_max_tmp
+
+            Same as ``X_prof_logpdf_max``. It is assigned only when attempting to append newly 
+            generated profiled maxima to an incompatible existing ``X_prof_logpdf_max``.
+            This is a temporary attribute and it is not saved by ``Likelihood.save_likelihood``.
+                - **type**: ``numpy.ndarray`` or ``None``
+                - **shape**: ``np.array(n_points,n_pars)``
+                - **default**: ``None``
+                
+    .. py:attribute:: DNNLikelihood.Likelihood.Y_prof_logpdf_max_tmp
+
+            Same as ``Y_prof_logpdf_max``. It is assigned only when attempting to append newly 
+            generated profiled maxima to an incompatible existing ``Y_prof_logpdf_max``.
+            This is a temporary attribute and it is not saved by ``Likelihood.save_likelihood``.
+                - **type**: ``numpy.ndarray`` or ``None``
+                - **shape**: ``np.array(n_points,)``
+                - **default**: ``None``
 
     .. py:attribute:: DNNLikelihood.Likelihood.define_logpdf_file
 
@@ -184,7 +205,7 @@ name.rstrip("_likelihood")+"_likelihood"
             the :ref:`Likelihood.generate_define_logpdf_file <likelihood_generate_define_logpdf_file>` method.
             and is sometimes needed to properly run Markov Chain Monte Carlo in parallel (using ``Multiprocessing``) 
             through the ``Sampler`` object inside Jupyter notebooks on the Windows platform.
-            The atribute is set to ``Likelihood.output_file_base_name+"_define_logpdf"+".py"`` while the path
+            The atribute is set to ``Likelihood.output_base_filename+"_define_logpdf"+".py"`` while the path
             is set to ``Likelihood.output_folder``.
                 - **type**: ``str``
 

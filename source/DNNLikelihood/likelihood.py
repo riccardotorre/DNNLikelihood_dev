@@ -58,16 +58,12 @@ class Likelihood(object):
         See Class arguments.
 
         """
-        if likelihood_input_file is None:
-            self.likelihood_input_file = likelihood_input_file
-        else:
-            self.likelihood_input_file = path.abspath(likelihood_input_file)
+        self.likelihood_input_file = likelihood_input_file
         if self.likelihood_input_file is None:
             if name is None:
                 self.name = "likelihood_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
             else:
-                self.name = name
-            self.output_file_base_name = name.rstrip("_likelihood")+"_likelihood"
+                self.name = utils.check_add_suffix(name, "_likelihood")
             self.logpdf = logpdf
             self.logpdf_args = logpdf_args
             self.pars_pos_poi = pars_pos_poi
@@ -78,16 +74,48 @@ class Likelihood(object):
             if output_folder is None:
                 output_folder = ""
             self.output_folder = path.abspath(output_folder)
+            self.output_base_filename = path.join(self.output_folder,name)
             self.X_logpdf_max = None
             self.Y_logpdf_max = None
             self.X_prof_logpdf_max = None
             self.Y_prof_logpdf_max = None
-            self.define_logpdf_file = ""
+            self.X_prof_logpdf_max_tmp = None
+            self.Y_prof_logpdf_max_tmp = None
+            self.likelihood_script_file = path.join(self.output_folder, self.output_base_filename+"_script.py")
         else:
-            self.load_likelihood()
-            self.likelihood_input_file = path.abspath(likelihood_input_file)
+            self.likelihood_input_file = path.abspath(utils.check_add_suffix(likelihood_input_file,".pickle"))
+            self.__load_likelihood()
 
-    def plot_logpdf_par(self,par,par_min,par_max,npoints=100,pars_init=None):
+    def __load_likelihood(self, verbose=True):
+        """
+        Private method used by the ``__init__`` one to load the ``Likelihood`` object from the file ``Likelihood.likelihood_input_file``.
+        """
+        global ShowPrints
+        ShowPrints = verbose
+        in_file = self.likelihood_input_file
+        start = timer()
+        pickle_in = open(in_file, 'rb')
+        self.name = pickle.load(pickle_in)
+        self.logpdf = pickle.load(pickle_in)
+        self.logpdf_args = pickle.load(pickle_in)
+        self.pars_pos_poi = pickle.load(pickle_in)
+        self.pars_pos_nuis = pickle.load(pickle_in)
+        self.pars_init = pickle.load(pickle_in)
+        self.pars_labels = pickle.load(pickle_in)
+        self.pars_bounds = pickle.load(pickle_in)
+        self.output_folder = pickle.load(pickle_in)
+        self.output_base_filename = pickle.load(pickle_in)
+        self.X_logpdf_max = pickle.load(pickle_in)
+        self.Y_logpdf_max = pickle.load(pickle_in)
+        self.X_prof_logpdf_max = pickle.load(pickle_in)
+        self.Y_prof_logpdf_max = pickle.load(pickle_in)
+        self.likelihood_script_file = pickle.load(pickle_in)
+        pickle_in.close()
+        statinfo = stat(in_file)
+        end = timer()
+        print('Likelihood loaded in', str(end-start), '.')
+
+    def plot_logpdf_par(self,pars,npoints=100,pars_init=None,save=True,verbose=True):
         """
         Method that produces a plot of the logpdf as a function of of the parameter ``par`` in the range ``(min,max)``
         using a number ``npoints`` of points. Only the parameter ``par`` is veried, while all other parameters are kept
@@ -95,17 +123,14 @@ class Likelihood(object):
 
         - **Arguments**
 
-            - **par**
+            - **pars**
             
-                Position of the parameter to plot 
-                in the parameters list.
-                    - **type**: ``int``
-
-            - **par_min, par_max**
-            
-                Minimum and maximum values of the 
-                parameter ``par`` that define its range.
-                    - **type**: ``int`` or ``float``
+                List of lists containing the position of the parametes in the parameters vector, 
+                and their minimum value and maximum for the plot.
+                For example, to plot parameters ``1`` in the rage ``(1,3)`` and parameter ``5`` in the range
+                ``(-3,3)`` one should set ``pars = [[1,1,3],[5,-3,3]]. 
+                    - **type**: ``list``
+                    - **shape**: ``[[ ]]``
 
             - **npoints**
             
@@ -121,8 +146,23 @@ class Likelihood(object):
                     - **type**: ``numpy.ndarray`` or ``None``
                     - **shape**: ``(n_pars,)``
                     - **default**: ``None``
-        
+
+            - **save**
+            
+                If ``save=True`` the figure is saved into the file
+
+                    - **type**: ``bool``
+                    - **default**: ``True`` 
+
+            - **verbose**
+            
+                Verbose mode. 
+                See :ref:`_verbose_implementation`.
+                    - **type**: ``bool``
+                    - **default**: ``True`` 
         """
+        global ShowPrints
+        ShowPrints = verbose
         jtplot.reset()
         try:
             plt.style.use(mplstyle_path)
@@ -130,24 +170,34 @@ class Likelihood(object):
             pass
         if pars_init is None:
             pars_init = self.pars_init
-        vals = np.linspace(par_min, par_max, npoints)
-        points = np.asarray([pars_init]*npoints)
-        points[:, par] = vals
-        logpdf_vals = [self.logpdf(point,*self.logpdf_args) for point in points]
-        plt.plot(vals, logpdf_vals)
-        plt.title(r"%s" % self.name.replace("_","\_"),fontsize=10)
-        plt.xlabel(r"%s" % self.pars_labels[par].replace("_", "\_"))
-        plt.ylabel(r"logpdf")
-        plt.show()
-        plt.close()
+        for par in pars:
+            par_number = par[0]
+            par_min = par[1]
+            par_max = par[2]
+            vals = np.linspace(par_min, par_max, npoints)
+            points = np.asarray([pars_init]*npoints)
+            points[:, par_number] = vals
+            logpdf_vals = [self.logpdf(point,*self.logpdf_args) for point in points]
+            plt.plot(vals, logpdf_vals)
+            plt.title(r"%s" % self.name.replace("_","\_"),fontsize=10)
+            plt.xlabel(r"%s" % self.pars_labels[par_number].replace("_", "\_"))
+            plt.ylabel(r"logpdf")
+            if save:
+                figure_filename = self.output_base_filename+"_par_"+str(par[0])+".pdf"
+                plt.savefig(figure_filename)
+                print('Saved figure', figure_filename+'.')
+            if verbose:
+                plt.show()
+            plt.close()
 
     def compute_maximum_logpdf(self,verbose=True):
         """
-        Method that computes the maximum of logpdf. 
-        The values of the parameters and of logpdf at the global maximum are stored in the attributes
-        ``Likelihood.X_logpdf_max`` and ``Likelihood.Y_logpdf_max``, respectively.
-        The method uses the function ``inference.find_maximum``
-        based on scipy.optimize.minimize. See the doc of ``inference.find_maximum`` for more details.
+        Method that computes the maximum of logpdf. The values of the parameters and of logpdf at the 
+        global maximum are stored in the attributes ``Likelihood.X_logpdf_max`` and ``Likelihood.Y_logpdf_max``, 
+        respectively. The method uses the function ``inference.find_maximum``
+        based on scipy.optimize.minimize to find the maximum of ``Likelihood.logpdf_fn``. Since this 
+        method already contains a bounded logpdf,  ``pars_bounds`` is set to ``None`` in the ``inference.find_maximum``
+        function to optimizes speed. See the doc of ``inference.find_maximum`` for more details.
 
         - **Arguments**
 
@@ -163,7 +213,7 @@ class Likelihood(object):
         ShowPrints = verbose
         if self.X_logpdf_max is None:
             start = timer()
-            res = inference.find_maximum(lambda x: self.logpdf(x,*self.logpdf_args),pars_init=self.pars_init,pars_bounds=self.pars_bounds)
+            res = inference.find_maximum(self.logpdf_fn, pars_init=self.pars_init, pars_bounds=None)
             self.X_logpdf_max = res[0]
             self.Y_logpdf_max = res[1]
             end = timer()
@@ -171,37 +221,61 @@ class Likelihood(object):
         else:
             print("Maximum likelihood already stored in self.X_logpdf_max and self.Y_logpdf_max")
 
-    def compute_profiled_maxima(self,par,par_min=0,par_max=2,npoints=10,verbose=True):
+    def compute_profiled_maxima(self,pars,pars_ranges,spacing="grid",append=False,verbose=True):
         """
-        Method that computes logal maxima of the logpdf for different values of the parameter ``par``.
-        A number ``npoints`` of different values of ``par`` are set randomly (with a flat distribution) 
-        in the interval ``(par_min,par_max)``.
+        Computes logal maxima of the logpdf for different values of the parameter ``pars``.
+        For a list of prameters ``pars`` ranges are passed as ``pars_ranges`` in the form ``(par_min,par_max,n_points)``
+        and an array of points is generated according to the argument ``spacing`` (either a grid or a random 
+        flat distribution) in the interval. The points in the grid falling outside ``Likelihood.pars_bounds`` are
+        automatically removed.
         The values of the parameters and of logpdf at the local maxima are stored in the attributes
         ``Likelihood.X_prof_logpdf_max`` and ``Likelihood.Y_prof_logpdf_max``, respectively.
-        The method uses the function ``inference.find_maximum``
-        based on scipy.optimize.minimize. See the doc of ``inference.find_maximum`` for more details.
+        They could be used both for frequentist maximum profiled likelihood inference or as initial condition for
+        Markov Chain Monte Carlo through the :class:`DNNLikelihood.Sampler` object. 
+        The method uses the function ``inference.find_prof_maximum`` based on scipy.optimize.minimize
+        to find the maximum of ``Likelihood.logpdf_fn`` function. Since the latter method already contains a 
+        bounded logpdf, ``pars_bounds`` is set to ``None`` in the ``inference.find_prof_maximum`` function 
+        to maximize speed. See the doc of ``inference.find_prof_maximum`` for more details.
 
         - **Arguments**
 
-            - **par**
+            - **pars**
             
-                Position of the parameter under which logpdf 
+                List of position of the parameter under which logpdf 
                 is not profiled.
-                    - **type**: ``int``
+                    - **type**: ``list``
+                    - **shape**: ``[ ]``
+                    - **example**: ``[1,5,8]``
 
-            - **par_min, par_max**
+            - **pars_ranges**
             
-                Minimum and maximum values of the 
-                parameter ``par``.
-                    - **type**: ``int`` or ``float``
-                    - **defaule**: ``0``, ``2``
+                Ranges of the parameters ``pars``
+                containing ``(min,max,n_points)``
+                    - **type**: ``list``
+                    - **shape**: ``[[ ]]
+                    - **example**: ``[[0,1,5],[-1,1,5],[0,5,3]]``
 
-            - **npoints**
+            - **spacing**
             
-                Number of points in which the profiled maxima
-                are computed
-                    - **type**: ``int``
-                    - **default**: ``100``
+                It can be either ``"grid"`` or ``"random"``. Depending on its 
+                value the ``n_points`` for each parameter are taken on an 
+                equally spaced grid or are generated randomly in the interval.
+                    - **type**: ``str``
+                    - **accepted**: ``"grid"`` or ``"random"``
+                    - **default**: ``grid``
+
+            - **append**
+            
+                If ``append=False`` the values of ``X_prof_logpdf_max`` and ``Y_prof_logpdf_max``
+                are replaced, otherwise, newly computed values are appended to the existing ones.
+                If dimension ot the newly computed ones is incompatible with the existing ones,
+                new values are saved in the temporary attributes ``X_prof_logpdf_max_tmp`` and 
+                ``Y_prof_logpdf_max_tmp`` and a warning message is generated. Notice that the attributes
+                ``X_prof_logpdf_max_tmp`` and ``Y_prof_logpdf_max_tmp`` are not saved and always get
+                initialized to ``None``.
+                    - **type**: ``str``
+                    - **accepted**: ``"grid"`` or ``"random"``
+                    - **default**: ``grid``
 
             - **verbose**
             
@@ -220,26 +294,49 @@ class Likelihood(object):
             display(overall_progress)
         iterator = 0
         start = timer()
-        par_vals = np.random.uniform(par_min, par_max, npoints)
+        pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
+        print("Total number of points:", len(pars_vals))
+        pars_vals_bounded = []
+        for i in range(len(pars_vals)):
+            if (np.all(pars_vals[i] >= self.pars_bounds[pars, 0]) and np.all(pars_vals[i] <= self.pars_bounds[pars, 1])):
+                pars_vals_bounded.append(pars_vals[i])
+        if len(pars_vals) != len(pars_vals_bounded):
+            print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.")
         res = []
-        for par in par_vals:
-            res.append(inference.find_prof_maximum(lambda x: self.logpdf(x, *self.logpdf_args),
-                                                     pars_init=self.pars_init,
-                                                     pars_bounds=self.pars_bounds, 
-                                                     pars_fixed_pos=[par], 
-                                                     pars_fixed_val=[par]))
+        for pars_val in pars_vals_bounded:
+            res.append(inference.find_prof_maximum(self.logpdf_fn,
+                                                   pars_init=self.pars_init,
+                                                   pars_bounds=None, 
+                                                   pars_fixed_pos=pars, 
+                                                   pars_fixed_val=pars_val))
             iterator = iterator + 1
-            overall_progress.value = float(iterator)/(npoints)
-        self.X_prof_logpdf_max = np.array([x[0].tolist() for x in res])
-        self.Y_prof_logpdf_max = np.array(res)[:,1]
+            overall_progress.value = float(iterator)/(len(pars_vals_bounded))
+        X_tmp = np.array([x[0].tolist() for x in res])
+        Y_tmp = np.array(res)[:, 1]
+        if self.X_prof_logpdf_max is None:
+            self.X_prof_logpdf_max = X_tmp
+            self.Y_prof_logpdf_max = Y_tmp
+        else:
+            if np.shape(self.X_prof_logpdf_max)[1] == np.shape(X_tmp)[1]:
+                self.X_prof_logpdf_max = np.concatenate((self.X_prof_logpdf_max, X_tmp))
+                self.Y_prof_logpdf_max = np.concatenate((self.Y_prof_logpdf_max, Y_tmp))
+                print("New values have been appended to the existing ones.")
+            else:
+                self.X_prof_logpdf_max_tmp = X_tmp
+                self.Y_prof_logpdf_max_tmp = Y_tmp
+                print("New values and existing ones have different shape and cannot be concatenated. New values stored in the temporary attributes 'X_prof_logpdf_max_tmp' and 'Y_prof_logpdf_max_tmp'.")
         end = timer()
         print("Log-pdf values lie in the range [",np.min(self.Y_prof_logpdf_max),",",np.max(self.Y_prof_logpdf_max),"]")
-        print("Parameter initialization computed in",end-start,"s.")
+        print(len(pars_vals_bounded),"local maxima computed in", end-start, "s.")
 
     def save_likelihood(self, overwrite=False, verbose=True):
         """
-        Saves the ``Likelihood`` object in the file ``path.join(Histfactory.output_folder,self.output_file_base_name+".pickle")`` using pickle.
-        In particular it does a picle.dump of the full object.
+        Saves the ``Likelihood`` object in the file ``Likelihood.output_base_filename+".pickle"``.
+        In particular it does a dump of each of the attribuses ``name``, ``logpdf``, ``logpdf_args``, 
+        ``pars_pos_poi``, ``pars_pos_nuis``, ``pars_init``, ``pars_labels``, ``pars_bounds``, ``output_folder``,
+        ``output_base_filename``, ``X_logpdf_max``, ``Y_logpdf_max``, ``X_prof_logpdf_max``, ``Y_prof_logpdf_max``,
+        ``Y_prof_logpdf_max`` in this order. All attributes are saved with ``pickle``, but ``logpdf``, which is saved
+        using ``cloudpickle`` to avoid the "Can't pickle..."  error.
 
         - **Arguments**
 
@@ -263,51 +360,29 @@ class Likelihood(object):
         start = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         if overwrite:
-            out_file = path.join(self.output_folder,self.output_file_base_name+".pickle")
+            out_file = self.output_base_filename+".pickle"
         else:
-            out_file = utils.check_rename_file(path.join(self.output_folder,self.output_file_base_name+".pickle"))
+            out_file = utils.check_rename_file(self.output_base_filename+".pickle")
         pickle_out = open(out_file, 'wb')
-        cloudpickle.dump(self, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
-        #pickle.dump(self, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.name, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        cloudpickle.dump(self.logpdf, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.logpdf_args, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.pars_pos_poi, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.pars_pos_nuis, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.pars_init, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.pars_labels, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.pars_bounds, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.output_folder, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.output_base_filename, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.X_logpdf_max, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.Y_logpdf_max, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.X_prof_logpdf_max, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.Y_prof_logpdf_max, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.likelihood_script_file, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         statinfo = stat(out_file)
         end = timer()
         print('Likelihood saved in file', out_file, "in", str(end-start),'seconds.\nFile size is ', statinfo.st_size, '.')
-
-    def load_likelihood(self, verbose=True):
-        """
-        Loads the ``Likelihood`` object from the file ``Likelihood.likelihood_input_file``. The object is assigned to 
-        a temporary variable which is then used to update the ``Likelihood.__dict__`` attribute.
-        In particular it does a picle.dump of the full object.
-
-        - **Arguments**
-
-            - **overwrite**
-            
-                Flag that determines whether an existing file gets overwritten or if a new file is created. 
-                If ``overwrite=True`` the ``utils.check_rename_file`` function (see :ref:`_utils_check_rename_file`) is used  
-                to append a time-stamp to the file name.
-                    - **type**: ``bool``
-                    - **default**: ``False``
-
-            - **verbose**
-            
-                Verbose mode. 
-                See :ref:`_verbose_implementation`.
-                    - **type**: ``bool``
-                    - **default**: ``True``
-        """
-        global ShowPrints
-        ShowPrints = verbose
-        in_file = self.likelihood_input_file
-        start = timer()
-        pickle_in = open(in_file, 'rb')
-        in_object = pickle.load(pickle_in)
-        pickle_in.close()
-        statinfo = stat(in_file)
-        self.__dict__.update(in_object.__dict__)
-        end = timer()
-        print('Likelihood loaded in', str(end-start),'.')
 
     def logpdf_fn(self,x_pars):
         """
@@ -333,7 +408,7 @@ class Likelihood(object):
 
         """
         for i in range(len(x_pars)):
-            if not (x_pars[i] > self.pars_bounds[i][0] and x_pars[i] < self.pars_bounds[i][1]):
+            if not (x_pars[i] >= self.pars_bounds[i][0] and x_pars[i] <= self.pars_bounds[i][1]):
                 return -np.inf
         if self.logpdf_args is None:
             tmp = self.logpdf(x_pars)
@@ -345,28 +420,27 @@ class Likelihood(object):
             tmp = -np.inf
         return tmp
 
-    def generate_define_logpdf_file(self):
+    def generate_likelihood_script_file(self):
         """
-        .. _likelihood_generate_define_logpdf_file:
-        Generates and saves the file ``Likelihood.define_logpdf_file`` containing the code to instantiate the
+        .. _likelihood_generate_likelihood_script_file:
+        Generates and saves the file ``Likelihood.likelihood_script_file`` containing the code to instantiate the
         ``Likelihood`` object sometimes needed to properly run Markov Chain Monte Carlo in parallel 
         (using ``Multiprocessing``) through the ``Sampler`` object inside Jupyter notebooks on the Windows platform.
         """
-        filename = self.output_file_base_name+"_define_logpdf"+".py"
-        self.define_logpdf_file = path.join(self.output_folder,filename)
-        with open(self.define_logpdf_file, 'w') as out_file:
+        with open(self.likelihood_script_file, 'w') as out_file:
             out_file.write("import sys\n"+
-                   "sys.path.append('../DNNLikelihood_dev')\n"+
+                   "sys.path.append('../DNNLikelihood_dev/source')\n"+
                    "import DNNLikelihood\n"+"\n"+
                    "lik = DNNLikelihood.Likelihood(name=None,\n"+
-                   "\tlikelihood_input_file="+r"'"+ r"%s" % (path.join(self.output_folder,self.output_file_base_name+".pickle").replace(sep,'/'))+r"')"+"\n"+"\n"+
+                   "\tlikelihood_input_file="+r"'"+ r"%s" % ((self.output_base_filename+".pickle").replace(sep,'/'))+r"')"+"\n"+"\n"+
+                   "name = lik.name\n"+
+                   "def logpdf(x_pars):\n"+
+                   "\treturn lik.logpdf_fn(x_pars)\n"+
+                   "logpdf_args = None\n"+
                    "pars_pos_poi = lik.pars_pos_poi\n"+
                    "pars_pos_nuis = lik.pars_pos_nuis\n"+
                    "pars_init_vec = lik.X_prof_logpdf_max.tolist()\n"+
                    "pars_labels = lik.pars_labels\n"+
-                   "nwalkers = len(lik.X_prof_logpdf_max)\n"+
-                   "chains_name = lik.name\n"+"\n"+
-                   "def logpdf(x_pars):\n"+
-                   "\treturn lik.logpdf_fn(x_pars)\n"+"\n"+
-                   "logpdf_args = None")
-        print("File", self.define_logpdf_file, "correctly generated.")
+                   "output_folder = lik.output_folder"
+                   )
+        print("File", self.likelihood_script_file, "correctly generated.")

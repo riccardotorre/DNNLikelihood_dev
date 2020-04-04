@@ -225,5 +225,41 @@ def metric_name_unabbreviate(name):
         name = name.replace(key, name_dict[key])
     return name
 
-#def callable_logpdf(x):
+def strip_suffix(s, suf):
+    if s.endswith(suf):
+        return s[:len(s)-len(suf)]
+    return s
+
+def check_add_suffix(s, suf):
+    if s.endswith(suf):
+        return s
+    else:
+        return s+suf
+
+def strip_prefix(s, pref):
+    if s.startswith(pref):
+        return s[len(s)-len(pref):]
+    return s
+
+def check_add_prefix(s, pref):
+    if s.startswith(pref):
+        return s
+    else:
+        return pref+s
     
+def get_sorted_grid(pars_ranges, spacing="grid"):
+    totpoints = np.product(np.array(pars_ranges)[:, -1])
+    npars = len(pars_ranges)
+    if spacing == "random":
+        grid = [np.random.uniform(*par) for par in pars_ranges]
+    else:
+        grid = [np.linspace(*par) for par in pars_ranges]
+    #np.meshgrid(*grid)
+    #np.vstack(np.meshgrid(*grid)).reshape(npoints**len(pars),-1).T
+    #np.meshgrid(*grid)#.reshape(125,3)
+    pars_vals = np.stack(np.meshgrid(*grid), axis=npars).reshape(totpoints, -1)
+    q = npars-1
+    for i in range(npars):
+        pars_vals = pars_vals[pars_vals[:, q].argsort(kind='mergesort')]
+    q = q-1
+    return pars_vals

@@ -180,6 +180,8 @@ def weighted_central_quantiles(data, intervals=0.68, weights=None, onesided=Fals
     return [[i, [weighted_quantiles(data, (1-i)/2, weights), weighted_quantiles(data, 0.5, weights), weighted_quantiles(data, 1-(1-i)/2, weights)]] for i in intervals]
 
 def find_maximum(loglik, npars=None, pars_init=None, pars_bounds=None):
+    """
+    """
     def minus_loglik(x): return -loglik(x)
     if npars is None and pars_init is not None:
         npars = len(pars_init)
@@ -198,6 +200,8 @@ def find_maximum(loglik, npars=None, pars_init=None, pars_bounds=None):
     return [ml['x'], ml['fun']]
 
 def find_prof_maximum(loglik, npars=None, pars_init=None, pars_bounds=None, pars_fixed_pos=None, pars_fixed_val=None):
+    """
+    """
     # Add check that fixed param is within bounds
     pars_fixed_pos = np.sort(pars_fixed_pos)
     pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))
