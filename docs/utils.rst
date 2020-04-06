@@ -63,3 +63,5 @@ Functions
 .. autofunction:: DNNLikelihood.utils.check_add_prefix
 
 .. autofunction:: DNNLikelihood.utils.get_sorted_grid
+
+.. autofunction:: DNNLikelihood.utils.define_generic_pars_labels

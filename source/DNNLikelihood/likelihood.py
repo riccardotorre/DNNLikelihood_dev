@@ -31,10 +31,9 @@ mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mpl
 
 class Likelihood(object):
     """
-    .. _likelihood_class:
     This class contains the ``Likelihood`` object, storing all information of the original likelihood function.
-    The object can be manually created or obtained from an ATLAS histfactory workspace through the ``histfactory`` 
-    module (see :ref:`The Histfactory object <histfactory_class>`) 
+    The object can be manually created or obtained from an ATLAS histfactory workspace through the 
+    :class:`DNNLikelihood.Histfactory` module.
     """
     def __init__(self,
                  name = None,
@@ -48,15 +47,14 @@ class Likelihood(object):
                  output_folder = None,
                  likelihood_input_file=None):
         """
-        Instantiate the ``Likelihood`` object. 
+        Instantiates the ``Likelihood`` object. 
         If ``likelihood_input_file`` has the default value ``None``, the other arguments are parsed, otherwise all other arguments
         are ignored and the object is entirely reconstructed from the input file. The input file should be a .pickle file exported 
         through the ``Likelihood.save_likelihood()`` method.
         
         - **Arguments**
 
-        See Class arguments.
-
+            See Class arguments.
         """
         self.likelihood_input_file = likelihood_input_file
         if self.likelihood_input_file is None:
@@ -74,7 +72,7 @@ class Likelihood(object):
             if output_folder is None:
                 output_folder = ""
             self.output_folder = path.abspath(output_folder)
-            self.output_base_filename = path.join(self.output_folder,name)
+            self.output_base_filename = path.join(self.output_folder,self.name)
             self.X_logpdf_max = None
             self.Y_logpdf_max = None
             self.X_prof_logpdf_max = None
@@ -85,6 +83,7 @@ class Likelihood(object):
         else:
             self.likelihood_input_file = path.abspath(utils.check_add_suffix(likelihood_input_file,".pickle"))
             self.__load_likelihood()
+        self.generic_pars_labels = utils.define_generic_pars_labels(self.pars_pos_poi, self.pars_pos_nuis)
 
     def __load_likelihood(self, verbose=True):
         """
@@ -115,7 +114,32 @@ class Likelihood(object):
         end = timer()
         print('Likelihood loaded in', str(end-start), '.')
 
-    def plot_logpdf_par(self,pars,npoints=100,pars_init=None,save=True,verbose=True):
+    def __set_pars_labels(self, pars_labels):
+        """
+        Returns the ``pars_labels`` choice based on the ``pars_labels`` input.
+
+        - **Arguments**
+
+            - **pars_labels**
+            
+                Could be either one of the keyword strings ``"original"`` and ``"generic"`` or a list of labels
+                strings with the length of the parameters array. If ``pars_labels="original"`` or ``pars_labels="generic"``
+                the function returns :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>`
+                and :attr:`Likelihood.generic_pars_labels <DNNLikelihood.Likelihood.generic_pars_labels>`, respectively,
+                while if ``pars_labels`` is a list, the function just returns the input.
+
+                    - **type**: ``list`` or ``str``
+                    - **shape of list**: ``[ ]``
+                    - **accepted strings**: ``"original"``, ``"generic"``
+        """
+        if pars_labels is "original":
+            return self.pars_labels
+        elif pars_labels is "generic":
+            return self.generic_pars_labels
+        else:
+            return pars_labels
+
+    def plot_logpdf_par(self,pars=0,npoints=100,pars_init=None,pars_labels="original",save=True,verbose=True):
         """
         Method that produces a plot of the logpdf as a function of of the parameter ``par`` in the range ``(min,max)``
         using a number ``npoints`` of points. Only the parameter ``par`` is veried, while all other parameters are kept
@@ -128,14 +152,16 @@ class Likelihood(object):
                 List of lists containing the position of the parametes in the parameters vector, 
                 and their minimum value and maximum for the plot.
                 For example, to plot parameters ``1`` in the rage ``(1,3)`` and parameter ``5`` in the range
-                ``(-3,3)`` one should set ``pars = [[1,1,3],[5,-3,3]]. 
+                ``(-3,3)`` one should set ``pars = [[1,1,3],[5,-3,3]]``. 
+
                     - **type**: ``list``
                     - **shape**: ``[[ ]]``
 
             - **npoints**
             
                 Number of points in which the ``(par_min,par_max)`` range
-                is divided to compute the logpdf and make the plot
+                is divided to compute the logpdf and make the plot.
+
                     - **type**: ``int``
                     - **default**: ``100``
 
@@ -143,13 +169,22 @@ class Likelihood(object):
             
                 Initial point in the parameter space from which ``par`` is varied and all other parameters are 
                 kept fixed. When its value is the default ``None``, the attribute ``Likelihood.pars_init`` is used.
+
                     - **type**: ``numpy.ndarray`` or ``None``
                     - **shape**: ``(n_pars,)``
                     - **default**: ``None``
 
+            - **pars_labels**
+            
+                Argument that is passed to the :meth:`Likelihood.__set_pars_labels <DNNLikelihood.Likelihood._Likelihood__set_pars_labels>`
+                method to set the parameters labels to be used in the plot.
+                    - **type**: ``list`` or ``str``
+                    - **shape of list**: ``[ ]``
+                    - **accepted strings**: ``"original"``, ``"generic"``
+
             - **save**
             
-                If ``save=True`` the figure is saved into the file
+                If ``save=True`` the figure is saved into the file.
 
                     - **type**: ``bool``
                     - **default**: ``True`` 
@@ -157,7 +192,8 @@ class Likelihood(object):
             - **verbose**
             
                 Verbose mode. 
-                See :ref:`_verbose_implementation`.
+                See :ref:`notes on verbose implementation <verbose_implementation>`.
+
                     - **type**: ``bool``
                     - **default**: ``True`` 
         """
@@ -168,6 +204,8 @@ class Likelihood(object):
             plt.style.use(mplstyle_path)
         except:
             pass
+        pars = np.array([pars]).flatten()
+        labels = self.__set_pars_labels(labels)
         if pars_init is None:
             pars_init = self.pars_init
         for par in pars:
@@ -180,7 +218,7 @@ class Likelihood(object):
             logpdf_vals = [self.logpdf(point,*self.logpdf_args) for point in points]
             plt.plot(vals, logpdf_vals)
             plt.title(r"%s" % self.name.replace("_","\_"),fontsize=10)
-            plt.xlabel(r"%s" % self.pars_labels[par_number].replace("_", "\_"))
+            plt.xlabel(r"%s" % labels[par_number].replace("_", "\_"))
             plt.ylabel(r"logpdf")
             if save:
                 figure_filename = self.output_base_filename+"_par_"+str(par[0])+".pdf"
@@ -196,15 +234,17 @@ class Likelihood(object):
         global maximum are stored in the attributes ``Likelihood.X_logpdf_max`` and ``Likelihood.Y_logpdf_max``, 
         respectively. The method uses the function ``inference.find_maximum``
         based on scipy.optimize.minimize to find the maximum of ``Likelihood.logpdf_fn``. Since this 
-        method already contains a bounded logpdf,  ``pars_bounds`` is set to ``None`` in the ``inference.find_maximum``
-        function to optimizes speed. See the doc of ``inference.find_maximum`` for more details.
+        method already contains a bounded logpdf,  ``pars_bounds`` is set to ``None`` in the 
+        :func:`inference.find_maximum <DNNLikelihood.inference.find_maximum>`
+        function to optimizes speed. See the doc of :func:`inference.find_maximum <DNNLikelihood.inference.find_maximum>` for more details.
 
         - **Arguments**
 
             - **verbose**
             
                 Verbose mode. 
-                See :ref:`_verbose_implementation`.
+                See :ref:`notes on verbose implementation <verbose_implementation>`.
+
                     - **type**: ``bool``
                     - **default**: ``True`` 
         
@@ -213,7 +253,7 @@ class Likelihood(object):
         ShowPrints = verbose
         if self.X_logpdf_max is None:
             start = timer()
-            res = inference.find_maximum(self.logpdf_fn, pars_init=self.pars_init, pars_bounds=None)
+            res = inference.find_maximum(lambda x: self.logpdf_fn(x,*self.logpdf_args), pars_init=self.pars_init, pars_bounds=None)
             self.X_logpdf_max = res[0]
             self.Y_logpdf_max = res[1]
             end = timer()
@@ -243,6 +283,7 @@ class Likelihood(object):
             
                 List of position of the parameter under which logpdf 
                 is not profiled.
+
                     - **type**: ``list``
                     - **shape**: ``[ ]``
                     - **example**: ``[1,5,8]``
@@ -250,9 +291,10 @@ class Likelihood(object):
             - **pars_ranges**
             
                 Ranges of the parameters ``pars``
-                containing ``(min,max,n_points)``
+                containing ``(min,max,n_points)``.
+
                     - **type**: ``list``
-                    - **shape**: ``[[ ]]
+                    - **shape**: ``[[ ]]``
                     - **example**: ``[[0,1,5],[-1,1,5],[0,5,3]]``
 
             - **spacing**
@@ -260,6 +302,7 @@ class Likelihood(object):
                 It can be either ``"grid"`` or ``"random"``. Depending on its 
                 value the ``n_points`` for each parameter are taken on an 
                 equally spaced grid or are generated randomly in the interval.
+
                     - **type**: ``str``
                     - **accepted**: ``"grid"`` or ``"random"``
                     - **default**: ``grid``
@@ -273,6 +316,7 @@ class Likelihood(object):
                 ``Y_prof_logpdf_max_tmp`` and a warning message is generated. Notice that the attributes
                 ``X_prof_logpdf_max_tmp`` and ``Y_prof_logpdf_max_tmp`` are not saved and always get
                 initialized to ``None``.
+
                     - **type**: ``str``
                     - **accepted**: ``"grid"`` or ``"random"``
                     - **default**: ``grid``
@@ -280,7 +324,8 @@ class Likelihood(object):
             - **verbose**
             
                 Verbose mode. 
-                See :ref:`_verbose_implementation`.
+                See :ref:`notes on verbose implementation <verbose_implementation>`.
+
                     - **type**: ``bool``
                     - **default**: ``True`` 
         
@@ -304,7 +349,7 @@ class Likelihood(object):
             print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.")
         res = []
         for pars_val in pars_vals_bounded:
-            res.append(inference.find_prof_maximum(self.logpdf_fn,
+            res.append(inference.find_prof_maximum(lambda x: self.logpdf_fn(x, *self.logpdf_args),
                                                    pars_init=self.pars_init,
                                                    pars_bounds=None, 
                                                    pars_fixed_pos=pars, 
@@ -347,15 +392,17 @@ class Likelihood(object):
             - **overwrite**
             
                 Flag that determines whether an existing file gets overwritten or if a new file is created. 
-                If ``overwrite=True`` the ``utils.check_rename_file`` function (see :ref:`_utils_check_rename_file`) is used  
-                to append a time-stamp to the file name.
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function 
+                is used to append a time-stamp to the file name.
+
                     - **type**: ``bool``
                     - **default**: ``False``
 
             - **verbose**
             
                 Verbose mode. 
-                See :ref:`_verbose_implementation`.
+                See :ref:`notes on verbose implementation <verbose_implementation>`.
+
                     - **type**: ``bool``
                     - **default**: ``True``
         """
@@ -388,45 +435,94 @@ class Likelihood(object):
         end = timer()
         print('Likelihood saved in file', out_file, "in", str(end-start),'seconds.\nFile size is ', statinfo.st_size, '.')
 
-    def logpdf_fn(self,x_pars):
-        """
-        .. _likelihood.logpdf_fn:
-        Callable method returning the logpdf function given parameters values. It is constructed from the
-        attributed ``Likelihood.logpdf`` and ``Likelihood.logpdf_args`` so that it gives the logpdf value if
-        parameters values are within ``Likelihood.pars_bounds`` and ``-np.inf`` otherwise. It also checks
-        if the value of logpdf gives ``Nan`` and in such case it returns ``-np.inf``.
+    def logpdf_fn(self, x_pars, *logpdf_args):
+        """s
+        This function is used to add constraints and standardize input/output of ``Likelihood.logpdf``.
+        It is constructed from ``Likelihood.logpdf`` and ``Likelihood.logpdf_args``. 
+        In the case ``Likelihood.logpdf`` accepts a single array of parameters ``x_pars`` and computes the lofpdf
+        one point at a time, the function returns a ``float``, while if ``Likelihood.logpdf`` is vectorized 
+        (i.e. accepts an array of ``x_pars`` arrays and returns an array of logpdf values), it returns an array. 
+        The function is constructed to return lofpdf value ``-np.inf`` if any of the parameters lies outside
+        ``Likelihood.pars_bounds`` or the value of ``Likelihood.logpdf`` output is ``nan``.
 
         - **Arguments**
 
             - **x_pars**
+
+                It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``) 
+                or a list of points corresponding to an array with shape ``(n_points,n_pars)``, depending on the 
+                equivalent argument accepted by ``Likelihood.logpdf``.
                 Values of the parameters for which 
                 logpdf is computed.
+
                     - **type**: ``numpy.ndarray``
                     - **shape**: ``(n_pars,)``
 
-         - **Returns**
+            - **args**
 
-            The value of 
-            logpdf.
-                - **type**: ``float`` or ``-np.inf``
+                List containing additional inputs needed by the logpdf function. 
+                See :attr:`Likelihood.logpdf <DNNLikelihood.Likelihood.logpdf>`.
 
+                    - **type**: ``list`` or None
+                    - **shape of list**: ``[]``
+
+        - **Returns**
+
+            Value or array of values 
+            of the logpdf.
+            
+                - **type**: ``float`` or ``numpy.ndarray``
+                - **shape for numpy.ndarray**: ``(n_points,)``
         """
-        for i in range(len(x_pars)):
-            if not (x_pars[i] >= self.pars_bounds[i][0] and x_pars[i] <= self.pars_bounds[i][1]):
+        if len(np.shape(x_pars)) == 1:
+            if not (np.all(x_pars >= self.pars_bounds[:, 0]) and np.all(x_pars <= self.pars_bounds[:, 1])):
                 return -np.inf
-        if self.logpdf_args is None:
-            tmp = self.logpdf(x_pars)
+            if logpdf_args is None:
+                tmp = self.logpdf(x_pars)
+            else:
+                tmp = self.logpdf(x_pars, *logpdf_args)
+            if type(tmp) is np.ndarray or type(tmp) is list:
+                tmp = tmp[0]
+            if np.isnan(tmp):
+                tmp = -np.inf
+            return tmp
         else:
-            tmp = self.logpdf(x_pars, *self.logpdf_args)
-        if type(tmp) is np.ndarray or type(tmp) is list:
-            tmp = tmp[0]
-        if np.isnan(tmp):
-            tmp = -np.inf
-        return tmp
+            x_pars_list = x_pars
+            if logpdf_args is None:
+                tmp = self.logpdf(x_pars_list)
+            else:
+                tmp = self.logpdf(x_pars_list, *logpdf_args)
+            for i in range(len(x_pars_list)):
+                x_pars = x_pars_list[i]
+                if not (np.all(x_pars >= self.pars_bounds[:, 0]) and np.all(x_pars <= self.pars_bounds[:, 1])):
+                    np.put(tmp,i,-np.inf)
+            tmp = np.where(np.isnan(tmp), -np.inf, tmp)
+            return tmp
+            
+
+        #else:
+        #    x_pars_list = x_pars
+        #    pars_out_of_range = []
+        #    for i in len(x_pars_list):
+        #        for j in range(len(x_pars_list[i])):
+        #            if not (x_pars_list[i,j] >= self.pars_bounds[i][0] and x_pars[i] <= self.pars_bounds[i][1]):
+        #            return -np.inf
+        #    for x_pars in x_pars_list:
+        #        for i in range(len(x_pars)):
+        #            if not (x_pars[i] >= self.pars_bounds[i][0] and x_pars[i] <= self.pars_bounds[i][1]):
+        #            return -np.inf
+        #        if self.logpdf_args is None:
+        #            tmp = self.logpdf(x_pars)
+        #        else:
+        #            tmp = self.logpdf(x_pars, *self.logpdf_args)
+        #        if type(tmp) is np.ndarray or type(tmp) is list:
+        #            tmp = tmp[0]
+        #        if np.isnan(tmp):
+        #            tmp = -np.inf
+        #        return tmp
 
     def generate_likelihood_script_file(self):
         """
-        .. _likelihood_generate_likelihood_script_file:
         Generates and saves the file ``Likelihood.likelihood_script_file`` containing the code to instantiate the
         ``Likelihood`` object sometimes needed to properly run Markov Chain Monte Carlo in parallel 
         (using ``Multiprocessing``) through the ``Sampler`` object inside Jupyter notebooks on the Windows platform.
@@ -438,9 +534,12 @@ class Likelihood(object):
                    "lik = DNNLikelihood.Likelihood(name=None,\n"+
                    "\tlikelihood_input_file="+r"'"+ r"%s" % ((self.output_base_filename+".pickle").replace(sep,'/'))+r"')"+"\n"+"\n"+
                    "name = lik.name\n"+
-                   "def logpdf(x_pars):\n"+
-                   "\treturn lik.logpdf_fn(x_pars)\n"+
-                   "logpdf_args = None\n"+
+                   "def logpdf(x_pars,*args):\n"+
+                   "\tif args is None:\n"+
+                   "\t\treturn lik.logpdf_fn(x_pars)\n"+
+                   "\telse:\n"+
+                   "\t\treturn lik.logpdf_fn(x_pars,*args)\n"+
+                   "logpdf_args = lik.logpdf_args\n"+
                    "pars_pos_poi = lik.pars_pos_poi\n"+
                    "pars_pos_nuis = lik.pars_pos_nuis\n"+
                    "pars_init_vec = lik.X_prof_logpdf_max.tolist()\n"+

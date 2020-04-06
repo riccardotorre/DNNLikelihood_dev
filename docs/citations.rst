@@ -6,7 +6,7 @@ Citation
 
 The BibTeX entry for citing the ``DNNLikehood`` project is
 
-.. literalinclude:: bib/references.bib
+.. literalinclude:: bib/cite.bib
    :language: bibtex
 
 Published DNNLikelihoods

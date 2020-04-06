@@ -18,4 +18,4 @@ The DNNLikelihood project
    
 .. mdinclude:: ../README.md
 
-
+.. include:: external_links.rst

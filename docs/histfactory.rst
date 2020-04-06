@@ -4,8 +4,8 @@ The Histfactory object
 Summary
 ^^^^^^^
 
-The histfactory class is an API to pyhf that can be used to import likelihoods in the ATLAS histfactory format into
-the DNNLikelihood module. The API uses pyhf to parse all relevant information contained in the histfactory workspace
+The histfactory class is an API to |pyhf_link| that can be used to import likelihoods in the ATLAS histfactory format into
+the DNNLikelihood module. The API uses |pyhf_link| to parse all relevant information contained in the histfactory workspace
 and to create a ``likelihood`` object (see :class:`The Likelihood object <DNNLikelihood.likelihood.Likelihood>`).
 
 Usage
@@ -24,7 +24,8 @@ Arguments
 
          Path (either relative to the code execution folder or absolute)
          containing the ATLAS histfactory workspace (usually containing the Regions subfolders).
-         The ``__init__`` method automatically converts the path into an absolute path.  
+         The ``__init__`` method automatically converts the path into an absolute path.
+
             - **type**: ``str`` or ``None``
             - **default**: ``None``   
 
@@ -33,6 +34,7 @@ Arguments
          Name of the histfactory object. It is used to generate output files and is passed
          to the generated likelihood objects.
          If no ``name`` is specified (default), name is assigned the value ``histfactory_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")``  
+            
             - **type**: ``str`` or ``None``
             - **default**: ``None``   
 
@@ -43,6 +45,7 @@ Arguments
          When determining the regions, the code looks at all subfolders of ``workspace_folder`` 
          containing the string ``regions_folders_base_name``, then deletes this latter string to obtain
          the region names and build the ``regions`` dictionary class attribute (see `Additional attributes`_).   
+            
             - **type**: ``str``
             - **default**: ``Region``  
 
@@ -51,6 +54,7 @@ Arguments
          Name (without .json extension) of the 'background' json files 
          in the region folders (e.g. 'BkgOnly')
          Background files are extracted taking all files in the region subfolders including the string ``bkg_files_base_name``.  
+            
             - **type**: ``str``
             - **default**: ``BkgOnly`` 
 
@@ -59,6 +63,7 @@ Arguments
          Base name (without .json extension) of the 'signal' patchx
          json files in the region folders (e.g. 'patch'). Patch files are extracted taking 
          all files in the region subfolders including the string ``patch_files_base_name``. 
+            
             - **type**: ``str``
             - **default**: ``patch`` 
 
@@ -67,6 +72,7 @@ Arguments
          Path (either relative to the code execution folder or absolute) where output files are saved.
          The __init__ method automatically converts the path into an absolute path.
          If no output folder is specified, ``output_folder`` is set to the code execution folder.
+            
             - **type**: ``str`` or ``None``
             - **default**: ``None`` 
 
@@ -79,6 +85,7 @@ Arguments
          The ``Histfactory`` objects is saved using pickle wit the file containing the .pickle extension. 
          ``histfactory_input_file`` can contain or not the extension. In case it does not, the extension 
          is added by the ``__init__`` method.
+            
             - **type**: ``str`` or ``None``
             - **default**: ``None`` 
 
@@ -90,6 +97,7 @@ Additional attributes
          Main dictionary containing likelihoods parameters and properties for all regions/signal 
          hypotheses. All available likelihoods from the workspace are enumerated so that the dictionary integer keys corresponding
          to each likelihood object: ``_histfactory_additional_attrs = {1: value1, 2: value2, ...}``. 
+            
             - **type**: ``dict`` or ``None``
             - **keys**:
 
@@ -103,9 +111,9 @@ Additional attributes
                  in the ``likelihoods_dict``).
                - *"model_loaded"* (type: ``str``): flag that returns ``False`` is the model is not loaded, i.e. only the items *"signal_region"*, *"bg_only_file"*, 
                  *"patch_file"*, *"name"*, and *"model_loaded"* are available in the dictionary, and ``True`` if all dictionary items,
-                 i.e. full model information and ``pyhf.Workspace.model`` object, are available in the dictionary.
-               - *"model"* (type: ``pyhf.Workspace.model`` object): ``pyhf.Workspace.model()`` object containing the given likelihood parameters and logpdf.
-                 See the `pyhf documentation <https://scikit-hep.org/pyhf/>`_.
+                 i.e. full model information and |pyhf_model_logpdf_link| object, are available in the dictionary.
+               - *"model"* (type: |pyhf_model_logpdf_link| object): object containing the given likelihood parameters and logpdf.
+                 See the |pyhf_link| documentation.
                - *"obs_data"* (type: ``numpy.ndarray``, shape: ``(n_bins,)``): numpy array containing the number of observed events in each of the n_bins bins for the given signal
                  region.
                - *"pars_init"* (type: ``numpy.ndarray``, shape ``(n_pars,)``): array with a length equal to the number of parameters n_pars
@@ -121,12 +129,14 @@ Additional attributes
 
          Base name of the output file of the ``Histfactory.save_likelihoods`` method. It is set to 
          ``path.join(Histfactory.output_folder, utils.check_add_suffix(name, "_histfactory")+".pickle")``. 
+            
             - **type**: ``str`` 
 
     .. py:attribute:: DNNLikelihood.Histfactory.regions
          
          Dictionary containing region names (str) as keys 
          and region folders full path (str) as values.
+            
             - **type**: ``str`` or ``None``
             - **default**: ``None`` 
 
@@ -143,4 +153,4 @@ Methods
 
     .. automethod:: DNNLikelihood.Histfactory.save_histfactory
 
-    .. automethod:: DNNLikelihood.Histfactory.get_lik_object
+    .. automethod:: DNNLikelihood.Histfactory.get_likelihood_object

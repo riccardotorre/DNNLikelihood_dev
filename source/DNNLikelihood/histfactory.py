@@ -34,8 +34,12 @@ class Histfactory(object):
     """
     .. _histfactory_class:
     This class is a container for the ``Histfactory`` object created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, 
-    read parameters and logpdf using the pyhf package, create ``Likelihood`` objects (see :ref:`The Likelihood object <likelihood_class>`) 
+    read parameters and logpdf using the |pyhf_link| package, create ``Likelihood`` objects (see :class:`The Likelihood object <DNNLikelihood.Likelihood>`) 
     and save them for later use.
+
+.. |pyhf_link| raw:: html
+    
+    <a href="https://scikit-hep.org/pyhf/"  target="_blank"> pyhf</a>
     """
 #    __slots__ = "workspace_folder"
     def __init__(self,
@@ -47,7 +51,7 @@ class Histfactory(object):
                  output_folder = None,
                  histfactory_input_file = None):
         """
-        Instantiate the ``Histfactory`` object. 
+        Instantiates the ``Histfactory`` object. 
         If ``histfactory_input_file`` has the default value ``None``, the other arguments are parsed, otherwise all other arguments
         are ignored and the object is entirely reconstructed from the input file. The input file should be a .pickle file exported 
         through the ``Histfactory.save_histfactory()`` method.
@@ -55,7 +59,6 @@ class Histfactory(object):
         - **Arguments**
 
         See Class arguments.
-
         """
         self.histfactory_input_file = histfactory_input_file
         if self.histfactory_input_file is None:
@@ -145,12 +148,14 @@ class Histfactory(object):
                 while all other items are unchanged and remain in ``model_loaded=False`` mode. This allows to only quickly import some
                 likelihoods corresponding to interesting regions of the parameter space without having to import all the HistFactory 
                 Workspace. If ``lik_numbers_list=None`` all available likelihoods are imported in ``model_loaded=True``.
+                    
                     - **type**: ``list`` or ``None``
                     - **default**: ``None`` 
             - **verbose**
             
                 Verbose mode. 
-                See :ref:`_verbose_implementation`.
+                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                    
                     - **type**: ``bool``
                     - **default**: ``True`` 
         """
@@ -219,21 +224,24 @@ class Histfactory(object):
                 List of likelihoods numbers (keys of the ``Histfactory.likelihood_dict`` dictionary) that
                 are saved in ``model_loaded=True`` mode. The default value ``None`` implies that all members are saved in 
                 ``model_loaded=True`` mode.
+                    
                     - **type**: ``list`` or ``None``
                     - **default**: ``None``
 
             - **overwrite**
             
                 Flag that determines whether an existing file gets overwritten or if a new file is created. 
-                If ``overwrite=True`` the ``utils.check_rename_file`` function (see :ref:`_utils_check_rename_file`) is used  
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
                 to append a time-stamp to the file name.
+                    
                     - **type**: ``bool``
                     - **default**: ``False``
 
             - **verbose**
             
                 Verbose mode. 
-                See :ref:`_verbose_implementation`.
+                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                    
                     - **type**: ``bool``
                     - **default**: ``True``
         """
@@ -272,11 +280,11 @@ class Histfactory(object):
         end = timer()
         print('Likelihoods saved in file', out_file,"in", str(end-start),'seconds.\nFile size is ', statinfo.st_size, '.')
 
-    def get_lik_object(self, lik_number=0):
+    def get_likelihood_object(self, lik_number=0):
         """
         Generates a ``Likelihood`` object containing all properties needed for further processing. The logpdf method is built from
-        the ``pyhf.Workspace.model.logpdf()`` pyhf method, and it takes two arguments: the array of parameters values ``x`` and
-        the array of observed data ``obs_data``. With respect to the pyhf ``logpdf`` method, the logpdf in the ``Likelihood`` object
+        the |pyhf_model_logpdf_link| method, and it takes two arguments: the array of parameters values ``x`` and
+        the array of observed data ``obs_data``. With respect to the |pyhf_model_logpdf_link| method, the logpdf in the ``Likelihood`` object
         is flattened to output a float (instead of a numpy.ndarray containing a float).
 
         - **Arguments**
@@ -285,19 +293,25 @@ class Histfactory(object):
             
                 Number of the likelihood for which the ``Likelihood`` 
                 object is constructed.
+                    
                     - **type**: ``int``
                     - **default**: ``0``
 
             - **verbose**
             
                 Verbose mode. 
-                See :ref:`_verbose_implementation`.
+                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                    
                     - **type**: ``bool``
                     - **default**: ``True``
 
         - **Returns**
 
-            :ref:`Likelihood <class_likelihood>` object.
+            :class:`Likelihood <DNNLikelihood.Likelihood>` object.
+
+.. |pyhf_model_logpdf_link| raw:: html
+    
+    <a href="https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf"  target="_blank"> pyhf.Model.logpdf</a>
         """
         start = timer()
         lik = dict(self.likelihoods_dict[lik_number])

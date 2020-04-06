@@ -28,19 +28,19 @@ Methods
 
     .. automethod:: DNNLikelihood.Data.__init__
 
-    .. automethod:: DNNLikelihood.Data.__check_define_name
+    .. automethod:: DNNLikelihood.Data._Data__check_define_name
 
-    .. automethod:: DNNLikelihood.Data.__check_define_pars
+    .. automethod:: DNNLikelihood.Data._Data__check_define_pars
 
-    .. automethod:: DNNLikelihood.Data.__check_define_mode
+    .. automethod:: DNNLikelihood.Data._Data__check_define_mode
 
-    .. automethod:: DNNLikelihood.Data.__init_mode
+    .. automethod:: DNNLikelihood.Data._Data__init_mode
 
-    .. automethod:: DNNLikelihood.Data.__create_samples
+    .. automethod:: DNNLikelihood.Data._Data__create_samples
 
-    .. automethod:: DNNLikelihood.Data.__load_samples
+    .. automethod:: DNNLikelihood.Data._Data__load_samples
 
-    .. automethod:: DNNLikelihood.Data.__check_data
+    .. automethod:: DNNLikelihood.Data._Data__check_data
 
     .. automethod:: DNNLikelihood.Data.define_test_fraction
 

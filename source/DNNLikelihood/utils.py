@@ -27,9 +27,9 @@ from timeit import default_timer as timer
 #    l = [item for sublist in l for item in sublist]
 #    return l
 
-def flatten_list(l):
+def flatten_list(lst):
     out = []
-    for item in l:
+    for item in lst:
         if isinstance(item, (list, tuple)):
             out.extend(flatten_list(item))
         else:
@@ -99,10 +99,10 @@ def save_samples(allsamples, logpdf_values, data_sample_filename, name):
 #        setattr(eval(obj_name), par_name, eval(par_name))
 #    return eval(par_name)
 
-def check_repeated_elements_at_start(list):
-    x0 = list[0]
+def check_repeated_elements_at_start(lst):
+    x0 = lst[0]
     n = 0
-    for x in list[1:]:
+    for x in lst[1:]:
         if x == x0:
             n += 1
         else:
@@ -122,9 +122,9 @@ def get_spaced_elements(array, numElems=5):
     out = array[np.round(np.linspace(0, len(array)-1, numElems)).astype(int)]
     return out
 
-def next_power_of_two(n):
+def next_power_of_two(x):
     i = 1
-    while i < n:
+    while i < x:
         i = i << 1
     return i
 
@@ -171,8 +171,8 @@ def sort_dict(d):
 #            new_dic[key] = dic[key]
 #    return new_dic
 
-def normalize_weights(x):
-    return x/np.sum(x)*len(x)
+def normalize_weights(w):
+    return w/np.sum(w)*len(w)
 
 def product_dict(**kwargs):
     keys = kwargs.keys()
@@ -211,30 +211,30 @@ def string_add_newline_at_char(s, c):
     firstpart, secondpart = string_split_at_char(s, c)
     return firstpart+"\n"+"\t"+secondpart
 
-def metric_name_abbreviate(name):
+def metric_name_abbreviate(metric_name):
     name_dict = {"accuracy": "acc", "mean_error": "me", "mean_percentage_error": "mpe", "mean_squared_error": "mse",
                  "mean_absolute_error": "mae", "mean_absolute_percentage_error": "mape", "mean_squared_logarithmic_error": "msle"}
     for key in name_dict:
-        name = name.replace(key, name_dict[key])
-    return name
+        metric_name = metric_name.replace(key, name_dict[key])
+    return metric_name
 
-def metric_name_unabbreviate(name):
+def metric_name_unabbreviate(metric_name):
     name_dict = {"acc": "accuracy", "me": "mean_error", "mpe": "mean_percentage_error", "mse": "mean_squared_error",
                  "mae": "mean_absolute_error", "mape": "mean_absolute_percentage_error", "msle": "mean_squared_logarithmic_error"}
     for key in name_dict:
-        name = name.replace(key, name_dict[key])
-    return name
+        metric_name = metric_name.replace(key, name_dict[key])
+    return metric_name
 
-def strip_suffix(s, suf):
-    if s.endswith(suf):
-        return s[:len(s)-len(suf)]
+def strip_suffix(s, suff):
+    if s.endswith(suff):
+        return s[:len(s)-len(suff)]
     return s
 
-def check_add_suffix(s, suf):
-    if s.endswith(suf):
+def check_add_suffix(s, suff):
+    if s.endswith(suff):
         return s
     else:
-        return s+suf
+        return s+suff
 
 def strip_prefix(s, pref):
     if s.startswith(pref):
@@ -263,3 +263,16 @@ def get_sorted_grid(pars_ranges, spacing="grid"):
         pars_vals = pars_vals[pars_vals[:, q].argsort(kind='mergesort')]
     q = q-1
     return pars_vals
+
+def define_generic_pars_labels(pars_pos_poi, pars_pos_nuis):
+    generic_pars_labels = []
+    i_poi = 1
+    i_nuis = 1
+    for i in range(len(pars_pos_poi)+len(pars_pos_nuis)):
+        if i in pars_pos_poi:
+            generic_pars_labels.append(r"$\theta_{%d}$" % i_poi)
+            i_poi = i_poi+1
+        else:
+            generic_pars_labels.append(r"$\nu_{%d}$" % i_nuis)
+            i_nuis = i_nuis+1
+    return generic_pars_labels
