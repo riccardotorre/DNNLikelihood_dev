@@ -1,34 +1,24 @@
 __all__ = ["Data"]
 
-import numpy as np
-import h5py
+import builtins
 from datetime import datetime
 from timeit import default_timer as timer
-import builtins
 
-from . import utils
-
-ShowPrints = True
-def print(*args, **kwargs):
-    global ShowPrints
-    if type(ShowPrints) is bool:
-        if ShowPrints:
-            return builtins.print(*args, **kwargs)
-    if type(ShowPrints) is int:
-        if ShowPrints != 0:
-            return builtins.print(*args, **kwargs)
-
-#class MyError(Exception):
-#    def __init__(self, obj, method):
-#        print('Debug info:', repr(obj.data), method.__name__)
-#        raise
+import h5py
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
+
+from . import utils
+from . import show_prints
+from .show_prints import print
+
 
 class Data(object):
     """Class to initialize the data object
     """
     def __init__(self,
+                 name = None,
                  data_X = None,
                  data_Y = None,
                  dtype="float64",
@@ -36,15 +26,18 @@ class Data(object):
                  pars_pos_nuis=None,
                  pars_labels=None,
                  test_fraction = None,
-                 name = None,
                  data_sample_input_filename=None,
                  data_sample_output_filename=None,
-                 load_on_RAM = False
+                 load_on_RAM = False,
+                 verbose = True
                  ):
         """Initializes the ``data`` object
         It has either "mode = 0" (create) or "mode = 1" (load) operation depending on the given 
         inputs (see documentation of __check_define_mode and __init_mode methods for more details).
         """
+        show_prints.verbose = verbose
+        self.name = name
+        self.__check_define_name()
         self.dtype = dtype
         self.data_X = data_X
         self.data_Y = data_Y
@@ -55,7 +48,6 @@ class Data(object):
             self.test_fraction = 0
         else:
             self.test_fraction = test_fraction
-        self.name = name
         self.data_sample_input_filename = data_sample_input_filename
         self.data_sample_output_filename = data_sample_output_filename
         self.load_on_RAM = load_on_RAM
@@ -63,7 +55,7 @@ class Data(object):
         self.__check_define_mode()
         self.__init_mode()
         self.__check_data()
-        self.__check_define_name()
+        
         self.__check_define_pars()
         self.define_test_fraction()
         self.data_dictionary = {"X_train": np.array([[]], dtype=self.dtype), "Y_train": np.array([], dtype=self.dtype),
@@ -74,7 +66,9 @@ class Data(object):
     def __check_define_name(self):
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         if self.name is None:
-            self.name = "data_sample_"+timestamp
+            self.name = "data_"+timestamp
+        else:
+            self.name = utils.check_add_suffix(name, "_data")
 
     def __check_define_pars(self):
         if self.pars_pos_nuis is None and self.pars_pos_poi is None:
@@ -376,4 +370,3 @@ class Data(object):
     #        result.append(value-len(self.data_dictionary[key]))
     #    result = [(i > 0) * i for i in result]
     #    return result
-    

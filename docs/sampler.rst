@@ -92,12 +92,29 @@ Arguments
             points and to return a list of logpdf values. When ``Sampler.vectorize=True``, ``Sampler.parallel_CPU`` is automatically
             set to ``False``. See the |emcee_ensemble_salpler_link| documentation for more details.
 
+    .. py:attribute:: DNNLikelihood.Sampler.verbose
+         
+         Set verbosity in the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` method. 
+         See :ref:`Verbosity mode <verbosity_mode>`.
+
+            - **type**: ``bool``
+            - **default**: ``True``
+
 .. |emcee_ensemble_salpler_link| raw:: html
     
     <a href="https://emcee.readthedocs.io/en/stable/user/sampler/#emcee.EnsembleSampler"  target="_blank"> emcee.EnsembleSampler</a>
 
 Additional attributes
 """""""""""""""""""""
+
+    .. py:attribute:: DNNLikelihood.Sampler.name   
+
+            Name of the :class:`Sampler <DNNLikelihood.Sampler>` object. It is used to generate 
+            output files. It is automatically generated from the atrribute ``name``` of the corresponding
+            :class:`Likelihood <DNNLikelihood.Likelihood>` object by replacing the suffix "_likelihood" with
+            the suffix "_sampler"
+            
+                - **type**: ``str``
 
     .. py:method:: DNNLikelihood.Sampler.logpdf(x_pars, logpdf_args=None):
 
@@ -259,6 +276,11 @@ Additional attributes
 
             An ``emcee.Backends`` object.
             See the |emcee_backend_link| documentation for details about the ``emcee.Backends`` object.
+            It is initialized to ``None`` and created only when a backend is created either at initialization
+            when loading an existing one with the 
+            :meth:`Sampler._Sampler__load_sampler <DNNLikelihood.Sampler._Sampler__load_sampler>` method (when 
+            :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is ``False``) or the first time the 
+            method :meth:`Sampler.run_sampler <DNNLikelihood.Sampler.run_sampler>` is called.
 
                 - **type**: ``emcee.Backends`` object
 
@@ -266,6 +288,8 @@ Additional attributes
 
             An ``emcee.EnsembleSampler`` object.
             See the |emcee_ensemble_salpler_link| documentation for details about the ``emcee.EnsembleSampler`` object.
+            It is initialized to ``None`` and created only when :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`
+            is created.
 
                 - **type**: ``emcee.Backends`` object
 

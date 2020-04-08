@@ -1,38 +1,28 @@
 __all__ = ["Sampler"]
 
-from os import path
-import importlib
-from copy import copy
-import sys
-from timeit import default_timer as timer
-from datetime import datetime
-import sys
-from scipy.optimize import minimize
 import builtins
+import importlib
+import sys
+from copy import copy
+from datetime import datetime
+from multiprocessing import Pool
+from os import path
+from timeit import default_timer as timer
+
 import matplotlib.pyplot as plt
-try:
-    from jupyterthemes import jtplot
-except:
-    print("No module named 'jupyterthemes'. Continuing without.\nIf you wish to customize jupyter notebooks please install 'jupyterthemes'.")
 import numpy as np
 import psutil
-from multiprocessing import Pool
+from scipy.optimize import minimize
 
 import emcee
+
 from . import utils
 from .data import Data
-
-ShowPrints = True
-def print(*args, **kwargs):
-    global ShowPrints
-    if type(ShowPrints) is bool:
-        if ShowPrints:
-            return builtins.print(*args, **kwargs)
-    if type(ShowPrints) is int:
-        if ShowPrints != 0:
-            return builtins.print(*args, **kwargs)
+from . import show_prints
+from .show_prints import print
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
+
 
 class Sampler(object):
     """
@@ -55,7 +45,8 @@ class Sampler(object):
                  nsteps=None,
                  moves_str=None,
                  parallel_CPU=True,
-                 vectorize=False
+                 vectorize=False,
+                 verbose=True
                  ):
         """
         Instantiates the ``Sampler`` object. 
@@ -86,6 +77,7 @@ class Sampler(object):
 
             See Class arguments.
         """
+        show_prints.verbose = verbose
         if likelihood_script_file is None and likelihood is None:
             raise Exception("At least one of the arguments 'likelihood_script_file' and 'likelihood' need to be specified.")
         if likelihood_script_file is not None and likelihood is not None:
@@ -146,15 +138,14 @@ class Sampler(object):
                 self.nsteps = nsteps
                 self.__check_params_backend()
 
-    def __check_params_backend(self):
+    def __check_params_backend(self,verbose=True):
         """
         Checks consistency between the parameters ``nwalkers``, ``ndims``, and ``nsteps`` assigned in the 
         :meth:``Sampler.__init__ <DNNLikelihood.Sampler.__init__> and the corresponding ones in the existing backend.
         If ``nwalkers`` or ``ndims`` are found to be inconsistent an exception is raise. If ``nsteps`` is found to 
         be inconsistent it is set to the number of available steps in the backend.
         """
-        global ShowPrints
-        ShowPrints = True
+        show_prints.verbose = verbose
         nwalkers_from_backend, ndims_from_backend = self.backend.shape
         nsteps_from_backend = self.backend.iteration
         if nwalkers_from_backend != self.nwalkers:
@@ -179,7 +170,7 @@ class Sampler(object):
             - **verbose**
 
                 Verbose mode.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
@@ -209,7 +200,7 @@ class Sampler(object):
             - **verbose**
 
                 Verbose mode.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
@@ -274,7 +265,7 @@ class Sampler(object):
             - **verbose**
 
                 Verbose mode.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
@@ -354,7 +345,7 @@ class Sampler(object):
             - **verbose**
 
                 Verbose mode.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
@@ -595,7 +586,7 @@ class Sampler(object):
                     res.append([par, n, Rc, Vhat, W])
         return np.array(res)
 
-    def plot_gelman_rubin(self, pars=0, npoints=5, pars_labels="original", save=True, verbose=True):
+    def plot_gelman_rubin(self, pars=0, npoints=5, pars_labels="original", overwrite=False, verbose=True):
         """
         Produces plots of the evolution with the number of steps of the convergence metrics :math:`R_{c}`, 
         :math:`\\sqrt{\\hat{V}}`, and :math:`\\sqrt{W}` computed by the method 
@@ -630,32 +621,26 @@ class Sampler(object):
                     - **shape of list**: ``[ ]``
                     - **accepted strings**: ``"original"``, ``"generic"``
 
-            - **save**
+            - **overwrite**
             
-                If ``save=True`` the figures are saved as :attr:`Sampler.figure_base_filename <DNNLikelihood.Sampler.figure_base_filename>` 
-                with the different suffixes ``"_GR_Rc_"+str(par)``, ``"_GR_sqrtVhat_"+str(par)``, and ``"_GR_sqrtW_"+str(par)``
-                for the different quantities and parameters.
+                It determines whether an existing file gets overwritten or if a new file is created. 
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
+                to append a time-stamp to the file name.
+                    
                     - **type**: ``bool``
-                    - **default**: ``True``
+                    - **default**: ``False``
 
             - **verbose**
 
                 Verbose mode. The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
         """
         global ShowPrints
         ShowPrints = verbose
-        try:
-            jtplot.reset()
-        except:
-            pass
-        try:
-            plt.style.use(mplstyle_path)
-        except:
-            pass
+        plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
         filename = self.figure_base_filename
@@ -664,17 +649,17 @@ class Sampler(object):
             idx = np.unique(idx[idx <= self.nsteps])
             idx = utils.get_spaced_elements(idx, numElems=npoints+1)
             idx = idx[1:]
-            gr = self.gelman_rubin(par, steps=idx)
+            gr = self.gelman_rubin(par, nsteps=idx)
             plt.plot(gr[:,1], gr[:,2], '-', alpha=0.8)
             plt.xlabel("number of steps, $S$")
             plt.ylabel(r"$\hat{R}_{c}(%s)$" % (pars_labels[par].replace('$', '')))
             plt.xscale('log')
             plt.tight_layout()
-            if save:
-                figure_filename = filename+"_GR_Rc_"+str(par)+".pdf"
+            figure_filename = filename+"_GR_Rc_"+str(par)+".pdf"
+            if not overwrite:
                 figure_filename = utils.check_rename_file(figure_filename)
-                plt.savefig(figure_filename)
-                print('Saved figure', figure_filename+'.')
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
@@ -683,11 +668,11 @@ class Sampler(object):
             plt.ylabel(r"$\sqrt{\hat{V}}(%s)$"% (pars_labels[par].replace('$', '')))
             plt.xscale('log')
             plt.tight_layout()
-            if save:
-                figure_filename = filename+"_GR_sqrtVhat_"+str(par)+".pdf"
+            figure_filename = filename+"_GR_sqrtVhat_"+str(par)+".pdf"
+            if not overwrite:
                 figure_filename = utils.check_rename_file(figure_filename)
-                plt.savefig(figure_filename)
-                print('Saved figure', figure_filename+'.')
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
@@ -696,16 +681,16 @@ class Sampler(object):
             plt.ylabel(r"$\sqrt{W}(%s)$"% (pars_labels[par].replace('$', '')))
             plt.xscale('log')
             plt.tight_layout()
-            if save:
-                figure_filename = filename+"_GR_sqrtW_"+str(par)+".pdf"
+            figure_filename = filename+"_GR_sqrtW_"+str(par)+".pdf"
+            if not overwrite:
                 figure_filename = utils.check_rename_file(figure_filename)
-                plt.savefig(figure_filename)
-                print('Saved figure', figure_filename+'.')
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
             
-    def plot_dist(self, pars=0, pars_labels="original", save=False, verbose=True):
+    def plot_dist(self, pars=0, pars_labels="original", overwrite=False, verbose=True):
         """
         Plots the 1D distribution of parameter (or list of parameters) ``pars``.
 
@@ -728,31 +713,26 @@ class Sampler(object):
                     - **shape of list**: ``[ ]``
                     - **accepted strings**: ``"original"``, ``"generic"``
 
-            - **save**
+            - **overwrite**
             
-                If ``save=True`` the figures are saved as :attr:`Sampler.figure_base_filename <DNNLikelihood.Sampler.figure_base_filename>` 
-                with the different suffixes ``"_distr_"+str(par)`` for the different parameters.
+                It determines whether an existing file gets overwritten or if a new file is created. 
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
+                to append a time-stamp to the file name.
+                    
                     - **type**: ``bool``
-                    - **default**: ``True``
+                    - **default**: ``False``
 
             - **verbose**
 
                 Verbose mode. The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
         """
         global ShowPrints
         ShowPrints = verbose
-        try:
-            jtplot.reset()
-        except:
-            pass
-        try:
-            plt.style.use(mplstyle_path)
-        except:
-            pass
+        plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
         filename = self.figure_base_filename
@@ -765,16 +745,16 @@ class Sampler(object):
             plt.xlabel(r"$%s$" % (pars_labels[par].replace('$', '')))
             plt.ylabel(r"$p(%s)$" % (pars_labels[par].replace('$', '')))
             plt.tight_layout()
-            if save:
-                figure_filename = filename+"_distr_"+str(par)+".pdf"
+            figure_filename = filename+"_distr_"+str(par)+".pdf"
+            if not overwrite:
                 figure_filename = utils.check_rename_file(figure_filename)
-                plt.savefig(figure_filename)
-                print('Saved figure', figure_filename+'.')
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
 
-    def plot_autocorr(self, pars=0, pars_labels="original", methods=["G&W 2010", "DFM 2017", "DFM 2017: ML"], save=False, verbose=True):
+    def plot_autocorr(self, pars=0, pars_labels="original", methods=["G&W 2010", "DFM 2017", "DFM 2017: ML"], overwrite=False, verbose=True):
         """
         Plots the autocorrelation time estimate evolution with the number of steps for parameter (or list of parameters) ``pars``.
         Three different methods are used to estimate the autocorrelation time: "G&W 2010", "DFM 2017", and "DFM 2017: ML", described in details
@@ -809,17 +789,19 @@ class Sampler(object):
                     - **shape of list**: ``[ ]``
                     - **default**: ``["G&W 2010", "DFM 2017", "DFM 2017: ML"]``
 
-            - **save**
-
-                If ``save=True`` the figures are saved as :attr:`Sampler.figure_base_filename <DNNLikelihood.Sampler.figure_base_filename>`
-                with the different suffixes ``"_autocorr_"+str(par)`` for the different parameters.
+            - **overwrite**
+            
+                It determines whether an existing file gets overwritten or if a new file is created. 
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
+                to append a time-stamp to the file name.
+                    
                     - **type**: ``bool``
-                    - **default**: ``True``
+                    - **default**: ``False``
 
             - **verbose**
 
                 Verbose mode. The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
@@ -830,14 +812,7 @@ class Sampler(object):
         """
         global ShowPrints
         ShowPrints = verbose
-        try:
-            jtplot.reset()
-        except:
-            pass
-        try:
-            plt.style.use(mplstyle_path)
-        except:
-            pass
+        plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
         filename = self.figure_base_filename
@@ -908,16 +883,16 @@ class Sampler(object):
             plt.ylabel(r"$\tau_{%s}$ estimates" % (pars_labels[par].replace('$', '')))
             plt.legend()
             plt.tight_layout()
-            if save:
-                figure_filename = filename+"_autocorr_"+str(par)+".pdf"
+            figure_filename = filename+"_autocorr_"+str(par)+".pdf"
+            if not overwrite:
                 figure_filename = utils.check_rename_file(figure_filename)
-                plt.savefig(figure_filename)
-                print('Saved figure', figure_filename+'.')
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
 
-    def plot_chains(self, pars=0, n_chains=100, pars_labels="original", save=False, verbose=True):
+    def plot_chains(self, pars=0, n_chains=100, pars_labels="original", overwrite=False, verbose=True):
         """
         Plots the evolution of chains (walkers) with the number of steps for ``n_chains`` randomly selected chains among the 
         :attr:``Sampler.nwalkers <DNNLikelihood.Sampler.nwalkers>`` walkers. If ``n_chains`` is larger than the available number
@@ -941,31 +916,26 @@ class Sampler(object):
                     - **type**: ``int``
                     - **default**: ``100``
 
-            - **save**
+            - **overwrite**
             
-                If ``save=True`` the  figures are saved as :attr:`Sampler.figure_base_filename <DNNLikelihood.Sampler.figure_base_filename>` 
-                with the different suffixes ``"_chains_"+str(par)`` for the different parameters.
+                It determines whether an existing file gets overwritten or if a new file is created. 
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
+                to append a time-stamp to the file name.
+                    
                     - **type**: ``bool``
-                    - **default**: ``True``
+                    - **default**: ``False``
 
             - **verbose**
 
                 Verbose mode. The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
         """
         global ShowPrints
         ShowPrints = verbose
-        try:
-            jtplot.reset()
-        except:
-            pass
-        try:
-            plt.style.use(mplstyle_path)
-        except:
-            pass
+        plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
         filename = self.figure_base_filename
@@ -984,16 +954,16 @@ class Sampler(object):
             plt.ylabel(r"$%s$" %(pars_labels[par].replace('$', '')))
             plt.xscale('log')
             plt.tight_layout()
-            if save:
-                figure_filename = filename+"_chains_"+str(par)+".pdf"
+            figure_filename = filename+"_chains_"+str(par)+".pdf"
+            if not overwrite:
                 figure_filename = utils.check_rename_file(figure_filename)
-                plt.savefig(figure_filename)
-                print('Saved figure', figure_filename+'.')
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
 
-    def plot_chains_logprob(self, n_chains=100, save=False, verbose=True):
+    def plot_chains_logprob(self, n_chains=100, overwrite=False, verbose=True):
         """
         Plots the evolution of minus the logpdf values with the number of steps for ``n_chains`` randomly selected chains among the 
         :attr:``Sampler.nwalkers <DNNLikelihood.Sampler.nwalkers>`` walkers. If ``n_chains`` is larger than the available number
@@ -1008,31 +978,25 @@ class Sampler(object):
                     - **type**: ``int``
                     - **default**: ``100``
 
-            - **save**
+            - **overwrite**
             
-                If ``save=True`` the figure is saved as :attr:`Sampler.figure_base_filename <DNNLikelihood.Sampler.figure_base_filename>` 
-                with the suffix ``"_chains_logpdf``.
+                It determines whether an existing file gets overwritten or if a new file is created. 
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
+                to append a time-stamp to the file name.
+                    
                     - **type**: ``bool``
-                    - **default**: ``True``
+                    - **default**: ``False``
 
             - **verbose**
 
                 Verbose mode. The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
         """
         global ShowPrints
         ShowPrints = verbose
-        try:
-            jtplot.reset()
-        except:
-            pass
-        try:
-            plt.style.use(mplstyle_path)
-        except:
-            pass
         filename = self.figure_base_filename
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
@@ -1048,11 +1012,11 @@ class Sampler(object):
         plt.ylabel(r"-logpdf")
         plt.xscale('log')
         plt.tight_layout()
-        if save:
-            figure_filename = filename+"_chains_logpdf.pdf"
+        figure_filename = filename+"_chains_logpdf.pdf"
+        if not overwrite:
             figure_filename = utils.check_rename_file(figure_filename)
-            plt.savefig(figure_filename)
-            print('Saved figure', figure_filename+'.')
+        plt.savefig(figure_filename)
+        print('Saved figure', figure_filename+'.')
         if verbose:
             plt.show()
         plt.close()

@@ -1,33 +1,22 @@
 __all__ = ["Likelihood"]
 
-from os import path, stat, sep
 import builtins
-from datetime import datetime
 import pickle
+from datetime import datetime
+from os import path, sep, stat
+from timeit import default_timer as timer
+
 import cloudpickle
 import ipywidgets as widgets
-from timeit import default_timer as timer
-import numpy as np
 import matplotlib.pyplot as plt
-try:
-    from jupyterthemes import jtplot
-except:
-    print("No module named 'jupyterthemes'. Continuing without.\nIf you wish to customize jupyter notebooks please install 'jupyterthemes'.")
+import numpy as np
 
-from . import inference
-from . import utils
-
-ShowPrints = True
-def print(*args, **kwargs):
-    global ShowPrints
-    if type(ShowPrints) is bool:
-        if ShowPrints:
-            return builtins.print(*args, **kwargs)
-    if type(ShowPrints) is int:
-        if ShowPrints != 0:
-            return builtins.print(*args, **kwargs)
+from . import inference, utils
+from . import show_prints
+from .show_prints import print
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
+
 
 class Likelihood(object):
     """
@@ -45,7 +34,8 @@ class Likelihood(object):
                  pars_labels = None,
                  pars_bounds = None,
                  output_folder = None,
-                 likelihood_input_file=None):
+                 likelihood_input_file = None,
+                 verbose = True):
         """
         Instantiates the ``Likelihood`` object. 
         If ``likelihood_input_file`` has the default value ``None``, the other arguments are parsed, otherwise all other arguments
@@ -56,12 +46,11 @@ class Likelihood(object):
 
             See Class arguments.
         """
+        show_prints.verbose = verbose
         self.likelihood_input_file = likelihood_input_file
         if self.likelihood_input_file is None:
-            if name is None:
-                self.name = "likelihood_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            else:
-                self.name = utils.check_add_suffix(name, "_likelihood")
+            self.name = name
+            self.check_define_name()
             self.logpdf = logpdf
             self.logpdf_args = logpdf_args
             self.pars_pos_poi = pars_pos_poi
@@ -82,15 +71,33 @@ class Likelihood(object):
             self.likelihood_script_file = path.join(self.output_folder, self.output_base_filename+"_script.py")
         else:
             self.likelihood_input_file = path.abspath(utils.check_add_suffix(likelihood_input_file,".pickle"))
-            self.__load_likelihood()
+            self.__load_likelihood(verbose=verbose)
         self.generic_pars_labels = utils.define_generic_pars_labels(self.pars_pos_poi, self.pars_pos_nuis)
+
+    def __check_define_name(self):
+        """
+        If :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` is ``None`` it replaces it with 
+        ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_likelihood"``
+        otherwise it appends the suffix "_likelihood" (preventing duplication if it is already present).
+        """
+        if self.name is None:
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            self.name = "model_"+timestamp+"_likelihood"
+        else:
+            self.name = utils.check_add_suffix(name, "_likelihood")
+
+    #def set_verbose(self, verbose=True):
+    #    show_prints.verbose = verbose
+    #    print(show_prints.verbose)
+
+    #def hello_world(self):
+    #    print("hello world")
 
     def __load_likelihood(self, verbose=True):
         """
         Private method used by the ``__init__`` one to load the ``Likelihood`` object from the file ``Likelihood.likelihood_input_file``.
         """
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
         in_file = self.likelihood_input_file
         start = timer()
         pickle_in = open(in_file, 'rb')
@@ -139,7 +146,7 @@ class Likelihood(object):
         else:
             return pars_labels
 
-    def plot_logpdf_par(self,pars=0,npoints=100,pars_init=None,pars_labels="original",save=True,verbose=True):
+    def plot_logpdf_par(self,pars=0,npoints=100,pars_init=None,pars_labels="original",overwrite=False,verbose=True):
         """
         Method that produces a plot of the logpdf as a function of of the parameter ``par`` in the range ``(min,max)``
         using a number ``npoints`` of points. Only the parameter ``par`` is veried, while all other parameters are kept
@@ -182,30 +189,26 @@ class Likelihood(object):
                     - **shape of list**: ``[ ]``
                     - **accepted strings**: ``"original"``, ``"generic"``
 
-            - **save**
+            - **overwrite**
             
-                If ``save=True`` the figure is saved into the file.
-
+                It determines whether an existing file gets overwritten or if a new file is created. 
+                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
+                to append a time-stamp to the file name.
+                    
                     - **type**: ``bool``
-                    - **default**: ``True`` 
+                    - **default**: ``False``
 
             - **verbose**
             
-                Verbose mode. 
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                Verbosity mode. 
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True`` 
         """
-        global ShowPrints
-        ShowPrints = verbose
-        jtplot.reset()
-        try:
-            plt.style.use(mplstyle_path)
-        except:
-            pass
-        pars = np.array([pars]).flatten()
-        labels = self.__set_pars_labels(labels)
+        show_prints.verbose = verbose
+        plt.style.use(mplstyle_path)
+        pars_labels = self.__set_pars_labels(pars_labels)
         if pars_init is None:
             pars_init = self.pars_init
         for par in pars:
@@ -218,12 +221,14 @@ class Likelihood(object):
             logpdf_vals = [self.logpdf(point,*self.logpdf_args) for point in points]
             plt.plot(vals, logpdf_vals)
             plt.title(r"%s" % self.name.replace("_","\_"),fontsize=10)
-            plt.xlabel(r"%s" % labels[par_number].replace("_", "\_"))
+            plt.xlabel(r"%s" % pars_labels[par_number].replace("_", "\_"))
             plt.ylabel(r"logpdf")
-            if save:
-                figure_filename = self.output_base_filename+"_par_"+str(par[0])+".pdf"
-                plt.savefig(figure_filename)
-                print('Saved figure', figure_filename+'.')
+            plt.tight_layout()
+            figure_filename = self.output_base_filename+"_par_"+str(par[0])+".pdf"
+            if not overwrite:
+                figure_filename = utils.check_rename_file(figure_filename)
+            plt.savefig(figure_filename)
+            print('Saved figure', figure_filename+'.')
             if verbose:
                 plt.show()
             plt.close()
@@ -242,15 +247,14 @@ class Likelihood(object):
 
             - **verbose**
             
-                Verbose mode. 
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                Verbosity mode. 
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True`` 
         
         """
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
         if self.X_logpdf_max is None:
             start = timer()
             res = inference.find_maximum(lambda x: self.logpdf_fn(x,*self.logpdf_args), pars_init=self.pars_init, pars_bounds=None)
@@ -323,15 +327,14 @@ class Likelihood(object):
 
             - **verbose**
             
-                Verbose mode. 
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                Verbosity mode. 
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True`` 
         
         """
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
         overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
                                                  'width': '500px', 'height': '14px',
                                                  'padding': '0px', 'margin': '-5px 0px -20px 0px'})
@@ -400,14 +403,13 @@ class Likelihood(object):
 
             - **verbose**
             
-                Verbose mode. 
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                Verbosity mode. 
+                See :ref:`Verbosity mode <verbosity_mode>`.
 
                     - **type**: ``bool``
                     - **default**: ``True``
         """
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
         start = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         if overwrite:

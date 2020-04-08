@@ -26,17 +26,9 @@ from . import utils
 from .data import Data
 from .DNN_likelihood import DNN_likelihood
 from . import set_resources
+from . import show_prints
+from .show_prints import print
 
-
-ShowPrints = True
-def print(*args, **kwargs):
-    global ShowPrints
-    if type(ShowPrints) is bool:
-        if ShowPrints:
-            return builtins.print(*args, **kwargs)
-    if type(ShowPrints) is int:
-        if ShowPrints != 0:
-            return builtins.print(*args, **kwargs)
 
 class DNN_likelihood_ensemble(object):
     def __init__(self,

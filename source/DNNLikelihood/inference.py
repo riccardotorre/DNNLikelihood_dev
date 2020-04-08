@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 from scipy import optimize
 
 from . import utils
+from . import show_prints
+from .show_prints import print
 
 def CI_from_sigma(sigma):
     np.array(sigma)

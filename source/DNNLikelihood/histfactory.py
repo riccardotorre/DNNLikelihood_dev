@@ -1,34 +1,25 @@
 __all__ = ["Histfactory"]
 
-import sys
-import copy
 import builtins
-from os import listdir, path, stat
-import ipywidgets as widgets
+import json
 import pickle
-#import cloudpickle as pickle
+import sys
 from datetime import datetime
-import ipywidgets as widgets
-import numpy as np
-import json, jsonpatch, requests, jsonschema
+from os import listdir, path, stat
 from timeit import default_timer as timer
-from jsonpatch import JsonPatch
 
-#sys.path.insert(0, '../')
+import jsonpatch
+import jsonschema
+import numpy as np
 import pyhf
+import requests
+from jsonpatch import JsonPatch
 
 from . import utils
 from .likelihood import Likelihood
+from . import show_prints
+from .show_prints import print
 
-ShowPrints = True
-def print(*args, **kwargs):
-    global ShowPrints
-    if type(ShowPrints) is bool:
-        if ShowPrints:
-            return builtins.print(*args, **kwargs)
-    if type(ShowPrints) is int:
-        if ShowPrints != 0:
-            return builtins.print(*args, **kwargs)
 
 class Histfactory(object):
     """
@@ -49,7 +40,8 @@ class Histfactory(object):
                  bkg_files_base_name="BkgOnly",
                  patch_files_base_name ="patch",
                  output_folder = None,
-                 histfactory_input_file = None):
+                 histfactory_input_file = None,
+                 verbose = True):
         """
         Instantiates the ``Histfactory`` object. 
         If ``histfactory_input_file`` has the default value ``None``, the other arguments are parsed, otherwise all other arguments
@@ -60,35 +52,53 @@ class Histfactory(object):
 
         See Class arguments.
         """
+        show_prints.verbose = verbose
         self.histfactory_input_file = histfactory_input_file
         if self.histfactory_input_file is None:
             self.workspace_folder = path.abspath(workspace_folder)
-            if name is None:
-                self.name = "histfactory_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-            else:
-                self.name = name
+            self.name = name
+            self.__check_define_name()
             self.regions_folders_base_name = regions_folders_base_name
             self.bkg_files_base_name = bkg_files_base_name
             self.patch_files_base_name = patch_files_base_name
             if output_folder is None:
                 output_folder = ""
             self.output_folder = path.abspath(output_folder)
-            self.histfactory_output_file = path.join(self.output_folder, utils.check_add_suffix(name, "_histfactory")+".pickle")
+            self.histfactory_output_file = path.join(self.output_folder, self.name+".pickle")
             subfolders = [path.join(self.workspace_folder,f) for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder,f))]
             regions = [f.replace(regions_folders_base_name, "") for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder, f))]
             self.regions = dict(zip(regions,subfolders))
-            self.__import_histfactory()
+            self.__import_histfactory(verbose=verbose)
         else:
             self.histfactory_input_file = path.abspath(utils.check_add_suffix(self.histfactory_input_file, ".pickle"))
-            self.__load_histfactory()
+            self.__load_histfactory(verbose=verbose)
 
-    def __import_histfactory(self):
+#    def set_verbose(self, verbose=True):
+#        show_prints.verbose = verbose
+#        print(show_prints.verbose)
+#
+#    def hello_world(self):
+#        print("hello world")
+#
+    def __check_define_name(self):
+        """
+        If :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` is ``None`` it replaces it with ``"workspace_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_histfactory"``
+        otherwise it appends the suffix "_histfactory" (preventing duplication if it is already present).
+        """
+        if self.name is None:
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            self.name = "workspace_"+timestamp+"_histfactory"
+        else:
+            self.name = utils.check_add_suffix(name, "_histfactory")
+
+    def __import_histfactory(self, verbose=True):
         """
         Private method used by the ``__init__`` one to import all likelihoods in ``load_model=False`` mode.
         It scans through the regions folders and build the ``Histfactory.likelihoods_dict`` dictionary adding items 
         corresponding to the keys *"signal_region"*, *"bg_only_file"*, *"patch_file"*, *"name"*, 
         and *"model_loaded = False"*.
         """
+        show_prints.verbose = verbose
         likelihoods_dict = {}
         for region in self.regions.keys():
             region_path = self.regions[region]
@@ -110,10 +120,11 @@ class Histfactory(object):
         self.likelihoods_dict = likelihoods_dict
         print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())),"regions.")
 
-    def __load_histfactory(self):
+    def __load_histfactory(self,verbose=True):
         """
         Private method used by the ``__init__`` one to load the ``Histfactory`` object from the file ``Histfactory.histfactory_input_file``.
         """
+        show_prints.verbose = verbose
         start = timer()
         in_file = self.histfactory_input_file
         pickle_in = open(in_file, 'rb')
@@ -132,7 +143,7 @@ class Histfactory(object):
         print('Likelihoods loaded in', str(end-start),'seconds.\nFile size is ', statinfo.st_size, '.')
 
 
-    def import_histfactory(self,lik_numbers_list=None,verbose=True):
+    def import_histfactory(self,lik_numbers_list=None, progressbar=True, verbose=True):
         """
         Imports the likelihoods ``lik_numbers_list`` adding to the corresponding item in the ``Histfactory.likelihoods_dict`` 
         dictionary the items corresponding to the keys *"model"*, *"obs_data"*, *"pars_init"*, *"pars_bounds"*, 
@@ -150,25 +161,40 @@ class Histfactory(object):
                 Workspace. If ``lik_numbers_list=None`` all available likelihoods are imported in ``model_loaded=True``.
                     
                     - **type**: ``list`` or ``None``
-                    - **default**: ``None`` 
+                    - **default**: ``None``
+
+            - **progressbar**
+            
+                If ``True`` the |ipywidgets_link| module is loaded and a progress bar is shown.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``True`` 
+
             - **verbose**
             
-                Verbose mode. 
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                Verbosity mode. 
+                See :ref:`Verbosity mode <verbosity_mode>`.
                     
                     - **type**: ``bool``
                     - **default**: ``True`` 
         """
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
+        if progressbar:
+            try:
+                import ipywidgets as widgets
+            except:
+                progressbar = False
+                print("If you want to show a progress bar please install the ipywidgets package.")
         start = timer()
         if lik_numbers_list is None:
-            lik_numbers_list = list(self.likelihoods_dict.keys()) 
-        overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
+            lik_numbers_list = list(self.likelihoods_dict.keys())
+        if progressbar:
+            
+            overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
                                                  'width': '500px', 'height': '14px', 
                                                  'padding': '0px', 'margin': '-5px 0px -20px 0px'})
-        display(overall_progress)
-        iterator = 0
+            display(overall_progress)
+            iterator = 0
         for n in lik_numbers_list:
             if self.likelihoods_dict[n]["model_loaded"]:
                 print(self.likelihoods_dict[n]["patch_file"], "already loaded.")
@@ -203,8 +229,9 @@ class Histfactory(object):
                 jsonschema.validate(instance=spec, schema=schema)
                 end_patch = timer()
                 print(self.likelihoods_dict[n]["patch_file"], "processed in", str(end_patch-start_patch), "s.")
-            iterator = iterator + 1
-            overall_progress.value = float(iterator)/(len(lik_numbers_list))
+            if progressbar:
+                iterator = iterator + 1
+                overall_progress.value = float(iterator)/(len(lik_numbers_list))
         end = timer()
         print("Imported",len(lik_numbers_list),"likelihoods in ", str(end-start), "s.")
 
@@ -239,14 +266,13 @@ class Histfactory(object):
 
             - **verbose**
             
-                Verbose mode. 
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                Verbosity mode. 
+                See :ref:`Verbosity mode <verbosity_mode>`.
                     
                     - **type**: ``bool``
                     - **default**: ``True``
         """
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
         start = timer()
         if lik_numbers_list is None:
             sub_dict = dict(self.likelihoods_dict)
@@ -280,7 +306,7 @@ class Histfactory(object):
         end = timer()
         print('Likelihoods saved in file', out_file,"in", str(end-start),'seconds.\nFile size is ', statinfo.st_size, '.')
 
-    def get_likelihood_object(self, lik_number=0):
+    def get_likelihood_object(self, lik_number=0, verbose=True):
         """
         Generates a ``Likelihood`` object containing all properties needed for further processing. The logpdf method is built from
         the |pyhf_model_logpdf_link| method, and it takes two arguments: the array of parameters values ``x`` and
@@ -299,8 +325,8 @@ class Histfactory(object):
 
             - **verbose**
             
-                Verbose mode. 
-                See :ref:`notes on verbose implementation <verbose_implementation>`.
+                Verbosity mode. 
+                See :ref:`Verbosity mode <verbosity_mode>`.
                     
                     - **type**: ``bool``
                     - **default**: ``True``
@@ -313,6 +339,7 @@ class Histfactory(object):
     
     <a href="https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf"  target="_blank"> pyhf.Model.logpdf</a>
         """
+        show_prints.verbose = verbose
         start = timer()
         lik = dict(self.likelihoods_dict[lik_number])
         if not lik["model_loaded"]:

@@ -23,8 +23,8 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
            show_titles=False, title_fmt=".2f", title_kwargs=None,
            truths=None, truth_color="#4682b4",
            scale_hist=False, quantiles=None, verbose=False, fig=None,
-           max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False, levels_lists=None,
-           normalize1d=False, hist_kwargs=None, **hist2d_kwargs):
+           max_n_ticks=5, top_ticks=False, use_math_text=False, reverse=False,
+           hist_kwargs=None, **hist2d_kwargs):
     """
     Make a *sick* corner plot showing the projections of a data set in a
     multi-dimensional space. kwargs are passed to hist2d() or used for
@@ -114,19 +114,13 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
 
     reverse : bool
         If true, plot the corner plot starting in the upper-right corner
-        instead of the usual bottom-left corner.
-
-    levels_list : list
-        List of probability levels for 2D plots.
-
-    normalize1d : bool
-        If true, then 1d histograms are normalized.
+        instead of the usual bottom-left corner
 
     max_n_ticks: int
-        Maximum number of ticks to try to use.
+        Maximum number of ticks to try to use
 
     top_ticks : bool
-        If true, label the top ticks of each axis.
+        If true, label the top ticks of each axis
 
     fig : matplotlib.Figure
         Overplot onto the provided figure object.
@@ -265,18 +259,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 ax = axes[i, i]
         # Plot the histograms.
         if smooth1d is None:
-            if normalize1d:
-                weights = weights/len(x)
             bins_1d = int(max(1, np.round(hist_bin_factor[i] * bins[i])))
-            n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
+            n, _, _ = ax.hist(x, bins=bins_1d, weights=weights,
                               range=np.sort(range[i]), **hist_kwargs)
         else:
             if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
             n, b = np.histogram(x, bins=bins[i], weights=weights,
                                 range=np.sort(range[i]))
-            if normalize1d:
-                n = n/n.sum()
             n = gaussian_filter(n, smooth1d)
             x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
             y0 = np.array(list(zip(n, n))).flatten()
@@ -352,7 +342,6 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                     ax.set_title(labels[i], y=1.25, **label_kwargs)
                 else:
                     ax.set_xlabel(labels[i], **label_kwargs)
-                ax.xaxis.set_label_coords(0.5, -0.3)
 
             # use MathText for axes ticks
             ax.xaxis.set_major_formatter(
@@ -378,19 +367,9 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             if hasattr(y, "compressed"):
                 y = y.compressed()
 
-            if "levels" in hist2d_kwargs.keys():
-                hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                       color=color, smooth=smooth, bins=[bins[j], bins[i]],
-                       **hist2d_kwargs)
-            elif levels_lists is not None:
-                hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                       color=color, smooth=smooth, bins=[bins[j], bins[i]],
-                       levels=levels_lists[j, i].tolist(),
-                       **hist2d_kwargs)
-            else:
-                hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
-                       color=color, smooth=smooth, bins=[bins[j], bins[i]],
-                       **hist2d_kwargs)
+            hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
+                   color=color, smooth=smooth, bins=[bins[j], bins[i]],
+                   **hist2d_kwargs)
 
             if truths is not None:
                 if truths[i] is not None and truths[j] is not None:
@@ -631,31 +610,31 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
             V[np.where(m)[0][0]] *= 1.0 - 1e-4
             m = np.diff(V) == 0
         V.sort()
-    
-    # Compute the bin centers.
-    X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
 
-    # Extend the array for the sake of the contours at the plot edges.
-    H2 = H.min() + np.zeros((H.shape[0] + 4, H.shape[1] + 4))
-    H2[2:-2, 2:-2] = H
-    H2[2:-2, 1] = H[:, 0]
-    H2[2:-2, -2] = H[:, -1]
-    H2[1, 2:-2] = H[0]
-    H2[-2, 2:-2] = H[-1]
-    H2[1, 1] = H[0, 0]
-    H2[1, -2] = H[0, -1]
-    H2[-2, 1] = H[-1, 0]
-    H2[-2, -2] = H[-1, -1]
-    X2 = np.concatenate([
-        X1[0] + np.array([-2, -1]) * np.diff(X1[:2]),
-        X1,
-        X1[-1] + np.array([1, 2]) * np.diff(X1[-2:]),
-    ])
-    Y2 = np.concatenate([
-        Y1[0] + np.array([-2, -1]) * np.diff(Y1[:2]),
-        Y1,
-        Y1[-1] + np.array([1, 2]) * np.diff(Y1[-2:]),
-    ])
+        # Compute the bin centers.
+        X1, Y1 = 0.5 * (X[1:] + X[:-1]), 0.5 * (Y[1:] + Y[:-1])
+
+        # Extend the array for the sake of the contours at the plot edges.
+        H2 = H.min() + np.zeros((H.shape[0] + 4, H.shape[1] + 4))
+        H2[2:-2, 2:-2] = H
+        H2[2:-2, 1] = H[:, 0]
+        H2[2:-2, -2] = H[:, -1]
+        H2[1, 2:-2] = H[0]
+        H2[-2, 2:-2] = H[-1]
+        H2[1, 1] = H[0, 0]
+        H2[1, -2] = H[0, -1]
+        H2[-2, 1] = H[-1, 0]
+        H2[-2, -2] = H[-1, -1]
+        X2 = np.concatenate([
+            X1[0] + np.array([-2, -1]) * np.diff(X1[:2]),
+            X1,
+            X1[-1] + np.array([1, 2]) * np.diff(X1[-2:]),
+        ])
+        Y2 = np.concatenate([
+            Y1[0] + np.array([-2, -1]) * np.diff(Y1[:2]),
+            Y1,
+            Y1[-1] + np.array([1, 2]) * np.diff(Y1[-2:]),
+        ])
 
     if plot_datapoints:
         if data_kwargs is None:

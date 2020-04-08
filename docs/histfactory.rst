@@ -31,9 +31,12 @@ Arguments
 
     .. py:attribute:: DNNLikelihood.Histfactory.name  
 
-         Name of the histfactory object. It is used to generate output files and is passed
-         to the generated likelihood objects.
-         If no ``name`` is specified (default), name is assigned the value ``histfactory_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")``  
+         Name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object. It is used to generate 
+         output files and is passed to the generated :class:`Likelihood <DNNLikelihood.Likelihood>` objects.
+         If ``None`` is passed ``name`` is assigned the value 
+         ``workspace_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_histfactory"``, 
+         while if a string is passed, the ``"_histfactory"`` suffix is appended 
+         (preventing duplication if it is already present).
             
             - **type**: ``str`` or ``None``
             - **default**: ``None``   
@@ -70,7 +73,7 @@ Arguments
     .. py:attribute:: DNNLikelihood.Histfactory.output_folder    
 
          Path (either relative to the code execution folder or absolute) where output files are saved.
-         The __init__ method automatically converts the path into an absolute path.
+         The input is automatically converted into an absolute path.
          If no output folder is specified, ``output_folder`` is set to the code execution folder.
             
             - **type**: ``str`` or ``None``
@@ -87,7 +90,15 @@ Arguments
          is added by the ``__init__`` method.
             
             - **type**: ``str`` or ``None``
-            - **default**: ``None`` 
+            - **default**: ``None``
+
+    .. py:attribute:: DNNLikelihood.Histfactory.verbose
+         
+         Set verbosity in the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method. 
+         See :ref:`Verbosity mode <verbosity_mode>`.
+
+            - **type**: ``bool``
+            - **default**: ``True``
 
 Additional attributes
 """""""""""""""""""""
@@ -127,8 +138,8 @@ Additional attributes
 
     .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_file
 
-         Base name of the output file of the ``Histfactory.save_likelihoods`` method. It is set to 
-         ``path.join(Histfactory.output_folder, utils.check_add_suffix(name, "_histfactory")+".pickle")``. 
+         Name of the output file produced by the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` 
+         method. It is set to ``path.join(Histfactory.output_folder, Histfactory.name+".pickle")``. 
             
             - **type**: ``str`` 
 
@@ -144,6 +155,8 @@ Methods
 """""""
 
     .. automethod:: DNNLikelihood.Histfactory.__init__
+
+    .. automethod:: DNNLikelihood.Histfactory._Histfactory__check_define_name
 
     .. automethod:: DNNLikelihood.Histfactory._Histfactory__import_histfactory
 

@@ -24,9 +24,11 @@ Arguments
 
     .. py:attribute:: DNNLikelihood.Likelihood.name   
 
-            Likelihood name. If ``None`` is passed the name is generated as 
-            ``"sampler_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")``, while if a string is passed, the 
-            ``"_likelihood"`` suffix is appended (preventing duplication if it is already present).
+            Name of the :class:`Likelihood <DNNLikelihood.Likelihood>` object. It is used to generate 
+            output files. If ``None`` is passed ``name``` is assigned the value
+            ``"sampler_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_likelihood"``, 
+            while if a string is passed, the ``"_likelihood"`` suffix is appended 
+            (preventing duplication if it is already present).
             
                 - **type**: ``str`` or ``None``
                 - **default**: ``None``
@@ -137,10 +139,9 @@ Arguments
 
     .. py:attribute:: DNNLikelihood.Likelihood.output_folder   
 
-            Path (either relative to the code execution folder or absolute)
-            where output files are saved.
-            The __init__ method automatically converts the path into an absolute path.
-            If no output folder is specified, ``output_folder`` is set to the code execution folder.
+            Path (either relative to the code execution folder or absolute) where output files are saved.
+            It is automatically converted into an absolute path. If no output folder is specified, 
+            ``output_folder`` is set to the code execution folder.
 
                 - **type**: ``str`` or ``None``
                 - **default**: ``None`` 
@@ -156,15 +157,23 @@ Arguments
                 - **type**: ``str`` or ``None``
                 - **default**: ``None`` 
 
+    .. py:attribute:: DNNLikelihood.Likelihood.verbose
+         
+         Set verbosity in the :meth:`Likelihood.__init__ <DNNLikelihood.Likelihood.__init__>` method. 
+         See :ref:`Verbosity mode <verbosity_mode>`.
+
+            - **type**: ``bool``
+            - **default**: ``True``
+
 
 Additional attributes
 """""""""""""""""""""
 
     .. py:attribute:: DNNLikelihood.Likelihood.output_base_filename   
 
-            Base name (with absolute path) of the output files for the ``Likelihood.plot_logpdf_par``,
-            ``Likelihood.save_likelihood``, and ``Likelihood.generate_likelihood_script_file`` methods. 
-            It is set to ``path.join(Likelihood.output_folder,Likelihood.name)``.
+            Base name (with absolute path) of the output files produced by methods of the
+            :class:`Likelihood <DNNLikelihood.Likelihood>`. It is set to 
+            ``path.join(Likelihood.output_folder,Likelihood.name)``.
             
                 - **type**: ``str``
 
@@ -247,6 +256,8 @@ Methods
 """""""
 
     .. automethod:: DNNLikelihood.Likelihood.__init__
+
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood.__check_define_name
 
     .. automethod:: DNNLikelihood.Likelihood._Likelihood__load_likelihood
 

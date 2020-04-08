@@ -1,57 +1,47 @@
 __all__ = ["DNN_likelihood"]
 
-import json
-#import ndjson as json
-import codecs
-import h5py
-from timeit import default_timer as timer
-import time
-import multiprocessing
-from scipy import optimize
 import builtins
-from decimal import Decimal
-from datetime import datetime
-import re
-import seaborn as sns
-import joblib
-import numpy as np
-import matplotlib.pyplot as plt
-import tensorflow as tf
-from tensorflow.keras import backend as K
-from tensorflow.keras import Input, metrics, optimizers, callbacks, losses
-from tensorflow.keras.layers import (AlphaDropout, BatchNormalization, Dense, Dropout, InputLayer)
-from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.utils import plot_model
-import keras2onnx
-import onnx
+import codecs
+import json
+import multiprocessing
 import os
 import pickle
-try:
-    from jupyterthemes import jtplot
-except:
-    print("No module named 'jupyterthemes'. Continuing without.\nIf you wish to customize jupyter notebooks please install 'jupyterthemes'.")
+import re
+import time
+from datetime import datetime
+from decimal import Decimal
+from timeit import default_timer as timer
+
+import h5py
+import joblib
+import keras2onnx
+import matplotlib.pyplot as plt
+import numpy as np
+import onnx
+import seaborn as sns
+import tensorflow as tf
+from scipy import optimize
+from tensorflow.keras import Input
+from tensorflow.keras import backend as K
+from tensorflow.keras import callbacks, losses, metrics, optimizers
+from tensorflow.keras.layers import (AlphaDropout, BatchNormalization, Dense,
+                                     Dropout, InputLayer)
+from tensorflow.keras.models import Model, load_model
+from tensorflow.keras.utils import plot_model
+
 try:
     from livelossplot import PlotLossesTensorFlowKeras as PlotLossesKeras
 except:
     print("No module named 'livelossplot'. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
 
-from .data import Data
-from . import utils
-from . import set_resources
-from . import inference
+from . import inference, set_resources, utils
 from .corner import corner
-
-ShowPrints = True
-def print(*args, **kwargs):
-    global ShowPrints
-    if type(ShowPrints) is bool:
-        if ShowPrints:
-            return builtins.print(*args, **kwargs)
-    if type(ShowPrints) is int:
-        if ShowPrints != 0:
-            return builtins.print(*args, **kwargs)
+from .data import Data
+from . import show_prints
+from .show_prints import print
 
 mplstyle_path = os.path.join(os.path.split(os.path.realpath(__file__))[0],"matplotlib.mplstyle")
+
 
 class DNN_likelihood(object):
     def __init__(self,
@@ -649,14 +639,7 @@ class DNN_likelihood(object):
         print([type(X_train),type(X_val),type(Y_train),type(Y_train)])
         # If PlotLossesKeras is in callbacks set plot style
         if "PlotLossesKeras" in str(self.callbacks_strings):
-            try:
-                jtplot.reset()
-            except:
-                pass
-            try:
-                plt.style.use(mplstyle_path)
-            except:
-                pass
+            plt.style.use(mplstyle_path)
         # Train model
         print("Start training of model for member",self.member_number, ".")
         if self.weighted:
@@ -863,11 +846,7 @@ class DNN_likelihood(object):
     def model_plot_training_history(self, metrics=['loss'], yscale='log',verbose=True, show_plot=False):
         global ShowPrints
         ShowPrints = verbose
-        jtplot.reset()
-        try:
-            plt.style.use('matplotlib.mplstyle')
-        except:
-            print("Custom matplotlib style not available")
+        plt.style.use(mplstyle_path)
         metrics = np.unique(metrics)
         for metric in metrics:
             start = timer()
@@ -899,11 +878,7 @@ class DNN_likelihood(object):
     def model_plot_pars_coverage(self, pars_list=None, loglik=True, verbose=True, show_plot=False):
         global ShowPrints
         ShowPrints = verbose
-        jtplot.reset()
-        try:
-            plt.style.use('matplotlib.mplstyle')
-        except:
-            print("Custom matplotlib style not available")
+        plt.style.use(mplstyle_path)
         if pars_list is None:
             pars_list = self.pars_pos_poi
         else:
@@ -951,11 +926,7 @@ class DNN_likelihood(object):
     def model_plot_lik_distribution(self, verbose=True, loglik=True, show_plot=False):
         global ShowPrints
         ShowPrints = verbose
-        jtplot.reset()
-        try:
-            plt.style.use('matplotlib.mplstyle')
-        except:
-            print("Custom matplotlib style not available")
+        plt.style.use(mplstyle_path)
         start = timer()
         if loglik:
             figname = self.figure_loglik_distribution_filename
@@ -1002,14 +973,165 @@ class DNN_likelihood(object):
         end = timer()
         print(r"%s" % (figname), "created and saved in", str(end-start),"s.")
 
+
+    #def plot_corners(ilist, nbins, samp1, samp2, w1=None, w2=None, levels1=None, levels2=None, HPI_intervals1=None, HPI_intervals2=None, ranges=None, title1=None, title2=None, color1='green', color2='red', plot_title="Params contours", legend_labels=None, figdir=None, figname=None):
+    #    jtplot.reset()
+    #    plt.style.use('matplotlib.mplstyle')
+
+    #    start = timer()
+    #    linewidth = 1.3
+    #    nndim = len(ilist)
+    #    if ilist[0] == 0:
+    #        labels = ['$\mu$']
+    #        for i in ilist[1:]:
+    #            labels = np.append(labels, ['$\delta_{'+str(i+1)+'}$'])
+    #    else:
+    #        labels = ['$\delta_{'+str(ilist[0])+'}$']
+    #        for i in ilist[1:]:
+    #            labels = np.append(labels, ['$\delta_{'+str(i+1)+'}$'])
+    #    fig, axes = plt.subplots(nndim, nndim, figsize=(3*nndim, 3*nndim))
+    #    figure1 = corner(samp1, bins=nbins, weights=w1, labels=[r"%s" % s for s in labels], fig=fig, max_n_ticks=6, color=color1, plot_contours=True, smooth=True, smooth1d=True, range=ranges, plot_datapoints=True, plot_density=False, fill_contours=False, normalize1d=True,
+    #                     hist_kwargs={'color': color1, 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18}, levels_lists=levels1, data_kwargs={"alpha": 1}, contour_kwargs={"linestyles": ["dotted", "dashdot", "dashed"][:len(HPI_intervals1[0])], "linewidths": [linewidth, linewidth, linewidth][:len(HPI_intervals1[0])]},
+    #                     no_fill_contours=False, contourf_kwargs={"colors": ["white", "lightgreen", color1], "alpha": 1})  # , levels=(0.393,0.68,))
+    #    #,levels=[300],levels_lists=levels1)#,levels=[120])
+    #    figure2 = corner(samp2, bins=nbins, weights=w2, labels=[r"%s" % s for s in labels], fig=fig, max_n_ticks=6, color=color2, plot_contours=True, smooth=True, range=ranges, smooth1d=True, plot_datapoints=True, plot_density=False, fill_contours=False, normalize1d=True,
+    #                     hist_kwargs={'color': color2, 'linewidth': '1.5'}, label_kwargs={'fontsize': 16}, show_titles=False, title_kwargs={"fontsize": 18}, levels_lists=levels2, data_kwargs={"alpha": 1}, contour_kwargs={"linestyles": ["dotted", "dashdot", "dashed"][0:len(HPI_intervals1[0])], "linewidths": [linewidth, linewidth, linewidth][:len(HPI_intervals1[0])]},
+    #                     no_fill_contours=False, contourf_kwargs={"colors": ["white", "tomato", color2], "alpha": 1})  # , quantiles = (0.16, 0.84), levels=(0.393,0.68,))
+    #    #, levels=[300],levels_lists=levels2)#,levels=[120])
+    #    axes = np.array(figure1.axes).reshape((nndim, nndim))
+    #    #print(get_hist(axes[0,0]))
+    #    for i in range(nndim):
+    #        ax = axes[i, i]
+    #        title = ""
+    #        #ax.axvline(value1[i], color="green",alpha=1)
+    #        #ax.axvline(value2[i], color="red",alpha=1)
+    #        ax.grid(True, linestyle='--', linewidth=1, alpha=0.3)
+    #        ax.tick_params(axis='both', which='major', labelsize=16)
+    #        HPI681 = HPI_intervals1[i][0][1]
+    #        HPI951 = HPI_intervals1[i][1][1]
+    #        HPI3s1 = HPI_intervals1[i][2][1]
+    #        HPI682 = HPI_intervals2[i][0][1]
+    #        HPI952 = HPI_intervals2[i][1][1]
+    #        HPI3s2 = HPI_intervals2[i][2][1]
+    #        hists_1d_1 = get_1d_hist(i, samp1, nbins=nbins, ranges=ranges,
+    #                                 weights=w1, normalize1d=True)[0]  # ,intervals=HPI681)
+    #        hists_1d_2 = get_1d_hist(i, samp2, nbins=nbins, ranges=ranges,
+    #                                 weights=w2, normalize1d=True)[0]  # ,intervals=HPI682)
+    #        for j in HPI3s1:
+    #            #ax.fill_between(hists_1d_1[0], 0, hists_1d_1[1], where=(hists_1d_1[0]>=j[0])*(hists_1d_1[0]<=j[1]), facecolor='lightgreen', alpha=0.2)#facecolor=(255/255,89/255,71/255,.4))#
+    #            ax.axvline(hists_1d_1[0][hists_1d_1[0] >= j[0]][0],
+    #                       color=color1, alpha=1, linestyle=":", linewidth=linewidth)
+    #            ax.axvline(hists_1d_1[0][hists_1d_1[0] <= j[1]][-1],
+    #                       color=color1, alpha=1, linestyle=":", linewidth=linewidth)
+    #        for j in HPI3s2:
+    #            #ax.fill_between(hists_1d_2[0], 0, hists_1d_2[1], where=(hists_1d_2[0]>=j[0])*(hists_1d_2[0]<=j[1]), facecolor='tomato', alpha=0.2)#facecolor=(255/255,89/255,71/255,.4))#
+    #            ax.axvline(hists_1d_2[0][hists_1d_2[0] >= j[0]][0],
+    #                       color=color2, alpha=1, linestyle=":", linewidth=linewidth)
+    #            ax.axvline(hists_1d_2[0][hists_1d_2[0] <= j[1]][-1],
+    #                       color=color2, alpha=1, linestyle=":", linewidth=linewidth)
+    #        for j in HPI951:
+    #            #ax.fill_between(hists_1d_1[0], 0, hists_1d_1[1], where=(hists_1d_1[0]>=j[0])*(hists_1d_1[0]<=j[1]), facecolor='lightgreen', alpha=0.2)#facecolor=(255/255,89/255,71/255,.4))#
+    #            ax.axvline(hists_1d_1[0][hists_1d_1[0] >= j[0]][0],
+    #                       color=color1, alpha=1, linestyle="-.", linewidth=linewidth)
+    #            ax.axvline(hists_1d_1[0][hists_1d_1[0] <= j[1]][-1],
+    #                       color=color1, alpha=1, linestyle="-.", linewidth=linewidth)
+    #        for j in HPI952:
+    #            #ax.fill_between(hists_1d_2[0], 0, hists_1d_2[1], where=(hists_1d_2[0]>=j[0])*(hists_1d_2[0]<=j[1]), facecolor='tomato', alpha=0.2)#facecolor=(255/255,89/255,71/255,.4))#
+    #            ax.axvline(hists_1d_2[0][hists_1d_2[0] >= j[0]][0],
+    #                       color=color2, alpha=1, linestyle="-.", linewidth=linewidth)
+    #            ax.axvline(hists_1d_2[0][hists_1d_2[0] <= j[1]][-1],
+    #                       color=color2, alpha=1, linestyle="-.", linewidth=linewidth)
+    #        for j in HPI681:
+    #            #ax.fill_between(hists_1d_1[0], 0, hists_1d_1[1], where=(hists_1d_1[0]>=j[0])*(hists_1d_1[0]<=j[1]), facecolor='white', alpha=1)#facecolor=(0,1,0,.5))#
+    #            ax.axvline(hists_1d_1[0][hists_1d_1[0] >= j[0]][0],
+    #                       color=color1, alpha=1, linestyle="--", linewidth=linewidth)
+    #            ax.axvline(hists_1d_1[0][hists_1d_1[0] <= j[1]][-1],
+    #                       color=color1, alpha=1, linestyle="--", linewidth=linewidth)
+    #            title = title+title1 + \
+    #                ": ["+'{0:1.2e}'.format(j[0])+","+'{0:1.2e}'.format(j[1])+"]"
+    #        title = title+"\n"
+    #        for j in HPI682:
+    #            #ax.fill_between(hists_1d_2[0], 0, hists_1d_2[1], where=(hists_1d_2[0]>=j[0])*(hists_1d_2[0]<=j[1]), facecolor='white', alpha=1)#facecolor=(1,0,0,.4))#
+    #            ax.axvline(hists_1d_2[0][hists_1d_2[0] >= j[0]][0],
+    #                       color=color2, alpha=1, linestyle="--", linewidth=linewidth)
+    #            ax.axvline(hists_1d_2[0][hists_1d_2[0] <= j[1]][-1],
+    #                       color=color2, alpha=1, linestyle="--", linewidth=linewidth)
+    #            title = title+title2 + \
+    #                ": ["+'{0:1.2e}'.format(j[0])+","+'{0:1.2e}'.format(j[1])+"]"
+    #        #for j in HPI681:
+    #        #    ax.fill_between(hists_1d_1[0], 0, hists_1d_1[1], where=(hists_1d_1[0]>=j[0])*(hists_1d_1[0]<=j[1]), facecolor='green', alpha=0.2)#facecolor=(0,1,0,.5))#
+    #        #for j in HPI682:
+    #        #    ax.fill_between(hists_1d_2[0], 0, hists_1d_2[1], where=(hists_1d_2[0]>=j[0])*(hists_1d_2[0]<=j[1]), facecolor='red', alpha=0.2)#facecolor=(1,0,0,.4))#
+    #        if i == 0:
+    #            x1, x2, _, _ = ax.axis()
+    #            ax.set_xlim(x1*1.3, x2)
+    #        ax.set_title(title, fontsize=12)
+    #    for yi in range(nndim):
+    #        for xi in range(yi):
+    #            ax = axes[yi, xi]
+    #            if xi == 0:
+    #                x1, x2, _, _ = ax.axis()
+    #                ax.set_xlim(x1*1.3, x2)
+    #            ax.grid(True, linestyle='--', linewidth=1)
+    #            ax.tick_params(axis='both', which='major', labelsize=16)
+    #    plt.tight_layout()
+    #    # , transform = ax.transAxes, ha='right',ma='left')
+    #    fig.text(0.53, 0.97, r'%s' % plot_title, fontsize=26)
+    #    colors = [color1, color2, 'black', 'black', 'black']
+    #    red_patch = matplotlib.patches.Patch(
+    #        color=colors[0])  # , label='The red data')
+    #    blue_patch = matplotlib.patches.Patch(
+    #        color=colors[1])  # , label='The blue data')
+    #    line1 = matplotlib.lines.Line2D([0], [0], color=colors[0], lw=12)
+    #    line2 = matplotlib.lines.Line2D([0], [0], color=colors[1], lw=12)
+    #    line3 = matplotlib.lines.Line2D(
+    #        [0], [0], color=colors[2], linewidth=3, linestyle='--')
+    #    line4 = matplotlib.lines.Line2D(
+    #        [0], [0], color=colors[3], linewidth=3, linestyle='-.')
+    #    line5 = matplotlib.lines.Line2D(
+    #        [0], [0], color=colors[4], linewidth=3, linestyle=':')
+    #    lines = [line1, line2, line3, line4, line5]
+    #    #lines = [matplotlib.lines.Line2D([0], [0], color=c, linewidth=3, linestyle='--'),matplotlib.lines.Line2D([0], [0], color=c, linewidth=3, linestyle=':'),matplotlib.lines.Line2D([0], [0], color=c, linewidth=3, linestyle='-.')]
+    #    #legend_labels = [r"Train set ($10^{7}$ points)",r"Test set ($10^{6}$ points)",r'$68.27\%$ HPDI', r'$95.45\%$ HPDI', r'$99.73\%$ HPDI']
+    #    # , bbox_transform=ax.transAxes)
+    #    fig.legend(lines, legend_labels, fontsize=26, loc=(0.53, 0.8))
+    #    plt.savefig(figdir + figname, dpi=50)  # ,dpi=200)
+    #    plt.show()
+    #    #plt.close
+    #    end = timer()
+    #    print("Plot done and saved in", end-start, "s.")
+#start = timer()
+#nnn1 = len(allsamples_train)  # int(0.1*len(allsamples_train))
+#nnn2 = len(allsamples_test)  # int(0.1*len(allsamples_test))
+#ilist = [0, 50, 91, 92, 93, 94]
+#nndim = len(ilist)
+#nbins = 50
+#s1 = allsamples_train
+#s2 = allsamples_test
+#rnd_indices_1 = np.random.choice(np.arange(len(s1)), size=nnn1, replace=False)
+#rnd_indices_2 = np.random.choice(np.arange(len(s2)), size=nnn2, replace=False)
+#samp_1 = s1[rnd_indices_1][:, ilist]
+#samp_2 = s2[rnd_indices_2][:, ilist]
+#ranges = extend_corner_range(s1, s2, ilist, 0)
+#sigma_contours = [1, 2, 3]
+#HPI_intervals1 = [HPD_intervals(samp_1[:, i], intervals=get_CI_from_sigma(
+#    sigma_contours), weights=None, nbins=nbins, print_hist=False, reduce_binning=True) for i in range(nndim)]
+#HPI_intervals2 = [HPD_intervals(samp_2[:, i], intervals=get_CI_from_sigma(
+#    sigma_contours), weights=None, nbins=nbins, print_hist=False, reduce_binning=True) for i in range(nndim)]
+#levels1 = np.array([[np.sort(HPD_quotas(samp_1[:, [i, j]], nbins=nbins, intervals=get_CI_from_sigma(
+#    sigma_contours))).tolist() for j in range(nndim)] for i in range(nndim)])
+#levels2 = np.array([[np.sort(HPD_quotas(samp_2[:, [i, j]], nbins=nbins, intervals=get_CI_from_sigma(
+#    sigma_contours), weights=None)).tolist() for j in range(nndim)] for i in range(nndim)])
+#end = timer()
+#print(end-start)
+#plot_corners(ilist, nbins, samp_1, samp_2, w1=None, w2=None, levels1=levels1, levels2=levels2, HPI_intervals1=HPI_intervals1, HPI_intervals2=HPI_intervals2,
+#             ranges=ranges, title1="$68\%$ HPDI train", title2="$68\%$ HPDI test", color1=greens[-9], color2="white", plot_title="Train vs test set of $S_{1}$",
+#             legend_labels=[r"Train set ($10^{7}$ points)", r"Test set ($10^{6}$ points)", r'$68.27\%$ HPDI', r'$95.45\%$ HPDI', r'$99.73\%$ HPDI'], figdir=fig_dir, figname="corner_toy_lik_params_1.pdf")
+
     def model_plot_corners_pars(self, pars_list=None, verbose=True, show_plot=False):
         global ShowPrints
         ShowPrints = verbose
-        jtplot.reset()
-        try:
-            plt.style.use('matplotlib.mplstyle')
-        except:
-            print("Custom matplotlib style not available")
+        plt.style.use(mplstyle_path)
         start = timer()
         if pars_list is None:
             pars_list = self.pars_pos_poi[:min(len(self.pars_pos_poi),5)]
@@ -1530,5 +1652,4 @@ class DNN_likelihood(object):
         MAPE_model =  K.sum(K.abs( 1-y_pred/(y_true + K.epsilon()))) 
         MAPE_baseline = K.sum(K.abs( 1-K.mean(y_true)/(y_true+ K.epsilon()) ) ) 
         return ( 1 - MAPE_model/(MAPE_baseline + K.epsilon()))
-
 

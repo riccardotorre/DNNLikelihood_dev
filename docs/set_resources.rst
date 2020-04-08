@@ -1,3 +1,4 @@
+.. module:: set_resources_module
 Resources management
 --------------------
 

@@ -11,6 +11,9 @@ import numpy as np
 from datetime import datetime
 from timeit import default_timer as timer
 
+from . import show_prints
+from .show_prints import print
+
 #class InputError(Exception):
 #    """Base class for data error exceptions"""
 #    pass#

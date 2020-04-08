@@ -15,4 +15,5 @@ The Python code consists of bla bla bla
    set_resources
    inference
    utils
-   verbose
+   corner
+   show_prints
