@@ -87,7 +87,7 @@ class Data(show_prints.Verbosity):
     
     def __check_define_name(self):
         if self.name is None:
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.name = "data_"+timestamp+"_data"
         else:
             self.name = utils.check_add_suffix(self.name.replace("_sampler","_data"), "_data")

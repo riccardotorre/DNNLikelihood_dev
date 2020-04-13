@@ -1,6 +1,6 @@
 import builtins
 
-verbose = True
+#verbose = True
 #def print(*args, **kwargs):
 #    global verbose
 #    if type(verbose) is bool:
@@ -17,20 +17,17 @@ def print(*args, **kwargs):
     It prints based on the value of the global variable show_prints.verbose.
     Print could always be forced through the kwargs show=True
     """
-    global verbose
     try:
         show = kwargs.pop("show")
     except:
-        show = None
-    if show is None:
-        if verbose:
-            return builtins.print(*args, **kwargs)
-    elif show:
+        # default show=True
+        show = True
+    if show:
         return builtins.print(*args, **kwargs)
 
 class Verbosity():
     def set_verbosity(self, v):
-        global verbose
+        #global verbose
         if v is None:
             verbose = self.verbose
         else:

@@ -83,7 +83,7 @@ class Likelihood(show_prints.Verbosity):
             self.X_prof_logpdf_max_tmp = None
             self.Y_prof_logpdf_max_tmp = None
             self.figures_list = []
-            self.save_likelihood(overwrite=False, verbose=verbose_sub)
+            self.save_likelihood_json(overwrite=False, verbose=verbose_sub)
         else:
             self.likelihood_input_file = path.abspath(path.splitext(likelihood_input_file)[0])
             self.likelihood_input_json_file = self.likelihood_input_file+".json"
@@ -637,7 +637,7 @@ class Likelihood(show_prints.Verbosity):
         verbose, _ = self.set_verbosity(verbose)
         self.save_likelihood_pickle(overwrite=overwrite, verbose=verbose)
         self.save_likelihood_json(overwrite=overwrite, verbose=verbose)
-        self.save_likelihood_log(overwrite=overwrite, verbose=verbose)
+        self.save_likelihood_json(overwrite=overwrite, verbose=verbose)
 
     def save_likelihood_script(self, verbose=True):
         """

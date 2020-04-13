@@ -123,10 +123,9 @@ class Sampler(show_prints.Verbosity):
 
             See Class arguments.
         """
-        #show_prints.verbose = verbose
         self.verbose = verbose
-        verbose,verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         # Setting all arguments
         if new_sampler is None:
             self.new_sampler=False
@@ -138,7 +137,7 @@ class Sampler(show_prints.Verbosity):
         if moves_str is not None:
             self.moves_str = moves_str
         else:
-            print("No moves_str parameter has been specified. moves has been set to the default StretchMove() of emcee")
+            print("No moves_str parameter has been specified. moves has been set to the default StretchMove() of emcee.",show=verbose)
             self.moves_str = "[(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode='random', factor=None), 0)]"
         if parallel_CPU is None:
             self.parallel_CPU = True
@@ -228,11 +227,11 @@ class Sampler(show_prints.Verbosity):
         self.likelihood_script_file = self.sampler_input_file.replace("sampler","likelihood_script.py")
 
     def __get_likelihood_script_file_from_likelihood(self,verbose=None):
-        verbose,_=self.set_verbosity(verbose)
+        _, verbose_sub = self.set_verbosity(verbose)
         tmp_likelihood = copy(self.likelihood)
         tmp_likelihood.verbose = verbose
         self.likelihood_script_file = tmp_likelihood.likelihood_script_file
-        tmp_likelihood.save_likelihood_script(verbose=verbose)
+        tmp_likelihood.save_likelihood_script(verbose=verbose_sub)
 
     def __get_sampler_input_file_from_likelihood_script_file(self):
         self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
@@ -242,8 +241,8 @@ class Sampler(show_prints.Verbosity):
         self.sampler_input_file = path.join(folder, sampler_input_file_name)
 
     def __get_sampler_input_file_from_likelihood(self, verbose=None):
-        verbose, _ = self.set_verbosity(verbose)
-        self.__get_likelihood_script_file_from_likelihood(verbose=verbose)
+        _, verbose_sub = self.set_verbosity(verbose)
+        self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
         self.__get_sampler_input_file_from_likelihood_script_file()
 
     def __init_likelihood(self):
@@ -285,16 +284,15 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``None`` 
         """
-        self.set_verbosity(verbose)
+        verbose, _ = self.set_verbosity(verbose)
         start = timer()
         with open(self.sampler_input_log_file) as json_file:
             dictionary = json.load(json_file)
         self.log = dictionary
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", "file name": path.split(self.sampler_input_log_file)[-1], "file path": self.sampler_input_log_file}
-        print('Loaded sampler log in', str(end-start), '.')
-        #self.save_sampler_log(overwrite=True, verbose=False)
+        print('Loaded sampler log in', str(end-start), '.',show=verbose)
 
     def __load_sampler_json(self, verbose=None):
         """
@@ -311,18 +309,17 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``None`` 
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         with open(self.sampler_input_json_file) as json_file:
             dictionary = json.load(json_file)
         self.__dict__.update(dictionary)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", "file name": path.split(self.sampler_input_json_file)[-1], "file path": self.sampler_input_json_file}
-        self.save_sampler_log(overwrite=True, verbose=False)
-        print('Loaded sampler in', str(end-start), '.')
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        print('Loaded sampler in', str(end-start), '.',show=verbose)
         
-
     def __load_sampler(self, verbose=None):
         """
         Private method used by the ``__init__`` one to load the ``Sampler`` object from the file 
@@ -338,23 +335,21 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``None`` 
         """
-        verbose,_ =self.set_verbosity(verbose)
+        verbose, _ = self.set_verbosity(verbose)
         self.__load_sampler_log(verbose=verbose)
         self.__load_sampler_json(verbose=verbose)
         
-        
-
     def __check_vectorize(self,verbose=None):
-        self.set_verbosity(verbose)
+        verbose, _ = self.set_verbosity(verbose)
         if self.vectorize:
             try:
                 self.logpdf(self.pars_init_vec[0:2],*self.logpdf_args)
             except:
-                print("vectorize has been set to True, but logpdf does not seem to be vectorized. Please check your input if you want to use a vectorized logpdf. Continuing with vectorize=False.")
+                print("vectorize has been set to True, but logpdf does not seem to be vectorized. Please check your input if you want to use a vectorized logpdf. Continuing with vectorize=False.",show=verbose)
                 self.vectorize = False
         if self.vectorize:
             self.parallel_CPU = False
-            print("Since vectorize=True the parameter parallel_CPU has been set to False.")
+            print("Since vectorize=True the parameter parallel_CPU has been set to False.",show=verbose)
 
     def __load_backend(self, verbose=None):
         """
@@ -379,11 +374,11 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True``
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         if not self.new_sampler:
             if not path.exists(self.backend_file):
                 print("The new_sampler flag was set to false but the backend file", self.backend_file,
-                      "does not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.")
+                      "does not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.",show=verbose)
                 self.new_sampler = True
         if self.new_sampler:
             #print("Creating sampler in backend file", self.backend_file)
@@ -391,29 +386,29 @@ class Sampler(show_prints.Verbosity):
             nsteps_tmp = self.nsteps
             self.nsteps = 0
             start = timer()
-            self.run_sampler(progress=False, verbose=False)
+            self.run_sampler(progress=False, verbose=verbose_sub)
             self.set_verbosity(verbose)
             self.nsteps = nsteps_tmp
             end = timer()
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "created backend", "file name": path.split(self.backend_file)[-1], "file path": self.backend_file}
-            print("Created backend", self.backend_file, "for chains", self.name, "in", end-start, "s.")
+            print("Created backend", self.backend_file, "for chains", self.name, "in", end-start, "s.",show=verbose)
         else:
             #print("Loading existing sampler from backend file", self.backend_file)
             nsteps_tmp = self.nsteps
             self.nsteps = 0
             self.backend = None
             start = timer()
-            self.run_sampler(progress=False, verbose=False)
+            self.run_sampler(progress=False, verbose=verbose_sub)
             self.set_verbosity(verbose)
             self.nsteps = nsteps_tmp
             #self.nsteps = self.sampler.iteration
             end = timer()
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "loaded backend", "file name": path.split(self.backend_file)[-1], "file path": self.backend_file}
-            print("Loaded backend", self.backend_file, "for chains",self.name, "in", end-start, "s.")
-            print("Available number of steps: {0}.".format(self.backend.iteration))
-        self.save_sampler_log(overwrite=True, verbose=False)
+            print("Loaded backend", self.backend_file, "for chains",self.name, "in", end-start, "s.",show=verbose)
+            print("Available number of steps: {0}.".format(self.backend.iteration),".",show=verbose)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
 
     def __check_params_backend(self,verbose=None):
         """
@@ -432,15 +427,15 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True`` 
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         nwalkers_from_backend, ndims_from_backend = self.backend.shape
         nsteps_from_backend = self.backend.iteration
         if nwalkers_from_backend != self.nwalkers:
-            raise Exception("Number of walkers (nwalkers) determined from the input likelihood is inconsitent with the loaded backend. Please check inputs.")
+            raise Exception("Number of walkers (nwalkers) determined from the input likelihood is inconsitent with the loaded backend. Please check inputs.",show=verbose)
         if ndims_from_backend != self.ndims:
-            raise Exception("Number of steps (nsteps)  determined from the input likelihood is inconsitent with loaded backend. Please check inputs.")
+            raise Exception("Number of steps (nsteps)  determined from the input likelihood is inconsitent with loaded backend. Please check inputs.",show=verbose)
         if nsteps_from_backend > self.nsteps:
-            print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",nsteps_from_backend, ".")
+            print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",nsteps_from_backend, ".",show=verbose)
             self.nsteps = nsteps_from_backend
 
     def __set_steps_to_run(self,verbose=None):
@@ -460,13 +455,13 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True`` 
         """
-        self.set_verbosity(verbose)
+        verbose, _ = self.set_verbosity(verbose)
         try:
             nsteps_current = self.backend.iteration
         except:
             nsteps_current = 0
         if self.nsteps <= nsteps_current:
-            print("Please increase nsteps to run for more steps")
+            print("Please increase nsteps to run for more steps",show=verbose)
             nsteps_to_run = 0
         else:
             nsteps_to_run = self.nsteps-nsteps_current
@@ -543,35 +538,33 @@ class Sampler(show_prints.Verbosity):
     <a href="https://pypi.org/project/psutil/"  target="_blank"> psutil</a>
 
         """
-        verbose ,_= self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         if verbose==2:
             progress=True
         # Initializes backend (either connecting to existing one or generating new one)
         # Initilized p0 (chains initial state)
         if self.new_sampler:
-            print("Initialize backend in file", self.backend_file)
+            print("Initialize backend in file", self.backend_file,".",show=verbose)
             self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
             self.backend.reset(self.nwalkers, self.ndims)
             p0 = self.pars_init_vec
         else:
             if self.backend is None:
                 try:
-                    print("Initialize backend in file", self.backend_file)
+                    print("Initialize backend in file", self.backend_file,".",show=verbose)
                     self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
                     #print(self.backend.iteration)
                     #print(self.nstepss)
-                    show_prints.verbose = verbose
                 except:
                     raise Exception("Backend file does not exist. Please either change the filename or run with new_sampler=True.")
             try:
                 p0 = self.backend.get_last_sample()
             except:
                 p0 = self.pars_init_vec
-        print("Initial number of steps: {0}".format(self.backend.iteration))
-
+        print("Initial number of steps: {0}".format(self.backend.iteration),".",show=verbose)
         # Defines sampler and runs the chains
         start = timer()
-        nsteps_to_run = self.__set_steps_to_run(verbose=verbose)
+        nsteps_to_run = self.__set_steps_to_run(verbose=verbose_sub)
         #print(nsteps_to_run)
         if nsteps_to_run == 0:
             progress = False
@@ -579,7 +572,7 @@ class Sampler(show_prints.Verbosity):
             n_processes = psutil.cpu_count(logical=False)
             #if __name__ == "__main__":
             if progress:
-                print("Running", n_processes, "parallel processes.")
+                print("Running", n_processes, "parallel processes.",show=verbose)
             with Pool(n_processes) as pool:
                 self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndims, self.logpdf, moves=self.moves, pool=pool, backend=self.backend, args=self.logpdf_args)
                 self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store = True)
@@ -587,11 +580,11 @@ class Sampler(show_prints.Verbosity):
             self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndims, self.logpdf, moves=self.moves,args=self.logpdf_args, backend=self.backend, vectorize=self.vectorize)
             self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store = True)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "run sampler", "nsteps": nsteps_to_run, "available steps": self.backend.iteration}
-        self.save_sampler_log(overwrite=True, verbose=verbose)
-        print("Done in", end-start, "seconds.")
-        print("Final number of steps: {0}.".format(self.backend.iteration))
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        print("Done in", end-start, "seconds.",show=verbose)
+        print("Final number of steps: {0}.".format(self.backend.iteration),".",show=verbose)
 
     def save_sampler_log(self, overwrite=False, verbose=None):
         """
@@ -625,19 +618,19 @@ class Sampler(show_prints.Verbosity):
 
             - :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`
         """
-        self.set_verbosity(verbose)
+        verbose, _ = self.set_verbosity(verbose)
         time.sleep(1)
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.sampler_output_log_file)
-        #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         #self.log[timestamp] = {"action": "saved", "file name": path.split(self.likelihood_output_log_file)[-1], "file path": self.likelihood_output_log_file}
         dictionary = self.log
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.sampler_output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Sampler log file", self.sampler_output_log_file,"saved in", str(end-start), "s.")
+        print("Sampler log file", self.sampler_output_log_file,"saved in", str(end-start), "s.",show=verbose)
 
     def save_sampler_json(self, overwrite=False, verbose=None):
         """
@@ -722,11 +715,11 @@ class Sampler(show_prints.Verbosity):
 
             - :attr:`Likelihood.sampler_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.sampler_output_json_file)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved", "file name": path.split(self.sampler_output_json_file)[-1], "file path": self.sampler_output_json_file}
         dictionary = utils.dic_minus_keys(self.__dict__, ["sampler_input_file", "new_sampler","log", 
                                                           "logpdf", "logpdf_args", "pars_pos_poi",
@@ -736,8 +729,8 @@ class Sampler(show_prints.Verbosity):
         with codecs.open(self.sampler_output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Likelihood json file", self.sampler_output_json_file,"saved in", str(end-start), "s.")
-        self.save_sampler_log(overwrite=overwrite, verbose=verbose)
+        print("Likelihood json file", self.sampler_output_json_file,"saved in", str(end-start), "s.",show=verbose)
+        self.save_sampler_log(overwrite=overwrite, verbose=verbose_sub)
 
     def get_data_object(self, nsamples="all", burnin=0, thin=1, dtype='float64', test_fraction=0, save=True, verbose=None):
         """
@@ -798,8 +791,8 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True`` 
         """
-        self.set_verbosity(verbose)
-        print("Notice: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.")
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print("Notice: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.",show=verbose)
         start = timer()
         if nsamples is "all":
             allsamples = self.sampler.get_chain(discard=burnin, thin=thin, flat=True)
@@ -807,7 +800,7 @@ class Sampler(show_prints.Verbosity):
         else:
             if nsamples > (self.nsteps-burnin)*self.nwalkers/thin:
                 print("Less samples than available are requested. Returning all available samples:",
-                  str((self.nsteps-burnin)*self.nwalkers/thin),"\nYou may try to reduce burnin and/or thin to get more samples.")
+                  str((self.nsteps-burnin)*self.nwalkers/thin),"\nYou may try to reduce burnin and/or thin to get more samples.",show=verbose)
                 allsamples = self.sampler.get_chain(discard=burnin, thin=thin, flat=True)
                 logpdf_values = self.sampler.get_log_prob(discard=burnin, thin=thin, flat=True)
             else:
@@ -815,12 +808,12 @@ class Sampler(show_prints.Verbosity):
                 allsamples=self.sampler.get_chain(discard = burnin, thin = thin, flat = True)
                 logpdf_values=self.sampler.get_log_prob(discard = burnin, thin = thin, flat = True)
         if len(np.unique(logpdf_values, axis=0, return_index=False)) < len(logpdf_values):
-            print("There are non-unique samples")
+            print("There are non-unique samples",show=verbose)
         if np.count_nonzero(np.isfinite(logpdf_values)) < len(logpdf_values):
-            print("There are non-numeric logpdf values.")
+            print("There are non-numeric logpdf values.",show=verbose)
         end = timer()
-        print(len(allsamples), "unique samples generated in", end-start, "s.")
-        data_sample_timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        print(len(allsamples), "unique samples generated in", end-start, "s.",show=verbose)
+        data_sample_timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         ds = Data(data_X=allsamples,
                   data_Y=logpdf_values,
                   dtype=dtype,
@@ -831,12 +824,13 @@ class Sampler(show_prints.Verbosity):
                   name=self.name+"_"+data_sample_timestamp,
                   data_sample_input_filename=None,
                   data_sample_output_filename=self.data_output_file,
-                  load_on_RAM=False)
+                  load_on_RAM=False,
+                  verbose=self.verbose)
         if save:
             ds.save_samples()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "created data object", "file name": path.split(self.data_output_file)[-1], "file path": self.data_output_file}
-        self.save_sampler_log(overwrite=True, verbose=False)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
         return ds
     
     ##### Functions from the emcee documentation (with some modifications) #####
@@ -850,12 +844,12 @@ class Sampler(show_prints.Verbosity):
     
     <a href="https://emcee.readthedocs.io/en/stable/tutorials/autocorr/"  target="_blank"> emcee autocorrelation tutorial</a>
         """
-        self.set_verbosity(verbose)
+        verbose, _ = self.set_verbosity(verbose)
         x = np.atleast_1d(x)
         if len(x.shape) != 1:
             raise ValueError( "invalid dimensions for 1D autocorrelation function")
         if len(np.unique(x)) == 1:
-            print("Chain does not change in "+str(len(x))+" steps. Autocorrelation for this chain may return nan.")
+            print("Chain does not change in "+str(len(x))+" steps. Autocorrelation for this chain may return nan.",show=verbose)
         n = utils.next_power_of_two(len(x))
         # Compute the FFT and then (from that) the auto-correlation function
         f = np.fft.fft(x - np.mean(x), n=2*n)
@@ -894,13 +888,13 @@ class Sampler(show_prints.Verbosity):
         Function from the |emcee_tutorial_autocorr_link|.
         See the link for documentation.
         """
-        _, verbose_sub = self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         f = np.zeros(y.shape[1])
         counter=0
         for yy in y:
             fp = self.autocorr_func_1d(yy, verbose=verbose_sub)
             if np.isnan(np.sum(fp)):
-                print("Chain",counter,"returned nan. Values changed to 0 to proceed.")
+                print("Chain",counter,"returned nan. Values changed to 0 to proceed.",show=verbose)
                 fp = np.full(len(fp),0)
             f += fp
             counter += 1
@@ -958,7 +952,7 @@ class Sampler(show_prints.Verbosity):
         tau = thin * 2 * np.sum(a / c) / np.sum(a)
         return tau
 
-    def gelman_rubin(self, pars=0, nsteps="all"):
+    def gelman_rubin(self, pars=0, nsteps="all",verbose=None):
         """
         Given a parameter (or list of parameters) ``pars`` and a number of ``nsteps``, the method computes 
         the Gelman-Rubin :cite:`Gelman:1992zz` ratio and related quantities for monitoring convergence.
@@ -1002,6 +996,8 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``numpy.ndarray``
                     - **shape**: ``(len(pars)*len(nsteps),5)``
         """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
         res = []
         pars = np.array([pars]).flatten()
         for par in pars:
@@ -1040,9 +1036,11 @@ class Sampler(show_prints.Verbosity):
                     df = (2*Vhat**2) / varVhat
                     Rc = np.sqrt((Vhat / W)*(df+3)/(df+1)) #correct Brooks-Gelman df
                     res.append([par, n, Rc, Vhat, W])
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "compited Gelman-Rubin", "pars": pars, "nsteps": nsteps}
-        self.save_sampler_log(overwrite=True, verbose=False)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        print("Gelman-Rubin statistics for parameters", pars,"computed in",str(end-start),"s.",show=verbose)
         return np.array(res)
 
     def plot_gelman_rubin(self, pars=0, npoints=5, pars_labels="original", overwrite=False, verbose=None):
@@ -1097,7 +1095,7 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True``
         """
-        verbose, _ = self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
@@ -1118,9 +1116,9 @@ class Sampler(show_prints.Verbosity):
                 utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "saved", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-            print('Saved figure', figure_filename+'.')
+            print('Saved figure', figure_filename+'.',show=verbose)
             if verbose:
                 plt.show()
             plt.close()
@@ -1134,9 +1132,9 @@ class Sampler(show_prints.Verbosity):
                 utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "saved", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-            print('Saved figure', figure_filename+'.')
+            print('Saved figure', figure_filename+'.', show=verbose)
             if verbose:
                 plt.show()
             plt.close()
@@ -1150,13 +1148,13 @@ class Sampler(show_prints.Verbosity):
                 utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "saved", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-            print('Saved figure', figure_filename+'.')
+            print('Saved figure', figure_filename+'.', show=verbose)
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=False)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
             
     def plot_dist(self, pars=0, pars_labels="original", overwrite=False, verbose=None):
         """
@@ -1198,7 +1196,7 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True``
         """
-        verbose ,_= self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
@@ -1217,13 +1215,13 @@ class Sampler(show_prints.Verbosity):
                 utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "saved", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-            print('Saved figure', figure_filename+'.')
+            print('Saved figure', figure_filename+'.',show=verbose)
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=False)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
 
     def plot_autocorr(self, pars=0, pars_labels="original", methods=["G&W 2010", "DFM 2017", "DFM 2017: ML"], overwrite=False, verbose=None):
         """
@@ -1295,7 +1293,7 @@ class Sampler(show_prints.Verbosity):
             n_start = max(n_dupl)+10
             if n_start > 100:
                 print("There is at least one chain starting with", str(
-                        n_start-10), "duplicate steps. Autocorrelation will be computer starting at", str(n_start), "steps.")
+                    n_start-10), "duplicate steps. Autocorrelation will be computer starting at", str(n_start), "steps.", show=verbose)
             else:
                 n_start = 100
             N = np.exp(np.linspace(np.log(n_start), np.log(chain.shape[1]), 10)).astype(int)
@@ -1330,10 +1328,11 @@ class Sampler(show_prints.Verbosity):
                             ml[k] = self.autocorr_ml(chain[:, :n], thin=thin, bound=bound,verbose=verbose_sub)
                         succeed = True
                         if bound > 5.0:
-                            print("Succeeded with bounds (",str(-(bound)), ",", str(bound), ").")
+                            print("Succeeded with bounds (", str(-(bound)),
+                                  ",", str(bound), ").", show=verbose)
                     except:
                         print("Bounds (", str(-(bound)), ",", str(bound), ") delivered non-finite log-prior. Increasing bound to (",
-                              str(-(bound+5)), ",", str(bound+5), ") and retrying.")
+                              str(-(bound+5)), ",", str(bound+5), ") and retrying.", show=verbose)
                         bound = bound+5
             # Plot the comparisons
             plt.plot(N, N / 50.0, "--k", label=r"$\tau = S/50$")
@@ -1358,13 +1357,13 @@ class Sampler(show_prints.Verbosity):
                 utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "saved", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-            print('Saved figure', figure_filename+'.')
+            print('Saved figure', figure_filename+'.', show=verbose)
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=False)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
 
     def plot_chains(self, pars=0, n_chains=100, pars_labels="original", overwrite=False, verbose=None):
         """
@@ -1407,14 +1406,14 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True``
         """
-        verbose, _ =self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
         filename = self.figure_files_base_path
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
-            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.")
+            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
         rnd_chains = np.sort(np.random.choice(np.arange(
             self.nwalkers), n_chains, replace=False))
         for par in pars:
@@ -1432,13 +1431,13 @@ class Sampler(show_prints.Verbosity):
                 utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "saved", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-            print('Saved figure', figure_filename+'.')
+            print('Saved figure', figure_filename+'.', show=verbose)
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=False)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
 
     def plot_chains_logprob(self, n_chains=100, overwrite=False, verbose=None):
         """
@@ -1472,11 +1471,11 @@ class Sampler(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``True``
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         filename = self.figure_files_base_path
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
-            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.")
+            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
         rnd_chains = np.sort(np.random.choice(np.arange(
             self.nwalkers), n_chains, replace=False))
         chain_lp = self.sampler.get_log_prob()
@@ -1493,10 +1492,10 @@ class Sampler(show_prints.Verbosity):
             utils.check_rename_file(figure_filename)
         plt.savefig(figure_filename)
         utils.append_without_duplicate(self.figures_list, figure_filename)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-        print('Saved figure', figure_filename+'.')
+        print('Saved figure', figure_filename+'.', show=verbose)
         if verbose:
             plt.show()
         plt.close()
-        self.save_sampler_log(overwrite=True, verbose=False)
+        self.save_sampler_log(overwrite=True, verbose=verbose_sub)

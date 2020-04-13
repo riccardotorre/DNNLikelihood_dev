@@ -5,7 +5,6 @@ import codecs
 import json
 import pickle
 import sys
-import time
 from datetime import datetime
 from os import listdir, path, stat
 from timeit import default_timer as timer
@@ -57,13 +56,14 @@ class Histfactory(show_prints.Verbosity):
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.histfactory_input_file = histfactory_input_file
         if self.histfactory_input_file is None:
             self.histfactory_input_json_file = self.histfactory_input_file
             self.histfactory_input_pickle_file = self.histfactory_input_file
             self.histfactory_input_log_file = self.histfactory_input_file
             self.log = {timestamp: {"action": "created"}}
+            print(self.log,show=True)
             self.workspace_folder = path.abspath(workspace_folder)
             self.name = name
             self.__check_define_name()
@@ -91,7 +91,6 @@ class Histfactory(show_prints.Verbosity):
                 self.histfactory_output_json_file = path.join(self.output_folder, self.name+".json")
                 self.histfactory_output_log_file = path.join(self.output_folder, self.name+".log")
                 self.histfactory_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
-            self.verbose = verbose
 
     #def set_verbose(self, verbose=None):
     #    verbose, verbose_sub = self.set_verbosity(verbose)
@@ -103,11 +102,11 @@ class Histfactory(show_prints.Verbosity):
 
     def __check_define_name(self):
         """
-        If :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` is ``None`` it replaces it with ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_histfactory"``
+        If :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` is ``None`` it replaces it with ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_histfactory"``
         otherwise it appends the suffix "_histfactory" (preventing duplication if it is already present).
         """
         if self.name is None:
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.name = "model_"+timestamp+"_histfactory"
         else:
             self.name = utils.check_add_suffix(self.name, "_histfactory")
@@ -129,7 +128,7 @@ class Histfactory(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``None`` 
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         likelihoods_dict = {}
         for region in self.regions.keys():
             region_path = self.regions[region]
@@ -145,14 +144,15 @@ class Histfactory(show_prints.Verbosity):
                                                        "model_loaded": False} for x in signal_patch_files]))
                 likelihoods_dict = {**likelihoods_dict, **dict_region}
             else:
-                print("Likelihoods import from folder",self.regions[region]," failed. Please check background and patch files base name.")
+                print("Likelihoods import from folder",self.regions[region]," failed. Please check background and patch files base name.", show=verbose)
         for n in list(likelihoods_dict.keys()):
             likelihoods_dict[n]["name"] = self.name+"_" + str(n)+"_"+likelihoods_dict[n]["name"]+"_likelihood"
         self.likelihoods_dict = likelihoods_dict
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "import histfactory","folder": self.workspace_folder}
-        print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.")
-        self.save_histfactory_log(overwrite=True, verbose=False)
+        print(self.log,show=True)
+        print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.",show=verbose)
+        self.save_histfactory(overwrite=False, verbose=verbose_sub)
 
     def __load_histfactory(self,verbose=None):
         """
@@ -170,8 +170,7 @@ class Histfactory(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``None`` 
         """
-        self.set_verbosity(verbose)
-        
+        verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         with open(self.histfactory_input_json_file) as json_file:
             dictionary = json.load(json_file)
@@ -184,11 +183,10 @@ class Histfactory(show_prints.Verbosity):
         pickle_in.close()
         statinfo = stat(self.histfactory_input_pickle_file)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded","file name": path.split(self.histfactory_input_json_file)[-1],"file path": self.histfactory_input_json_file}
-        print("Likelihoods loaded in", str(end-start),"seconds.\nFile size is ", statinfo.st_size, ".")
-        self.save_histfactory_log(overwrite=True, verbose=False)
-
+        print("Likelihoods loaded in", str(end-start),"seconds.\nFile size is ", statinfo.st_size, ".",show=verbose)
+        self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
 
     def import_histfactory(self,lik_numbers_list=None, verbose=None):
         """
@@ -220,7 +218,7 @@ class Histfactory(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``None`` 
         """
-        verbose, _ = self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         if verbose == 2:
             progressbar = True
             try:
@@ -274,16 +272,16 @@ class Histfactory(show_prints.Verbosity):
                 schema = requests.get("https://scikit-hep.org/pyhf/schemas/1.0.0/workspace.json").json()
                 jsonschema.validate(instance=spec, schema=schema)
                 end_patch = timer()
-                print(self.likelihoods_dict[n]["patch_file"], "processed in", str(end_patch-start_patch), "s.")
+                print(self.likelihoods_dict[n]["patch_file"], "processed in", str(end_patch-start_patch), "s.",show=verbose)
             if progressbar:
                 iterator = iterator + 1
                 overall_progress.value = float(iterator)/(len(lik_numbers_list))
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "imported likelihoods","likelihoods numbers": lik_numbers_list}
-        self.save_histfactory_log(overwrite=True, verbose=False)
+        self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
         self.set_verbosity(verbose)
-        print("Imported",len(lik_numbers_list),"likelihoods in ", str(end-start), "s.")
+        print("Imported",len(lik_numbers_list),"likelihoods in ", str(end-start), "s.",show=verbose)
 
     def save_histfactory_log(self, overwrite=False, verbose=None):
         """
@@ -317,19 +315,18 @@ class Histfactory(show_prints.Verbosity):
 
             - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
         """
-        self.set_verbosity(verbose)
-        time.sleep(1)
+        verbose,_=self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.histfactory_output_log_file)
-        #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         #self.log[timestamp] = {"action": "saved", "file name": path.split(self.histfactory_output_log_file)[-1], "file path": self.histfactory_output_log_file}
         dictionary = self.log
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.histfactory_output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Histfactory log file", self.histfactory_output_log_file, "saved in", str(end-start), "s.")
+        print("Histfactory log file", self.histfactory_output_log_file, "saved in", str(end-start), "s.",show=verbose)
 
     def save_histfactory_json(self, overwrite=False, verbose=None):
         """
@@ -373,13 +370,12 @@ class Histfactory(show_prints.Verbosity):
 
             - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub=self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.histfactory_output_json_file)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        self.log[timestamp] = {
-            "action": "saved", "file name": path.split(self.histfactory_output_json_file)[-1], "file path": self.histfactory_output_json_file}
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved", "file name": path.split(self.histfactory_output_json_file)[-1], "file path": self.histfactory_output_json_file}
         dictionary = utils.dic_minus_keys(self.__dict__, ["log",
                                                           "likelihoods_dict",
                                                           "histfactory_input_file",
@@ -390,8 +386,7 @@ class Histfactory(show_prints.Verbosity):
         with codecs.open(self.histfactory_output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Histfactory json file", self.histfactory_output_json_file, "saved in", str(end-start), "s.")
-        self.save_histfactory_log(overwrite=overwrite, verbose=verbose)
+        print("Histfactory json file", self.histfactory_output_json_file, "saved in", str(end-start), "s.",show=verbose)
 
     def save_histfactory_pickle(self, lik_numbers_list=None, overwrite=False, verbose=None):
         """
@@ -441,14 +436,15 @@ class Histfactory(show_prints.Verbosity):
 
             - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
         """
-        verbose, _ =self.set_verbosity(verbose)
+        verbose, verbose_sub =self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.histfactory_output_pickle_file)
         if lik_numbers_list is None:
             lik_numbers_list = list(self.likelihoods_dict.keys())
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-        self.log[timestamp] = {"action": "saved","likelihoods numbers": lik_numbers_list,"file path": self.histfactory_output_pickle_file}
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved", "likelihoods numbers": lik_numbers_list, "file name": path.split(
+            self.histfactory_output_pickle_file)[-1], "file path": self.histfactory_output_pickle_file}
         #if lik_numbers_list is None:
         #    sub_dict = dict(self.likelihoods_dict)
         #else:
@@ -465,10 +461,9 @@ class Histfactory(show_prints.Verbosity):
         pickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         end = timer()
-        print("Histfactory pickle file", self.histfactory_output_pickle_file, "saved in", str(end-start), "s.")
-        self.save_histfactory_log(overwrite=True, verbose=verbose)
+        print("Histfactory pickle file", self.histfactory_output_pickle_file, "saved in", str(end-start), "s.",show=verbose)
 
-    def save_histfactory(self, lik_numbers_list=None, overwrite=False, verbose=None):
+    def save_histfactory(self, lik_numbers_list=None, overwrite=True, verbose=None):
         """
         Calls in order the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>` and
         :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>` methods.
@@ -492,6 +487,7 @@ class Histfactory(show_prints.Verbosity):
         verbose, _ =self.set_verbosity(verbose)
         self.save_histfactory_pickle(overwrite=overwrite, lik_numbers_list=lik_numbers_list, verbose=verbose)
         self.save_histfactory_json(overwrite=overwrite, verbose=verbose)
+        self.save_histfactory_log(overwrite=overwrite, verbose=verbose)
 
     def get_likelihood_object(self, lik_number=0, save=True, verbose=None):
         """
@@ -539,7 +535,7 @@ class Histfactory(show_prints.Verbosity):
     
     <a href="https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf"  target="_blank"> pyhf.Model.logpdf</a>
         """
-        self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         lik = dict(self.likelihoods_dict[lik_number])
         if not lik["model_loaded"]:
@@ -568,14 +564,14 @@ class Histfactory(show_prints.Verbosity):
                              verbose = self.verbose)
         end = timer()
         if save:
-            lik_obj.save_likelihood(overwrite=True,verbose=False)
+            lik_obj.save_likelihood(overwrite=True, verbose=verbose_sub)
             self.set_verbosity(verbose)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "saved likelihood object","likelihood number": lik_number, "files": [lik_obj.likelihood_output_json_file, lik_obj.likelihood_output_pickle_file]}
-            print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.")
+            print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.",show=verbose)
         else:
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.log[timestamp] = {"action": "created likelihood object","likelihood number": lik_number}
-            print("Likelihood object for likelihood",lik_number,"created in",str(end-start),"s.")
-        self.save_histfactory_log(overwrite=True, verbose=False)
+            print("Likelihood object for likelihood",lik_number,"created in",str(end-start),"s.",show=verbose)
+        self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
         return lik_obj
