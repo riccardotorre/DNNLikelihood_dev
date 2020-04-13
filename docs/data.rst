@@ -51,12 +51,13 @@ Arguments
 
     .. py:attribute:: DNNLikelihood.Data.test_fraction
 
-    .. py:attribute:: DNNLikelihood.Data.data_sample_input_filename
+    .. py:attribute:: DNNLikelihood.Data.data_input_file
 
-    .. py:attribute:: DNNLikelihood.Data.data_sample_output_filename
+    .. py:attribute:: DNNLikelihood.Data.output_folder
 
     .. py:attribute:: DNNLikelihood.Data.load_on_RAM
 
+    .. py:attribute:: DNNLikelihood.Data.verbose
 
 Additional attributes
 """""""""""""""""""""
@@ -77,7 +78,7 @@ Methods
 
     .. automethod:: DNNLikelihood.Data._Data__create_samples
 
-    .. automethod:: DNNLikelihood.Data._Data__load_samples
+    .. automethod:: DNNLikelihood.Data._Data__load_data
 
     .. automethod:: DNNLikelihood.Data._Data__check_data
 
@@ -85,7 +86,7 @@ Methods
 
     .. automethod:: DNNLikelihood.Data.close_samples
 
-    .. automethod:: DNNLikelihood.Data.save_samples
+    .. automethod:: DNNLikelihood.Data.save_data
 
     .. automethod:: DNNLikelihood.Data.generate_train_indices
 

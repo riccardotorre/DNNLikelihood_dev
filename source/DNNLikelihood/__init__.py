@@ -1,3 +1,6 @@
+import sys
+sys.dont_write_bytecode = True
+
 from . import show_prints
 from . import set_resources
 from . import utils

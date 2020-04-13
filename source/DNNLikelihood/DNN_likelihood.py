@@ -43,7 +43,7 @@ from .show_prints import print
 mplstyle_path = os.path.join(os.path.split(os.path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 
-class DNN_likelihood(object):
+class DNN_likelihood(show_prints.Verbosity):
     def __init__(self,
                  DNNLik_input_folder=None,
                  ensemble_name=None,
@@ -64,10 +64,8 @@ class DNN_likelihood(object):
                  resources_member_kwargs=None,
                  verbose=True
                  ):
-        #### Set global verbosity
-        global ShowPrints
-        self.member_verbose_mode = verbose
-        ShowPrints = self.member_verbose_mode
+        show_prints.verbose = verbose
+        self.verbose = verbose
         #### Set model date time
         self.member_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         #### Set resources
@@ -270,13 +268,11 @@ class DNN_likelihood(object):
             raise Exception("Requiring more test points than available in data_sample. Please reduce npoints_test")
     
     def __check_create_ensemble_folder(self,verbose=True):
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
         utils.check_create_folder(self.ensemble_folder)
 
     def __check_create_member_results_folder(self, verbose=True):
-        global ShowPrints
-        ShowPrints = verbose
+        show_prints.verbose = verbose
         utils.check_create_folder(self.member_results_folder)
 
     def __load_summary_log(self):
