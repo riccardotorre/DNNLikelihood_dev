@@ -30,7 +30,7 @@ from . import show_prints
 from .show_prints import print
 
 
-class DNN_likelihood_ensemble(object):
+class DNN_likelihood_ensemble(show_prints.Verbosity):
     def __init__(self,
                  DNNLik_ensemble_input_folder=None,
                  ensemble_name=None,
@@ -50,8 +50,8 @@ class DNN_likelihood_ensemble(object):
                  gpus_id_list='all',
                  verbose=True
                  ):
-        #### Set global verbosity
-        global ShowPrints
+        show_prints.verbose = verbose
+        self.verbose = verbose
         self.ensemble_verbose_mode = verbose
         #### Set model date time
         self.ensemble_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')

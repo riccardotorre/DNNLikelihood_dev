@@ -26,7 +26,7 @@ Arguments
 
             Name of the :class:`Likelihood <DNNLikelihood.Likelihood>` object. It is used to generate 
             output files. If ``None`` is passed ``name``` is assigned the value
-            ``"sampler_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_likelihood"``, 
+            ``"model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_likelihood"``, 
             while if a string is passed, the ``"_likelihood"`` suffix is appended 
             (preventing duplication if it is already present).
             
@@ -81,28 +81,28 @@ Arguments
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_poi   
 
-            Array containing the positions in the parameters list of the
-            parameters of interest.
+            List or numpy array containing the positions in the parameters list of the
+            parameters of interest. The input is always turned into a numpy array.
                 
-                - **type**: ``numpy.ndarray``
+                - **type**: ``list`` or ```numpy.ndarray``
                 - **shape**: ``(n_poi,)``
                 - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_nuis   
 
-            Array containing the positions in the parameters list of the
-            nuisance parameters.
+            List or numpy array containing the positions in the parameters list of the
+            nuisance parameters. The input is always turned into a numpy array.
                 
-                - **type**: ``numpy.ndarray``
+                - **type**: ``list`` or ```numpy.ndarray``
                 - **shape**: ``(n_nuis,)``
                 - **default**: ``None`` 
 
     .. py:attribute:: DNNLikelihood.Likelihood.pars_init   
 
-            Array containing an initial value 
-            for the parameters.
+            List or numpy array containing an initial value for the parameters.
+            The input is always turned into a numpy array.
                 
-                - **type**: ``numpy.ndarray``
+                - **type**: ``list`` or ```numpy.ndarray``
                 - **shape**: ``(n_pars,)``
                 - **default**: ``None`` 
 
@@ -169,7 +169,7 @@ Arguments
 Additional attributes
 """""""""""""""""""""
 
-    .. py:attribute:: DNNLikelihood.Likelihood.output_base_filename   
+    .. py:attribute:: DNNLikelihood.Likelihood.output_files_base_path   
 
             Base name (with absolute path) of the output files produced by methods of the
             :class:`Likelihood <DNNLikelihood.Likelihood>`. It is set to 
@@ -244,10 +244,10 @@ Additional attributes
 
             Name (with absolute path) of the output file containing the code necessary to intantiate a 
             ``Likelihooh`` object and define the corresponing parameters. This file can be generated using 
-            the :meth:`Likelihood.generate_likelihood_script_file <DNNLikelihood.Likelihood.generate_likelihood_script_file>` method.
+            the :meth:`Likelihood.save_likelihood_script <DNNLikelihood.Likelihood.save_likelihood_script>` method.
             and is sometimes needed to properly run Markov Chain Monte Carlo in parallel (using ``Multiprocessing``) 
             through the ``Sampler`` object inside Jupyter notebooks on the Windows platform.
-            The atribute is set to ``Likelihood.output_base_filename+"_define_logpdf"+".py"`` while the path
+            The atribute is set to ``Likelihood.output_files_base_path+"_define_logpdf"+".py"`` while the path
             is set to ``Likelihood.output_folder``.
 
                 - **type**: ``str``
@@ -257,7 +257,7 @@ Methods
 
     .. automethod:: DNNLikelihood.Likelihood.__init__
 
-    .. automethod:: DNNLikelihood.Likelihood._Likelihood.__check_define_name
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__check_define_name
 
     .. automethod:: DNNLikelihood.Likelihood._Likelihood__load_likelihood
 
@@ -269,8 +269,12 @@ Methods
 
     .. automethod:: DNNLikelihood.Likelihood.compute_profiled_maxima
 
-    .. automethod:: DNNLikelihood.Likelihood.save_likelihood
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_log
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_json
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_pickle
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_script
 
     .. automethod:: DNNLikelihood.Likelihood.logpdf_fn
-
-    .. automethod:: DNNLikelihood.Likelihood.generate_likelihood_script_file

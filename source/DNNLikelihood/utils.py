@@ -3,6 +3,7 @@ import itertools
 import json
 import math
 import os
+import re
 from fpdf import FPDF
 from PIL import Image
 import sys
@@ -39,6 +40,11 @@ def flatten_list(lst):
             out.append(item)
     return out
 
+def append_without_duplicate(list,element):
+    if element not in list:
+        list.append(element)
+    return list
+
 def make_pdf_from_img(img):
     """Make pdf from image
     Used to circumvent bud in plot_model which does not allow to export pdf"""
@@ -62,22 +68,55 @@ def check_create_folder(path):
         os.mkdir(path)
         #print("Folder",path,"has been created.")
 
-def check_rename_file(path):
+def filename_without_datetime(name):
+    file, extension = os.path.splitext(name)
+    try:
+        match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', file).group()
+    except:
+        match = ""
+    if match is not "":
+        file = file.replace(match, "")+extension
+    else:
+        file = file+"_"+extension
+
+def check_rename_file(path,timestamp=None):
     if os.path.exists(path):
-        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        if timestamp is None:
+            now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        else:
+            now = timestamp
         print("The file", path, "already exists.")
         file, extension = os.path.splitext(path)
-        path = file+"_"+now+extension
-        print("New file name set to", path)
-    return path
+        try:
+            match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', file).group()
+        except:
+            match = ""
+        if match is not "":
+            new_path = file.replace(match,now)+extension
+        else:
+            new_path = file+"_old_"+now+extension
+        os.rename(path,new_path)
+        #print("New file name set to", path)
+    #return path
 
-def check_rename_folder(path):
+def check_rename_folder(path, timestamp=None):
     if os.path.exists(path):
-        now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        if timestamp is None:
+            now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        else:
+            now = timestamp
         print("The folder", path, "already exists.")
-        path = path+"_"+now
-        print("New folder name set to", path)
-    return path
+        try:
+            match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', path).group()
+        except:
+            match = ""
+        if match is not "":
+            new_path = path.replace(match, now)
+        else:
+            new_path = path+"_"+now
+        os.rename(path, new_path)
+        #print("New folder name set to", path)
+    #return path
 
 def save_samples(allsamples, logpdf_values, data_sample_filename, name):
     start = timer()
