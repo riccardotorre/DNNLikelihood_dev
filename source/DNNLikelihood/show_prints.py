@@ -14,6 +14,8 @@ verbose = True
 def print(*args, **kwargs):
     """
     Redefinition of the built-in print function.
+    It prints based on the value of the global variable show_prints.verbose.
+    Print could always be forced through the kwargs show=True
     """
     global verbose
     try:
