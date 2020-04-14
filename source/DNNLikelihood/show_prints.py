@@ -10,12 +10,46 @@ import builtins
 #        if verbose != 0:
 #            return builtins.print(*args, **kwargs)
 
+class Verbosity():
+    """
+    Class inherited by all other classes to provide the 
+    :meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>` method.
+    """
+    def set_verbosity(self, verbose):
+        """
+        Method inherited by all classes (from the :class:`Verbosity <DNNLikelihood.Verbosity>` class)
+        used to set the verbosity mode. If the input argument ``verbose`` is ``None``, ``verbose`` is
+        set to the default class verbosity ``self.verbose``. If the input argument ``verbose`` is negative
+        then ``verbose_sub`` is set to ``0`` (``False``), otherwise it is set to ``verbose``.
+        
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for more details.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+
+        - **Returns**
+
+            ``[verbose,verbose_sub]``.
+        """
+        #global verbose
+        if verbose is None:
+            verbose = self.verbose
+        if verbose < 0:
+            verbose_sub = 0
+        else:
+            verbose_sub = verbose
+        return [verbose, verbose_sub]
+
 
 def print(*args, **kwargs):
     """
     Redefinition of the built-in print function.
-    It prints based on the value of the global variable show_prints.verbose.
-    Print could always be forced through the kwargs show=True
+    It accepts an additional argument ``show`` allowing to switch print on and off.
     """
     try:
         show = kwargs.pop("show")
@@ -24,16 +58,3 @@ def print(*args, **kwargs):
         show = True
     if show:
         return builtins.print(*args, **kwargs)
-
-class Verbosity():
-    def set_verbosity(self, v):
-        #global verbose
-        if v is None:
-            verbose = self.verbose
-        else:
-            verbose = v
-        if verbose < 0:
-            verbose_sub = 0
-        else:
-            verbose_sub = verbose
-        return [verbose, verbose_sub]

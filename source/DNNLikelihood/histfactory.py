@@ -17,12 +17,12 @@ import requests
 from jsonpatch import JsonPatch
 from IPython.core.display import display
 
-from . import show_prints, utils
+from . import utils
 from .likelihood import Likelihood
-from .show_prints import print
+from .show_prints import Verbosity, print
 
 
-class Histfactory(show_prints.Verbosity):
+class Histfactory(Verbosity):
     """
     This class is a container for the ``Histfactory`` object created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, 
     read parameters and logpdf using the |pyhf_link| package, create ``Likelihood`` objects (see :class:`The Likelihood object <DNNLikelihood.Likelihood>`) 
@@ -107,14 +107,6 @@ class Histfactory(show_prints.Verbosity):
                 self.histfactory_output_json_file = path.join(self.output_folder, self.name+".json")
                 self.histfactory_output_log_file = path.join(self.output_folder, self.name+".log")
                 self.histfactory_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
-
-    #def set_verbose(self, verbose=None):
-    #    verbose, verbose_sub = self.set_verbosity(verbose)
-    #    print([show_prints.verbose, verbose, verbose_sub])
-
-    #def hello_world(self,verbose=None):
-    #    verbose, verbose_sub = self.set_verbosity(verbose)
-    #    print("hello world")
 
     def __check_define_name(self):
         """
@@ -251,8 +243,7 @@ class Histfactory(show_prints.Verbosity):
                 import ipywidgets as widgets
             except:
                 progressbar = False
-                show_prints.verbose = True
-                print("If you want to show a progress bar please install the ipywidgets package.")
+                print("If you want to show a progress bar please install the ipywidgets package.",show=verbose)
                 self.set_verbosity(verbose)
         else:
             progressbar = False
@@ -267,7 +258,7 @@ class Histfactory(show_prints.Verbosity):
             iterator = 0
         for n in lik_numbers_list:
             if self.likelihoods_dict[n]["model_loaded"]:
-                print(self.likelihoods_dict[n]["patch_file"], "already loaded.")
+                print(self.likelihoods_dict[n]["patch_file"], "already loaded.",show=verbose)
             else:
                 start_patch = timer()
                 with open(self.likelihoods_dict[n]["bg_only_file"]) as json_file:

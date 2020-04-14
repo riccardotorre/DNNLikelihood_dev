@@ -2,38 +2,16 @@
 Verbosity mode
 --------------
 
-The verbosity mode is implemented in this package through a modification of the built-in ``print`` function, 
-corresponding to the following piece of code
+Summary
+^^^^^^^
 
-.. code-block:: python
-    
-    import builtins
+The verbosity mode is implemented through the file ``show_prints.py``. This contains a modification of the built-in ``print`` function,
+that accepts an additional argument ``show`` allowing to switch print on and off, and a class 
+:class:`Verbosity <DNNLikelihood.Verbosity>` that, through inheritance, makes the 
+:meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>` method available to all classes in the module.
 
-    verbose = True
-    def print(*args, **kwargs):
-        global verbose
-        try:
-            show = kwargs.pop("show")
-        except:
-            show = None
-        if show is None:
-            if verbose:
-                return builtins.print(*args, **kwargs)
-        elif show:
-            return builtins.print(*args, **kwargs)
-
-in the file show_prints.py. Each of the modules in the package then contain in their code the initialization
-
-.. code-block:: python
-    
-    from . import show_prints
-    from .show_prints import print
-    
-In this way the ``print`` statement in each module is replaced by the customly defined one, which depends on the value
-of the shared variable ``show_prints.verbose``. 
-
-The ``show_prints.verbose`` argument (and therefore all ``verbose`` arguments in the package) accept values ``True``, 
-``False``, and integers, corresponding, unless stated otherwise in the ``verbose`` argument documentation of the object, 
+The ``verbose`` argument available in most classes and methods in the package could be ``True``, 
+``False``, or any integers, corresponding, unless stated otherwise in the ``verbose`` argument documentation of the object, 
 to the following general behavior:
 
     - ``ShowPrints=False`` or ``ShowPrints=0``
@@ -51,64 +29,35 @@ to the following general behavior:
 
         All prints from the current function are active, while prints from the functions called in it are muted.
 
-All classes inherit the :class:`show_prints.Verbosity <DNNLikelihood.show_prints.Verbosity>` class defined in the 
-file show_prints.py as
+All classes have a ``verbose=True`` default argument and the ``verbose`` argument is stored in the ``self.verbose`` 
+attribute. This is used as verbosity mode for the class ``__init__`` method, as well as default argument of all methods 
+in that class that accept a ``verbose`` argument (i.e. that involve, directly or indirectly, any call to the
+``print`` function or to the ``plt.show`` method).
 
-.. code-block:: python
-
-    class Verbosity():
-        def set_verbosity(self, v):
-            global verbose
-            if v is None:
-                verbose = self.verbose
-            else:
-                verbose = v
-            if verbose < 0:
-                verbose_sub = 0
-            else:
-                verbose_sub = verbose
-            return [verbose, verbose_sub]
-
-which makes the ``set_verbosity`` method available. This is used to control verbosity in the various classes, methods, 
-and functions as explained below.
-
-All classes have a ``verbose=True`` default argument and the ``verbose`` argument is stored in a the ``self.verbose`` 
-attribute. This is used as verbosity mode for the "__init__" method. Moreover, the value of ``self.verbose`` is passed
-as default to each methods and functions in the class that accept a ``verbose`` argument. This is done by setting
-their default ``verbose`` argument to ``None`` and by calling the ``set_verbosity(verbose)`` method in the first 
-line of the method or function body.
-
-This sets the global variable ``show_prints.verbose`` to ``self.verbose`` if ``verbose=False`` and to ``verbose`` otherwise.
-Moreover it can return two local variables ``verbose`` and ``verbose_sub`` used to implement the behavior discussed above.
-In particular, the local variable ``verbose`` is only used to print plots (all other prints are controlled by the custom ``print`` function
-and the value of the global variable ``show_prints.verbose``), while the local variable ``verbose_sub`` is passed as
-``verbose`` argument to all methods and functions called within the given one.
-
-To further clarify the verbosity implementation a scheme is provided by the following code:
+To further clarify the verbosity implementation a scheme how classes are structured is provided by the following code:
 
 .. code-block:: python
     
-    from . import show_prints
-    from .show_prints import print
+    from .show_prints import Verbosity, print
     
-    class Class(show_prints.Verbosity)
+    class ClassA(Verbosity)
         def __init__(self,..., verbose=True):
-            show_prints.verbose = verbose
             self.verbose = verbose
+            verbose, verbose_sub = self.set_verbosity(verbose)
         ...
     
         def MethodA(..., verbose=None):
-            self.set_verbosity(verbose)
+            verbose, _ = self.set_verbosity(verbose)
             ...
-            print(...)
+            print(...,show=verbose)
             ...
 
         def MethodB(..., verbose=None):
-            _, verbose_sub = self.set_verbosity(verbose)
+            verbose, verbose_sub = self.set_verbosity(verbose)
             ...
             self.MethodA(...,verbose=verbose_sub)
             ...
-            print(...)
+            print(...,show=verbose)
             ...
 
         def MethodC(..., verbose=None):
@@ -116,18 +65,24 @@ To further clarify the verbosity implementation a scheme is provided by the foll
             ...
             self.MethodB(...,verbose=verbose_sub)
             ...
-            print(...)
+            print(...,show=verbose)
             ...
             if verbose:
                 plt.show(...)
             ...
 
-.. autoclass:: DNNLikelihood.show_prints.Verbosity
+.. _histfactory_arguments:
+
+Code documentation
+^^^^^^^^^^^^^^^^^^
+
+.. autoclass:: DNNLikelihood.Verbosity
     :undoc-members:
 
-    .. automethod:: DNNLikelihood.show_prints.Verbosity.set_verbosity
+    .. automethod:: DNNLikelihood.Verbosity.set_verbosity
 
-.. autofunction:: DNNLikelihood.show_prints.print
+
+.. autofunction:: DNNLikelihood.print
 
 .. |keras_model_fit_link| raw:: html
     
