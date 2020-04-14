@@ -15,6 +15,7 @@ import numpy as np
 import pyhf
 import requests
 from jsonpatch import JsonPatch
+from IPython.core.display import display
 
 from . import show_prints, utils
 from .likelihood import Likelihood
@@ -42,17 +43,33 @@ class Histfactory(show_prints.Verbosity):
                  histfactory_input_file = None,
                  verbose = True):
         """
-        Instantiates the ``Histfactory`` object. 
-        If ``histfactory_input_file`` has the default value ``None``, the other arguments are parsed, otherwise all other arguments
-        but ``verbose`` and ``output_folder`` are ignored and the object is entirely reconstructed from the input file. In this case
-        if ``output_folder=Non``, it is also read from the input file, otherwise it is set to the argument value.
+        The :class:`Histfactory <DNNLikelihood.Histfactory>` object can be initialized in two different ways, depending on the value of 
+        the :option:`histfactory_input_file` argument.
 
-        The input file may or may not contain an extension, which is anyway removed to automatically determine the path of both 
-        the .json and .pickle files.
+        - :option:`histfactory_input_file` is ``None`` (default)
+
+            All other arguments are parsed and saved in corresponding attributes. If no name is available, then one is created. The private method
+            :meth:`Histfactory.__import_histfactory <DNNLikelihood.Histfactory._Histfactory__import_histfactory>` is called to import the workspace
+            at folder :option:`workspace_folder`. This method also saves the object through the
+            :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` method. 
+            See the documentation of the aforementioned methods for more details.
+        
+        - :option:`histfactory_input_file` is not ``None``
+
+            The object is reconstructed from the input files through the private method
+            :meth:`Histfactory.__load_histfactory <DNNLikelihood.Histfactory._Histfactory__load_histfactory>`
+            If the input argument :option:`output_folder` is ``None`` (default), the attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
+            is set from the input file, otherwise it is set to the input argument.
         
         - **Arguments**
 
-        See Class arguments.
+            See class :ref:`Arguments documentation <histfactory_arguments>`.
+
+        - **Produces file**
+
+            - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
+            - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`
+            - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -63,12 +80,11 @@ class Histfactory(show_prints.Verbosity):
             self.histfactory_input_pickle_file = self.histfactory_input_file
             self.histfactory_input_log_file = self.histfactory_input_file
             self.log = {timestamp: {"action": "created"}}
-            print(self.log,show=True)
             self.workspace_folder = path.abspath(workspace_folder)
             self.name = name
             self.__check_define_name()
             self.regions_folders_base_name = regions_folders_base_name
-            self.bkg_files_base_name = bkg_files_base_name
+            self.bkg_files_base_name = path.splitext(bkg_files_base_name)[0]
             self.patch_files_base_name = patch_files_base_name
             if output_folder is None:
                 output_folder = ""
@@ -102,7 +118,8 @@ class Histfactory(show_prints.Verbosity):
 
     def __check_define_name(self):
         """
-        If :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` is ``None`` it replaces it with ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_histfactory"``
+        If :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` is ``None`` it replaces it with 
+        ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_histfactory"``,
         otherwise it appends the suffix "_histfactory" (preventing duplication if it is already present).
         """
         if self.name is None:
@@ -113,17 +130,19 @@ class Histfactory(show_prints.Verbosity):
 
     def __import_histfactory(self, verbose=None):
         """
-        Private method used by the ``__init__`` one to import all likelihoods in ``load_model=False`` mode.
-        It scans through the regions folders and build the ``Histfactory.likelihoods_dict`` dictionary adding items 
-        corresponding to the keys *"signal_region"*, *"bg_only_file"*, *"patch_file"*, *"name"*, 
-        and *"model_loaded = False"*.
-
+        Private method used by the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` one to import 
+        an histfactory workspace. The method scans through the regions folders in the 
+        :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>`,
+        determines all background and signal (patch) files and generates the attribute
+        :attr:`Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`. After creation, all items in the
+        dictionary, corresponding to all available likelihoods, have the flag ``load_model=False``.
+        
         - **Arguments**
 
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -150,14 +169,15 @@ class Histfactory(show_prints.Verbosity):
         self.likelihoods_dict = likelihoods_dict
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "import histfactory","folder": self.workspace_folder}
-        print(self.log,show=True)
         print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.",show=verbose)
         self.save_histfactory(overwrite=False, verbose=verbose_sub)
 
     def __load_histfactory(self,verbose=None):
         """
-        Private method used by the ``__init__`` one to load the ``Histfactory`` object from the files 
-        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`
+        Private method used by the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` one to import a previously saved
+        :class:`Histfactory <DNNLikelihood.Histfactory>` object from the files 
+        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`,
+        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
         and :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
 
         - **Arguments**
@@ -165,7 +185,7 @@ class Histfactory(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -190,21 +210,23 @@ class Histfactory(show_prints.Verbosity):
 
     def import_histfactory(self,lik_numbers_list=None, verbose=None):
         """
-        Imports the likelihoods ``lik_numbers_list`` adding to the corresponding item in the ``Histfactory.likelihoods_dict`` 
+        Imports the likelihoods ``lik_numbers_list`` (if the argument is ``None`` it imports all available likelihoods) 
+        adding to the corresponding item in the :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`
         dictionary the items corresponding to the keys *"model"*, *"obs_data"*, *"pars_init"*, *"pars_bounds"*, 
-        *"pars_labels"*, *"pars_pos_poi"*, *"pars_pos_nuis"*.
+        *"pars_labels"*, *"pars_pos_poi"*, *"pars_pos_nuis"*, and changing the value of the item corresponding to the key
+        *"model_loaded"* to ``True``. If this value was already ``True`` the likelihood is not re-imported.
         When using interactive python in Jupyter notebooks if ``verbose=2`` the import process shows a progress bar through 
-        the widgets module.
+        the |ipywidgets_link| module.
         
         - **Arguments**
 
             - **lik_numbers_list**
             
                 List of likelihoods numbers (keys of the ``Histfactory.likelihood_dict`` dictionary) to
-                import in ``model_loaded=True`` mode. The dictionary items corresponding to the keys ``lik_numbers_list`` are filled
-                while all other items are unchanged and remain in ``model_loaded=False`` mode. This allows to only quickly import some
-                likelihoods corresponding to interesting regions of the parameter space without having to import all the HistFactory 
-                Workspace. If ``lik_numbers_list=None`` all available likelihoods are imported in ``model_loaded=True``.
+                import. The dictionary items corresponding to the keys ``lik_numbers_list`` are changed
+                while all others are left unchanged. This allows to only quickly import some
+                likelihoods corresponding to interesting regions of the parameter space without having to import the full workspace. 
+                If ``lik_numbers_list=None`` all available likelihoods are imported.
                     
                     - **type**: ``list`` or ``None``
                     - **default**: ``None``
@@ -212,11 +234,15 @@ class Histfactory(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                 If ``verbose=2`` a progress bar is shown.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
+
+.. |ipywidgets_link| raw:: html
+    
+    <a href="https://ipywidgets.readthedocs.io/en/latest/"  target="_blank"> ipywidgets</a>
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if verbose == 2:
@@ -288,25 +314,29 @@ class Histfactory(show_prints.Verbosity):
         Saves the content of the :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>` attribute in the file
         :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
 
-        This method is called with ``overwrite=False`` and ``verbose=False`` when the object is created from input arguments
-        and with ``overwrite=True`` and ``verbose=False`` each time the 
-        :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>` attribute is updated.
+        This method is called by the methods
+        
+        - :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` with ``overwrite=overwrite`` and ``verbose=verbose``
+        - :meth:`Histfactory.get_likelihood_object <DNNLikelihood.Histfactory.save_histfaget_likelihood_objectctory>` with ``overwrite=True`` and ``verbose=verbose_sub``
+        - :meth:`Histfactory.__load_histfactory <DNNLikelihood.Histfactory._Histfactory__load_histfactory>` with ``overwrite=True`` and ``verbose=verbose_sub``
+        - :meth:`Histfactory.import_histfactory <DNNLikelihood.Histfactory.import_histfactory>` with ``overwrite=True`` and ``verbose=verbose_sub``
 
         - **Arguments**
 
             - **overwrite**
             
-                It determines whether an existing file gets overwritten or if a new file is created. 
-                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
-                to append a time-stamp to the file name.
+                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
+                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
+                function.
                     
                     - **type**: ``bool``
                     - **default**: ``False``
 
+
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -330,26 +360,25 @@ class Histfactory(show_prints.Verbosity):
 
     def save_histfactory_json(self, overwrite=False, verbose=None):
         """
-        ``Histfactory`` objects are saved to two files: a .json and a .pickle, corresponding to the two attributes
-        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`
-         and :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
-        This method saves the .json file containing all class attributes but the  
+        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
+        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`,
+        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
+        and :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
+        This method saves the .json file containing a dictionary with all class attributes but  
         :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`,
+        :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>`,
         :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`,
-        :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`, and
-        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>` attributes.
-
-        This method is called with ``overwrite=False`` and ``verbose=False`` when the object is created from input arguments
-        and with ``overwrite=True`` and ``verbose=False`` each time an attribute different from ``"log"``, ``"likelihoods_dict"``,
-        ``"histfactory_input_file"``,``"histfactory_input_json_file"``,``"histfactory_input_pickle_file"`` is updated.
+        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`
+        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`, and 
+        :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
 
         - **Arguments**
 
             - **overwrite**
             
-                It determines whether an existing file gets overwritten or if a new file is created. 
-                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
-                to append a time-stamp to the file name.
+                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
+                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
+                function.
                     
                     - **type**: ``bool``
                     - **default**: ``False``
@@ -357,7 +386,7 @@ class Histfactory(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -365,10 +394,6 @@ class Histfactory(show_prints.Verbosity):
         - **Produces file**
 
             - :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`
-
-        - **Updates file**
-
-            - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
         """
         verbose, verbose_sub=self.set_verbosity(verbose)
         start = timer()
@@ -390,32 +415,34 @@ class Histfactory(show_prints.Verbosity):
 
     def save_histfactory_pickle(self, lik_numbers_list=None, overwrite=False, verbose=None):
         """
-        ``Histfactory`` objects are saved to two files: a .json and a .pickle, corresponding to the two attributes
-        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`
-         and :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
-        This method saves the .pickle file containing a dump of the 
-        :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`` attribute.
+        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
+        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`,
+        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
+        and :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
+        This method saves the dictionary 
+        :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`` through a dump in the .pickle file.
         
-        In order to save space, in the likelihood_dict the members corresponding to the keys 
-        ``lik_numbers_list`` are saved in the ``model_loaded=True`` mode (so with full model included), 
-        while the others are saved in ``model_loaded=False`` mode.
+        In order to save space, in the :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`` 
+        the members corresponding to the keys ``lik_numbers_list`` and that have been imported are saved in the 
+        ``dic["model_loaded"]=True`` "mode", while the others are saved in the ``dic["model_loaded"]=False``"mode". 
+        See the documentation of :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`` for more details.
 
         - **Arguments**
 
             - **lik_numbers_list**
             
-                List of likelihoods numbers (keys of the ``Histfactory.likelihood_dict`` dictionary) that
-                are saved in ``model_loaded=True`` mode. The default value ``None`` implies that all members are saved in 
-                ``model_loaded=True`` mode.
+                List of likelihoods numbers (keys of the :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>``
+                dictionary) that are saved in the ``dic["model_loaded"]=True`` "mode". The default value ``None`` implies that all members 
+                are saved with all available information.
                     
                     - **type**: ``list`` or ``None``
                     - **default**: ``None``
 
             - **overwrite**
             
-                It determines whether an existing file gets overwritten or if a new file is created. 
-                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used  
-                to append a time-stamp to the file name.
+                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
+                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
+                function.
                     
                     - **type**: ``bool``
                     - **default**: ``False``
@@ -423,7 +450,7 @@ class Histfactory(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -431,10 +458,6 @@ class Histfactory(show_prints.Verbosity):
         - **Produces file**
 
             - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`
-
-        - **Updates file**
-
-            - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
         """
         verbose, verbose_sub =self.set_verbosity(verbose)
         start = timer()
@@ -465,11 +488,9 @@ class Histfactory(show_prints.Verbosity):
 
     def save_histfactory(self, lik_numbers_list=None, overwrite=True, verbose=None):
         """
-        Calls in order the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>` and
-        :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>` methods.
-        Notice that each of them also calls the 
-        :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>` method, which update the log
-        file :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`.
+        This methos calls in order the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>`,
+        :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>`, and
+        :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>` methods to save the entire object.
 
         - **Arguments**
             
@@ -479,45 +500,35 @@ class Histfactory(show_prints.Verbosity):
 
             - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`
             - :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`
-
-        - **Updates file**
-
-            - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
+            - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
         """
         verbose, _ =self.set_verbosity(verbose)
         self.save_histfactory_pickle(overwrite=overwrite, lik_numbers_list=lik_numbers_list, verbose=verbose)
         self.save_histfactory_json(overwrite=overwrite, verbose=verbose)
         self.save_histfactory_log(overwrite=overwrite, verbose=verbose)
 
-    def get_likelihood_object(self, lik_number=0, save=True, verbose=None):
+    def get_likelihood_object(self, lik_number=0, verbose=None):
         """
-        Generates a ``Likelihood`` object containing all properties needed for further processing. The logpdf method is built from
-        the |pyhf_model_logpdf_link| method, and it takes two arguments: the array of parameters values ``x`` and
-        the array of observed data ``obs_data``. With respect to the |pyhf_model_logpdf_link| method, the logpdf in the ``Likelihood`` object
-        is flattened to output a float (instead of a numpy.ndarray containing a float).
+        Generates a :class:`Likelihood <DNNLikelihood.Likelihood>` object containing all properties needed for further processing. 
+        The :meth:`Likelihood.logpdf <DNNLikelihood.Likelihood.logpdf>` method is built from the |pyhf_model_logpdf_link| method, 
+        and it takes two arguments: the array of parameters values ``x`` and the array of observed data ``obs_data``. 
+        With respect to the corresponding |pyhf_model_logpdf_link| method, the logpdf in the ``Likelihood`` object
+        is flattened to output a ``float`` (instead of a ``numpy.ndarray`` containing a ``float``).
 
         - **Arguments**
 
             - **lik_number**
             
-                Number of the likelihood for which the ``Likelihood`` 
-                object is constructed.
+                Number of the likelihood for which the :class:`Likelihood <DNNLikelihood.Likelihood>` object
+                is created.
                     
                     - **type**: ``int``
                     - **default**: ``0``
 
-            - **save**
-            
-                If ``True`` the generated ``Likelihood`` object is saved into file by calling the 
-                :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` method.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``True`` 
-
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -526,10 +537,11 @@ class Histfactory(show_prints.Verbosity):
 
             :class:`Likelihood <DNNLikelihood.Likelihood>` object.
 
-        - **Can produce file**
+        - **Produces files**
 
             - :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`
             - :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`
+            - :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`
 
 .. |pyhf_model_logpdf_link| raw:: html
     
@@ -563,15 +575,19 @@ class Histfactory(show_prints.Verbosity):
                              likelihood_input_file=None,
                              verbose = self.verbose)
         end = timer()
-        if save:
-            lik_obj.save_likelihood(overwrite=True, verbose=verbose_sub)
-            self.set_verbosity(verbose)
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-            self.log[timestamp] = {"action": "saved likelihood object","likelihood number": lik_number, "files": [lik_obj.likelihood_output_json_file, lik_obj.likelihood_output_pickle_file]}
-            print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.",show=verbose)
-        else:
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-            self.log[timestamp] = {"action": "created likelihood object","likelihood number": lik_number}
-            print("Likelihood object for likelihood",lik_number,"created in",str(end-start),"s.",show=verbose)
+        #if save:
+        #    lik_obj.save_likelihood(overwrite=True, verbose=verbose_sub)
+        #    self.set_verbosity(verbose)
+        #    timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        #    self.log[timestamp] = {"action": "saved likelihood object","likelihood number": lik_number, "files": [lik_obj.likelihood_output_json_file, lik_obj.likelihood_output_pickle_file]}
+        #    print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.",show=verbose)
+        #else:
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved likelihood object", "likelihood number": lik_number, "file names": [path.split(
+            lik_obj.likelihood_output_pickle_file)[-1], path.split(
+            lik_obj.likelihood_output_json_file)[-1], path.split(
+            lik_obj.likelihood_output_log_file)[-1]], "files": [
+            lik_obj.likelihood_output_pickle_file, lik_obj.likelihood_output_json_file, lik_obj.likelihood_output_log_file]}
+        print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.",show=verbose)
         self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
         return lik_obj

@@ -4,12 +4,135 @@ The Histfactory object
 Summary
 ^^^^^^^
 
-The histfactory class is an API to |pyhf_link| that can be used to import likelihoods in the ATLAS histfactory format into
-the DNNLikelihood module. The API uses |pyhf_link| to parse all relevant information contained in the histfactory workspace
-and to create a ``likelihood`` object (see :class:`The Likelihood object <DNNLikelihood.likelihood.Likelihood>`).
+The :class:`Histfactory <DNNLikelihood.Histfactory>` class is an API to the |pyhf_link| Python package that can be used to import 
+likelihoods in the ATLAS histfactory format into the DNNLikelihood module. 
+The API uses |pyhf_link| (with default |numpy_link| backend) to parse all relevant information contained in the histfactory workspace
+and to create a :class:`Likelihood <DNNLikelihood.Likelihood>` class object (see :ref:`The Likelihood object <likelihood_object>`).
+
+Code examples shown below refer to the following ATLAS histfactory likelihood:
+
+   - |histfactory_sbottom_link|.
+
+.. |histfactory_sbottom_link| raw:: html
+    
+    <a href="https://www.hepdata.net/record/ins1748602"  target="_blank"> Search for bottom-squark pair production with the ATLAS detector 
+    in final states containing Higgs bosons, b-jets and missing transverse momentum</a>
 
 Usage
 ^^^^^
+
+We give here a bried introduction to the use of the :class:`Histfactory <DNNLikelihood.Histfactory>` class. Refer to the 
+full class documentation for more details.
+
+The first time a :class:`Histfactory <DNNLikelihood.Histfactory>` object is created, the :option:`workspace_folder` argument, 
+corresponding to the folder containing the histfactory workspace, needs to be specified. All other input arguments have a default value
+that may need to be changed (see :ref:`Arguments documentation <histfactory_arguments>`). Optionally, the user may specify the argument
+:option:`output_folder` containing the path (either relative or absolute) to a folder where output files will be saved and the argument
+:option:`name` with the name of the object (which is otherwise automatically generated).
+
+A basic initialization code is
+
+.. code-block:: python
+    
+   import DNNLikelihood
+
+   histfact = DNNLikelihood.Histfactory(workspace_folder="HEPData_workspaces",
+                                        name = "<ATLAS_sbottom_search>",
+                                        output_folder = "<my_output_folder>")
+
+When the object is created, it is automatically saved and three files are created:
+
+   - <my_output_folder>/ATLAS_sbottom_search_histfactory.pickle
+   - <my_output_folder>/ATLAS_sbottom_search_histfactory.json 
+   - <my_output_folder>/ATLAS_sbottom_search_histfactory.log
+
+See the documentation of the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` and of the corresponding methods
+with a :meth:`_json <DNNLikelihood.Histfactory.save_histfactory_json>`,
+:meth:`_log <DNNLikelihood.Histfactory.save_histfactory_log>`,
+and :meth:`_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>` suffix.
+
+The object can also be initialized importing it from saved files. In this case only the :option:`histfactory_input_file` argument needs to be specified.
+One could also optionally specify a new ``output_folder``. In case this is not specified, the 
+:attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute from the imported object is used.
+For instance we could import the object created above with
+
+.. code-block:: python
+    
+   import DNNLikelihood
+
+   histfact = DNNLikelihood.Histfactory(histfactory_input_file="<my_output_folder>/ATLAS_sbottom_search_histfactory")
+
+The object we created above has the attribute :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`, whichs contains
+a dictionary with items corresponsing to likelihoods and their properties. For instance, for the first
+likelihood, the dictionary looks like this
+
+.. code-block:: python
+    
+   histfact.likelihoods_dict[0]
+
+   >>> {'signal_region': 'A',
+        'bg_only_file': '<full path to HEPData_workspaces>/RegionA/BkgOnly.json',
+        'patch_file': '<full path to HEPData_workspaces>/RegionA/patch.sbottom_1000_131_1.json',
+        'name': 'ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood',
+        'model_loaded': False}
+
+The ``'model_loaded': False`` flag indicates that the corresponding likelihood has not yet been fully imported, i.e. that the corresponding
+parameters information and logpdf are not available. Likelihoods can be imported using the
+:meth:`Histfactory.import_histfactory <DNNLikelihood.Histfactory.import_histfactory>` method. One can choose to import only one likelihood,
+only some of them, or all of them, specifying the ``lik_numbers_list`` argument. For instance the first likelihood
+can be imported through:
+
+.. code-block:: python
+
+   histfact.import_histfactory(lik_numbers_list=[0])
+
+The imported likelihood are stored in the dictionary so that the corresponding item now contains full likelihood information, 
+and the ``model_loaded`` flag is set to ``True``. Looking at the dictionary for the fist likelihood, now one gets
+
+.. code-block:: python
+
+   histfact.likelihoods_dict[0]
+
+   >>> {'signal_region': 'A',
+        'bg_only_file': '<full path to HEPData_workspaces>/RegionA/BkgOnly.json',
+        'patch_file': '<full path to HEPData_workspaces>/RegionA/patch.sbottom_1000_131_1.json',
+        'name': 'ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood',
+        'model_loaded': True,
+        'model': <pyhf.pdf.Model at 0x22c40b29d48>,
+        'obs_data': array([153.,  52.,  19.,  12.,   3.,   2.,   0.,   0.,   0.,   0.,   0.,
+                 ...]),
+        'pars_init': array([1., 1., 1., 1., 0., 1., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+               ...]),
+        'pars_bounds': array([[ 9.150e-01,  1.085e+00],
+               ...]),
+        'pars_labels': ['lumi_0',
+         ...],
+        'pars_pos_poi': array([5]),
+        'pars_pos_nuis': array([ 0,  1,  2,  3,  4,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
+               ...])}
+
+Once likelihoods are imported the object can be saved using the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>`
+method. This saves the whole object, unless the optional argument ``lik_numbers_list`` is specified. It it is specified, then only the listed likelihoods
+are saved in ``'model_loaded': True`` mode (if they have been previously imported), so with full likelihood information, while all other likelihoods 
+are saved in ``'model_loaded': False`` mode, that means without full likelihood information. This may allow to save disk space. If only some likelihoods 
+have been imported and no ``lik_numbers_list`` argument is specified in the 
+:meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` method, then the object is saved in its current state. For instance,
+we can save our object (which only contains the first likelihood in ``'model_loaded': True`` mode), simply by writing
+
+.. code-block:: python
+
+   histfact.save_histfactory()
+
+Finally, from any of the imported likelihoods, one can obtain a :class:`Likelihood <DNNLikelihood.Likelihood>` object through the 
+:meth:`Histfactory.get_likelihood_object <DNNLikelihood.Histfactory.get_likelihood_object>`, which, by default, aslo saves it. For instance, for our
+first likelihood we can do
+
+.. code-block:: python
+
+   lik0 = histfact.get_likelihood_object(lik_number=0)
+
+For additional information on the :class:`Likelihood <DNNLikelihood.Likelihood>` object see :ref:`The Likelihood object <likelihood_object>` 
+documentation.
 
 Class
 ^^^^^
@@ -17,286 +140,340 @@ Class
 .. autoclass:: DNNLikelihood.Histfactory
    :undoc-members:
 
+.. _histfactory_arguments:
+
 Arguments
 """""""""
 
-    .. _histfactory_workspace_folders:
-    workspace_folders
+   .. option:: workspace_folder
+
       Path (either relative to the code execution folder or absolute)
-      containing the ATLAS histfactory workspace (usually containing the Regions subfolders).
+      containing the ATLAS histfactory workspace (containing the "Regions" subfolders).
+      It is saved in the :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>` attribute.
 
          - **type**: ``str`` or ``None``
          - **default**: ``None``   
     
-    .. _histfactory_name:
-    name
-         Name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object.
-         If ``None`` is passed ``name`` is assigned the value 
-         ``model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S")+"_histfactory"``, 
-         while if a string is passed, the ``"_histfactory"`` suffix is appended 
-         (preventing duplication if it is already present).
+   .. option:: name
+   
+      Name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object.
+      It is used to build the :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` attribute.
+         
+         - **type**: ``str`` or ``None``
+         - **default**: ``None``   
+
+   .. option:: regions_folders_base_name
+
+      Common folder name of the "Region" folders contained in the 
+      :option:`workspace_folder` (these folders are usually named "RegionA", "RegionB", etc.).
+      It is used to set the 
+      :attr:`Histfactory.regions_folders_base_name <DNNLikelihood.Histfactory.regions_folders_base_name>` 
+      attribute.
             
-            - **type**: ``str`` or ``None``
-            - **default**: ``None``   
+         - **type**: ``str``
+         - **default**: ``Region``  
 
-    .. _histfactory_regions_folders_base_name:
-    regions_folders_base_name
-         Common folder name of the Region folders contained in the 
-         workspace_folder (these folders are usually named "RegionA", "RegionB", etc.) 
+   .. option:: bkg_files_base_name
+
+      Name (with or without the .json extension) of the "background" json files 
+      in the "Region" folders (e.g. "BkgOnly").
+      It is used to set the 
+      :attr:`Histfactory.bkg_files_base_name <DNNLikelihood.Histfactory.bkg_files_base_name>` 
+      attribute.
             
-            - **type**: ``str``
-            - **default**: ``Region``  
+         - **type**: ``str``
+         - **default**: ``BkgOnly``
 
-    .. _histfactory_bkg_files_base_name:
-    bkg_files_base_name
-         Name (without .json extension) of the "background" json files 
-         in the region folders (e.g. "BkgOnly")
+   .. option:: patch_files_base_name
+      
+      Base name (without the .json extension) of the "signal" patch
+      json files in the "Region" folders (e.g. "patch").
+      It is used to set the 
+      :attr:`Histfactory.patch_files_base_name <DNNLikelihood.Histfactory.patch_files_base_name>` 
+      attribute.
             
-            - **type**: ``str``
-            - **default**: ``BkgOnly`` 
+         - **type**: ``str``
+         - **default**: ``patch`` 
 
-    .. _histfactory_patch_files_base_name:
-    patch_files_base_name
-         Base name (without .json extension) of the "signal" patch
-         json files in the region folders (e.g. "patch"). 
+   .. option:: output_folder
+         
+      Path (either relative to the code execution folder or absolute) where output files are saved.
+      It is used to set the 
+      :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute.
             
-            - **type**: ``str``
-            - **default**: ``patch`` 
+         - **type**: ``str`` or ``None``
+         - **default**: ``None`` 
 
-    .. _histfactory_output_folder:
-    output_folder
-         Path (either relative to the code execution folder or absolute) where output files are saved.
-         If no output folder is specified, ``output_folder`` is set to the code execution folder.
+   .. option:: histfactory_input_file
+         
+      File name (either relative to the code execution folder or absolute, with or without any of the
+      .json or .pickle extensions) of a saved :class:`Histfactory <DNNLikelihood.Histfactory>` object. 
+      It is used to set the 
+      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>` 
+      attribute.
             
-            - **type**: ``str`` or ``None``
-            - **default**: ``None`` 
+         - **type**: ``str`` or ``None``
+         - **default**: ``None``
 
-    .. _histfactory_histfactory_input_file:
-    histfactory_input_file
-         File name (either relative to the code execution folder or absolute, with or without any of the
-         .json or .pickle extensions) of a saved ``Histfactory`` object. 
-         Whenever this parameter is not None all other inputs but :attr:`output_folder` and :attr:`verbose`
-         are ignored and the object is reconstructed from the imported files. 
-            
-            - **type**: ``str`` or ``None``
-            - **default**: ``None``
+   .. option:: verbose
 
-    .. _histfactory_verbosee:
-    verbose
-         Set verbosity in the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method. 
-         See :ref:`Verbosity mode <verbosity_mode>`.
+      Argument used to set the verbosity mode of the 
+      :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` 
+      method and the default verbosity mode of all class methods that accept a
+      ``verbose`` argument.
+      See :ref:`Verbosity mode <verbosity_mode>`.
 
-            - **type**: ``bool``
-            - **default**: ``True``
+         - **type**: ``bool``
+         - **default**: ``True``
 
-Attributes
+Attributess
 """"""""""
 
-    .. py:attribute:: DNNLikelihood.Histfactory.bkg_files_base_name
+   .. py:attribute:: DNNLikelihood.Histfactory.bkg_files_base_name
 
-         Attribute corresponding to the input argument :attr:`bkg_files_base_name`.
-         Background files are extracted taking all files in the region subfolders 
-         including the string ``bkg_files_base_name``.
+      Attribute corresponding to the input argument :option:`bkg_files_base_name`.
+      Background files are extracted taking all files in the region subfolders 
+      including the string ``bkg_files_base_name``.
             
-            - **type**: ``str``
+         - **type**: ``str``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_file
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_file
 
-         Absolute path corresponding to the input argument :attr:`histfactory_input_file`
-         If the input argument is `None`, the attribute is set to ``None``.
+      Attribute corresponding to the input argument :option:`histfactory_input_file`.
+      Whenever this parameter is not ``None`` the :class:`Histfactory <DNNLikelihood.Histfactory>` object
+      is reconstructed from input files (see the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>`
+      method for details).
             
-            - **type**: ``str`` or ``None``
+         - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_json_file    
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_json_file    
 
-         Absolute path to the .json file containing saved ``Histfactory`` attributes.
-         This is automatically generated from the attribute
-         :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
-         When the latter is ``None``, the attribute is set to ``None``.
+      Absolute path to the .json file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` json (see
+      the :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>`
+      method for details).
+      This is automatically generated from the attribute
+      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
+      When the latter is ``None``, the attribute is set to ``None``.
             
-            - **type**: ``str`` or ``None``
+         - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_log_file    
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_log_file    
 
-         Absolute path to the .log file containing saved 
-         :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>` attribute.
-         This is automatically generated from the attribute
-         :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
-         When the latter is ``None``, the attribute is set to ``None``.
+      Absolute path to the .log file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` log (see
+      the :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>`
+      method for details).
+      This is automatically generated from the attribute
+      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
+      When the latter is ``None``, the attribute is set to ``None``.
             
-            - **type**: ``str`` or ``None``
+         - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_pickle_file    
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_pickle_file    
 
-         Absolute path to the .pickle file containing saved 
-         :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>` attribute.
-         This is automatically generated from the attribute
-         :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
-         When the latter is ``None``, the attribute is set to ``None``.
+      Absolute path to the .pickle file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` pickle (see
+      the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>`
+      method for details).
+      This is automatically generated from the attribute
+      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
+      When the latter is ``None``, the attribute is set to ``None``.
             
-            - **type**: ``str`` or ``None``
+         - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_json_file
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_json_file
 
-         Absolute path to the .json file where the ``Histfactory`` object is saved.
-         This is automatically generated from the attribute
-         :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
-         See the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>`
-         method for details about the file contet.
+      Absolute path to the .json file where part of the :class:`Histfactory <DNNLikelihood.Histfactory>` 
+      object is saved (see the :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>`
+      method for details).
+      This is automatically generated from the attribute
+      :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
             
-            - **type**: ``str`` 
+         - **type**: ``str`` 
 
-    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_pickle_file
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_json_file
 
-         Absolute path to the .pickle file where the ``Histfactory`` object is saved.
-         This is automatically generated from the attribute
-         :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
-         See the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>`
-         method for details about the file contet.
+      Absolute path to the .log file where the :class:`Histfactory <DNNLikelihood.Histfactory>` 
+      object log is saved (see the :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>`
+      method for details).
+      This is automatically generated from the attribute
+      :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
             
-            - **type**: ``str`` 
+         - **type**: ``str`` 
 
-    .. py:attribute:: DNNLikelihood.Histfactory.likelihoods_dict
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_pickle_file
 
-         Main dictionary containing likelihoods parameters and properties for all regions/signal 
-         hypotheses. All available likelihoods from the workspace are enumerated so that the dictionary integer keys corresponding
-         to each likelihood object: ``_histfactory_additional_attrs = {1: value1, 2: value2, ...}``. 
+      Absolute path to the .pickle file where part of the :class:`Histfactory <DNNLikelihood.Histfactory>` 
+      object is saved (see the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>`
+      method for details).
+      This is automatically generated from the attribute
+      :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
             
-            - **type**: ``dict`` or ``None``
-            - **keys**:
+         - **type**: ``str`` 
 
-               - *"signal_region"* (type: ``str``): name of the signal region to which the member belongs 
-               - "bg_only_file"* (type: ``str``): absolute path to the background file corresponding to the signal_region.
-               - *"patch_file"* (type: ``str``): absolute path to the patch file for the given likelihood.
-               - *"name"* (type: ``str``): name of the given likelihood. It is set to "\ *hf_name*\ _region_\ *rn*\ _patch_\ *pn*\ _\ *lik_n*\ _likelihood"
-                 where *hf_name* is the ``Histfactory.name`` attribute, *rn* is the region name determined from the region folder
-                 name excluded the string ``regions_folders_base_name``, *pn* is the patch name determined from the patch file name
-                 excluded the string ``patch_files_base_name+"."``, and *lik_n* is the likelihood number (the corresponding key
-                 in the ``likelihoods_dict``).
-               - *"model_loaded"* (type: ``str``): flag that returns ``False`` is the model is not loaded, i.e. only the items *"signal_region"*, *"bg_only_file"*, 
-                 *"patch_file"*, *"name"*, and *"model_loaded"* are available in the dictionary, and ``True`` if all dictionary items,
-                 i.e. full model information and |pyhf_model_logpdf_link| object, are available in the dictionary.
-               - *"model"* (type: |pyhf_model_logpdf_link| object): object containing the given likelihood parameters and logpdf.
-                 See the |pyhf_link| documentation.
-               - *"obs_data"* (type: ``numpy.ndarray``, shape: ``(n_bins,)``): numpy array containing the number of observed events in each of the n_bins bins for the given signal
-                 region.
-               - *"pars_init"* (type: ``numpy.ndarray``, shape ``(n_pars,)``): array with a length equal to the number of parameters n_pars
-                 entering in the likelihood (logpdf) function and containing their initial values.
-               - *"pars_bounds"* (type: ``numpy.ndarray``, shape ``(n_pars,2)``): array with lower and upper limit on each parameter of the n_pars parameters.
-                 The logpdf function is constructed such that if any of the parameter has a value outside these bounds, it evaluates
-                 to ``-np.inf``.
-               - *"pars_labels"* (type: ``list``): list of strings containing the name of each parameter.
-               - *"pars_pos_poi"* (type: ``numpy.ndarray``, shape: ``(n_pois)``): array with the list of positions, in the array of parameters, of the n_pois parameters of interest.
-               - *"pars_pos_nuis"* (type: ``numpy.ndarray``, shape: ``(n_nuis)``): array with the list of positions, in the array of parameters, of the n_nuis nuisance parameters.
+   .. py:attribute:: DNNLikelihood.Histfactory.likelihoods_dict
 
-    .. py:attribute:: DNNLikelihood.Histfactory.log    
-
-         Dictionary containing a log of the ``Histfactory`` object calls. The dictionary has datetime strings as keys
-         and actions as values. Actions are also dictionaries, containing details of the methods calls.
+      Dictionary containing likelihoods parameters and properties for all regions/signal 
+      hypotheses. All available likelihoods from the workspace are enumerated. Dictionary keys are integers running from ``0``
+      to the number of likelihoods in the workspace (minus one), while values are dictionaries containing likelihood information.
             
-            - **type**: ``dict``
-            - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S")``
-            - **values**: ``dict``
-            - **values keys**:
+         - **type**: ``dict``
+         - **keys**: ``int``
+         - **values**: ``dict`` with the following structure:
 
-               **key**: ``"action"``
-
-                  - **possible values**: ``"created"``, ``"loaded"``, ``"imported likelihoods"``, ``"saved"``, ``"created likelihood object"``, and ``"saved likelihood object"``
-
-               **key**: ``"likelihoods numbers"``
-
-                  - **value type**: ``list`` of ``int``
-
-               **key**: ``"likelihood number"``
-
-                  - **value type**: ``int``
-
-               **key**: ``"files"``
-
-                  - **value type**: ``list`` of ``str``
-
-               **key**: ``"file"``
-
-                  - **value type**: ``str``
-
-    .. py:attribute:: DNNLikelihood.Histfactory.name
-
-         Name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object generated from
-         the :attr:`name` input argument. It is used to generate 
-         output files and is passed to the generated :class:`Likelihood <DNNLikelihood.Likelihood>` objects.
+            - *"signal_region"* (value type: ``str``)
+               Name of the signal region to which the member belongs 
+            - *"bg_only_file"* (value type: ``str``)
+               Absolute path to the background file corresponding to the "signal_region".
+            - *"patch_file"* (value type: ``str``)
+               Absolute path to the patch file for the given likelihood.
+            - *"name"* (value type: ``str``)
+               Name of the given likelihood. It is set to "\ *hf_name*\ _region_\ *rn*\ _patch_\ *pn*\ _\ *lik_n*\ _likelihood"
+               where *hf_name* is the :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` attribute, *rn* is the region name determined from 
+               the region folder name excluded the string contained in the 
+               :attr:`Histfactory.regions_folders_base_name <DNNLikelihood.Histfactory.regions_folders_base_name>` attribute, *pn* is the patch name 
+               determined from the patch file name excluded the string contained in the 
+               :attr:`Histfactory.patch_files_base_name <DNNLikelihood.Histfactory.patch_files_base_name>` attribute (and a dot), and *lik_n* is 
+               the likelihood number (the corresponding key in the :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>` dictionary).
+            - *"model_loaded"* (value type: ``str``)
+               Flag that returns ``False`` is the model is not loaded, i.e. only the items *"signal_region"*, *"bg_only_file"*, 
+               *"patch_file"*, *"name"*, and *"model_loaded"* are available in the dictionary, and ``True`` if all dictionary items,
+               i.e. full model information and |pyhf_model_logpdf_link| object, are available in the dictionary.
+            - *"model"* (value type: |pyhf_model_logpdf_link| object)
+               Object containing the given likelihood parameters and logpdf.
+               See the |pyhf_link| documentation.
+            - *"obs_data"* (value type: ``numpy.ndarray``, value shape: ``(n_bins,)``)
+               Numpy array containing the number of observed events in each of the ``n_bins`` bins for the given signal
+               region.
+            - *"pars_init"* (value type: ``numpy.ndarray``, value shape ``(n_pars,)``)
+               Numpy array with a length equal to the number of parameters ``n_pars``
+               entering in the likelihood (logpdf) function and containing their initial values.
+            - *"pars_bounds"* (value type: ``numpy.ndarray``, value shape ``(n_pars,2)``)
+               Numpy array with lower and upper limit on each of the ``n_pars`` parameters.
+               When building a :class:`Likelihood <DNNLikelihood.Likelihood>` object, the corresponding logpdf function is constructed
+               such that if any of the parameter has a value outside these bounds, the logpdf evaluates to ``-np.inf``.
+            - *"pars_labels"* (value type: ``list``)
+               List of strings containing the name of each parameter. Parameters labels are always used as "raw" strings (like, for instance,
+               ``r"%s"%pars_labels[0]``) and can contain latex expressions that are properly compiled when making plots.
+            - *"pars_pos_poi"* (value type: ``numpy.ndarray``, value shape: ``(n_poi)``)
+               Numpy array with the list of positions, in the array of parameters, of the ``n_poi`` parameters of interest.
+            - *"pars_pos_nuis"* (value type: ``numpy.ndarray``, value shape: ``(n_nuis)``)
+               Numpy array with the list of positions, in the array of parameters, of the ``n_nuis`` nuisance parameters.
             
-            - **type**: ``str`` 
+            Available items in the dictionary depend on whether the corresponding likelihood has been imported (``dic["model_loaded"]=True``)
+            or not (``dic["model_loaded"]=False``). If ``dic["model_loaded"]=False`` only the items corresponding to the keys
+            *"signal_region"*, *"bg_only_file"*, *"patch_file"*, *"name"*, and *"model_loaded"* are availanble.
 
-    .. py:attribute:: DNNLikelihood.Histfactory.output_folder
+   .. py:attribute:: DNNLikelihood.Histfactory.log    
 
-         Absolute path corresponding to the input argument
-         :attr:`output_folder`
-
-            - **type**: ``str``
-
-    .. py:attribute:: DNNLikelihood.Histfactory.patch_files_base_name
-
-         Attribute corresponding to the input argument :attr:`patch_files_base_name`.
-         Patch files are extracted taking all files in the region subfolders including 
-         the string ``patch_files_base_name``. 
+      Dictionary containing a log of the :class:`Histfactory <DNNLikelihood.Histfactory>` object calls. The dictionary has datetime strings as keys
+      and actions as values. Actions are also dictionaries, containing details of the methods calls.
             
-            - **type**: ``str``
+         - **type**: ``dict``
+         - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``
+         - **values**: ``dict`` with the following structure:
 
-    .. py:attribute:: DNNLikelihood.Histfactory.regions
+            - *"action"* (value type: ``str``)
+               Short description of the action.
+               
+               **possible values**: ``"created"``, ``"created likelihood object"``, ``"imported histfactory"``, ``"imported likelihoods"``, ``"loaded"``, ``"saved"``, and ``"saved likelihood object"``
+            - *"likelihoods numbers"* (value type: ``list`` of ``int``)
+               When an operation involving several likelihoods has been performed this value is the list of involved likelihoods .
+            - *"likelihood number"* (value type: ``int``)
+               When an operation involving a single likelihood has been performed this value is the likelihood number.
+            - *"files names"* (value type: ``list`` of ``str``)
+               List of file names of files involved in the action.
+            - *"file name"* (value type: ``str``)
+               File name of file involved in the action.
+            - *"files paths"* (value type: ``list`` of ``str``)
+               List of paths of files involved in the action.
+            - *"file path"* (value type: ``str``)
+               Path of file involved in the action.
+
+   .. py:attribute:: DNNLikelihood.Histfactory.name
+
+      Name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object generated from
+      the :attr:`name` input argument. If ``None`` is passed, then ``name`` is assigned the value 
+      ``model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_histfactory"``, 
+      while if a string is passed, the ``"_histfactory"`` suffix is appended 
+      (preventing duplication if it is already present).
+      It is used to generate output files names and is passed to the generated 
+      :class:`Likelihood <DNNLikelihood.Likelihood>` objects.
+            
+         - **type**: ``str`` 
+
+   .. py:attribute:: DNNLikelihood.Histfactory.output_folder
+
+      Absolute path corresponding to the input argument
+      :option:`output_folder`. If the latter is ``None``, then 
+      :attr:`output_folder <DNNLikelihood.Histfactory.output_folder>`
+      is set to the code execution folder.
+
+         - **type**: ``str``
+
+   .. py:attribute:: DNNLikelihood.Histfactory.patch_files_base_name
+
+      Attribute corresponding to the input argument :option:`patch_files_base_name`.
+      Patch files are extracted taking all files in the region subfolders including 
+      the string :attr:`Histfactory.patch_files_base_name <DNNLikelihood.Histfactory.patch_files_base_name>`
+      attribute. 
+            
+         - **type**: ``str``
+
+   .. py:attribute:: DNNLikelihood.Histfactory.regions
          
-         Dictionary containing region names (str) as keys 
-         and region folders full path (str) as values.
+      Dictionary containing "Region" names (str) as keys 
+      and "Region" folders full path (str) as values.
             
-            - **type**: ``str`` or ``None``
-            - **default**: ``None`` 
+         - **type**: ``str`` or ``None``
+         - **default**: ``None`` 
 
-    .. py:attribute:: DNNLikelihood.Histfactory.regions_folders_base_name
+   .. py:attribute:: DNNLikelihood.Histfactory.regions_folders_base_name
 
-         Attribute corresponding to the input argument :attr:`regions_folders_base_name`.
-         When determining the regions, the code looks at all subfolders of ``workspace_folder`` 
-         containing the string ``regions_folders_base_name``, then deletes this latter string to obtain
-         the region names and build the :attr:`Histfactory.regions <DNNLikelihood.Histfactory.regions>` 
-         dictionary class attribute.   
+      Attribute corresponding to the input argument :option:`regions_folders_base_name`.
+      When determining the regions, the :meth:`Histfactory.__import_histfactory <DNNLikelihood.Histfactory._Histfactory__import_histfactory>` 
+      method looks at all subfolders of :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>`
+      containing the string :attr:`Histfactory.regions_folders_base_name <DNNLikelihood.Histfactory.regions_folders_base_name>`, 
+      then deletes this latter string (and a dot) to obtain the region names and build the :attr:`Histfactory.regions <DNNLikelihood.Histfactory.regions>` 
+      dictionary.
             
-            - **type**: ``str``
+         - **type**: ``str``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.timestamp
+   .. py:attribute:: DNNLikelihood.Histfactory.verbose
 
-         String containing datetime used to rename files. It is initialized with current datetime each
-         time the :class:`Histfactory.timestamp <DNNLikelihood.Histfactory.timestamp>` object is created.
+      Attribute corresponding to the input argument :option:`verbose`.
+      It represents the verbosity mode of the 
+      :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` 
+      method and the default verbosity mode of all class methods that accept a
+      ``verbose`` argument.
+      See :ref:`Verbosity mode <verbosity_mode>`.
 
-    .. py:attribute:: DNNLikelihood.Histfactory.verbose
+   .. py:attribute:: DNNLikelihood.Histfactory.workspace_folder
 
-         Attribute corresponding to the input argument :attr:`verbose`.
+      Absolute path of the ATLAS histfactory workspace folder
+      corresponding to the input argument :option:`workspace_folder`.
 
-    .. py:attribute:: DNNLikelihood.Histfactory.workspace_folders
-
-         Absolute path corresponding to the input argument
-         :attr:`workspace_folders`
-
-            - **type**: ``str``
+         - **type**: ``str``
 
 Methods
 """""""
 
-    .. automethod:: DNNLikelihood.Histfactory.__init__
+   .. automethod:: DNNLikelihood.Histfactory.__init__
 
-    .. automethod:: DNNLikelihood.Histfactory._Histfactory__check_define_name
+   .. automethod:: DNNLikelihood.Histfactory._Histfactory__check_define_name
 
-    .. automethod:: DNNLikelihood.Histfactory._Histfactory__import_histfactory
+   .. automethod:: DNNLikelihood.Histfactory._Histfactory__import_histfactory
 
-    .. automethod:: DNNLikelihood.Histfactory._Histfactory__load_histfactory
+   .. automethod:: DNNLikelihood.Histfactory._Histfactory__load_histfactory
 
-    .. automethod:: DNNLikelihood.Histfactory.set_verbosity
+   .. automethod:: DNNLikelihood.Histfactory.import_histfactory
 
-    .. automethod:: DNNLikelihood.Histfactory.import_histfactory
+   .. automethod:: DNNLikelihood.Histfactory.save_histfactory_log
 
-    .. automethod:: DNNLikelihood.Histfactory.save_histfactory_log
+   .. automethod:: DNNLikelihood.Histfactory.save_histfactory_json
 
-    .. automethod:: DNNLikelihood.Histfactory.save_histfactory_json
+   .. automethod:: DNNLikelihood.Histfactory.save_histfactory_pickle
 
-    .. automethod:: DNNLikelihood.Histfactory.save_histfactory_pickle
+   .. automethod:: DNNLikelihood.Histfactory.save_histfactory
 
-    .. automethod:: DNNLikelihood.Histfactory.save_histfactory
+   .. automethod:: DNNLikelihood.Histfactory.set_verbosity
 
-    .. automethod:: DNNLikelihood.Histfactory.get_likelihood_object
+   .. automethod:: DNNLikelihood.Histfactory.get_likelihood_object

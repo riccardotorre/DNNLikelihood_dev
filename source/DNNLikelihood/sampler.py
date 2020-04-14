@@ -279,7 +279,7 @@ class Sampler(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -304,7 +304,7 @@ class Sampler(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -330,7 +330,7 @@ class Sampler(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -609,7 +609,7 @@ class Sampler(show_prints.Verbosity):
             - **verbose**
             
                 Verbosity mode. 
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 

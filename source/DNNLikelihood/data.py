@@ -169,8 +169,10 @@ class Data(show_prints.Verbosity):
     def __init_mode(self):
         """ Initializes according to self.mode (determined by the method __check_define_mode)
         Mode 0 = create: data_X and data_Y are given as input.
+            
             ``data`` object is created, defining npoints and ndim.
         Mode 1 = load as np.array: data_input_file is given as input. and load_on_RAM is True.
+            
             If load_on_RAM=True ``data`` object is created, name, data_X, data_Y, npoints and ndim are loaded from file as np.arrays (loaded into RAM).
             If load_on_RAM=False ``data`` object is created, name, data_X, data_Y, npoints and ndim are read from file as h5py dataset (on disk).
         """

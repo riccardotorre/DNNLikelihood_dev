@@ -1,3 +1,5 @@
+.. _likelihood_object:
+
 The Likelihood object
 ----------------------
 
@@ -22,7 +24,7 @@ Class
 Arguments
 """""""""
 
-    .. py:attribute:: DNNLikelihood.Likelihood.name   
+    .. option:: name  
 
             Name of the :class:`Likelihood <DNNLikelihood.Likelihood>` object. It is used to generate 
             output files. If ``None`` is passed ``name``` is assigned the value
@@ -163,7 +165,7 @@ Arguments
          See :ref:`Verbosity mode <verbosity_mode>`.
 
             - **type**: ``bool``
-            - **default**: ``True``
+            - **default**: ``True`` (see :option:`name`)
 
 
 Additional attributes
