@@ -910,7 +910,9 @@ It is used to generate output files names.</p>
 <dd><p>Absolute path corresponding to the input argument
 <a class="reference internal" href="#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a>. If the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then
 <a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">output_folder</span></code></a>
-is set to the code execution folder.</p>
+is set to the code execution folder. If the folder does not exist it is created
+by the <a class="reference internal" href="utils.html#DNNLikelihood.utils.check_create_folder" title="DNNLikelihood.utils.check_create_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_create_folder</span></code></a>
+function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>

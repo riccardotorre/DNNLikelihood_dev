@@ -36,7 +36,7 @@ A basic initialization code is
    import DNNLikelihood
 
    histfact = DNNLikelihood.Histfactory(workspace_folder="HEPData_workspaces",
-                                        name = "<ATLAS_sbottom_search>",
+                                        name = "ATLAS_sbottom_search",
                                         output_folder = "<my_output_folder>")
 
 When the object is created, it is automatically saved and three files are created:
@@ -403,7 +403,9 @@ Attributess
       Absolute path corresponding to the input argument
       :option:`output_folder`. If the latter is ``None``, then 
       :attr:`output_folder <DNNLikelihood.Histfactory.output_folder>`
-      is set to the code execution folder.
+      is set to the code execution folder. If the folder does not exist it is created
+      by the :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
+      function.
 
          - **type**: ``str``
 

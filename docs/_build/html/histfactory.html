@@ -116,6 +116,7 @@
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plots.html">Notes on plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="show_prints.html">Verbosity mode</a></li>
 </ul>
 </li>
@@ -240,7 +241,7 @@ that may need to be changed (see <a class="reference internal" href="#histfactor
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
 <span class="n">histfact</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Histfactory</span><span class="p">(</span><span class="n">workspace_folder</span><span class="o">=</span><span class="s2">&quot;HEPData_workspaces&quot;</span><span class="p">,</span>
-                                     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;&lt;ATLAS_sbottom_search&gt;&quot;</span><span class="p">,</span>
+                                     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ATLAS_sbottom_search&quot;</span><span class="p">,</span>
                                      <span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&lt;my_output_folder&gt;&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -762,7 +763,9 @@ It is used to generate output files names and is passed to the generated
 <dd><p>Absolute path corresponding to the input argument
 <a class="reference internal" href="likelihood.html#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a>. If the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then
 <a class="reference internal" href="likelihood.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">output_folder</span></code></a>
-is set to the code execution folder.</p>
+is set to the code execution folder. If the folder does not exist it is created
+by the <a class="reference internal" href="utils.html#DNNLikelihood.utils.check_create_folder" title="DNNLikelihood.utils.check_create_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_create_folder</span></code></a>
+function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>

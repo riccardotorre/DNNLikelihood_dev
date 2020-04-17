@@ -540,7 +540,9 @@ Attributes
         Absolute path corresponding to the input argument
         :option:`output_folder`. If the latter is ``None``, then 
         :attr:`output_folder <DNNLikelihood.Histfactory.output_folder>`
-        is set to the code execution folder.
+        is set to the code execution folder. If the folder does not exist it is created
+        by the :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
+        function.
 
            - **type**: ``str``
 
