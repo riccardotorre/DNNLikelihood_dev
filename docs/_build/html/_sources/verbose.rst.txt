@@ -1,0 +1,21 @@
+.. _verbose_implementation:
+Notes on verbose implementation
+-------------------------------
+
+The verbose mode for several classes, methods, and functions in this package are implemented through a modification
+of the built-in ``print`` function, corresponding to the following piece of code:
+
+.. code-block:: python
+    
+    import builtins
+
+    ShowPrints = True
+    def print(*args, **kwargs):
+        global ShowPrints
+        if type(ShowPrints) is bool:
+            if ShowPrints:
+                return builtins.print(*args, **kwargs)
+        if type(ShowPrints) is int:
+            if ShowPrints != 0:
+            return builtins.print(*args, **kwargs)
+

@@ -1,0 +1,417 @@
+.. _likelihood_object:
+
+The Likelihood object
+----------------------
+
+Summary
+^^^^^^^
+
+The :class:`Likelihood <DNNLikelihood.Likelihood>` class acts as a container for the likelihood function. 
+It contains information on parameters initializations, positions, bounds, and labels, the logpdf function and its arguments, and methods that allow 
+one to plot the logpdf funcion and to compute its (profiled and global) maximiza. 
+In case in which the likelihood is obtained using the interface to the ATLAS histfactory workspaces given by  
+:ref:`the Histfactory object <histfactory_object>`, the logpdf is constructed from the |pyhf_model_logpdf_link| method.
+
+Usage
+^^^^^
+
+Bla bla bla
+
+Class
+^^^^^
+
+.. autoclass:: DNNLikelihood.Likelihood
+   :undoc-members:
+
+.. _likelihood_arguments:
+
+Arguments
+"""""""""
+
+    .. option:: name
+
+        Name of the :class:`Likelihood <DNNLikelihood.Likelihood>` object.
+        It is used to build the :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attribute.
+         
+            - **type**: ``str`` or ``None``
+            - **default**: ``None``   
+
+    .. option:: logpdf
+
+        Callable function returning the logpdf given parameters and additional arguments, passed through the
+        :option:`logpdf_args` argument.
+        This function is used to construct the :meth:`Likelihood.logpdf_fn <DNNLikelihood.Likelihood.logpdf_fn>` method.
+            
+            - **type**: ``callable`` or ``None``
+            - **default**: ``None`` 
+
+        - **Could accept**
+
+            - **x_pars**
+                
+                Values of the parameters for which logpdf is computed.
+                It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``
+                or a list of points corresponding to an array with shape ``(n_points,n_pars)``.
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **possible shapes**: ``(n_pars,)`` or ``(n_points,n_pars)``
+
+            - **args**
+
+                List containing additional arguments required 
+                by the :option:`logpdf` function and passed through the :option:`logpdf_args` input argument. 
+                    
+                    - **type**: ``list`` or None
+                    - **shape of list**: ``[ ]``
+         
+        - **Could return**
+
+            ``float`` or ``numpy.ndarray`` with shape ``(n_points,)``
+
+    .. option:: logpdf_args   
+
+        Additional arguments required by the 
+        :option:`logpdf` function.
+            
+            - **type**: ``list`` or ``None``
+            - **shape of list**: ``[ ]``
+            - **default**: ``None`` 
+
+    .. option:: pars_pos_poi   
+
+        List or |numpy_link| array containing the positions in the parameters list of the
+        parameters of interest.
+        It is used to build the :attr:`Likelihood.pars_pos_poi <DNNLikelihood.Likelihood.pars_pos_poi>` attribute.
+
+            - **type**: ``list`` or ```numpy.ndarray``
+            - **shape**: ``(n_poi,)``
+            - **default**: ``None`` 
+
+    .. option:: pars_pos_nuis   
+
+        List or |numpy_link| array containing the positions in the parameters list of the
+        nuisance parameters.
+        It is used to build the :attr:`Likelihood.pars_pos_nuis <DNNLikelihood.Likelihood.pars_pos_nuis>` attribute.
+
+            - **type**: ``list`` or ```numpy.ndarray``
+            - **shape**: ``(n_nuis,)``
+            - **default**: ``None`` 
+
+    .. option:: pars_init   
+
+        List or |numpy_link| array containing an initial value for the parameters.
+        It is used to build the :attr:`Likelihood.pars_init <DNNLikelihood.Likelihood.pars_init>` attribute.
+            
+            - **type**: ``list`` or ```numpy.ndarray``
+            - **shape**: ``(n_pars,)``
+            - **default**: ``None`` 
+
+    .. option:: pars_labels   
+
+        List containing the parameters names as strings.
+        It is used to build the :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>` attribute.
+
+            - **type**: ``list``
+            - **shape**: ``[ ]``
+            - **length**: ``n_pars``
+            - **default**: ``None`` 
+
+    .. option:: pars_bounds   
+
+        List or |numpy_link| array containing containing bounds for the parameters.
+        It is used to build the :attr:`Likelihood.pars_bounds <DNNLikelihood.Likelihood.pars_bounds>` attribute.
+
+            - **type**: ``numpy.ndarray`` or ``None``
+            - **shape**: ``(n_pars,2)``
+            - **default**: ``None`` 
+
+    .. option:: output_folder
+         
+        Path (either relative to the code execution folder or absolute) where output files are saved.
+        It is used to set the :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` attribute.
+            
+            - **type**: ``str`` or ``None``
+            - **default**: ``None``
+
+    .. option:: likelihood_input_file   
+
+        File name (either relative to the code execution folder or absolute, with or without any of the
+        .json or .pickle extensions) of a saved :class:`Likelihood <DNNLikelihood.Likelihood>` object. 
+        It is used to set the 
+        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>` 
+        attribute.
+
+           - **type**: ``str`` or ``None``
+           - **default**: ``None``
+
+   .. option:: verbose
+
+        Argument used to set the verbosity mode of the :meth:`Likelihood.__init__ <DNNLikelihood.Likelihood.__init__>` 
+        method and the default verbosity mode of all class methods that accept a ``verbose`` argument.
+        See :ref:`Verbosity mode <verbosity_mode>`.
+
+           - **type**: ``bool``
+           - **default**: ``True``
+
+Attributes
+""""""""""
+
+    .. py:attribute:: DNNLikelihood.Likelihood.figure_files_base_path
+
+    .. py:attribute:: DNNLikelihood.Likelihood.figures_list
+
+    .. py:attribute:: DNNLikelihood.Likelihood.generic_pars_labels   
+
+        List containing parameters names automatically generated by the function
+        :func:`utils.define_generic_pars_labels <DNNLikelihood.utils.define_generic_pars_labels>`.
+        Through this function all parameters of interest are named ``r"$\theta_{i}$"`` with ``i`` ranging between
+        one to the number of parameters of interest and all nuisance parameters are named
+        ``r"$\nu_{j}$"`` with ``j`` ranging between one to the number of nuisance parameters.
+
+            - **type**: ``list``
+            - **shape**: ``[ ]``
+            - **length**: ``n_pars``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_file   
+
+        File name (either relative to the code execution folder or absolute, with or without any of the
+        .json or .pickle extensions) of a saved :class:`Likelihood <DNNLikelihood.Likelihood>` object. 
+        It is used to set the 
+        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>` 
+        attribute.
+
+           - **type**: ``str`` or ``None``
+           - **default**: ``None``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_json_file   
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_log_file   
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_pickle_file   
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_output_json_file   
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_output_log_file   
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_output_pickle_file
+
+    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_script_file
+
+        Name (with absolute path) of the output file containing the code necessary to intantiate a 
+        ``Likelihooh`` object and define the corresponing parameters. This file can be generated using 
+        the :meth:`Likelihood.save_likelihood_script <DNNLikelihood.Likelihood.save_likelihood_script>` method.
+        and is sometimes needed to properly run Markov Chain Monte Carlo in parallel (using ``Multiprocessing``) 
+        through the ``Sampler`` object inside Jupyter notebooks on the Windows platform.
+        The atribute is set to ``Likelihood.output_files_base_path+"_define_logpdf"+".py"`` while the path
+        is set to ``Likelihood.output_folder``.
+
+            - **type**: ``str``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.log
+
+    .. py:attribute:: DNNLikelihood.Likelihood.logpdf
+
+        Callable function returning the logpdf given parameters and additional arguments, passed through the
+        :option:`logpdf_args` argument.
+        This function is used to construct the :meth:`Likelihood.logpdf_fn <DNNLikelihood.Likelihood.logpdf_fn>` method.
+            
+            - **type**: ``callable`` or ``None``
+            - **default**: ``None`` 
+
+        - **Could accept**
+
+            - **x_pars**
+                
+                Values of the parameters for which logpdf is computed.
+                It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``
+                or a list of points corresponding to an array with shape ``(n_points,n_pars)``.
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **possible shapes**: ``(n_pars,)`` or ``(n_points,n_pars)``
+
+            - **args**
+
+                List containing additional arguments required 
+                by the :option:`logpdf` function and passed through the :option:`logpdf_args` input argument. 
+                    
+                    - **type**: ``list`` or None
+                    - **shape of list**: ``[ ]``
+         
+        - **Could return**
+
+            ``float`` or ``numpy.ndarray`` with shape ``(n_points,)``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.logpdf_args   
+
+        Additional arguments required by the 
+        :option:`logpdf` function.
+            
+            - **type**: ``list`` or ``None``
+            - **shape of list**: ``[ ]``
+            - **default**: ``None`` 
+
+    .. py:attribute:: DNNLikelihood.Likelihood.name
+
+        Name of the :class:`Likelihood <DNNLikelihood.Likelihood>` object.
+        It is used to build the :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attribute.
+         
+            - **type**: ``str`` or ``None``
+            - **default**: ``None``   
+
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_bounds   
+
+        List or |numpy_link| array containing containing bounds for the parameters.
+        It is used to build the :attr:`Likelihood.pars_bounds <DNNLikelihood.Likelihood.pars_bounds>` attribute.
+
+            - **type**: ``numpy.ndarray`` or ``None``
+            - **shape**: ``(n_pars,2)``
+            - **default**: ``None`` 
+
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_init   
+
+        List or |numpy_link| array containing an initial value for the parameters.
+        It is used to build the :attr:`Likelihood.pars_init <DNNLikelihood.Likelihood.pars_init>` attribute.
+            
+            - **type**: ``list`` or ```numpy.ndarray``
+            - **shape**: ``(n_pars,)``
+            - **default**: ``None`` 
+
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_labels   
+
+        List containing the parameters names as strings.
+        It is used to build the :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>` attribute.
+
+            - **type**: ``list``
+            - **shape**: ``[ ]``
+            - **length**: ``n_pars``
+            - **default**: ``None`` 
+
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_nuis   
+
+        List or |numpy_link| array containing the positions in the parameters list of the
+        nuisance parameters.
+        It is used to build the :attr:`Likelihood.pars_pos_nuis <DNNLikelihood.Likelihood.pars_pos_nuis>` attribute.
+
+            - **type**: ``list`` or ```numpy.ndarray``
+            - **shape**: ``(n_nuis,)``
+            - **default**: ``None`` 
+
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_pos_poi   
+
+        List or |numpy_link| array containing the positions in the parameters list of the
+        parameters of interest.
+        It is used to build the :attr:`Likelihood.pars_pos_poi <DNNLikelihood.Likelihood.pars_pos_poi>` attribute.
+
+            - **type**: ``list`` or ```numpy.ndarray``
+            - **shape**: ``(n_poi,)``
+            - **default**: ``None`` 
+
+    .. py:attribute:: DNNLikelihood.Likelihood.verbose
+
+        Argument used to set the verbosity mode of the :meth:`Likelihood.__init__ <DNNLikelihood.Likelihood.__init__>` 
+        method and the default verbosity mode of all class methods that accept a ``verbose`` argument.
+        See :ref:`Verbosity mode <verbosity_mode>`.
+
+           - **type**: ``bool``
+           - **default**: ``True``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.X_logpdf_max
+            
+        Array containing the values of parameters at the global maximum
+        of the logpdf computed with the ``Likelihood.compute_maximum_logpdf`` method.
+        The attribute is ``None`` unless the ``Likelihood.compute_maximum_logpdf`` method
+        has been called or the ``Likelihood`` object has been imported from file and
+        already contained a value for the attribute.
+
+            - **type**: ``numpy.ndarray`` or ``None``
+            - **shape**: ``(n_pars,)``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.X_prof_logpdf_max
+
+        Array containing the values of parameters at different local maxima of the logpdf computed
+        with the ``Likelihood.compute_profiled_maxima`` method. The attribute is ``None`` unless
+        the ``Likelihood.compute_profiled_maxima`` method has been called or the ``Likelihood`` 
+        object has been imported from file and already contained a value for the attribute.
+        This attribute can be used to initialize walkers in the :ref:``Sampler <sampler_class>`` object.
+
+            - **type**: ``numpy.ndarray`` or ``None``
+            - **shape**: ``np.array(n_points,n_pars)``
+            - **default**: ``None``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.X_prof_logpdf_max_tmp
+
+        Same as ``X_prof_logpdf_max``. It is assigned only when attempting to append newly 
+        generated profiled maxima to an incompatible existing ``X_prof_logpdf_max``.
+        This is a temporary attribute and it is not saved by ``Likelihood.save_likelihood``.
+
+            - **type**: ``numpy.ndarray`` or ``None``
+            - **shape**: ``np.array(n_points,n_pars)``
+            - **default**: ``None``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.Y_logpdf_max  
+
+        Value of logpdf at its global maximum computed with the ``Likelihood.compute_maximum_logpdf`` 
+        method. The attribute is ``None`` unless the ``Likelihood.compute_maximum_logpdf`` method
+        has been called or the ``Likelihood`` object has been imported from file and already contained a  
+        value for the attribute.
+
+            - **type**: ``float`` or ``None``
+                
+    .. py:attribute:: DNNLikelihood.Likelihood.Y_prof_logpdf_max
+
+        Array containing the values of logpdf at different local maxima computed
+        with the ``Likelihood.compute_profiled_maxima`` method. The attribute is ``None`` unless
+        the ``Likelihood.compute_profiled_maxima`` method has been called or the ``Likelihood`` 
+        object has been imported from file and already contained a value for the attribute.
+
+            - **type**: ``numpy.ndarray`` or ``None``
+            - **shape**: ``np.array(n_points,)``
+            - **default**: ``None``
+
+    .. py:attribute:: DNNLikelihood.Likelihood.Y_prof_logpdf_max_tmp
+
+        Same as ``Y_prof_logpdf_max``. It is assigned only when attempting to append newly 
+        generated profiled maxima to an incompatible existing ``Y_prof_logpdf_max``.
+        This is a temporary attribute and it is not saved by ``Likelihood.save_likelihood``.
+
+            - **type**: ``numpy.ndarray`` or ``None``
+            - **shape**: ``np.array(n_points,)``
+            - **default**: ``None``
+
+Methods
+"""""""
+
+    .. automethod:: DNNLikelihood.Likelihood.__init__
+
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__check_define_name
+
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__load_likelihood
+
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__set_pars_labels
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_log
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_json
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_pickle
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood
+
+    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_script
+
+    .. automethod:: DNNLikelihood.Likelihood.logpdf_fn
+
+    .. automethod:: DNNLikelihood.Likelihood.compute_maximum_logpdf
+
+    .. automethod:: DNNLikelihood.Likelihood.compute_profiled_maxima
+
+    .. automethod:: DNNLikelihood.Likelihood.plot_logpdf_par
+
+
+.. |pyhf_model_logpdf_link| raw:: html
+    
+    <a href="https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf"  target="_blank"> pyhf.Model.logpdf</a>
+
+.. |numpy_link| raw:: html
+    
+    <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a>

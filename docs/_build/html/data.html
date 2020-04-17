@@ -1,0 +1,492 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The Data object &mdash; DNNLikelihood</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The DNN_likelihood object" href="DNN_likelihood.html" />
+    <link rel="prev" title="The Sampler object" href="sampler.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="histfactory.html">The Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood.html">The Likelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler.html">The Sampler object</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The Data object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class">Class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#arguments">Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#additional-attributes">Additional attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="show_prints.html">Verbosity mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="code.html">Python module</a> &raquo;</li>
+        
+      <li>The Data object</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="the-data-object">
+<h1>The Data object<a class="headerlink" href="#the-data-object" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>Bla bla bla</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="class">
+<h2>Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="DNNLikelihood.Data">
+<em class="property">class </em><code class="sig-prename descclassname">DNNLikelihood.</code><code class="sig-name descname">Data</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">data_X=None</em>, <em class="sig-param">data_Y=None</em>, <em class="sig-param">dtype='float64'</em>, <em class="sig-param">pars_pos_poi=None</em>, <em class="sig-param">pars_pos_nuis=None</em>, <em class="sig-param">pars_labels=None</em>, <em class="sig-param">test_fraction=None</em>, <em class="sig-param">data_input_file=None</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains the <code class="docutils literal notranslate"><span class="pre">Data</span></code> object representing the dataset used for training, validating and testing
+the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an existing <code class="docutils literal notranslate"><span class="pre">Data</span></code> obkect.</p>
+</dd></dl>
+
+<div class="section" id="arguments">
+<h3>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="attribute">
+<dt id="DNNLikelihood.Data.name">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">name</code><a class="headerlink" href="#DNNLikelihood.Data.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the <a class="reference internal" href="#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object. It is used to generate output files and is passed
+to the generated likelihood objects.
+If no <code class="docutils literal notranslate"><span class="pre">name</span></code> is specified (default), name is assigned the value <code class="docutils literal notranslate"><span class="pre">histfactory_&quot;</span> <span class="pre">+</span> <span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S&quot;)</span></code></p>
+<ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.data_X">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">data_X</code><a class="headerlink" href="#DNNLikelihood.Data.data_X" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">new_sampler=True</span></code> a new <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> object, corresponding to a new <code class="docutils literal notranslate"><span class="pre">Sampler.backend</span></code>
+is generated. In case <code class="docutils literal notranslate"><span class="pre">new_sampler=False</span></code>, the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method checks whether a backend file already
+exists and it loads it. If a backend file is not found <code class="docutils literal notranslate"><span class="pre">new_sampler</span></code> is automatically set to <code class="docutils literal notranslate"><span class="pre">True</span></code>
+and a new one is created.
+To avoid inconsistencies between the object attributes and the <code class="docutils literal notranslate"><span class="pre">Sampler.backend</span></code>, when initializing
+with <code class="docutils literal notranslate"><span class="pre">new_sampler=False</span></code> it is convenient to pass the <code class="docutils literal notranslate"><span class="pre">likelihood_script_file</span></code> argument equal to the
+file name generated by <code class="docutils literal notranslate"><span class="pre">Sampler.__init__</span></code> the first time the <code class="docutils literal notranslate"><span class="pre">Sampler</span></code> was created.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.data_Y">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">data_Y</code><a class="headerlink" href="#DNNLikelihood.Data.data_Y" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.dtype">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">dtype</code><a class="headerlink" href="#DNNLikelihood.Data.dtype" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.pars_pos_poi">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">pars_pos_poi</code><a class="headerlink" href="#DNNLikelihood.Data.pars_pos_poi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.pars_pos_nuis">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">pars_pos_nuis</code><a class="headerlink" href="#DNNLikelihood.Data.pars_pos_nuis" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.pars_labels">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">pars_labels</code><a class="headerlink" href="#DNNLikelihood.Data.pars_labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.test_fraction">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">test_fraction</code><a class="headerlink" href="#DNNLikelihood.Data.test_fraction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.data_input_file">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">data_input_file</code><a class="headerlink" href="#DNNLikelihood.Data.data_input_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.output_folder">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">output_folder</code><a class="headerlink" href="#DNNLikelihood.Data.output_folder" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.load_on_RAM">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">load_on_RAM</code><a class="headerlink" href="#DNNLikelihood.Data.load_on_RAM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Data.verbose">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">verbose</code><a class="headerlink" href="#DNNLikelihood.Data.verbose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</div>
+<div class="section" id="additional-attributes">
+<h3>Additional attributes<a class="headerlink" href="#additional-attributes" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="methods">
+<h3>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="method">
+<dt id="DNNLikelihood.Data.__init__">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">data_X=None</em>, <em class="sig-param">data_Y=None</em>, <em class="sig-param">dtype='float64'</em>, <em class="sig-param">pars_pos_poi=None</em>, <em class="sig-param">pars_pos_nuis=None</em>, <em class="sig-param">pars_labels=None</em>, <em class="sig-param">test_fraction=None</em>, <em class="sig-param">data_input_file=None</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes the <code class="docutils literal notranslate"><span class="pre">data</span></code> object
+It has either “mode = 0” (create) or “mode = 1” (load) operation depending on the given
+inputs (see documentation of __check_define_mode and __init_mode methods for more details).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_name">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_pars">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_pars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_pars" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_mode">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_mode</code><span class="sig-paren">(</span><em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks which parameters have been passed and defines the working mode. Modes are:
+0 = create (see documentation of __init_0__)
+1 = load (see documentation of __init_1__)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__init_mode">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__init_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__init_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes according to self.mode (determined by the method __check_define_mode)
+Mode 0 = create: data_X and data_Y are given as input.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">data</span></code> object is created, defining npoints and ndim.</p>
+</div></blockquote>
+<p>Mode 1 = load as np.array: data_input_file is given as input. and load_on_RAM is True.</p>
+<blockquote>
+<div><p>If load_on_RAM=True <code class="docutils literal notranslate"><span class="pre">data</span></code> object is created, name, data_X, data_Y, npoints and ndim are loaded from file as np.arrays (loaded into RAM).
+If load_on_RAM=False <code class="docutils literal notranslate"><span class="pre">data</span></code> object is created, name, data_X, data_Y, npoints and ndim are read from file as h5py dataset (on disk).</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__create_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__create_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__create_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__load_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads samples as np.array (on RAM) if load_on_RAM=True or as h5py dataset (on disk) if load_on_RAM=False</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that data_X and data_Y have the same length</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.define_test_fraction">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">define_test_fraction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.define_test_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.define_test_fraction" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.close_samples">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">close_samples</code><span class="sig-paren">(</span><em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.close_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.close_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes opened h5py datasets if there are any.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.save_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">save_data</code><span class="sig-paren">(</span><em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.save_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.save_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save samples to data_output_file as h5 file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_train_indices">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_train_indices</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.generate_train_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_train_indices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_train_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_train_data</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.generate_train_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_train_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.update_train_indices">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">update_train_indices</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.update_train_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.update_train_indices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.update_train_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">update_train_data</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.update_train_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.update_train_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_test_indices">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_test_indices</code><span class="sig-paren">(</span><em class="sig-param">npoints_test</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.generate_test_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_test_indices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_test_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_test_data</code><span class="sig-paren">(</span><em class="sig-param">npoints_test</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.generate_test_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_test_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.compute_sample_weights">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">compute_sample_weights</code><span class="sig-paren">(</span><em class="sig-param">sample</em>, <em class="sig-param">bins=100</em>, <em class="sig-param">power=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.compute_sample_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.compute_sample_weights" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.define_scalers">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">define_scalers</code><span class="sig-paren">(</span><em class="sig-param">X_train</em>, <em class="sig-param">Y_train</em>, <em class="sig-param">scalerX_bool</em>, <em class="sig-param">scalerY_bool</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/data.html#Data.define_scalers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.define_scalers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="DNN_likelihood.html" class="btn btn-neutral float-right" title="The DNN_likelihood object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sampler.html" class="btn btn-neutral float-left" title="The Sampler object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

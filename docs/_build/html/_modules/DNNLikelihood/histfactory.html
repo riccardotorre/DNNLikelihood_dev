@@ -1,0 +1,787 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DNNLikelihood.histfactory &mdash; DNNLikelihood</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Python module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>DNNLikelihood.histfactory</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for DNNLikelihood.histfactory</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Histfactory&quot;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">builtins</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">stat</span>
+<span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
+
+<span class="kn">import</span> <span class="nn">jsonpatch</span>
+<span class="kn">import</span> <span class="nn">jsonschema</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pyhf</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">jsonpatch</span> <span class="kn">import</span> <span class="n">JsonPatch</span>
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">display</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.likelihood</span> <span class="kn">import</span> <span class="n">Likelihood</span>
+<span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="n">Verbosity</span><span class="p">,</span> <span class="nb">print</span>
+
+
+<div class="viewcode-block" id="Histfactory"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory">[docs]</a><span class="k">class</span> <span class="nc">Histfactory</span><span class="p">(</span><span class="n">Verbosity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class is a container for the ``Histfactory`` object created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, </span>
+<span class="sd">    read parameters and logpdf using the |pyhf_link| package, create :class:`Likelihood &lt;DNNLikelihood.Likelihood&gt;` objects and save them for later use</span>
+<span class="sd">    (see :ref:`the Likelihood object &lt;likelihood_object&gt;`).</span>
+
+<span class="sd">.. |pyhf_link| raw:: html</span>
+<span class="sd">    </span>
+<span class="sd">    &lt;a href=&quot;https://scikit-hep.org/pyhf/&quot;  target=&quot;_blank&quot;&gt; pyhf&lt;/a&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#    __slots__ = &quot;workspace_folder&quot;</span>
+<div class="viewcode-block" id="Histfactory.__init__"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">workspace_folder</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">regions_folders_base_name</span> <span class="o">=</span> <span class="s2">&quot;Region&quot;</span><span class="p">,</span>
+                 <span class="n">bkg_files_base_name</span><span class="o">=</span><span class="s2">&quot;BkgOnly&quot;</span><span class="p">,</span>
+                 <span class="n">patch_files_base_name</span> <span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span>
+                 <span class="n">output_folder</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">histfactory_input_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The :class:`Histfactory &lt;DNNLikelihood.Histfactory&gt;` object can be initialized in two different ways, depending on the value of </span>
+<span class="sd">        the :option:`histfactory_input_file` argument.</span>
+
+<span class="sd">        - :option:`histfactory_input_file` is ``None`` (default)</span>
+
+<span class="sd">            All other arguments are parsed and saved in corresponding attributes. If no name is available, then one is created. The private method</span>
+<span class="sd">            :meth:`Histfactory.__import_histfactory &lt;DNNLikelihood.Histfactory._Histfactory__import_histfactory&gt;` is called to import the workspace</span>
+<span class="sd">            at folder :option:`workspace_folder`. This method also saves the object through the</span>
+<span class="sd">            :meth:`Histfactory.save_histfactory &lt;DNNLikelihood.Histfactory.save_histfactory&gt;` method. </span>
+<span class="sd">            See the documentation of the aforementioned methods for more details.</span>
+<span class="sd">        </span>
+<span class="sd">        - :option:`histfactory_input_file` is not ``None``</span>
+
+<span class="sd">            The object is reconstructed from the input files through the private method</span>
+<span class="sd">            :meth:`Histfactory.__load_histfactory &lt;DNNLikelihood.Histfactory._Histfactory__load_histfactory&gt;`</span>
+<span class="sd">            If the input argument :option:`output_folder` is ``None`` (default), the attribute :attr:`Histfactory.output_folder &lt;DNNLikelihood.Histfactory.output_folder&gt;`</span>
+<span class="sd">            is set from the input file, otherwise it is set to the input argument.</span>
+<span class="sd">        </span>
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            See class :ref:`Arguments documentation &lt;histfactory_arguments&gt;`.</span>
+
+<span class="sd">        - **Produces file**</span>
+
+<span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span> <span class="o">=</span> <span class="n">histfactory_input_file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_pickle_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="p">{</span><span class="n">timestamp</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;created&quot;</span><span class="p">}}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_name</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions_folders_base_name</span> <span class="o">=</span> <span class="n">regions_folders_base_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bkg_files_base_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">bkg_files_base_name</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span> <span class="o">=</span> <span class="n">patch_files_base_name</span>
+            <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_log_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_pickle_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.pickle&quot;</span><span class="p">)</span>
+            <span class="n">subfolders</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">,</span><span class="n">f</span><span class="p">))]</span>
+            <span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regions_folders_base_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span><span class="n">subfolders</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__import_histfactory</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">histfactory_input_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span><span class="o">+</span><span class="s2">&quot;.json&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_pickle_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span><span class="o">+</span><span class="s2">&quot;.pickle&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__load_histfactory</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_log_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_pickle_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.pickle&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__check_define_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        If :attr:`Histfactory.name &lt;DNNLikelihood.Histfactory.name&gt;` is ``None`` it replaces it with </span>
+<span class="sd">        ``&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_histfactory&quot;``,</span>
+<span class="sd">        otherwise it appends the suffix &quot;_histfactory&quot; (preventing duplication if it is already present).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;model_&quot;</span><span class="o">+</span><span class="n">timestamp</span><span class="o">+</span><span class="s2">&quot;_histfactory&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_add_suffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;_histfactory&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__import_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method used by the :meth:`Histfactory.__init__ &lt;DNNLikelihood.Histfactory.__init__&gt;` one to import </span>
+<span class="sd">        an histfactory workspace. The method scans through the regions folders in the </span>
+<span class="sd">        :attr:`Histfactory.workspace_folder &lt;DNNLikelihood.Histfactory.workspace_folder&gt;`,</span>
+<span class="sd">        determines all background and signal (patch) files and generates the attribute</span>
+<span class="sd">        :attr:`Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`. After creation, all items in the</span>
+<span class="sd">        dictionary, corresponding to all available likelihoods, have the flag ``load_model=False``.</span>
+<span class="sd">        </span>
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">region_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">region</span><span class="p">]</span>
+            <span class="n">regionfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">region_path</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="n">region_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">region_path</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+            <span class="n">bgonly_file</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">regionfiles</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bkg_files_base_name</span> <span class="ow">in</span> <span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">signal_patch_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">regionfiles</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bgonly_file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal_patch_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">range_region</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">signal_patch_files</span><span class="p">)))</span>
+                <span class="n">dict_region</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">range_region</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;signal_region&quot;</span><span class="p">:</span> <span class="n">region</span><span class="p">,</span> 
+                                                       <span class="s2">&quot;bg_only_file&quot;</span><span class="p">:</span> <span class="n">bgonly_file</span><span class="p">,</span> 
+                                                       <span class="s2">&quot;patch_file&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+                                                       <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;region_&quot;</span> <span class="o">+</span> <span class="n">region</span> <span class="o">+</span> <span class="s2">&quot;_patch_&quot;</span> <span class="o">+</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                                                       <span class="s2">&quot;model_loaded&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">signal_patch_files</span><span class="p">]))</span>
+                <span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">likelihoods_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">dict_region</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Likelihoods import from folder&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">region</span><span class="p">],</span><span class="s2">&quot; failed. Please check background and patch files base name.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;_likelihood&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="n">likelihoods_dict</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;import histfactory&quot;</span><span class="p">,</span><span class="s2">&quot;folder&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully imported&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span><span class="s2">&quot;likelihoods from&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span> <span class="s2">&quot;regions.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__load_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method used by the :meth:`Histfactory.__init__ &lt;DNNLikelihood.Histfactory.__init__&gt;` one to import a previously saved</span>
+<span class="sd">        :class:`Histfactory &lt;DNNLikelihood.Histfactory&gt;` object from the files </span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`</span>
+<span class="sd">        and :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`.</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_log_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="n">dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">dictionary</span>
+        <span class="n">pickle_in</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_pickle_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="n">pickle_in</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">statinfo</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_pickle_file</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span><span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Likelihoods loaded in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;seconds.</span><span class="se">\n</span><span class="s2">File size is &quot;</span><span class="p">,</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Histfactory.import_histfactory"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.import_histfactory">[docs]</a>    <span class="k">def</span> <span class="nf">import_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Imports the likelihoods ``lik_numbers_list`` (if the argument is ``None`` it imports all available likelihoods) </span>
+<span class="sd">        adding to the corresponding item in the :attr:`Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`</span>
+<span class="sd">        dictionary the items corresponding to the keys *&quot;model&quot;*, *&quot;obs_data&quot;*, *&quot;pars_init&quot;*, *&quot;pars_bounds&quot;*, </span>
+<span class="sd">        *&quot;pars_labels&quot;*, *&quot;pars_pos_poi&quot;*, *&quot;pars_pos_nuis&quot;*, and changing the value of the item corresponding to the key</span>
+<span class="sd">        *&quot;model_loaded&quot;* to ``True``. If this value was already ``True`` the likelihood is not re-imported.</span>
+<span class="sd">        When using interactive python in Jupyter notebooks if ``verbose=2`` the import process shows a progress bar through </span>
+<span class="sd">        the |ipywidgets_link| module.</span>
+<span class="sd">        </span>
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **lik_numbers_list**</span>
+<span class="sd">            </span>
+<span class="sd">                List of likelihoods numbers (keys of the ``Histfactory.likelihood_dict`` dictionary) to</span>
+<span class="sd">                import. The dictionary items corresponding to the keys ``lik_numbers_list`` are changed</span>
+<span class="sd">                while all others are left unchanged. This allows to only quickly import some</span>
+<span class="sd">                likelihoods corresponding to interesting regions of the parameter space without having to import the full workspace. </span>
+<span class="sd">                If ``lik_numbers_list=None`` all available likelihoods are imported.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``list`` or ``None``</span>
+<span class="sd">                    - **default**: ``None``</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                If ``verbose=2`` a progress bar is shown.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+
+<span class="sd">.. |ipywidgets_link| raw:: html</span>
+<span class="sd">    </span>
+<span class="sd">    &lt;a href=&quot;https://ipywidgets.readthedocs.io/en/latest/&quot;  target=&quot;_blank&quot;&gt; ipywidgets&lt;/a&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">progressbar</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">progressbar</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;If you want to show a progress bar please install the ipywidgets package.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">progressbar</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lik_numbers_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lik_numbers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">progressbar</span><span class="p">:</span>
+            <span class="n">overall_progress</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FloatProgress</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">{</span>
+                                                 <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="s2">&quot;500px&quot;</span><span class="p">,</span> <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="s2">&quot;14px&quot;</span><span class="p">,</span> 
+                                                 <span class="s2">&quot;padding&quot;</span><span class="p">:</span> <span class="s2">&quot;0px&quot;</span><span class="p">,</span> <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;-5px 0px -20px 0px&quot;</span><span class="p">})</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">overall_progress</span><span class="p">)</span>
+            <span class="n">iterator</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">lik_numbers_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;patch_file&quot;</span><span class="p">],</span> <span class="s2">&quot;already loaded.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start_patch</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;bg_only_file&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                    <span class="n">bgonly</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;patch_file&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                    <span class="n">patch</span> <span class="o">=</span> <span class="n">JsonPatch</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">))</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">jsonpatch</span><span class="o">.</span><span class="n">apply_patch</span><span class="p">(</span><span class="n">bgonly</span><span class="p">,</span> <span class="n">patch</span><span class="p">)</span>
+                <span class="n">ws</span> <span class="o">=</span> <span class="n">pyhf</span><span class="o">.</span><span class="n">Workspace</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
+                <span class="n">pars_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">pars_settings</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">par_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">pars_int</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">npars</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pars_int</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;slice&quot;</span><span class="p">]]):</span>
+                        <span class="n">pars_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">pars_mapping</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">ii</span><span class="p">:</span> <span class="n">k</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)}}</span>
+                        <span class="n">pars_settings</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">pars_settings</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">ii</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">suggested_bounds</span><span class="p">()[</span><span class="n">ii</span><span class="p">]}}</span>
+                        <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span><span class="o">+</span><span class="mi">1</span>
+                <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pyhf</span><span class="o">.</span><span class="n">tensorlib</span><span class="o">.</span><span class="n">astensor</span><span class="p">(</span><span class="n">ws</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;obs_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">suggested_init</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">pars_settings</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pars_mapping</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">poi_index</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">poi_index</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">schema</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;https://scikit-hep.org/pyhf/schemas/1.0.0/workspace.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+                <span class="n">end_patch</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;patch_file&quot;</span><span class="p">],</span> <span class="s2">&quot;processed in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_patch</span><span class="o">-</span><span class="n">start_patch</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">progressbar</span><span class="p">:</span>
+                <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterator</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">overall_progress</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lik_numbers_list</span><span class="p">))</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;imported likelihoods&quot;</span><span class="p">,</span><span class="s2">&quot;likelihoods numbers&quot;</span><span class="p">:</span> <span class="n">lik_numbers_list</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Imported&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">lik_numbers_list</span><span class="p">),</span><span class="s2">&quot;likelihoods in &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Histfactory.save_histfactory_log"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the content of the :attr:`Histfactory.log &lt;DNNLikelihood.Histfactory.log&gt;` attribute in the file</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`</span>
+
+<span class="sd">        This method is called by the methods</span>
+<span class="sd">        </span>
+<span class="sd">        - :meth:`Histfactory.__load_histfactory &lt;DNNLikelihood.Histfactory._Histfactory__load_histfactory&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
+<span class="sd">        - :meth:`Histfactory.get_likelihood_object &lt;DNNLikelihood.Histfactory.get_likelihood_object&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
+<span class="sd">        - :meth:`Histfactory.import_histfactory &lt;DNNLikelihood.Histfactory.import_histfactory&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
+<span class="sd">        - :meth:`Histfactory.save_histfactory &lt;DNNLikelihood.Histfactory.save_histfactory&gt;` with ``overwrite=overwrite`` and ``verbose=verbose``</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **overwrite**</span>
+<span class="sd">            </span>
+<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name</span>
+<span class="sd">                already exists, then the old file gets renamed with the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` </span>
+<span class="sd">                function.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``False``</span>
+
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+
+<span class="sd">        - **Produces file**</span>
+
+<span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_log_file&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span><span class="n">_</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_log_file</span><span class="p">)</span>
+        <span class="c1">#timestamp = datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]</span>
+        <span class="c1">#self.log[timestamp] = {&quot;action&quot;: &quot;saved&quot;, &quot;file name&quot;: path.split(self.histfactory_output_log_file)[-1], &quot;file path&quot;: self.histfactory_output_log_file}</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_log_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory log file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Histfactory.save_histfactory_json"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`</span>
+<span class="sd">        and :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`.</span>
+<span class="sd">        This method saves the .json file containing a dictionary with all class attributes but  </span>
+<span class="sd">        :attr:`Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.log &lt;DNNLikelihood.Histfactory.log&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_file &lt;DNNLikelihood.Histfactory.histfactory_input_file&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`, and </span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`.</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **overwrite**</span>
+<span class="sd">            </span>
+<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name</span>
+<span class="sd">                already exists, then the old file gets renamed with the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` </span>
+<span class="sd">                function.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``False``</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+
+<span class="sd">        - **Produces file**</span>
+
+<span class="sd">            - :attr:`Histfactory.histfactory_output_json_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span><span class="p">)</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved&quot;</span><span class="p">,</span> <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span><span class="p">}</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;log&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;likelihoods_dict&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;histfactory_input_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;histfactory_input_json_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;histfactory_input_log_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;histfactory_input_pickle_file&quot;</span><span class="p">])</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory json file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Histfactory.save_histfactory_pickle"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory_pickle">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory_pickle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`</span>
+<span class="sd">        and :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`.</span>
+<span class="sd">        This method saves the dictionary </span>
+<span class="sd">        :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` through a dump in the .pickle file.</span>
+<span class="sd">        </span>
+<span class="sd">        In order to save space, in the :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` </span>
+<span class="sd">        the members corresponding to the keys ``lik_numbers_list`` and that have been imported are saved in the </span>
+<span class="sd">        ``dic[&quot;model_loaded&quot;]=True`` &quot;mode&quot;, while the others are saved in the ``dic[&quot;model_loaded&quot;]=False``&quot;mode&quot;. </span>
+<span class="sd">        See the documentation of :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` for more details.</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **lik_numbers_list**</span>
+<span class="sd">            </span>
+<span class="sd">                List of likelihoods numbers (keys of the :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;``</span>
+<span class="sd">                dictionary) that are saved in the ``dic[&quot;model_loaded&quot;]=True`` &quot;mode&quot;. The default value ``None`` implies that all members </span>
+<span class="sd">                are saved with all available information.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``list`` or ``None``</span>
+<span class="sd">                    - **default**: ``None``</span>
+
+<span class="sd">            - **overwrite**</span>
+<span class="sd">            </span>
+<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name</span>
+<span class="sd">                already exists, then the old file gets renamed with the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` </span>
+<span class="sd">                function.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``False``</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+
+<span class="sd">        - **Produces file**</span>
+
+<span class="sd">            - :attr:`Histfactory.histfactory_output_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_pickle_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lik_numbers_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lik_numbers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved&quot;</span><span class="p">,</span> <span class="s2">&quot;likelihoods numbers&quot;</span><span class="p">:</span> <span class="n">lik_numbers_list</span><span class="p">,</span> <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_pickle_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_pickle_file</span><span class="p">}</span>
+        <span class="c1">#if lik_numbers_list is None:</span>
+        <span class="c1">#    sub_dict = dict(self.likelihoods_dict)</span>
+        <span class="c1">#else:</span>
+        <span class="n">tmp1</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lik_numbers_list</span><span class="p">}</span>
+        <span class="n">tmp2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">,</span><span class="n">lik_numbers_list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tmp2</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">tmp2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="n">tmp2</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;obs_data&quot;</span><span class="p">,</span> <span class="s2">&quot;pars_init&quot;</span><span class="p">,</span> 
+                                                       <span class="s2">&quot;pars_bounds&quot;</span><span class="p">,</span> <span class="s2">&quot;pars_labels&quot;</span><span class="p">,</span> <span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">,</span>
+                                                       <span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">,</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">])</span>
+            <span class="n">tmp2</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">sub_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">tmp1</span><span class="p">,</span> <span class="o">**</span><span class="n">tmp2</span><span class="p">}</span>
+        <span class="n">sub_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">sub_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        <span class="n">pickle_out</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_pickle_file</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sub_dict</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory pickle file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_pickle_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Histfactory.save_histfactory"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This methos calls in order the :meth:`Histfactory.save_histfactory_pickle &lt;DNNLikelihood.Histfactory.save_histfactory_pickle&gt;`,</span>
+<span class="sd">        :meth:`Histfactory.save_histfactory_json &lt;DNNLikelihood.Histfactory.save_histfactory_json&gt;`, and</span>
+<span class="sd">        :meth:`Histfactory.save_histfactory_log &lt;DNNLikelihood.Histfactory.save_histfactory_log&gt;` methods to save the entire object.</span>
+
+<span class="sd">        - **Arguments**</span>
+<span class="sd">            </span>
+<span class="sd">            Same arguments as the called methods.</span>
+
+<span class="sd">        - **Produces files**</span>
+
+<span class="sd">            - :attr:`Histfactory.histfactory_output_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`</span>
+<span class="sd">            - :attr:`Histfactory.histfactory_output_json_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_log_file&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory_pickle</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">lik_numbers_list</span><span class="o">=</span><span class="n">lik_numbers_list</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory_json</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Histfactory.get_likelihood_object"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.get_likelihood_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_likelihood_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a :class:`Likelihood &lt;DNNLikelihood.Likelihood&gt;` object containing all properties needed for further processing. </span>
+<span class="sd">        The :meth:`Likelihood.logpdf &lt;DNNLikelihood.Likelihood.logpdf&gt;` method is built from the |pyhf_model_logpdf_link| method, </span>
+<span class="sd">        and it takes two arguments: the array of parameters values ``x`` and the array of observed data ``obs_data``. </span>
+<span class="sd">        With respect to the corresponding |pyhf_model_logpdf_link| method, the logpdf in the ``Likelihood`` object</span>
+<span class="sd">        is flattened to output a ``float`` (instead of a ``numpy.ndarray`` containing a ``float``).</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **lik_number**</span>
+<span class="sd">            </span>
+<span class="sd">                Number of the likelihood for which the :class:`Likelihood &lt;DNNLikelihood.Likelihood&gt;` object</span>
+<span class="sd">                is created.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``int``</span>
+<span class="sd">                    - **default**: ``0``</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+
+<span class="sd">        - **Returns**</span>
+
+<span class="sd">            :class:`Likelihood &lt;DNNLikelihood.Likelihood&gt;` object.</span>
+
+<span class="sd">        - **Produces files**</span>
+
+<span class="sd">            - :attr:`Likelihood.likelihood_output_json_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.likelihood_output_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_output_pickle_file&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.likelihood_output_log_file &lt;DNNLikelihood.Likelihood.likelihood_output_log_file&gt;`</span>
+
+<span class="sd">.. |pyhf_model_logpdf_link| raw:: html</span>
+<span class="sd">    </span>
+<span class="sd">    &lt;a href=&quot;https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf&quot;  target=&quot;_blank&quot;&gt; pyhf.Model.logpdf&lt;/a&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="n">lik</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">lik_number</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model for likelihood&quot;</span><span class="p">,</span><span class="n">lik_number</span><span class="p">,</span><span class="s2">&quot;not loaded. Attempting to load it.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">import_histfactory</span><span class="p">(</span><span class="n">lik_numbers_list</span><span class="o">=</span><span class="p">[</span><span class="n">lik_number</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_histfactory&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">obs_data</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">logpdf_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;obs_data&quot;</span><span class="p">]]</span>
+        <span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">]</span>
+        <span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">]</span>
+        <span class="n">pars_init</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]</span>
+        <span class="n">pars_labels</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_labels&quot;</span><span class="p">]</span>
+        <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span>
+        <span class="n">output_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span>
+        <span class="n">lik_obj</span> <span class="o">=</span> <span class="n">Likelihood</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                             <span class="n">logpdf</span><span class="o">=</span><span class="n">logpdf</span><span class="p">,</span>
+                             <span class="n">logpdf_args</span><span class="o">=</span><span class="n">logpdf_args</span><span class="p">,</span>
+                             <span class="n">pars_pos_poi</span><span class="o">=</span><span class="n">pars_pos_poi</span><span class="p">,</span>
+                             <span class="n">pars_pos_nuis</span><span class="o">=</span><span class="n">pars_pos_nuis</span><span class="p">,</span>
+                             <span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
+                             <span class="n">pars_labels</span><span class="o">=</span><span class="n">pars_labels</span><span class="p">,</span>
+                             <span class="n">pars_bounds</span><span class="o">=</span><span class="n">pars_bounds</span><span class="p">,</span>
+                             <span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span>
+                             <span class="n">likelihood_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="c1">#if save:</span>
+        <span class="c1">#    lik_obj.save_likelihood(overwrite=True, verbose=verbose_sub)</span>
+        <span class="c1">#    self.set_verbosity(verbose)</span>
+        <span class="c1">#    timestamp = datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]</span>
+        <span class="c1">#    self.log[timestamp] = {&quot;action&quot;: &quot;saved likelihood object&quot;,&quot;likelihood number&quot;: lik_number, &quot;files&quot;: [lik_obj.likelihood_output_json_file, lik_obj.likelihood_output_pickle_file]}</span>
+        <span class="c1">#    print(&quot;Likelihood object for likelihood&quot;,lik_number,&quot;created and saved to files&quot;,lik_obj.likelihood_output_json_file,&quot;and&quot;, lik_obj.likelihood_output_pickle_file, &quot;in&quot;, str(end-start), &quot;s.&quot;,show=verbose)</span>
+        <span class="c1">#else:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved likelihood object&quot;</span><span class="p">,</span> <span class="s2">&quot;likelihood number&quot;</span><span class="p">:</span> <span class="n">lik_number</span><span class="p">,</span> <span class="s2">&quot;file names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_pickle_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_log_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span> <span class="s2">&quot;files paths&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_pickle_file</span><span class="p">,</span> <span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_json_file</span><span class="p">,</span> <span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_log_file</span><span class="p">]}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Likelihood object for likelihood&quot;</span><span class="p">,</span><span class="n">lik_number</span><span class="p">,</span><span class="s2">&quot;created and saved to files&quot;</span><span class="p">,</span><span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_json_file</span><span class="p">,</span><span class="s2">&quot;and&quot;</span><span class="p">,</span> <span class="n">lik_obj</span><span class="o">.</span><span class="n">likelihood_output_pickle_file</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lik_obj</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
