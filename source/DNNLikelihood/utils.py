@@ -67,6 +67,7 @@ def check_create_folder(path):
     if not os.path.exists(path):
         os.mkdir(path)
         #print("Folder",path,"has been created.")
+    return path
 
 def filename_without_datetime(name):
     file, extension = os.path.splitext(name)

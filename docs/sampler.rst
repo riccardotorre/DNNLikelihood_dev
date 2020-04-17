@@ -17,6 +17,8 @@ Class
 .. autoclass:: DNNLikelihood.Sampler
    :undoc-members:
 
+.. _sampler_arguments:
+
 Arguments
 """""""""
 

@@ -88,7 +88,7 @@ class Histfactory(Verbosity):
             self.patch_files_base_name = patch_files_base_name
             if output_folder is None:
                 output_folder = ""
-            self.output_folder = path.abspath(output_folder)
+            self.output_folder = utils.check_create_folder(path.abspath(output_folder))
             self.histfactory_output_json_file = path.join(self.output_folder, self.name+".json")
             self.histfactory_output_log_file = path.join(self.output_folder, self.name+".log")
             self.histfactory_output_pickle_file = path.join(self.output_folder, self.name+".pickle")

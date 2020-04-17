@@ -92,7 +92,7 @@ class Likelihood(show_prints.Verbosity):
                 self.pars_bounds = np.vstack([np.full(len(self.pars_init),-np.inf),np.full(len(self.pars_init),np.inf)]).T
             if output_folder is None:
                 output_folder = ""
-            self.output_folder = path.abspath(output_folder)
+            self.output_folder = utils.check_create_folder(path.abspath(output_folder))
             self.likelihood_output_json_file = path.join(self.output_folder, self.name+".json")
             self.likelihood_output_log_file = path.join(self.output_folder, self.name+".log")
             self.likelihood_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
