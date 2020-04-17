@@ -25,8 +25,8 @@ from .show_prints import Verbosity, print
 class Histfactory(Verbosity):
     """
     This class is a container for the ``Histfactory`` object created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, 
-    read parameters and logpdf using the |pyhf_link| package, create ``Likelihood`` objects (see :class:`The Likelihood object <DNNLikelihood.Likelihood>`) 
-    and save them for later use.
+    read parameters and logpdf using the |pyhf_link| package, create :class:`Likelihood <DNNLikelihood.Likelihood>` objects and save them for later use
+    (see :ref:`the Likelihood object <likelihood_object>`).
 
 .. |pyhf_link| raw:: html
     
@@ -307,10 +307,10 @@ class Histfactory(Verbosity):
 
         This method is called by the methods
         
-        - :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` with ``overwrite=overwrite`` and ``verbose=verbose``
-        - :meth:`Histfactory.get_likelihood_object <DNNLikelihood.Histfactory.save_histfaget_likelihood_objectctory>` with ``overwrite=True`` and ``verbose=verbose_sub``
         - :meth:`Histfactory.__load_histfactory <DNNLikelihood.Histfactory._Histfactory__load_histfactory>` with ``overwrite=True`` and ``verbose=verbose_sub``
+        - :meth:`Histfactory.get_likelihood_object <DNNLikelihood.Histfactory.get_likelihood_object>` with ``overwrite=True`` and ``verbose=verbose_sub``
         - :meth:`Histfactory.import_histfactory <DNNLikelihood.Histfactory.import_histfactory>` with ``overwrite=True`` and ``verbose=verbose_sub``
+        - :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` with ``overwrite=overwrite`` and ``verbose=verbose``
 
         - **Arguments**
 
@@ -577,7 +577,7 @@ class Histfactory(Verbosity):
         self.log[timestamp] = {"action": "saved likelihood object", "likelihood number": lik_number, "file names": [path.split(
             lik_obj.likelihood_output_pickle_file)[-1], path.split(
             lik_obj.likelihood_output_json_file)[-1], path.split(
-            lik_obj.likelihood_output_log_file)[-1]], "files": [
+            lik_obj.likelihood_output_log_file)[-1]], "files paths": [
             lik_obj.likelihood_output_pickle_file, lik_obj.likelihood_output_json_file, lik_obj.likelihood_output_log_file]}
         print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.",show=verbose)
         self.save_histfactory_log(overwrite=True, verbose=verbose_sub)

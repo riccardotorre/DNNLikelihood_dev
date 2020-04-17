@@ -16,4 +16,5 @@ The Python code consists of bla bla bla
    inference
    utils
    corner
+   plots
    show_prints

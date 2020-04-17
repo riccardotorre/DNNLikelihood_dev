@@ -1,3 +1,5 @@
+.. _histfactory_object:
+
 The Histfactory object
 ----------------------
 
@@ -7,16 +9,13 @@ Summary
 The :class:`Histfactory <DNNLikelihood.Histfactory>` class is an API to the |pyhf_link| Python package that can be used to import 
 likelihoods in the ATLAS histfactory format into the DNNLikelihood module. 
 The API uses |pyhf_link| (with default |numpy_link| backend) to parse all relevant information contained in the histfactory workspace
-and to create a :class:`Likelihood <DNNLikelihood.Likelihood>` class object (see :ref:`The Likelihood object <likelihood_object>`).
+and to create a :class:`Likelihood <DNNLikelihood.Likelihood>` class object (see :ref:`the Likelihood object <likelihood_object>`).
 
 Code examples shown below refer to the following ATLAS histfactory likelihood:
 
    - |histfactory_sbottom_link|.
 
-.. |histfactory_sbottom_link| raw:: html
-    
-    <a href="https://www.hepdata.net/record/ins1748602"  target="_blank"> Search for bottom-squark pair production with the ATLAS detector 
-    in final states containing Higgs bosons, b-jets and missing transverse momentum</a>
+.. _histfactory_usage:
 
 Usage
 ^^^^^
@@ -51,7 +50,8 @@ with a :meth:`_json <DNNLikelihood.Histfactory.save_histfactory_json>`,
 :meth:`_log <DNNLikelihood.Histfactory.save_histfactory_log>`,
 and :meth:`_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>` suffix.
 
-The object can also be initialized importing it from saved files. In this case only the :option:`histfactory_input_file` argument needs to be specified.
+The object can also be initialized importing it from saved files. In this case only the :option:`histfactory_input_file` argument needs to be specified,
+while all other arguments are ignored.
 One could also optionally specify a new ``output_folder``. In case this is not specified, the 
 :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute from the imported object is used.
 For instance we could import the object created above with
@@ -129,9 +129,9 @@ first likelihood we can do
 
 .. code-block:: python
 
-   lik0 = histfact.get_likelihood_object(lik_number=0)
+   likelihood_0 = histfact.get_likelihood_object(lik_number=0)
 
-For additional information on the :class:`Likelihood <DNNLikelihood.Likelihood>` object see :ref:`The Likelihood object <likelihood_object>` 
+For additional information on the :class:`Likelihood <DNNLikelihood.Likelihood>` object see :ref:`the Likelihood object <likelihood_object>` 
 documentation.
 
 Class
@@ -223,7 +223,7 @@ Arguments
       ``verbose`` argument.
       See :ref:`Verbosity mode <verbosity_mode>`.
 
-         - **type**: ``bool``
+         - **type**: ``bool`` or ``int``
          - **default**: ``True``
 
 Attributess
@@ -289,7 +289,7 @@ Attributess
             
          - **type**: ``str`` 
 
-   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_json_file
+   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_log_file
 
       Absolute path to the .log file where the :class:`Histfactory <DNNLikelihood.Histfactory>` 
       object log is saved (see the :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>`
@@ -348,8 +348,6 @@ Attributess
                entering in the likelihood (logpdf) function and containing their initial values.
             - *"pars_bounds"* (value type: ``numpy.ndarray``, value shape ``(n_pars,2)``)
                Numpy array with lower and upper limit on each of the ``n_pars`` parameters.
-               When building a :class:`Likelihood <DNNLikelihood.Likelihood>` object, the corresponding logpdf function is constructed
-               such that if any of the parameter has a value outside these bounds, the logpdf evaluates to ``-np.inf``.
             - *"pars_labels"* (value type: ``list``)
                List of strings containing the name of each parameter. Parameters labels are always used as "raw" strings (like, for instance,
                ``r"%s"%pars_labels[0]``) and can contain latex expressions that are properly compiled when making plots.
@@ -445,6 +443,8 @@ Attributess
       method and the default verbosity mode of all class methods that accept a
       ``verbose`` argument.
       See :ref:`Verbosity mode <verbosity_mode>`.
+   
+         - **type**: ``bool`` or ``int``
 
    .. py:attribute:: DNNLikelihood.Histfactory.workspace_folder
 
@@ -477,3 +477,12 @@ Methods
    .. automethod:: DNNLikelihood.Histfactory.set_verbosity
 
    .. automethod:: DNNLikelihood.Histfactory.get_likelihood_object
+
+.. |histfactory_sbottom_link| raw:: html
+    
+    <a href="https://www.hepdata.net/record/ins1748602"  target="_blank"> Search for bottom-squark pair production with the ATLAS detector 
+    in final states containing Higgs bosons, b-jets and missing transverse momentum</a>
+
+.. |numpy_link| raw:: html
+    
+    <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a>

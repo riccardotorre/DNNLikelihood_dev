@@ -1,5 +1,7 @@
+.. _sampler_object:
+
 The Sampler object
-----------------------
+------------------
 
 Summary
 ^^^^^^^
