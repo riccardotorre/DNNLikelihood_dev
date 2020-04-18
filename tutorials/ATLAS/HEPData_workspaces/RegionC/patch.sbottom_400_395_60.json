@@ -1,0 +1,1504 @@
+[
+    {
+        "op": "add",
+        "path": "/channels/0/samples/0",
+        "value": {
+            "data": [
+                65.78250885009766
+            ],
+            "modifiers": [
+                {
+                    "data": null,
+                    "name": "lumi",
+                    "type": "lumi"
+                },
+                {
+                    "data": [
+                        8.87724267273695
+                    ],
+                    "name": "staterror_CRtt_cuts",
+                    "type": "staterror"
+                },
+                {
+                    "data": {
+                        "hi": 1.0319,
+                        "lo": 0.9985
+                    },
+                    "name": "SigRad",
+                    "type": "normsys"
+                },
+                {
+                    "data": null,
+                    "name": "mu_SIG",
+                    "type": "normfactor"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "EL_EFF_ChargeIDSel_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            66.32332611083984
+                        ],
+                        "lo_data": [
+                            65.2416763305664
+                        ]
+                    },
+                    "name": "EL_EFF_ID_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.8407211303711
+                        ],
+                        "lo_data": [
+                            65.72428131103516
+                        ]
+                    },
+                    "name": "EL_EFF_Iso_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.85092163085938
+                        ],
+                        "lo_data": [
+                            65.71409606933594
+                        ]
+                    },
+                    "name": "EL_EFF_Reco_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "EL_EFF_TriggerEff_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "EL_EFF_Trigger_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            67.75601959228516
+                        ],
+                        "lo_data": [
+                            63.85789489746094
+                        ]
+                    },
+                    "name": "FT_EFF_B_systematics",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            69.10438537597656
+                        ],
+                        "lo_data": [
+                            62.473636627197266
+                        ]
+                    },
+                    "name": "FT_EFF_C_systematics",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            69.16958618164062
+                        ],
+                        "lo_data": [
+                            62.47315216064453
+                        ]
+                    },
+                    "name": "FT_EFF_Light_systematics",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.92049407958984
+                        ],
+                        "lo_data": [
+                            65.64415740966797
+                        ]
+                    },
+                    "name": "FT_EFF_extrapolation",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            66.89251708984375
+                        ],
+                        "lo_data": [
+                            65.64415740966797
+                        ]
+                    },
+                    "name": "FT_EFF_extrapolation_from_charm",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            66.26373291015625
+                        ],
+                        "lo_data": [
+                            65.13905334472656
+                        ]
+                    },
+                    "name": "JET_JvtEfficiency",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_EFF_BADMUON_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_EFF_BADMUON_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78945922851562
+                        ],
+                        "lo_data": [
+                            65.77556610107422
+                        ]
+                    },
+                    "name": "MUON_EFF_ISO_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.84916687011719
+                        ],
+                        "lo_data": [
+                            65.71587371826172
+                        ]
+                    },
+                    "name": "MUON_EFF_ISO_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.89527893066406
+                        ],
+                        "lo_data": [
+                            65.66973876953125
+                        ]
+                    },
+                    "name": "MUON_EFF_RECO_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            66.08067321777344
+                        ],
+                        "lo_data": [
+                            65.48435974121094
+                        ]
+                    },
+                    "name": "MUON_EFF_RECO_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.7999496459961
+                        ],
+                        "lo_data": [
+                            65.76507568359375
+                        ]
+                    },
+                    "name": "MUON_EFF_TTVA_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.79601287841797
+                        ],
+                        "lo_data": [
+                            65.76900482177734
+                        ]
+                    },
+                    "name": "MUON_EFF_TTVA_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_EFF_TrigStatUncertainty",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_EFF_TrigSystUncertainty",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78681945800781
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "EG_RESOLUTION_ALL",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            67.16023254394531
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "EG_SCALE_ALL",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "JET_EtaIntercalibration_NonClosure_highE",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250122070312
+                        ],
+                        "lo_data": [
+                            65.78169250488281
+                        ]
+                    },
+                    "name": "JET_EtaIntercalibration_NonClosure_negEta",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "JET_EtaIntercalibration_NonClosure_posEta",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            64.73612976074219
+                        ],
+                        "lo_data": [
+                            66.3812255859375
+                        ]
+                    },
+                    "name": "JET_Flavor_Response",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            69.28760528564453
+                        ],
+                        "lo_data": [
+                            64.17196655273438
+                        ]
+                    },
+                    "name": "JET_GroupedNP_1",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            68.78182983398438
+                        ],
+                        "lo_data": [
+                            64.1582260131836
+                        ]
+                    },
+                    "name": "JET_GroupedNP_2",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            68.12934112548828
+                        ],
+                        "lo_data": [
+                            65.78022766113281
+                        ]
+                    },
+                    "name": "JET_GroupedNP_3",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            67.91822814941406
+                        ],
+                        "lo_data": [
+                            67.91822814941406
+                        ]
+                    },
+                    "name": "JET_JER_DataVsMC",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            63.29572296142578
+                        ],
+                        "lo_data": [
+                            63.29572296142578
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_1",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            66.00718688964844
+                        ],
+                        "lo_data": [
+                            66.00718688964844
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_2",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.35890197753906
+                        ],
+                        "lo_data": [
+                            65.35890197753906
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_3",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            64.8213882446289
+                        ],
+                        "lo_data": [
+                            64.8213882446289
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_4",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            62.89059829711914
+                        ],
+                        "lo_data": [
+                            62.89059829711914
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_5",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            62.88008117675781
+                        ],
+                        "lo_data": [
+                            62.88008117675781
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_6",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.5849380493164
+                        ],
+                        "lo_data": [
+                            65.5849380493164
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_7restTerm",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            67.15591430664062
+                        ],
+                        "lo_data": [
+                            67.15591430664062
+                        ]
+                    },
+                    "name": "MET_SoftTrk_ResoPara",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            63.852474212646484
+                        ],
+                        "lo_data": [
+                            63.852474212646484
+                        ]
+                    },
+                    "name": "MET_SoftTrk_ResoPerp",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            68.127197265625
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MET_SoftTrk_Scale",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_ID",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_MS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78238677978516
+                        ],
+                        "lo_data": [
+                            65.31005096435547
+                        ]
+                    },
+                    "name": "MUON_SAGITTA_RESBIAS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_SAGITTA_RHO",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            65.78250885009766
+                        ],
+                        "lo_data": [
+                            65.78250885009766
+                        ]
+                    },
+                    "name": "MUON_SCALE",
+                    "type": "histosys"
+                }
+            ],
+            "name": "sbottom_400_395_60"
+        }
+    },
+    {
+        "op": "add",
+        "path": "/channels/1/samples/0",
+        "value": {
+            "data": [
+                92.3504409790039,
+                27.278837203979492,
+                4.2809906005859375,
+                0.0
+            ],
+            "modifiers": [
+                {
+                    "data": null,
+                    "name": "lumi",
+                    "type": "lumi"
+                },
+                {
+                    "data": [
+                        8.07502882219315,
+                        4.24344652779748,
+                        1.4424012752702497,
+                        0.0
+                    ],
+                    "name": "staterror_SR_metsigST",
+                    "type": "staterror"
+                },
+                {
+                    "data": {
+                        "hi": 1.0319,
+                        "lo": 0.9985
+                    },
+                    "name": "SigRad",
+                    "type": "normsys"
+                },
+                {
+                    "data": null,
+                    "name": "mu_SIG",
+                    "type": "normfactor"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EL_EFF_ChargeIDSel_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EL_EFF_ID_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EL_EFF_Iso_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EL_EFF_Reco_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EL_EFF_TriggerEff_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EL_EFF_Trigger_TOTAL_1NPCOR_PLUS_UNCOR",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            95.62901306152344,
+                            28.047941207885742,
+                            4.354799270629883,
+                            0.0
+                        ],
+                        "lo_data": [
+                            89.12388610839844,
+                            26.497926712036133,
+                            4.197639465332031,
+                            0.0
+                        ]
+                    },
+                    "name": "FT_EFF_B_systematics",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            93.0829849243164,
+                            27.27878761291504,
+                            4.286647319793701,
+                            0.0
+                        ],
+                        "lo_data": [
+                            91.63238525390625,
+                            27.277719497680664,
+                            4.275333881378174,
+                            0.0
+                        ]
+                    },
+                    "name": "FT_EFF_C_systematics",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.98930358886719,
+                            27.846553802490234,
+                            4.350493431091309,
+                            0.0
+                        ],
+                        "lo_data": [
+                            91.67431640625,
+                            26.6986026763916,
+                            4.207958221435547,
+                            0.0
+                        ]
+                    },
+                    "name": "FT_EFF_Light_systematics",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.66490936279297,
+                            27.47022247314453,
+                            4.212079048156738,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.03515625,
+                            27.087108612060547,
+                            4.3502421379089355,
+                            0.0
+                        ]
+                    },
+                    "name": "FT_EFF_extrapolation",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.72595977783203,
+                            27.260616302490234,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.03515625,
+                            27.087108612060547,
+                            4.3502421379089355,
+                            0.0
+                        ]
+                    },
+                    "name": "FT_EFF_extrapolation_from_charm",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            91.99784851074219,
+                            27.576866149902344,
+                            4.315380573272705,
+                            0.0
+                        ],
+                        "lo_data": [
+                            90.88231658935547,
+                            27.11924934387207,
+                            4.2802324295043945,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_JvtEfficiency",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_BADMUON_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_BADMUON_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_ISO_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_ISO_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_RECO_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_RECO_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_TTVA_STAT",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_TTVA_SYS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_TrigStatUncertainty",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_EFF_TrigSystUncertainty",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.74713897705078,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EG_RESOLUTION_ALL",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.74713897705078,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "EG_SCALE_ALL",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_EtaIntercalibration_NonClosure_highE",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504638671875,
+                            27.278837203979492,
+                            4.280990123748779,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3490219116211,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_EtaIntercalibration_NonClosure_negEta",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.35040283203125,
+                            27.278837203979492,
+                            4.280990123748779,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.35050201416016,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_EtaIntercalibration_NonClosure_posEta",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            85.1523666381836,
+                            26.94906997680664,
+                            4.272120475769043,
+                            0.0
+                        ],
+                        "lo_data": [
+                            98.488525390625,
+                            29.412853240966797,
+                            4.287664890289307,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_Flavor_Response",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            103.35643768310547,
+                            29.321908950805664,
+                            3.8972153663635254,
+                            0.0
+                        ],
+                        "lo_data": [
+                            86.70687866210938,
+                            24.392353057861328,
+                            4.8762311935424805,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_GroupedNP_1",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            103.51007080078125,
+                            29.331960678100586,
+                            4.336297035217285,
+                            0.0
+                        ],
+                        "lo_data": [
+                            87.71994018554688,
+                            24.38799476623535,
+                            4.874716758728027,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_GroupedNP_2",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            96.10400390625,
+                            27.643085479736328,
+                            4.280893802642822,
+                            0.0
+                        ],
+                        "lo_data": [
+                            91.49665832519531,
+                            26.14720916748047,
+                            4.27902889251709,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_GroupedNP_3",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            88.59760284423828,
+                            28.166675567626953,
+                            3.8237485885620117,
+                            0.45753657817840576
+                        ],
+                        "lo_data": [
+                            88.59760284423828,
+                            28.166675567626953,
+                            3.8237485885620117,
+                            0.45753657817840576
+                        ]
+                    },
+                    "name": "JET_JER_DataVsMC",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            94.8074722290039,
+                            25.479351043701172,
+                            3.859713554382324,
+                            0.4576818645000458
+                        ],
+                        "lo_data": [
+                            94.8074722290039,
+                            25.479351043701172,
+                            3.859713554382324,
+                            0.4576818645000458
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_1",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            93.2381591796875,
+                            25.17958641052246,
+                            4.268911838531494,
+                            0.457687646150589
+                        ],
+                        "lo_data": [
+                            93.2381591796875,
+                            25.17958641052246,
+                            4.268911838531494,
+                            0.457687646150589
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_2",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            93.3284912109375,
+                            24.486656188964844,
+                            4.301952362060547,
+                            0.4576922655105591
+                        ],
+                        "lo_data": [
+                            93.3284912109375,
+                            24.486656188964844,
+                            4.301952362060547,
+                            0.4576922655105591
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_3",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.79398345947266,
+                            27.21377182006836,
+                            4.324726104736328,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.79398345947266,
+                            27.21377182006836,
+                            4.324726104736328,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_4",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            94.02447509765625,
+                            27.291704177856445,
+                            4.324109077453613,
+                            0.0
+                        ],
+                        "lo_data": [
+                            94.02447509765625,
+                            27.291704177856445,
+                            4.324109077453613,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_5",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.49371337890625,
+                            27.31325340270996,
+                            4.326302528381348,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.49371337890625,
+                            27.31325340270996,
+                            4.326302528381348,
+                            0.0
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_6",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            94.28174591064453,
+                            26.738027572631836,
+                            3.86796236038208,
+                            0.4576767385005951
+                        ],
+                        "lo_data": [
+                            94.28174591064453,
+                            26.738027572631836,
+                            3.86796236038208,
+                            0.4576767385005951
+                        ]
+                    },
+                    "name": "JET_JER_EffectiveNP_7restTerm",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            90.91698455810547,
+                            26.58262062072754,
+                            3.8432018756866455,
+                            0.0
+                        ],
+                        "lo_data": [
+                            90.91698455810547,
+                            26.58262062072754,
+                            3.8432018756866455,
+                            0.0
+                        ]
+                    },
+                    "name": "MET_SoftTrk_ResoPara",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            97.18970489501953,
+                            25.617727279663086,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            97.18970489501953,
+                            25.617727279663086,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MET_SoftTrk_ResoPerp",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            90.57771301269531,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            94.28675079345703,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MET_SoftTrk_Scale",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            91.9132308959961,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            93.31523895263672,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_ID",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.8780288696289,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_MS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.8780288696289,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            93.46492767333984,
+                            26.69192886352539,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_SAGITTA_RESBIAS",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_SAGITTA_RHO",
+                    "type": "histosys"
+                },
+                {
+                    "data": {
+                        "hi_data": [
+                            92.3504409790039,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ],
+                        "lo_data": [
+                            93.31523895263672,
+                            27.278837203979492,
+                            4.2809906005859375,
+                            0.0
+                        ]
+                    },
+                    "name": "MUON_SCALE",
+                    "type": "histosys"
+                }
+            ],
+            "name": "sbottom_400_395_60"
+        }
+    },
+    {
+        "op": "remove",
+        "path": "/channels/5"
+    },
+    {
+        "op": "remove",
+        "path": "/channels/4"
+    },
+    {
+        "op": "remove",
+        "path": "/channels/2"
+    }
+]
