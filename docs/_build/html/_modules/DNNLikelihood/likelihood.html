@@ -224,8 +224,8 @@
 <span class="sd">        - **Produces file**</span>
 
 <span class="sd">            - :attr:`Likelihood.likelihood_output_log_file &lt;DNNLikelihood.Likelihood.likelihood_output_log_file&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.likelihood_output_log_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.likelihood_output_log_file &lt;DNNLikelihood.Likelihood.likelihood_output_pickle_file&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.likelihood_output_json_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.likelihood_output_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_output_pickle_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
@@ -283,6 +283,7 @@
 
     <span class="k">def</span> <span class="nf">__check_define_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method that defines the :attr:`Likelihood.name &lt;DNNLikelihood.Likelihood.name&gt;` attribute.</span>
 <span class="sd">        If :attr:`Likelihood.name &lt;DNNLikelihood.Likelihood.name&gt;` is ``None`` it replaces it with </span>
 <span class="sd">        ``&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_likelihood&quot;``,</span>
 <span class="sd">        otherwise it appends the suffix &quot;_likelihood&quot; (preventing duplication if it is already present).</span>
@@ -292,13 +293,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;model_&quot;</span><span class="o">+</span><span class="n">timestamp</span><span class="o">+</span><span class="s2">&quot;_likelihood&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_add_suffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;_likelihood&quot;</span><span class="p">)</span>
-
-    <span class="c1">#def set_verbose(self, verbose=True):</span>
-    <span class="c1">#    show_prints.verbose = verbose</span>
-    <span class="c1">#    print(show_prints.verbose)</span>
-
-    <span class="c1">#def hello_world(self):s</span>
-    <span class="c1">#    print(&quot;hello world&quot;)</span>
 
     <span class="k">def</span> <span class="nf">__load_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -342,13 +336,18 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span> <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_json_file</span><span class="p">}</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Likelihood loaded in&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span> <span class="s2">&quot;files names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_log_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_pickle_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+                                <span class="s2">&quot;files paths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_json_file</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_log_file</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_pickle_file</span><span class="p">]}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loaded likelihood in&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_likelihood_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__set_pars_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars_labels</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns the ``pars_labels`` choice based on the ``pars_labels`` input.</span>
+<span class="sd">        Private method that returns the ``pars_labels`` choice based on the ``pars_labels`` input.</span>
 
 <span class="sd">        - **Arguments**</span>
 
@@ -374,7 +373,7 @@
 <div class="viewcode-block" id="Likelihood.save_likelihood_log"><a class="viewcode-back" href="../../likelihood.html#DNNLikelihood.Likelihood.save_likelihood_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_likelihood_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves the content of the :attr:`Likelihood.log &lt;DNNLikelihood.Likelihood.log&gt;` attribute in the file</span>
-<span class="sd">        :attr:`Likelihood.likelihood_input_log_file &lt;DNNLikelihood.Likelihood.likelihood_input_log_file&gt;`</span>
+<span class="sd">        :attr:`Likelihood.likelihood_output_log_file &lt;DNNLikelihood.Likelihood.likelihood_output_log_file&gt;`</span>
 
 <span class="sd">        This method is called by the methods</span>
 <span class="sd">        </span>
@@ -384,6 +383,9 @@
 <span class="sd">        - :meth:`Likelihood.plot_logpdf_par &lt;DNNLikelihood.Likelihood.plot_logpdf_par&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
 <span class="sd">        - :meth:`Likelihood.save_likelihood &lt;DNNLikelihood.Likelihood.save_likelihood&gt;` with ``overwrite=overwrite`` and ``verbose=verbose``</span>
 <span class="sd">        - :meth:`Likelihood.save_likelihood_script &lt;DNNLikelihood.Likelihood.save_likelihood_script&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
+
+<span class="sd">        This method is called by the</span>
+<span class="sd">        :meth:`Likelihood.save_likelihood &lt;DNNLikelihood.Likelihood.save_likelihood&gt;` method to save the entire object.</span>
 
 <span class="sd">        - **Arguments**</span>
 
@@ -395,7 +397,6 @@
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``False``</span>
-
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
@@ -425,25 +426,12 @@
 
 <div class="viewcode-block" id="Likelihood.save_likelihood_json"><a class="viewcode-back" href="../../likelihood.html#DNNLikelihood.Likelihood.save_likelihood_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_likelihood_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ``Likelihood`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
-<span class="sd">        :attr:`Likelihood.likelihood_input_json_file &lt;DNNLikelihood.Likelihood.likelihood_input_json_file&gt;`,</span>
-<span class="sd">        :attr:`Likelihood.likelihood_input_json_file &lt;DNNLikelihood.Likelihood.likelihood_input_json_file&gt;`,</span>
-<span class="sd">        and :attr:`Likelihood.likelihood_input_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_input_pickle_file&gt;`.</span>
-<span class="sd">        This method saves the .json file containing all class attributes but the attributes</span>
-
-<span class="sd">            - :attr:`Likelihood.log &lt;DNNLikelihood.Histfactory.log&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.logpdf &lt;DNNLikelihood.Histfactory.logpdf&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.verbose &lt;DNNLikelihood.Histfactory.verbose&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.likelihood_input_file &lt;DNNLikelihood.Histfactory.likelihood_input_file&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.likelihood_input_json_file &lt;DNNLikelihood.Histfactory.likelihood_input_json_file&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.likelihood_input_log_file &lt;DNNLikelihood.Histfactory.likelihood_input_log_file&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.likelihood_input_pickle_file &lt;DNNLikelihood.Histfactory.likelihood_input_pickle_file&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.X_logpdf_max &lt;DNNLikelihood.Histfactory.X_logpdf_max&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.Y_logpdf_max &lt;DNNLikelihood.Histfactory.Y_logpdf_max&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.X_prof_logpdf_max &lt;DNNLikelihood.Histfactory.X_prof_logpdf_max&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.Y_prof_logpdf_max &lt;DNNLikelihood.Histfactory.Y_prof_logpdf_max&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.X_prof_logpdf_max_tmp &lt;DNNLikelihood.Histfactory.X_prof_logpdf_max_tmp&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.Y_prof_logpdf_max_tmp &lt;DNNLikelihood.Histfactory.Y_prof_logpdf_max_tmp&gt;`</span>
+<span class="sd">        :class:`Likelihood &lt;DNNLikelihood.Likelihood&gt;` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
+<span class="sd">        :attr:`Likelihood.likelihood_output_json_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`,</span>
+<span class="sd">        :attr:`Likelihood.likelihood_output_json_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`,</span>
+<span class="sd">        and :attr:`Likelihood.likelihood_output_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_output_pickle_file&gt;`.</span>
+<span class="sd">        See the :meth:`Likelihood.save_likelihood &lt;DNNLikelihood.Likelihood.save_likelihood&gt;` method documentation</span>
+<span class="sd">        for the list of saved attributes.</span>
 
 <span class="sd">        This method is called by the</span>
 <span class="sd">        :meth:`Likelihood.save_likelihood &lt;DNNLikelihood.Likelihood.save_likelihood&gt;` method to save the entire object.</span>
@@ -451,21 +439,21 @@
 <span class="sd">        - **Arguments**</span>
 
 <span class="sd">            - **overwrite**</span>
-
-<span class="sd">                It determines whether an existing file gets overwritten or if a new file is created.</span>
-<span class="sd">                If ``overwrite=True`` the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` is used</span>
-<span class="sd">                to append a time-stamp to the file name.</span>
-
+<span class="sd">            </span>
+<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name</span>
+<span class="sd">                already exists, then the old file gets renamed with the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` </span>
+<span class="sd">                function.</span>
+<span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
-
-<span class="sd">                Verbosity mode.</span>
-<span class="sd">                See the :ref:`verbosity mode &lt;verbosity_mode&gt;` for general behavior.</span>
-
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                    - **default**: ``None`` </span>
 
 <span class="sd">        - **Produces file**</span>
 
@@ -492,19 +480,22 @@
 
 <div class="viewcode-block" id="Likelihood.save_likelihood_pickle"><a class="viewcode-back" href="../../likelihood.html#DNNLikelihood.Likelihood.save_likelihood_pickle">[docs]</a>    <span class="k">def</span> <span class="nf">save_likelihood_pickle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ``Likelihood`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
-<span class="sd">        :attr:`Likelihood.likelihood_input_json_file &lt;DNNLikelihood.Likelihood.likelihood_input_json_file&gt;`,</span>
-<span class="sd">        :attr:`Likelihood.likelihood_input_json_file &lt;DNNLikelihood.Likelihood.likelihood_input_json_file&gt;`,</span>
-<span class="sd">        and :attr:`Likelihood.likelihood_input_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_input_pickle_file&gt;`.</span>
+<span class="sd">        :class:`Likelihood &lt;DNNLikelihood.Likelihood&gt;` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
+<span class="sd">        :attr:`Likelihood.likelihood_output_json_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`,</span>
+<span class="sd">        :attr:`Likelihood.likelihood_output_json_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`,</span>
+<span class="sd">        and :attr:`Likelihood.likelihood_output_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_output_pickle_file&gt;`.</span>
+<span class="sd">        See the :meth:`Likelihood.save_likelihood &lt;DNNLikelihood.Likelihood.save_likelihood&gt;` method documentation</span>
+<span class="sd">        for the list of saved attributes.</span>
+<span class="sd">        </span>
 <span class="sd">        This method saves the .pickle file making a dump of the following attributes (in order)</span>
 
-<span class="sd">            - :attr:`Likelihood.logpdf &lt;DNNLikelihood.Histfactory.logpdf&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.X_logpdf_max &lt;DNNLikelihood.Histfactory.X_logpdf_max&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.Y_logpdf_max &lt;DNNLikelihood.Histfactory.Y_logpdf_max&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.X_prof_logpdf_max &lt;DNNLikelihood.Histfactory.X_prof_logpdf_max&gt;`</span>
-<span class="sd">            - :attr:`Likelihood.Y_prof_logpdf_max &lt;DNNLikelihood.Histfactory.Y_prof_logpdf_max&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.logpdf &lt;DNNLikelihood.Likelihood.logpdf&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.X_logpdf_max &lt;DNNLikelihood.Likelihood.X_logpdf_max&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.Y_logpdf_max &lt;DNNLikelihood.Likelihood.Y_logpdf_max&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.X_prof_logpdf_max &lt;DNNLikelihood.Likelihood.X_prof_logpdf_max&gt;`</span>
+<span class="sd">            - :attr:`Likelihood.Y_prof_logpdf_max &lt;DNNLikelihood.Likelihood.Y_prof_logpdf_max&gt;`</span>
 
-<span class="sd">        The :attr:`Likelihood.logpdf &lt;DNNLikelihood.Histfactory.logpdf&gt;` attribute is not directly pickable, for this reason</span>
+<span class="sd">        The :attr:`Likelihood.logpdf &lt;DNNLikelihood.Likelihood.logpdf&gt;` attribute is not directly pickable, for this reason</span>
 <span class="sd">        it is dump using the |cloudpickle_link| package, which offers mote flexible python objects serialization.</span>
 
 <span class="sd">        This method is called by the</span>
@@ -513,21 +504,21 @@
 <span class="sd">        - **Arguments**</span>
 
 <span class="sd">            - **overwrite**</span>
-
-<span class="sd">                It determines whether an existing file gets overwritten or if a new file is created.</span>
-<span class="sd">                If ``overwrite=True`` the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` is used</span>
-<span class="sd">                to append a time-stamp to the file name.</span>
-
+<span class="sd">            </span>
+<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name</span>
+<span class="sd">                already exists, then the old file gets renamed with the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` </span>
+<span class="sd">                function.</span>
+<span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
-
-<span class="sd">                Verbosity mode.</span>
-<span class="sd">                See the :ref:`verbosity mode &lt;verbosity_mode&gt;` for general behavior.</span>
-
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                    - **default**: ``None`` </span>
 
 <span class="sd">        - **Produces file**</span>
 
@@ -556,6 +547,66 @@
 
 <div class="viewcode-block" id="Likelihood.save_likelihood"><a class="viewcode-back" href="../../likelihood.html#DNNLikelihood.Likelihood.save_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">save_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :class:`Likelihood &lt;DNNLikelihood.Likelihood&gt;` objects are saved according to the following table.</span>
+
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | Saved | Atrributes                                                                                                       | Method                                                                                           |</span>
+<span class="sd">        +=======+==================================================================================================================+==================================================================================================+</span>
+<span class="sd">        |   X   | :attr:`Likelihood.likelihood_input_file &lt;DNNLikelihood.Likelihood.likelihood_input_file&gt;`                        |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.likelihood_input_json_file &lt;DNNLikelihood.Likelihood.likelihood_input_json_file&gt;`              |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.likelihood_input_log_file &lt;DNNLikelihood.Likelihood.likelihood_input_log_file&gt;`                |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.likelihood_input_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_input_pickle_file&gt;`          |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.verbose &lt;DNNLikelihood.Likelihood.verbose&gt;`                                                    |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.X_prof_logpdf_max_tmp &lt;DNNLikelihood.Likelihood.X_prof_logpdf_max_tmp&gt;`                        |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.Y_prof_logpdf_max_tmp &lt;DNNLikelihood.Likelihood.Y_prof_logpdf_max_tmp&gt;`                        |                                                                                                  |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        |   ✔   | :attr:`Likelihood.log &lt;DNNLikelihood.Likelihood.log&gt;`                                                            | :meth:`Likelihood.save_likelihood_log &lt;DNNLikelihood.Likelihood.save_likelihood_log&gt;`            |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        |   ✔   | :attr:`Likelihood.figure_files_base_path &lt;DNNLikelihood.Likelihood.figure_files_base_path&gt;`                      | :meth:`Likelihood.save_likelihood_json &lt;DNNLikelihood.Likelihood.save_likelihood_json&gt;`          |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.figures_list &lt;DNNLikelihood.Likelihood.figures_list&gt;`                                          |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.generic_pars_labels &lt;DNNLikelihood.Likelihood.generic_pars_labels&gt;`                            |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.likelihood_output_json_file &lt;DNNLikelihood.Likelihood.likelihood_output_json_file&gt;`            |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.likelihood_output_log_file &lt;DNNLikelihood.Likelihood.likelihood_output_log_file&gt;`              |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.likelihood_output_pickle_file &lt;DNNLikelihood.Likelihood.likelihood_output_pickle_file&gt;`        |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.likelihood_script_file &lt;DNNLikelihood.Likelihood.likelihood_script_file&gt;`                      |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.logpdf_args &lt;DNNLikelihood.Likelihood.logpdf_args&gt;`                                            |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.output_folder &lt;DNNLikelihood.Likelihood.output_folder&gt;`                                        |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.pars_bounds &lt;DNNLikelihood.Likelihood.pars_bounds&gt;`                                            |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.pars_init &lt;DNNLikelihood.Likelihood.pars_init&gt;`                                                |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.pars_labels &lt;DNNLikelihood.Likelihood.pars_labels&gt;`                                            |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.pars_pos_nuis &lt;DNNLikelihood.Likelihood.pars_pos_nuis&gt;`                                        |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.pars_pos_poi &lt;DNNLikelihood.Likelihood.pars_pos_poi&gt;`                                          |                                                                                                  |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        |   ✔   | :attr:`Likelihood.logpdf &lt;DNNLikelihood.Likelihood.logpdf&gt;`                                                      | :meth:`Likelihood.save_likelihood_pickle &lt;DNNLikelihood.Likelihood.save_likelihood_pickle&gt;`      |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.X_logpdf_max &lt;DNNLikelihood.Likelihood.X_logpdf_max&gt;`                                          |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.Y_logpdf_max &lt;DNNLikelihood.Likelihood.Y_logpdf_max&gt;`                                          |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.X_prof_logpdf_max &lt;DNNLikelihood.Likelihood.X_prof_logpdf_max&gt;`                                |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Likelihood.Y_prof_logpdf_max &lt;DNNLikelihood.Likelihood.Y_prof_logpdf_max&gt;`                                |                                                                                                  |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+
 <span class="sd">        This methos calls in order the :meth:`Likelihood.save_likelihood_pickle &lt;DNNLikelihood.Likelihood.save_likelihood_pickle&gt;`,</span>
 <span class="sd">        :meth:`Likelihood.save_likelihood_json &lt;DNNLikelihood.Likelihood.save_likelihood_json&gt;`, and</span>
 <span class="sd">        :meth:`Likelihood.save_likelihood_log &lt;DNNLikelihood.Likelihood.save_likelihood_log&gt;` methods to save the entire object.</span>
@@ -582,12 +633,12 @@
 <span class="sd">        - **Arguments**</span>
 
 <span class="sd">            - **verbose**</span>
-
-<span class="sd">                Verbosity mode.</span>
-<span class="sd">                See the :ref:`verbosity mode &lt;verbosity_mode&gt;` for general behavior.</span>
-
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                    - **default**: ``None`` </span>
 
 <span class="sd">        - **Produces file**</span>
 
@@ -638,7 +689,7 @@
 
 <span class="sd">            - **x_pars**</span>
 
-<span class="sd">                Value (values) of the parameters for which logpdf is computed.</span>
+<span class="sd">                Values of the parameters for which logpdf is computed.</span>
 <span class="sd">                It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``) </span>
 <span class="sd">                or a list of points corresponding to an array with shape ``(n_points,n_pars)``, depending on the </span>
 <span class="sd">                equivalent argument accepted by ``Likelihood.logpdf``.</span>
@@ -932,11 +983,11 @@
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
-
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
 <span class="sd">                Verbosity mode. </span>
 <span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``None`` </span>

@@ -147,12 +147,12 @@ def HPD_quotas(data, intervals=0.68, weights=None, nbins=25, from_top=True):
 def weighted_quantiles(data, quantiles=0.68, weights=None, data_sorted=False, onesided=False):
     """ Very close to numpy.percentile, but supports weights.
     NOTE: quantiles should be in [0, 1]!
-    :param data: numpy.array with data
-    :param quantiles: array-like with many quantiles needed
-    :param weights: array-like of the same length as `array`
-    :param data_sorted: bool, if True, then will avoid sorting of
-        initial array
-    :return: numpy.array with computed quantiles.
+    
+        - param data numpy.array with data
+        - param quantiles array-like with many quantiles needed
+        - param weights array-like of the same length as `array`
+        - param data_sorted bool, if True, then will avoid sorting of initial array
+        - return numpy.array with computed quantiles.
     """
     quantiles = np.sort(np.array([quantiles]).flatten())
     if onesided:

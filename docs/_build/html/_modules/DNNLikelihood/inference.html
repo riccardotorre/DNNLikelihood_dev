@@ -308,12 +308,12 @@
 <div class="viewcode-block" id="weighted_quantiles"><a class="viewcode-back" href="../../inference.html#DNNLikelihood.inference.weighted_quantiles">[docs]</a><span class="k">def</span> <span class="nf">weighted_quantiles</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">quantiles</span><span class="o">=</span><span class="mf">0.68</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_sorted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">onesided</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Very close to numpy.percentile, but supports weights.</span>
 <span class="sd">    NOTE: quantiles should be in [0, 1]!</span>
-<span class="sd">    :param data: numpy.array with data</span>
-<span class="sd">    :param quantiles: array-like with many quantiles needed</span>
-<span class="sd">    :param weights: array-like of the same length as `array`</span>
-<span class="sd">    :param data_sorted: bool, if True, then will avoid sorting of</span>
-<span class="sd">        initial array</span>
-<span class="sd">    :return: numpy.array with computed quantiles.</span>
+<span class="sd">    </span>
+<span class="sd">        - param data numpy.array with data</span>
+<span class="sd">        - param quantiles array-like with many quantiles needed</span>
+<span class="sd">        - param weights array-like of the same length as `array`</span>
+<span class="sd">        - param data_sorted bool, if True, then will avoid sorting of initial array</span>
+<span class="sd">        - return numpy.array with computed quantiles.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">quantiles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">quantiles</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">onesided</span><span class="p">:</span>

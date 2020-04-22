@@ -714,7 +714,7 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
                                                                                        '_DNNLik_ensemble__model_callbacks_ensemble_kwargs_list',
                                                                                        '_DNNLik_ensemble__model_train_ensemble_kwargs_list'])}
         new_hist = utils.convert_types_dict(history)
-        self.summary_log_json_filename = utils.check_rename_file(self.summary_log_json_filename)
+        self.summary_log_json_filename = utils.check_rename_file(self.summary_log_json_filename, verbose=verbose_sub)
         with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(
                 ',', ':'), indent=4)

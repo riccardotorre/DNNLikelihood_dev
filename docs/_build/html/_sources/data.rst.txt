@@ -1,3 +1,5 @@
+.. _data_object:
+
 The Data object
 ----------------------
 
@@ -78,7 +80,7 @@ Methods
     .. automethod:: DNNLikelihood.Data._Data__init_mode
 
     .. automethod:: DNNLikelihood.Data._Data__create_data
-    
+
     .. automethod:: DNNLikelihood.Data._Data__load_data
 
     .. automethod:: DNNLikelihood.Data._Data__check_data

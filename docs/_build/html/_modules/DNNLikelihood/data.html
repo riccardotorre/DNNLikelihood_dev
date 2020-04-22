@@ -190,9 +190,9 @@
                  <span class="n">pars_pos_nuis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">pars_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">test_fraction</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">data_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">load_on_RAM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">output_folder</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                 <span class="n">load_on_RAM</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">data_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
                  <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes the ``data`` object</span>
@@ -202,7 +202,7 @@
         <span class="n">show_prints</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_input_file</span> <span class="o">=</span> <span class="n">data_input_file</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_name</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
@@ -219,8 +219,8 @@
             <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_path</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_on_RAM</span> <span class="o">=</span> <span class="n">load_on_RAM</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__create_data</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -228,13 +228,12 @@
             <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_path</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_on_RAM</span> <span class="o">=</span> <span class="n">load_on_RAM</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__load_data</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">generic_pars_labels</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">define_generic_pars_labels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span><span class="p">)</span>
         
-
         <span class="c1">#self.__check_define_mode()</span>
         <span class="c1">#self.__init_mode()</span>
         <span class="c1">#self.__check_data()</span>
@@ -401,13 +400,15 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No dataset to close.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.save_data"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.save_data"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Save samples to data_output_file as h5 file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">show_prints</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="n">data_sample_filename</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span><span class="p">)</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>     
-        <span class="n">h5_out</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">data_sample_filename</span><span class="p">,</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">h5_out</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
         <span class="n">h5_out</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">h5_out</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;parameters&quot;</span><span class="p">)</span>
         <span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span>
@@ -420,7 +421,7 @@
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;test_fraction&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">test_fraction</span><span class="p">])</span>
         <span class="n">h5_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="p">),</span> <span class="s2">&quot;(data_X, data_Y) samples in file&quot;</span><span class="p">,</span> <span class="n">data_sample_filename</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">)</span></div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="p">),</span> <span class="s2">&quot;(data_X, data_Y) samples in file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_output_file</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Data.generate_train_indices"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.generate_train_indices">[docs]</a>    <span class="k">def</span> <span class="nf">generate_train_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">show_prints</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>

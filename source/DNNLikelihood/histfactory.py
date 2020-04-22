@@ -68,8 +68,8 @@ class Histfactory(Verbosity):
         - **Produces file**
 
             - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
-            - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`
-            - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`
+            - :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`
+            - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -110,6 +110,7 @@ class Histfactory(Verbosity):
 
     def __check_define_name(self):
         """
+        Private method that defines the :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` attribute.
         If :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` is ``None`` it replaces it with 
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_histfactory"``,
         otherwise it appends the suffix "_histfactory" (preventing duplication if it is already present).
@@ -196,8 +197,15 @@ class Histfactory(Verbosity):
         statinfo = stat(self.histfactory_input_pickle_file)
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {
+            "action": "loaded", "files names": [path.split(self.histfactory_input_json_file)[-1],
+                                                path.split(self.histfactory_input_log_file)[-1],
+                                                path.split(self.histfactory_input_pickle_file)[-1]],
+                                "files paths": [self.histfactory_input_json_file,
+                                                self.histfactory_input_log_file,
+                                                self.histfactory_input_pickle_file]}
         self.log[timestamp] = {"action": "loaded","file name": path.split(self.histfactory_input_json_file)[-1],"file path": self.histfactory_input_json_file}
-        print("Likelihoods loaded in", str(end-start),"seconds.\nFile size is ", statinfo.st_size, ".",show=verbose)
+        print("Loaded likelihoods in", str(end-start),"seconds.\nFile size is ", statinfo.st_size, ".",show=verbose)
         self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
 
     def import_histfactory(self,lik_numbers_list=None, verbose=None):
@@ -303,7 +311,7 @@ class Histfactory(Verbosity):
     def save_histfactory_log(self, overwrite=False, verbose=None):
         """
         Saves the content of the :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>` attribute in the file
-        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
+        :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
 
         This method is called by the methods
         
@@ -323,7 +331,6 @@ class Histfactory(Verbosity):
                     - **type**: ``bool``
                     - **default**: ``False``
 
-
             - **verbose**
             
                 Verbosity mode. 
@@ -336,10 +343,10 @@ class Histfactory(Verbosity):
 
             - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
         """
-        verbose,_=self.set_verbosity(verbose)
+        verbose,verbose_sub=self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.histfactory_output_log_file)
+            utils.check_rename_file(self.histfactory_output_log_file,verbose=verbose_sub)
         #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         #self.log[timestamp] = {"action": "saved", "file name": path.split(self.histfactory_output_log_file)[-1], "file path": self.histfactory_output_log_file}
         dictionary = self.log
@@ -351,17 +358,15 @@ class Histfactory(Verbosity):
 
     def save_histfactory_json(self, overwrite=False, verbose=None):
         """
-        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
-        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`,
-        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
-        and :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
-        This method saves the .json file containing a dictionary with all class attributes but  
-        :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`,
-        :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>`,
-        :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`,
-        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`
-        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`, and 
-        :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
+        :class:`Histfactory <DNNLikelihood.Histfactory>` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
+        :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`,
+        :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
+        and :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`.
+        See the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` method documentation
+        for the list of saved attributes.
+
+        This method is called by the
+        :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` method to save the entire object.
 
         - **Arguments**
 
@@ -389,7 +394,7 @@ class Histfactory(Verbosity):
         verbose, verbose_sub=self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.histfactory_output_json_file)
+            utils.check_rename_file(self.histfactory_output_json_file,verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved", "file name": path.split(self.histfactory_output_json_file)[-1], "file path": self.histfactory_output_json_file}
         dictionary = utils.dic_minus_keys(self.__dict__, ["log",
@@ -397,7 +402,8 @@ class Histfactory(Verbosity):
                                                           "histfactory_input_file",
                                                           "histfactory_input_json_file",
                                                           "histfactory_input_log_file",
-                                                          "histfactory_input_pickle_file"])
+                                                          "histfactory_input_pickle_file",
+                                                          "verbose"])
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.histfactory_output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
@@ -406,17 +412,22 @@ class Histfactory(Verbosity):
 
     def save_histfactory_pickle(self, lik_numbers_list=None, overwrite=False, verbose=None):
         """
-        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
-        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`,
-        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
-        and :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`.
+        :class:`Histfactory <DNNLikelihood.Histfactory>` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
+        :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`,
+        :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
+        and :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`.
+        See the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` method documentation
+        for the list of saved attributes.
         This method saves the dictionary 
-        :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`` through a dump in the .pickle file.
+        :attr:`Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>` through a dump in the .pickle file.
         
         In order to save space, in the :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`` 
         the members corresponding to the keys ``lik_numbers_list`` and that have been imported are saved in the 
         ``dic["model_loaded"]=True`` "mode", while the others are saved in the ``dic["model_loaded"]=False``"mode". 
         See the documentation of :attr:``Histfactory.likelihood_dict <DNNLikelihood.Histfactory.likelihood_dict>`` for more details.
+
+        This method is called by the
+        :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` method to save the entire object.
 
         - **Arguments**
 
@@ -453,7 +464,7 @@ class Histfactory(Verbosity):
         verbose, verbose_sub =self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.histfactory_output_pickle_file)
+            utils.check_rename_file(self.histfactory_output_pickle_file,verbose=verbose_sub)
         if lik_numbers_list is None:
             lik_numbers_list = list(self.likelihoods_dict.keys())
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -479,6 +490,44 @@ class Histfactory(Verbosity):
 
     def save_histfactory(self, lik_numbers_list=None, overwrite=True, verbose=None):
         """
+        :class:`Histfactory <DNNLikelihood.Histfactory>` objects are saved according to the following table.
+
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        | Saved | Atrributes                                                                                                       | Method                                                                                           |
+        +=======+==================================================================================================================+==================================================================================================+
+        |   X   | :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`                    |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`            |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`      |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.verbose <DNNLikelihood.Histfactory.verbose>`                                                  |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>`                                                          | :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>`        |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Histfactory.bkg_files_base_name <DNNLikelihood.Histfactory.bkg_files_base_name>`                          | :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>`      |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`    |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>`                                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`                                      |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.patch_files_base_name <DNNLikelihood.Histfactory.patch_files_base_name>`                      |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.regions <DNNLikelihood.Histfactory.regions>`                                                  |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.regions_folders_base_name <DNNLikelihood.Histfactory.regions_folders_base_name>`              |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>`                                |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`                                | :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>`  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        
         This methos calls in order the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>`,
         :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>`, and
         :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>` methods to save the entire object.
@@ -547,22 +596,15 @@ class Histfactory(Verbosity):
         name = lik["name"].replace("_histfactory","")
         def logpdf(x,obs_data):
             return lik["model"].logpdf(x, obs_data)[0]
-        logpdf_args = [lik["obs_data"]]
-        pars_pos_poi = lik["pars_pos_poi"]
-        pars_pos_nuis = lik["pars_pos_nuis"]
-        pars_init = lik["pars_init"]
-        pars_labels = lik["pars_labels"]
-        pars_bounds = lik["pars_bounds"]
-        output_folder = self.output_folder
         lik_obj = Likelihood(name=name,
                              logpdf=logpdf,
-                             logpdf_args=logpdf_args,
-                             pars_pos_poi=pars_pos_poi,
-                             pars_pos_nuis=pars_pos_nuis,
-                             pars_init=pars_init,
-                             pars_labels=pars_labels,
-                             pars_bounds=pars_bounds,
-                             output_folder=output_folder,
+                             logpdf_args=[lik["obs_data"]],
+                             pars_pos_poi=lik["pars_pos_poi"],
+                             pars_pos_nuis=lik["pars_pos_nuis"],
+                             pars_init=lik["pars_init"],
+                             pars_labels=lik["pars_labels"],
+                             pars_bounds=lik["pars_bounds"],
+                             output_folder=self.output_folder,
                              likelihood_input_file=None,
                              verbose = self.verbose)
         end = timer()
@@ -574,11 +616,14 @@ class Histfactory(Verbosity):
         #    print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.",show=verbose)
         #else:
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "saved likelihood object", "likelihood number": lik_number, "file names": [path.split(
-            lik_obj.likelihood_output_pickle_file)[-1], path.split(
-            lik_obj.likelihood_output_json_file)[-1], path.split(
-            lik_obj.likelihood_output_log_file)[-1]], "files paths": [
-            lik_obj.likelihood_output_pickle_file, lik_obj.likelihood_output_json_file, lik_obj.likelihood_output_log_file]}
+        self.log[timestamp] = {"action": "saved likelihood object", 
+                               "likelihood number": lik_number, 
+                               "file names": [path.split(lik_obj.likelihood_output_pickle_file)[-1], 
+                                              path.split(lik_obj.likelihood_output_json_file)[-1], 
+                                              path.split(lik_obj.likelihood_output_log_file)[-1]], 
+                               "files paths": [lik_obj.likelihood_output_pickle_file, 
+                                               lik_obj.likelihood_output_json_file, 
+                                               lik_obj.likelihood_output_log_file]}
         print("Likelihood object for likelihood",lik_number,"created and saved to files",lik_obj.likelihood_output_json_file,"and", lik_obj.likelihood_output_pickle_file, "in", str(end-start), "s.",show=verbose)
         self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
         return lik_obj

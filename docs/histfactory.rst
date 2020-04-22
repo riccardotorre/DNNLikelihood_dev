@@ -20,7 +20,7 @@ Code examples shown below refer to the following ATLAS histfactory likelihood:
 Usage
 ^^^^^
 
-We give here a bried introduction to the use of the :class:`Histfactory <DNNLikelihood.Histfactory>` class. Refer to the 
+We give here a brief introduction to the use of the :class:`Histfactory <DNNLikelihood.Histfactory>` class. Refer to the 
 full class documentation for more details.
 
 The first time a :class:`Histfactory <DNNLikelihood.Histfactory>` object is created, the :option:`workspace_folder` argument, 
@@ -35,7 +35,7 @@ A basic initialization code is
     
    import DNNLikelihood
 
-   histfact = DNNLikelihood.Histfactory(workspace_folder="HEPData_workspaces",
+   histfactory = DNNLikelihood.Histfactory(workspace_folder="HEPData_workspaces",
                                         name = "ATLAS_sbottom_search",
                                         output_folder = "<my_output_folder>")
 
@@ -60,7 +60,7 @@ For instance we could import the object created above with
     
    import DNNLikelihood
 
-   histfact = DNNLikelihood.Histfactory(histfactory_input_file="<my_output_folder>/ATLAS_sbottom_search_histfactory")
+   histfactory = DNNLikelihood.Histfactory(histfactory_input_file="<my_output_folder>/ATLAS_sbottom_search_histfactory")
 
 The object we created above has the attribute :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`, whichs contains
 a dictionary with items corresponsing to likelihoods and their properties. For instance, for the first
@@ -68,7 +68,7 @@ likelihood, the dictionary looks like this
 
 .. code-block:: python
     
-   histfact.likelihoods_dict[0]
+   histfactory.likelihoods_dict[0]
 
    >>> {'signal_region': 'A',
         'bg_only_file': '<full path to HEPData_workspaces>/RegionA/BkgOnly.json',
@@ -84,14 +84,17 @@ can be imported through:
 
 .. code-block:: python
 
-   histfact.import_histfactory(lik_numbers_list=[0])
+   histfactory.import_histfactory(lik_numbers_list=[0])
 
 The imported likelihood are stored in the dictionary so that the corresponding item now contains full likelihood information, 
-and the ``model_loaded`` flag is set to ``True``. Looking at the dictionary for the fist likelihood, now one gets
+and the ``model_loaded`` flag is set to ``True``. When the object is imported, the :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>` 
+attribute is updated, as well as the corresponding file <my_output_folder>/ATLAS_sbottom_search_histfactory.log.
+
+Looking at the dictionary for the fist likelihood, now one gets
 
 .. code-block:: python
 
-   histfact.likelihoods_dict[0]
+   histfactory.likelihoods_dict[0]
 
    >>> {'signal_region': 'A',
         'bg_only_file': '<full path to HEPData_workspaces>/RegionA/BkgOnly.json',
@@ -121,7 +124,7 @@ we can save our object (which only contains the first likelihood in ``'model_loa
 
 .. code-block:: python
 
-   histfact.save_histfactory()
+   histfactory.save_histfactory()
 
 Finally, from any of the imported likelihoods, one can obtain a :class:`Likelihood <DNNLikelihood.Likelihood>` object through the 
 :meth:`Histfactory.get_likelihood_object <DNNLikelihood.Histfactory.get_likelihood_object>`, which, by default, aslo saves it. For instance, for our
@@ -129,7 +132,7 @@ first likelihood we can do
 
 .. code-block:: python
 
-   likelihood_0 = histfact.get_likelihood_object(lik_number=0)
+   likelihood_0 = histfactory.get_likelihood_object(lik_number=0)
 
 For additional information on the :class:`Likelihood <DNNLikelihood.Likelihood>` object see :ref:`the Likelihood object <likelihood_object>` 
 documentation.
@@ -227,7 +230,7 @@ Arguments
          - **default**: ``True``
 
 Attributess
-""""""""""
+"""""""""""
 
    .. py:attribute:: DNNLikelihood.Histfactory.bkg_files_base_name
 
@@ -349,7 +352,7 @@ Attributess
             - *"pars_bounds"* (value type: ``numpy.ndarray``, value shape ``(n_pars,2)``)
                Numpy array with lower and upper limit on each of the ``n_pars`` parameters.
             - *"pars_labels"* (value type: ``list``)
-               List of strings containing the name of each parameter. Parameters labels are always used as "raw" strings (like, for instance,
+               List of strings containing the name of each parameter. Parameters labels are always parsed as "raw" strings (like, for instance,
                ``r"%s"%pars_labels[0]``) and can contain latex expressions that are properly compiled when making plots.
             - *"pars_pos_poi"* (value type: ``numpy.ndarray``, value shape: ``(n_poi)``)
                Numpy array with the list of positions, in the array of parameters, of the ``n_poi`` parameters of interest.
@@ -362,8 +365,8 @@ Attributess
 
    .. py:attribute:: DNNLikelihood.Histfactory.log    
 
-      Dictionary containing a log of the :class:`Histfactory <DNNLikelihood.Histfactory>` object calls. The dictionary has datetime strings as keys
-      and actions as values. Actions are also dictionaries, containing details of the methods calls.
+      Dictionary containing a log of the :class:`Histfactory <DNNLikelihood.Histfactory>` object calls. The dictionary has datetime 
+      strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
             
          - **type**: ``dict``
          - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``
@@ -377,14 +380,15 @@ Attributess
                When an operation involving several likelihoods has been performed this value is the list of involved likelihoods .
             - *"likelihood number"* (value type: ``int``)
                When an operation involving a single likelihood has been performed this value is the likelihood number.
-            - *"files names"* (value type: ``list`` of ``str``)
-               List of file names of files involved in the action.
             - *"file name"* (value type: ``str``)
                File name of file involved in the action.
-            - *"files paths"* (value type: ``list`` of ``str``)
-               List of paths of files involved in the action.
             - *"file path"* (value type: ``str``)
                Path of file involved in the action.
+            - *"files names"* (value type: ``list`` of ``str``)
+               List of file names of files involved in the action.
+            - *"files paths"* (value type: ``list`` of ``str``)
+               List of paths of files involved in the action.
+
 
    .. py:attribute:: DNNLikelihood.Histfactory.name
 
@@ -476,9 +480,9 @@ Methods
 
    .. automethod:: DNNLikelihood.Histfactory.save_histfactory
 
-   .. automethod:: DNNLikelihood.Histfactory.set_verbosity
-
    .. automethod:: DNNLikelihood.Histfactory.get_likelihood_object
+
+   .. automethod:: DNNLikelihood.Histfactory.set_verbosity
 
 .. |histfactory_sbottom_link| raw:: html
     

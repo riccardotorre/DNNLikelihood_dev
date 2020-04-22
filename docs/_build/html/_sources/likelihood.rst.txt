@@ -12,10 +12,12 @@ one to plot the logpdf funcion and to compute its (profiled and global) maximiza
 In case in which the likelihood is obtained using the interface to the ATLAS histfactory workspaces given by  
 :ref:`the Histfactory object <histfactory_object>`, the logpdf is constructed from the |pyhf_model_logpdf_link| method.
 
+.. _likelihood_usage:
+
 Usage
 ^^^^^
 
-We give here a bried introduction to the use of the :class:`Likelihood <DNNLikelihood.Histfactory>` class. Refer to the 
+We give here a brief introduction to the use of the :class:`Likelihood <DNNLikelihood.Likelihood>` class. Refer to the 
 full class documentation for more details.
 
 The :class:`Likelihood <DNNLikelihood.Likelihood>` object can be created both by directly inputing the relevant arguments or
@@ -114,7 +116,7 @@ and :meth:`_pickle <DNNLikelihood.Likelihood.save_likelihood_pickle>` suffix.
 
 The object can also be initialized importing it from saved files. In this case only the :option:`likelihood_input_file` argument needs to be specified,
 while all other arguments are ignored. One could also optionally specify a new ``output_folder``. In case this is not specified, the 
-:attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute from the imported object is used.
+:attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` attribute from the imported object is used.
 For instance we could import the object created above with
 
 .. code-block:: python
@@ -122,6 +124,9 @@ For instance we could import the object created above with
    import DNNLikelihood
 
    likelihood = DNNLikelihood.Likelihood(likelihood_input_file="<my_output_folder>/toy_likelihood")
+
+When the object is imported, the :attr:`Likelihood.log <DNNLikelihood.Likelihood.log>` 
+attribute is updated, as well as the corresponding file <my_output_folder>/toy_likelihood.log.
 
 The logpdf for a given value of the parameters (for instance the 
 :attr:`Likelihood.pars_init <DNNLikelihood.Likelihood.pars_init>`
@@ -145,13 +150,13 @@ This prints the following plots in the active console
 
 .. image:: figs/toy_likelihood_figure_par_0.png
     :class: with-shadow
-    :scale: 50
+    :scale: 54
 
 .. image:: figs/toy_likelihood_figure_par_5.png
     :class: with-shadow
-    :scale: 50
+    :scale: 54
 
-And saves two files, whose path is stored in the :attr:`Likelihood.figures_list <DNNLikelihood.Likelihood.figures_list>`.
+And saves two files, whose paths are stored in the :attr:`Likelihood.figures_list <DNNLikelihood.Likelihood.figures_list>`.
 One could also optionally choose a different central value for the parameters that are kept fixed by passing an argument
 ``pars_init`` to the :meth:`Likelihood.plot_logpdf_par <DNNLikelihood.Likelihood.plot_logpdf_par>` method.
 
@@ -202,11 +207,20 @@ Each of the above calls :class:`Likelihood <DNNLikelihood.Likelihood>` methods h
 :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>` file. The full
 object can be saved at any time through
 
-.. code-block:: python
+.. code-block:: python 
 
     likelihood.save_likelihood(overwrite=True)
 
 The ``overwrite=True`` ensure that the output files (generated when initializing the object) are updated.
+
+Finally, we can save a likelihood script file that will be used to initialize a :class:`Sampler <DNNLikelihood.Sampler>` object
+(see :ref:`the Sampler object <sampler_object>`) as
+
+.. code-block:: python
+
+    likelihood.save_likelihood_script()
+
+which produces the file <my_output_folder>/toy_likelihood_script.py.
 
 Classs
 ^^^^^^
@@ -283,7 +297,7 @@ Arguments
         nuisance parameters.
         It is used to build the :attr:`Likelihood.pars_pos_nuis <DNNLikelihood.Likelihood.pars_pos_nuis>` attribute.
 
-            - **type**: ``list`` or ```numpy.ndarray``
+            - **type**: ``list`` or ``numpy.ndarray``
             - **shape**: ``(n_nuis,)``
             - **default**: ``None`` 
 
@@ -299,7 +313,7 @@ Arguments
     .. option:: pars_labels   
 
         List containing the parameters names as strings.
-        Parameters labels are always used as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
+        Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
         and can contain latex expressions that are properly compiled when making plots.
         It is used to build the :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>` attribute.
 
@@ -351,9 +365,9 @@ Attributes
     .. py:attribute:: DNNLikelihood.Likelihood.figure_files_base_path
 
         Absolute path to the exported figures. It includes the base figure name and is 
-        automatically set from the attribute
-        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>`.
-        
+        automatically generated from the
+        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
+        :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
 
            - **type**: ``str`` 
 
@@ -370,7 +384,7 @@ Attributes
         All parameters of interest are named ``r"$\theta_{i}$"`` with ``i`` ranging between
         one to the number of parameters of interest and all nuisance parameters are named
         ``r"$\nu_{j}$"`` with ``j`` ranging between one to the number of nuisance parameters.
-        Parameters labels are always used as "raw" strings (like, for instance, ``r"%s"%generic_pars_labels[0]``) 
+        Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%generic_pars_labels[0]``) 
         and can contain latex expressions that are properly compiled when making plots.
 
             - **type**: ``list``
@@ -424,8 +438,9 @@ Attributes
         Absolute path to the .json file where part of the :class:`Likelihood <DNNLikelihood.Likelihood>` 
         object is saved (see the :meth:`Likelihood.save_likelihood_json <DNNLikelihood.Likelihood.save_likelihood_json>`
         method for details).
-        This is automatically generated from the attribute
-        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>`.
+        This is automatically generated from the
+        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
+        :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
               
            - **type**: ``str`` 
 
@@ -434,8 +449,9 @@ Attributes
         Absolute path to the .log file where the :class:`Likelihood <DNNLikelihood.Likelihood>` 
         object log is saved (see the :meth:`Likelihood.save_likelihood_log <DNNLikelihood.Likelihood.save_likelihood_log>`
         method for details).
-        This is automatically generated from the attribute
-        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>`.
+        This is automatically generated from the
+        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
+        :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
               
            - **type**: ``str`` 
 
@@ -444,8 +460,9 @@ Attributes
         Absolute path to the .pickle file where part of the :class:`Likelihood <DNNLikelihood.Likelihood>` 
         object is saved (see the :meth:`Likelihood.save_likelihood_pickle <DNNLikelihood.Likelihood.save_likelihood_pickle>`
         method for details).
-        This is automatically generated from the attribute
-        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>`.
+        This is automatically generated from the
+        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
+        :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
              
           - **type**: ``str`` 
 
@@ -458,15 +475,16 @@ Attributes
         and is used to initialize a :class:`Sampler <DNNLikelihood.Sampler>` object 
         (see :ref:`the Sampler object <sampler_object>`). This is to ensure that that Markov Chain Monte Carlo properly 
         runs in parallel (using the |multiprocessing_link| package) inside Jupyter notebooks also on the Windows OS.
-        This is automatically generated from the attribute
-        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>`.
+        This is automatically generated from the
+        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
+        :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
 
             - **type**: ``str``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.log    
+    .. py:attribute:: DNNLikelihood.Likelihood.log    
 
-         Dictionary containing a log of the :class:`Histfactory <DNNLikelihood.Histfactory>` object calls. The dictionary has datetime strings as keys
-         and actions as values. Actions are also dictionaries, containing details of the methods calls.
+         Dictionary containing a log of the :class:`Likelihood <DNNLikelihood.Likelihood>` object calls. The dictionary has datetime 
+         strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
                
             - **type**: ``dict``
             - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``
@@ -485,6 +503,10 @@ Attributes
                    File name of file involved in the action.
                 - *"file path"* (value type: ``str``)
                    Path of file involved in the action.
+                - *"files names"* (value type: ``list`` of ``str``)
+                   List of file names of files involved in the action.
+                - *"files paths"* (value type: ``list`` of ``str``)
+                   List of paths of files involved in the action.
 
     .. py:attribute:: DNNLikelihood.Likelihood.logpdf
 
@@ -514,8 +536,12 @@ Attributes
                     - **shape of list**: ``[ ]``
          
         - **Could return**
-
-            ``float`` or ``numpy.ndarray`` with shape ``(n_points,)``
+        
+            Value or array of values 
+            of the logpdf.
+        
+                - **type**: ``float`` or ``numpy.ndarray``
+                - **shape for numpy.ndarray**: ``(n_points,)``
 
     .. py:attribute:: DNNLikelihood.Likelihood.logpdf_args   
 
@@ -535,11 +561,11 @@ Attributes
             
             - **type**: ``str``  
 
-    .. py:attribute:: DNNLikelihood.Histfactory.output_folder
+    .. py:attribute:: DNNLikelihood.Likelihood.output_folder
 
         Absolute path corresponding to the input argument
         :option:`output_folder`. If the latter is ``None``, then 
-        :attr:`output_folder <DNNLikelihood.Histfactory.output_folder>`
+        :attr:`output_folder <DNNLikelihood.Likelihood.output_folder>`
         is set to the code execution folder. If the folder does not exist it is created
         by the :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
         function.
@@ -572,7 +598,7 @@ Attributes
         List corresponding to the input argument :option:`pars_labels`. If the input argument is ``None`` then
         :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>` is set equal to the automatically
         generated :attr:`Likelihood.generic_pars_labels <DNNLikelihood.Likelihood.generic_pars_labels>`.
-        Parameters labels are always used as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
+        Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
         and can contain latex expressions that are properly compiled when making plots.
 
             - **type**: ``list``
@@ -593,11 +619,11 @@ Attributes
             - **type**: ``list`` or ```numpy.ndarray``
             - **shape**: ``(n_poi,)``
 
-    .. py:attribute:: DNNLikelihood.Histfactory.verbose
+    .. py:attribute:: DNNLikelihood.Likelihood.verbose
 
         Attribute corresponding to the input argument :option:`verbose`.
         It represents the verbosity mode of the 
-        :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` 
+        :meth:`Likelihood.__init__ <DNNLikelihood.Likelihood.__init__>` 
         method and the default verbosity mode of all class methods that accept a
         ``verbose`` argument.
         See :ref:`Verbosity mode <verbosity_mode>`.
@@ -702,6 +728,8 @@ Methods
     .. automethod:: DNNLikelihood.Likelihood.compute_profiled_maxima
 
     .. automethod:: DNNLikelihood.Likelihood.plot_logpdf_par
+
+    .. automethod:: DNNLikelihood.Likelihood.set_verbosity
 
 
 .. |pyhf_model_logpdf_link| raw:: html

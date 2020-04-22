@@ -229,8 +229,8 @@
 <span class="sd">        - **Produces file**</span>
 
 <span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_log_file&gt;`</span>
-<span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`</span>
-<span class="sd">            - :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`</span>
+<span class="sd">            - :attr:`Histfactory.histfactory_output_json_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Histfactory.histfactory_output_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
@@ -271,6 +271,7 @@
 
     <span class="k">def</span> <span class="nf">__check_define_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method that defines the :attr:`Histfactory.name &lt;DNNLikelihood.Histfactory.name&gt;` attribute.</span>
 <span class="sd">        If :attr:`Histfactory.name &lt;DNNLikelihood.Histfactory.name&gt;` is ``None`` it replaces it with </span>
 <span class="sd">        ``&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_histfactory&quot;``,</span>
 <span class="sd">        otherwise it appends the suffix &quot;_histfactory&quot; (preventing duplication if it is already present).</span>
@@ -357,8 +358,15 @@
         <span class="n">statinfo</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_pickle_file</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span> <span class="s2">&quot;files names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_log_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_pickle_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+                                <span class="s2">&quot;files paths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_log_file</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_pickle_file</span><span class="p">]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span><span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_json_file</span><span class="p">}</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Likelihoods loaded in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;seconds.</span><span class="se">\n</span><span class="s2">File size is &quot;</span><span class="p">,</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loaded likelihoods in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;seconds.</span><span class="se">\n</span><span class="s2">File size is &quot;</span><span class="p">,</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_histfactory_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Histfactory.import_histfactory"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.import_histfactory">[docs]</a>    <span class="k">def</span> <span class="nf">import_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -464,7 +472,7 @@
 <div class="viewcode-block" id="Histfactory.save_histfactory_log"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves the content of the :attr:`Histfactory.log &lt;DNNLikelihood.Histfactory.log&gt;` attribute in the file</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`</span>
+<span class="sd">        :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_log_file&gt;`</span>
 
 <span class="sd">        This method is called by the methods</span>
 <span class="sd">        </span>
@@ -483,7 +491,6 @@
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``False``</span>
-
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
@@ -512,17 +519,15 @@
 
 <div class="viewcode-block" id="Histfactory.save_histfactory_json"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`,</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`</span>
-<span class="sd">        and :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`.</span>
-<span class="sd">        This method saves the .json file containing a dictionary with all class attributes but  </span>
-<span class="sd">        :attr:`Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`,</span>
-<span class="sd">        :attr:`Histfactory.log &lt;DNNLikelihood.Histfactory.log&gt;`,</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_file &lt;DNNLikelihood.Histfactory.histfactory_input_file&gt;`,</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`, and </span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`.</span>
+<span class="sd">        :class:`Histfactory &lt;DNNLikelihood.Histfactory&gt;` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
+<span class="sd">        :attr:`Histfactory.histfactory_output_json_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_log_file&gt;`</span>
+<span class="sd">        and :attr:`Histfactory.histfactory_output_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`.</span>
+<span class="sd">        See the :meth:`Histfactory.save_histfactory &lt;DNNLikelihood.Histfactory.save_histfactory&gt;` method documentation</span>
+<span class="sd">        for the list of saved attributes.</span>
+
+<span class="sd">        This method is called by the</span>
+<span class="sd">        :meth:`Histfactory.save_histfactory &lt;DNNLikelihood.Histfactory.save_histfactory&gt;` method to save the entire object.</span>
 
 <span class="sd">        - **Arguments**</span>
 
@@ -558,7 +563,8 @@
                                                           <span class="s2">&quot;histfactory_input_file&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;histfactory_input_json_file&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;histfactory_input_log_file&quot;</span><span class="p">,</span>
-                                                          <span class="s2">&quot;histfactory_input_pickle_file&quot;</span><span class="p">])</span>
+                                                          <span class="s2">&quot;histfactory_input_pickle_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">histfactory_output_json_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -567,17 +573,22 @@
 
 <div class="viewcode-block" id="Histfactory.save_histfactory_pickle"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory_pickle">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory_pickle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ``Histfactory`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`,</span>
-<span class="sd">        :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`</span>
-<span class="sd">        and :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`.</span>
+<span class="sd">        :class:`Histfactory &lt;DNNLikelihood.Histfactory&gt;` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes</span>
+<span class="sd">        :attr:`Histfactory.histfactory_output_json_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`,</span>
+<span class="sd">        :attr:`Histfactory.histfactory_output_log_file &lt;DNNLikelihood.Histfactory.histfactory_output_log_file&gt;`</span>
+<span class="sd">        and :attr:`Histfactory.histfactory_output_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`.</span>
+<span class="sd">        See the :meth:`Histfactory.save_histfactory &lt;DNNLikelihood.Histfactory.save_histfactory&gt;` method documentation</span>
+<span class="sd">        for the list of saved attributes.</span>
 <span class="sd">        This method saves the dictionary </span>
-<span class="sd">        :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` through a dump in the .pickle file.</span>
+<span class="sd">        :attr:`Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;` through a dump in the .pickle file.</span>
 <span class="sd">        </span>
 <span class="sd">        In order to save space, in the :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` </span>
 <span class="sd">        the members corresponding to the keys ``lik_numbers_list`` and that have been imported are saved in the </span>
 <span class="sd">        ``dic[&quot;model_loaded&quot;]=True`` &quot;mode&quot;, while the others are saved in the ``dic[&quot;model_loaded&quot;]=False``&quot;mode&quot;. </span>
 <span class="sd">        See the documentation of :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` for more details.</span>
+
+<span class="sd">        This method is called by the</span>
+<span class="sd">        :meth:`Histfactory.save_histfactory &lt;DNNLikelihood.Histfactory.save_histfactory&gt;` method to save the entire object.</span>
 
 <span class="sd">        - **Arguments**</span>
 
@@ -640,6 +651,44 @@
 
 <div class="viewcode-block" id="Histfactory.save_histfactory"><a class="viewcode-back" href="../../histfactory.html#DNNLikelihood.Histfactory.save_histfactory">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :class:`Histfactory &lt;DNNLikelihood.Histfactory&gt;` objects are saved according to the following table.</span>
+
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        | Saved | Atrributes                                                                                                       | Method                                                                                           |</span>
+<span class="sd">        +=======+==================================================================================================================+==================================================================================================+</span>
+<span class="sd">        |   X   | :attr:`Histfactory.histfactory_input_file &lt;DNNLikelihood.Histfactory.histfactory_input_file&gt;`                    |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.histfactory_input_json_file &lt;DNNLikelihood.Histfactory.histfactory_input_json_file&gt;`          |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.histfactory_input_log_file &lt;DNNLikelihood.Histfactory.histfactory_input_log_file&gt;`            |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.histfactory_input_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_input_pickle_file&gt;`      |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.verbose &lt;DNNLikelihood.Histfactory.verbose&gt;`                                                  |                                                                                                  |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        |   ✔   | :attr:`Histfactory.log &lt;DNNLikelihood.Histfactory.log&gt;`                                                          | :meth:`Histfactory.save_histfactory_log &lt;DNNLikelihood.Histfactory.save_histfactory_log&gt;`        |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        |   ✔   | :attr:`Histfactory.bkg_files_base_name &lt;DNNLikelihood.Histfactory.bkg_files_base_name&gt;`                          | :meth:`Histfactory.save_histfactory_json &lt;DNNLikelihood.Histfactory.save_histfactory_json&gt;`      |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.histfactory_output_json_file &lt;DNNLikelihood.Histfactory.histfactory_output_json_file&gt;`        |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.histfactory_output_pickle_file &lt;DNNLikelihood.Histfactory.histfactory_output_pickle_file&gt;`    |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.name &lt;DNNLikelihood.Histfactory.name&gt;`                                                        |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.output_folder &lt;DNNLikelihood.Histfactory.output_folder&gt;`                                      |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.patch_files_base_name &lt;DNNLikelihood.Histfactory.patch_files_base_name&gt;`                      |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.regions &lt;DNNLikelihood.Histfactory.regions&gt;`                                                  |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.regions_folders_base_name &lt;DNNLikelihood.Histfactory.regions_folders_base_name&gt;`              |                                                                                                  |</span>
+<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
+<span class="sd">        |       | :attr:`Histfactory.workspace_folder &lt;DNNLikelihood.Histfactory.workspace_folder&gt;`                                |                                                                                                  |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        |   ✔   | :attr:`Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`                                | :meth:`Histfactory.save_histfactory_pickle &lt;DNNLikelihood.Histfactory.save_histfactory_pickle&gt;`  |</span>
+<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
+<span class="sd">        </span>
 <span class="sd">        This methos calls in order the :meth:`Histfactory.save_histfactory_pickle &lt;DNNLikelihood.Histfactory.save_histfactory_pickle&gt;`,</span>
 <span class="sd">        :meth:`Histfactory.save_histfactory_json &lt;DNNLikelihood.Histfactory.save_histfactory_json&gt;`, and</span>
 <span class="sd">        :meth:`Histfactory.save_histfactory_log &lt;DNNLikelihood.Histfactory.save_histfactory_log&gt;` methods to save the entire object.</span>
@@ -708,22 +757,15 @@
         <span class="n">name</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_histfactory&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">obs_data</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">logpdf_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;obs_data&quot;</span><span class="p">]]</span>
-        <span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">]</span>
-        <span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">]</span>
-        <span class="n">pars_init</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]</span>
-        <span class="n">pars_labels</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_labels&quot;</span><span class="p">]</span>
-        <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span>
-        <span class="n">output_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span>
         <span class="n">lik_obj</span> <span class="o">=</span> <span class="n">Likelihood</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                              <span class="n">logpdf</span><span class="o">=</span><span class="n">logpdf</span><span class="p">,</span>
-                             <span class="n">logpdf_args</span><span class="o">=</span><span class="n">logpdf_args</span><span class="p">,</span>
-                             <span class="n">pars_pos_poi</span><span class="o">=</span><span class="n">pars_pos_poi</span><span class="p">,</span>
-                             <span class="n">pars_pos_nuis</span><span class="o">=</span><span class="n">pars_pos_nuis</span><span class="p">,</span>
-                             <span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
-                             <span class="n">pars_labels</span><span class="o">=</span><span class="n">pars_labels</span><span class="p">,</span>
-                             <span class="n">pars_bounds</span><span class="o">=</span><span class="n">pars_bounds</span><span class="p">,</span>
-                             <span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span>
+                             <span class="n">logpdf_args</span><span class="o">=</span><span class="p">[</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;obs_data&quot;</span><span class="p">]],</span>
+                             <span class="n">pars_pos_poi</span><span class="o">=</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">],</span>
+                             <span class="n">pars_pos_nuis</span><span class="o">=</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">],</span>
+                             <span class="n">pars_init</span><span class="o">=</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_init&quot;</span><span class="p">],</span>
+                             <span class="n">pars_labels</span><span class="o">=</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_labels&quot;</span><span class="p">],</span>
+                             <span class="n">pars_bounds</span><span class="o">=</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">],</span>
+                             <span class="n">output_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span>
                              <span class="n">likelihood_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>

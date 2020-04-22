@@ -235,8 +235,6 @@
 </li>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__load_indices">_DNN_likelihood__load_indices() (DNNLikelihood.DNN_likelihood method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__load_model">_DNN_likelihood__load_model() (DNNLikelihood.DNN_likelihood method)</a>
 </li>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__load_predictions">_DNN_likelihood__load_predictions() (DNNLikelihood.DNN_likelihood method)</a>
@@ -245,6 +243,8 @@
 </li>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__load_summary_log">_DNN_likelihood__load_summary_log() (DNNLikelihood.DNN_likelihood method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__set_data">_DNN_likelihood__set_data() (DNNLikelihood.DNN_likelihood method)</a>
 </li>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__set_dtype">_DNN_likelihood__set_dtype() (DNNLikelihood.DNN_likelihood method)</a>
@@ -268,6 +268,22 @@
       <li><a href="likelihood.html#DNNLikelihood.Likelihood._Likelihood__set_pars_labels">_Likelihood__set_pars_labels() (DNNLikelihood.Likelihood method)</a>
 </li>
       <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__check_params_backend">_Sampler__check_params_backend() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__check_vectorize">_Sampler__check_vectorize() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_likelihood">_Sampler__get_likelihood_script_file_from_likelihood() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_sampler_input_file">_Sampler__get_likelihood_script_file_from_sampler_input_file() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__get_sampler_input_file_from_likelihood">_Sampler__get_sampler_input_file_from_likelihood() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__get_sampler_input_file_from_likelihood_script_file">_Sampler__get_sampler_input_file_from_likelihood_script_file() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__init_backend">_Sampler__init_backend() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__init_likelihood">_Sampler__init_likelihood() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__init_sampler">_Sampler__init_sampler() (DNNLikelihood.Sampler method)</a>
 </li>
       <li><a href="sampler.html#DNNLikelihood.Sampler._Sampler__load_sampler">_Sampler__load_sampler() (DNNLikelihood.Sampler method)</a>
 </li>
@@ -301,10 +317,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sampler.html#DNNLikelihood.Sampler.backend">backend (DNNLikelihood.Sampler attribute)</a>
 </li>
-      <li><a href="sampler.html#DNNLikelihood.Sampler.backend_file">backend_file (DNNLikelihood.Sampler attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     bkg_files_base_name
 
@@ -312,6 +324,8 @@
         <li><a href="histfactory.html#cmdoption-arg-bkg-files-base-name">command line option</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="histfactory.html#DNNLikelihood.Histfactory.bkg_files_base_name">bkg_files_base_name (DNNLikelihood.Histfactory attribute)</a>
 </li>
   </ul></td>
@@ -348,15 +362,27 @@
 </li>
         <li><a href="histfactory.html#cmdoption-arg-histfactory-input-file">histfactory_input_file</a>
 </li>
+        <li><a href="sampler.html#cmdoption-arg-likelihood">likelihood</a>
+</li>
         <li><a href="likelihood.html#cmdoption-arg-likelihood-input-file">likelihood_input_file</a>
+</li>
+        <li><a href="sampler.html#cmdoption-arg-likelihood-script-file">likelihood_script_file</a>
 </li>
         <li><a href="likelihood.html#cmdoption-arg-logpdf">logpdf</a>
 </li>
         <li><a href="likelihood.html#cmdoption-arg-logpdf-args">logpdf_args</a>
 </li>
+        <li><a href="sampler.html#cmdoption-arg-moves-str">moves_str</a>
+</li>
         <li><a href="histfactory.html#cmdoption-arg-name">name</a>, <a href="likelihood.html#cmdoption-arg-name">[1]</a>
 </li>
+        <li><a href="sampler.html#cmdoption-arg-new-sampler">new_sampler</a>
+</li>
+        <li><a href="sampler.html#cmdoption-arg-nsteps">nsteps</a>
+</li>
         <li><a href="histfactory.html#cmdoption-arg-output-folder">output_folder</a>, <a href="likelihood.html#cmdoption-arg-output-folder">[1]</a>
+</li>
+        <li><a href="sampler.html#cmdoption-arg-parallel-cpu">parallel_CPU</a>
 </li>
         <li><a href="likelihood.html#cmdoption-arg-pars-bounds">pars_bounds</a>
 </li>
@@ -372,7 +398,11 @@
 </li>
         <li><a href="histfactory.html#cmdoption-arg-regions-folders-base-name">regions_folders_base_name</a>
 </li>
-        <li><a href="histfactory.html#cmdoption-arg-verbose">verbose</a>, <a href="likelihood.html#cmdoption-arg-verbose">[1]</a>
+        <li><a href="sampler.html#cmdoption-arg-sampler-input-file">sampler_input_file</a>
+</li>
+        <li><a href="sampler.html#cmdoption-arg-vectorize">vectorize</a>
+</li>
+        <li><a href="histfactory.html#cmdoption-arg-verbose">verbose</a>, <a href="likelihood.html#cmdoption-arg-verbose">[1]</a>, <a href="sampler.html#cmdoption-arg-verbose">[2]</a>
 </li>
         <li><a href="histfactory.html#cmdoption-arg-workspace-folder">workspace_folder</a>
 </li>
@@ -399,8 +429,6 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data.html#DNNLikelihood.Data">Data (class in DNNLikelihood)</a>
 </li>
-      <li><a href="sampler.html#DNNLikelihood.Sampler.data_file">data_file (DNNLikelihood.Sampler attribute)</a>
-</li>
       <li><a href="data.html#DNNLikelihood.Data.data_input_file">data_input_file (DNNLikelihood.Data attribute)</a>
 </li>
       <li><a href="data.html#DNNLikelihood.Data.data_X">data_X (DNNLikelihood.Data attribute)</a>
@@ -409,10 +437,10 @@
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.define_generic_pars_labels">define_generic_pars_labels() (in module DNNLikelihood.utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data.html#DNNLikelihood.Data.define_scalers">define_scalers() (DNNLikelihood.Data method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data.html#DNNLikelihood.Data.define_test_fraction">define_test_fraction() (DNNLikelihood.Data method)</a>
 </li>
       <li><a href="inference.html#DNNLikelihood.inference.delta_chi2_from_CI">delta_chi2_from_CI() (in module DNNLikelihood.inference)</a>
@@ -438,7 +466,11 @@
 </li>
       </ul></li>
       <li><a href="likelihood.html#DNNLikelihood.Likelihood.figures_list">figures_list (DNNLikelihood.Likelihood attribute)</a>
+
+      <ul>
+        <li><a href="sampler.html#DNNLikelihood.Sampler.figures_list">(DNNLikelihood.Sampler attribute)</a>
 </li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="inference.html#DNNLikelihood.inference.find_maximum">find_maximum() (in module DNNLikelihood.inference)</a>
@@ -556,9 +588,14 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="likelihood.html#DNNLikelihood.Likelihood">Likelihood (class in DNNLikelihood)</a>
+      <li>
+    likelihood
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-likelihood">command line option</a>
 </li>
-      <li><a href="sampler.html#DNNLikelihood.Sampler.likelihood">likelihood (DNNLikelihood.Sampler attribute)</a>
+      </ul></li>
+      <li><a href="likelihood.html#DNNLikelihood.Likelihood">Likelihood (class in DNNLikelihood)</a>
 </li>
       <li>
     likelihood_input_file
@@ -581,20 +618,33 @@
 </li>
       <li><a href="likelihood.html#DNNLikelihood.Likelihood.likelihood_output_pickle_file">likelihood_output_pickle_file (DNNLikelihood.Likelihood attribute)</a>
 </li>
+      <li>
+    likelihood_script_file
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-likelihood-script-file">command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="likelihood.html#DNNLikelihood.Likelihood.likelihood_script_file">likelihood_script_file (DNNLikelihood.Likelihood attribute)</a>
 
       <ul>
         <li><a href="sampler.html#DNNLikelihood.Sampler.likelihood_script_file">(DNNLikelihood.Sampler attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="histfactory.html#DNNLikelihood.Histfactory.likelihoods_dict">likelihoods_dict (DNNLikelihood.Histfactory attribute)</a>
 </li>
       <li><a href="data.html#DNNLikelihood.Data.load_on_RAM">load_on_RAM (DNNLikelihood.Data attribute)</a>
 </li>
-      <li><a href="histfactory.html#DNNLikelihood.Histfactory.log">log (DNNLikelihood.Histfactory attribute)</a>, <a href="likelihood.html#DNNLikelihood.Histfactory.log">[1]</a>
+      <li><a href="histfactory.html#DNNLikelihood.Histfactory.log">log (DNNLikelihood.Histfactory attribute)</a>
+
+      <ul>
+        <li><a href="likelihood.html#DNNLikelihood.Likelihood.log">(DNNLikelihood.Likelihood attribute)</a>
 </li>
+        <li><a href="sampler.html#DNNLikelihood.Sampler.log">(DNNLikelihood.Sampler attribute)</a>
+</li>
+      </ul></li>
       <li>
     logpdf
 
@@ -629,12 +679,19 @@
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.metric_name_abbreviate">metric_name_abbreviate() (in module DNNLikelihood.utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils.html#DNNLikelihood.utils.metric_name_unabbreviate">metric_name_unabbreviate() (in module DNNLikelihood.utils)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sampler.html#DNNLikelihood.Sampler.moves">moves (DNNLikelihood.Sampler attribute)</a>
 </li>
+      <li>
+    moves_str
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-moves-str">command line option</a>
+</li>
+      </ul></li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.moves_str">moves_str (DNNLikelihood.Sampler attribute)</a>
 </li>
   </ul></td>
@@ -660,16 +717,30 @@
         <li><a href="sampler.html#DNNLikelihood.Sampler.name">(DNNLikelihood.Sampler attribute)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sampler.html#DNNLikelihood.Sampler.ndims">ndims (DNNLikelihood.Sampler attribute)</a>
 </li>
+      <li>
+    new_sampler
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-new-sampler">command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sampler.html#DNNLikelihood.Sampler.new_sampler">new_sampler (DNNLikelihood.Sampler attribute)</a>
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.next_power_of_two">next_power_of_two() (in module DNNLikelihood.utils)</a>
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.normalize_weights">normalize_weights() (in module DNNLikelihood.utils)</a>
 </li>
+      <li>
+    nsteps
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-nsteps">command line option</a>
+</li>
+      </ul></li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.nsteps">nsteps (DNNLikelihood.Sampler attribute)</a>
 </li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.nwalkers">nwalkers (DNNLikelihood.Sampler attribute)</a>
@@ -680,8 +751,6 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sampler.html#DNNLikelihood.Sampler.output_files_base_path">output_files_base_path (DNNLikelihood.Sampler attribute)</a>
-</li>
       <li>
     output_folder
 
@@ -689,12 +758,12 @@
         <li><a href="histfactory.html#cmdoption-arg-output-folder">command line option</a>, <a href="likelihood.html#cmdoption-arg-output-folder">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data.html#DNNLikelihood.Data.output_folder">output_folder (DNNLikelihood.Data attribute)</a>
 
       <ul>
-        <li><a href="histfactory.html#DNNLikelihood.Histfactory.output_folder">(DNNLikelihood.Histfactory attribute)</a>, <a href="likelihood.html#DNNLikelihood.Histfactory.output_folder">[1]</a>
+        <li><a href="histfactory.html#DNNLikelihood.Histfactory.output_folder">(DNNLikelihood.Histfactory attribute)</a>
+</li>
+        <li><a href="likelihood.html#DNNLikelihood.Likelihood.output_folder">(DNNLikelihood.Likelihood attribute)</a>
 </li>
         <li><a href="sampler.html#DNNLikelihood.Sampler.output_folder">(DNNLikelihood.Sampler attribute)</a>
 </li>
@@ -705,6 +774,13 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    parallel_CPU
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-parallel-cpu">command line option</a>
+</li>
+      </ul></li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.parallel_CPU">parallel_CPU (DNNLikelihood.Sampler attribute)</a>
 </li>
       <li>
@@ -787,7 +863,7 @@
 </li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.plot_chains">plot_chains() (DNNLikelihood.Sampler method)</a>
 </li>
-      <li><a href="sampler.html#DNNLikelihood.Sampler.plot_chains_logprob">plot_chains_logprob() (DNNLikelihood.Sampler method)</a>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.plot_chains_logpdf">plot_chains_logpdf() (DNNLikelihood.Sampler method)</a>
 </li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.plot_dist">plot_dist() (DNNLikelihood.Sampler method)</a>
 </li>
@@ -838,6 +914,21 @@
 </li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.sampler">sampler (DNNLikelihood.Sampler attribute)</a>
 </li>
+      <li>
+    sampler_input_file
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-sampler-input-file">command line option</a>
+</li>
+      </ul></li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.sampler_input_file">sampler_input_file (DNNLikelihood.Sampler attribute)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.sampler_output_backend_file">sampler_output_backend_file (DNNLikelihood.Sampler attribute)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.sampler_output_json_file">sampler_output_json_file (DNNLikelihood.Sampler attribute)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.sampler_output_log_file">sampler_output_log_file (DNNLikelihood.Sampler attribute)</a>
+</li>
       <li><a href="data.html#DNNLikelihood.Data.save_data">save_data() (DNNLikelihood.Data method)</a>
 </li>
       <li><a href="histfactory.html#DNNLikelihood.Histfactory.save_histfactory">save_histfactory() (DNNLikelihood.Histfactory method)</a>
@@ -858,10 +949,16 @@
 </li>
       <li><a href="likelihood.html#DNNLikelihood.Likelihood.save_likelihood_script">save_likelihood_script() (DNNLikelihood.Likelihood method)</a>
 </li>
-      <li><a href="utils.html#DNNLikelihood.utils.save_samples">save_samples() (in module DNNLikelihood.utils)</a>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.save_sampler">save_sampler() (DNNLikelihood.Sampler method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.save_sampler_json">save_sampler_json() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="sampler.html#DNNLikelihood.Sampler.save_sampler_log">save_sampler_log() (DNNLikelihood.Sampler method)</a>
+</li>
+      <li><a href="utils.html#DNNLikelihood.utils.save_samples">save_samples() (in module DNNLikelihood.utils)</a>
+</li>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood.set_gpus">set_gpus() (DNNLikelihood.DNN_likelihood method)</a>
 
       <ul>
@@ -875,6 +972,10 @@
       <li><a href="histfactory.html#DNNLikelihood.Histfactory.set_verbosity">set_verbosity() (DNNLikelihood.Histfactory method)</a>
 
       <ul>
+        <li><a href="likelihood.html#DNNLikelihood.Likelihood.set_verbosity">(DNNLikelihood.Likelihood method)</a>
+</li>
+        <li><a href="sampler.html#DNNLikelihood.Sampler.set_verbosity">(DNNLikelihood.Sampler method)</a>
+</li>
         <li><a href="show_prints.html#DNNLikelihood.Verbosity.set_verbosity">(DNNLikelihood.Verbosity method)</a>
 </li>
       </ul></li>
@@ -922,13 +1023,20 @@
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    vectorize
+
+      <ul>
+        <li><a href="sampler.html#cmdoption-arg-vectorize">command line option</a>
+</li>
+      </ul></li>
       <li><a href="sampler.html#DNNLikelihood.Sampler.vectorize">vectorize (DNNLikelihood.Sampler attribute)</a>
 </li>
       <li>
     verbose
 
       <ul>
-        <li><a href="histfactory.html#cmdoption-arg-verbose">command line option</a>, <a href="likelihood.html#cmdoption-arg-verbose">[1]</a>
+        <li><a href="histfactory.html#cmdoption-arg-verbose">command line option</a>, <a href="likelihood.html#cmdoption-arg-verbose">[1]</a>, <a href="sampler.html#cmdoption-arg-verbose">[2]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -936,7 +1044,9 @@
       <li><a href="data.html#DNNLikelihood.Data.verbose">verbose (DNNLikelihood.Data attribute)</a>
 
       <ul>
-        <li><a href="histfactory.html#DNNLikelihood.Histfactory.verbose">(DNNLikelihood.Histfactory attribute)</a>, <a href="likelihood.html#DNNLikelihood.Histfactory.verbose">[1]</a>
+        <li><a href="histfactory.html#DNNLikelihood.Histfactory.verbose">(DNNLikelihood.Histfactory attribute)</a>
+</li>
+        <li><a href="likelihood.html#DNNLikelihood.Likelihood.verbose">(DNNLikelihood.Likelihood attribute)</a>
 </li>
         <li><a href="sampler.html#DNNLikelihood.Sampler.verbose">(DNNLikelihood.Sampler attribute)</a>
 </li>

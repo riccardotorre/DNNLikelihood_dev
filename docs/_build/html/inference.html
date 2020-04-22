@@ -111,6 +111,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plots.html">Notes on plots</a></li>
 <li class="toctree-l2"><a class="reference internal" href="show_prints.html">Verbosity mode</a></li>
 </ul>
 </li>
@@ -262,19 +263,16 @@
 <dt id="DNNLikelihood.inference.weighted_quantiles">
 <code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">weighted_quantiles</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">quantiles=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">data_sorted=False</em>, <em class="sig-param">onesided=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#weighted_quantiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.weighted_quantiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Very close to numpy.percentile, but supports weights.
-NOTE: quantiles should be in [0, 1]!
-:param data: numpy.array with data
-:param quantiles: array-like with many quantiles needed
-:param weights: array-like of the same length as <cite>array</cite>
-:param data_sorted: bool, if True, then will avoid sorting of</p>
+NOTE: quantiles should be in [0, 1]!</p>
 <blockquote>
-<div><p>initial array</p>
+<div><ul class="simple">
+<li><p>param data numpy.array with data</p></li>
+<li><p>param quantiles array-like with many quantiles needed</p></li>
+<li><p>param weights array-like of the same length as <cite>array</cite></p></li>
+<li><p>param data_sorted bool, if True, then will avoid sorting of initial array</p></li>
+<li><p>return numpy.array with computed quantiles.</p></li>
+</ul>
 </div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>numpy.array with computed quantiles.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">

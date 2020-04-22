@@ -80,13 +80,13 @@ def filename_without_datetime(name):
     else:
         file = file+"_"+extension
 
-def check_rename_file(path,timestamp=None):
+def check_rename_file(path,timestamp=None,verbose=True):
     if os.path.exists(path):
         if timestamp is None:
             now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         else:
             now = timestamp
-        print("The file", path, "already exists.")
+        print("The file", path, "already exists. Renaming the old file.",show=verbose)
         file, extension = os.path.splitext(path)
         try:
             match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', file).group()

@@ -63,8 +63,8 @@ class Likelihood(show_prints.Verbosity):
         - **Produces file**
 
             - :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`
-            - :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`
-            - :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`
+            - :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`
+            - :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -119,9 +119,12 @@ class Likelihood(show_prints.Verbosity):
                 self.likelihood_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
                 self.likelihood_script_file = path.join(self.output_folder, self.name+"_script.py")
                 self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
-
+            self.save_likelihood_json(overwrite=True, verbose=verbose_sub)
+            self.save_likelihood_log(overwrite=True, verbose=verbose_sub)
+            
     def __check_define_name(self):
         """
+        Private method that defines the :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attribute.
         If :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` is ``None`` it replaces it with 
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_likelihood"``,
         otherwise it appends the suffix "_likelihood" (preventing duplication if it is already present).
@@ -131,13 +134,6 @@ class Likelihood(show_prints.Verbosity):
             self.name = "model_"+timestamp+"_likelihood"
         else:
             self.name = utils.check_add_suffix(self.name, "_likelihood")
-
-    #def set_verbose(self, verbose=True):
-    #    show_prints.verbose = verbose
-    #    print(show_prints.verbose)
-
-    #def hello_world(self):s
-    #    print("hello world")
 
     def __load_likelihood(self, verbose=None):
         """
@@ -181,13 +177,18 @@ class Likelihood(show_prints.Verbosity):
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {
-            "action": "loaded", "file name": path.split(self.likelihood_input_json_file)[-1], "file path": self.likelihood_input_json_file}
-        print('Likelihood loaded in', str(end-start), '.',show=verbose)
-        self.save_likelihood_log(overwrite=True, verbose=verbose_sub)
+            "action": "loaded", "files names": [path.split(self.likelihood_input_json_file)[-1],
+                                                path.split(self.likelihood_input_log_file)[-1],
+                                                path.split(self.likelihood_input_pickle_file)[-1]],
+                                "files paths": [self.likelihood_input_json_file,
+                                                self.likelihood_input_log_file,
+                                                self.likelihood_input_pickle_file]}
+        print('Loaded likelihood in', str(end-start), '.',show=verbose)
+        time.sleep(2)  # Removing this line prevents multiprocessing to work properly on Windows
 
     def __set_pars_labels(self, pars_labels):
         """
-        Returns the ``pars_labels`` choice based on the ``pars_labels`` input.
+        Private method that returns the ``pars_labels`` choice based on the ``pars_labels`` input.
 
         - **Arguments**
 
@@ -213,7 +214,7 @@ class Likelihood(show_prints.Verbosity):
     def save_likelihood_log(self, overwrite=False, verbose=None):
         """
         Saves the content of the :attr:`Likelihood.log <DNNLikelihood.Likelihood.log>` attribute in the file
-        :attr:`Likelihood.likelihood_input_log_file <DNNLikelihood.Likelihood.likelihood_input_log_file>`
+        :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`
 
         This method is called by the methods
         
@@ -223,6 +224,9 @@ class Likelihood(show_prints.Verbosity):
         - :meth:`Likelihood.plot_logpdf_par <DNNLikelihood.Likelihood.plot_logpdf_par>` with ``overwrite=True`` and ``verbose=verbose_sub``
         - :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` with ``overwrite=overwrite`` and ``verbose=verbose``
         - :meth:`Likelihood.save_likelihood_script <DNNLikelihood.Likelihood.save_likelihood_script>` with ``overwrite=True`` and ``verbose=verbose_sub``
+
+        This method is called by the
+        :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` method to save the entire object.
 
         - **Arguments**
 
@@ -234,7 +238,6 @@ class Likelihood(show_prints.Verbosity):
                     
                     - **type**: ``bool``
                     - **default**: ``False``
-
 
             - **verbose**
             
@@ -248,11 +251,10 @@ class Likelihood(show_prints.Verbosity):
 
             - :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`
         """
-        verbose, _ = self.set_verbosity(verbose)
-        time.sleep(1)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.likelihood_output_log_file)
+            utils.check_rename_file(self.likelihood_output_log_file, verbose=verbose_sub)
         #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         #self.log[timestamp] = {"action": "saved", "file name": path.split(self.likelihood_output_log_file)[-1], "file path": self.likelihood_output_log_file}
         dictionary = self.log
@@ -264,25 +266,12 @@ class Likelihood(show_prints.Verbosity):
 
     def save_likelihood_json(self, overwrite=False, verbose=None):
         """
-        ``Likelihood`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
-        :attr:`Likelihood.likelihood_input_json_file <DNNLikelihood.Likelihood.likelihood_input_json_file>`,
-        :attr:`Likelihood.likelihood_input_json_file <DNNLikelihood.Likelihood.likelihood_input_json_file>`,
-        and :attr:`Likelihood.likelihood_input_pickle_file <DNNLikelihood.Likelihood.likelihood_input_pickle_file>`.
-        This method saves the .json file containing all class attributes but the attributes
-
-            - :attr:`Likelihood.log <DNNLikelihood.Histfactory.log>`
-            - :attr:`Likelihood.logpdf <DNNLikelihood.Histfactory.logpdf>`
-            - :attr:`Likelihood.verbose <DNNLikelihood.Histfactory.verbose>`
-            - :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Histfactory.likelihood_input_file>`
-            - :attr:`Likelihood.likelihood_input_json_file <DNNLikelihood.Histfactory.likelihood_input_json_file>`
-            - :attr:`Likelihood.likelihood_input_log_file <DNNLikelihood.Histfactory.likelihood_input_log_file>`
-            - :attr:`Likelihood.likelihood_input_pickle_file <DNNLikelihood.Histfactory.likelihood_input_pickle_file>`
-            - :attr:`Likelihood.X_logpdf_max <DNNLikelihood.Histfactory.X_logpdf_max>`
-            - :attr:`Likelihood.Y_logpdf_max <DNNLikelihood.Histfactory.Y_logpdf_max>`
-            - :attr:`Likelihood.X_prof_logpdf_max <DNNLikelihood.Histfactory.X_prof_logpdf_max>`
-            - :attr:`Likelihood.Y_prof_logpdf_max <DNNLikelihood.Histfactory.Y_prof_logpdf_max>`
-            - :attr:`Likelihood.X_prof_logpdf_max_tmp <DNNLikelihood.Histfactory.X_prof_logpdf_max_tmp>`
-            - :attr:`Likelihood.Y_prof_logpdf_max_tmp <DNNLikelihood.Histfactory.Y_prof_logpdf_max_tmp>`
+        :class:`Likelihood <DNNLikelihood.Likelihood>` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
+        :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`,
+        :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`,
+        and :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`.
+        See the :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` method documentation
+        for the list of saved attributes.
 
         This method is called by the
         :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` method to save the entire object.
@@ -290,21 +279,21 @@ class Likelihood(show_prints.Verbosity):
         - **Arguments**
 
             - **overwrite**
-
-                It determines whether an existing file gets overwritten or if a new file is created.
-                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used
-                to append a time-stamp to the file name.
-
+            
+                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
+                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
+                function.
+                    
                     - **type**: ``bool``
                     - **default**: ``False``
 
             - **verbose**
-
-                Verbosity mode.
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
-
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
                     - **type**: ``bool``
-                    - **default**: ``None``
+                    - **default**: ``None`` 
 
         - **Produces file**
 
@@ -313,10 +302,11 @@ class Likelihood(show_prints.Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.likelihood_output_json_file)
+            utils.check_rename_file(self.likelihood_output_json_file, verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {
-            "action": "saved", "file name": path.split(self.likelihood_output_json_file)[-1], "file path": self.likelihood_output_json_file}
+        self.log[timestamp] = {"action": "saved", 
+                               "file name": path.split(self.likelihood_output_json_file)[-1], 
+                               "file path": self.likelihood_output_json_file}
         dictionary = utils.dic_minus_keys(self.__dict__, ["log", "logpdf", "verbose",
                                                           "likelihood_input_file", "likelihood_input_json_file",
                                                           "likelihood_input_log_file","likelihood_input_pickle_file",
@@ -331,19 +321,22 @@ class Likelihood(show_prints.Verbosity):
 
     def save_likelihood_pickle(self, overwrite=False, verbose=None):
         """
-        ``Likelihood`` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
-        :attr:`Likelihood.likelihood_input_json_file <DNNLikelihood.Likelihood.likelihood_input_json_file>`,
-        :attr:`Likelihood.likelihood_input_json_file <DNNLikelihood.Likelihood.likelihood_input_json_file>`,
-        and :attr:`Likelihood.likelihood_input_pickle_file <DNNLikelihood.Likelihood.likelihood_input_pickle_file>`.
+        :class:`Likelihood <DNNLikelihood.Likelihood>` objects are saved to three files: a .json, a .log, and a .pickle, corresponding to the three attributes
+        :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`,
+        :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`,
+        and :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`.
+        See the :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` method documentation
+        for the list of saved attributes.
+        
         This method saves the .pickle file making a dump of the following attributes (in order)
 
-            - :attr:`Likelihood.logpdf <DNNLikelihood.Histfactory.logpdf>`
-            - :attr:`Likelihood.X_logpdf_max <DNNLikelihood.Histfactory.X_logpdf_max>`
-            - :attr:`Likelihood.Y_logpdf_max <DNNLikelihood.Histfactory.Y_logpdf_max>`
-            - :attr:`Likelihood.X_prof_logpdf_max <DNNLikelihood.Histfactory.X_prof_logpdf_max>`
-            - :attr:`Likelihood.Y_prof_logpdf_max <DNNLikelihood.Histfactory.Y_prof_logpdf_max>`
+            - :attr:`Likelihood.logpdf <DNNLikelihood.Likelihood.logpdf>`
+            - :attr:`Likelihood.X_logpdf_max <DNNLikelihood.Likelihood.X_logpdf_max>`
+            - :attr:`Likelihood.Y_logpdf_max <DNNLikelihood.Likelihood.Y_logpdf_max>`
+            - :attr:`Likelihood.X_prof_logpdf_max <DNNLikelihood.Likelihood.X_prof_logpdf_max>`
+            - :attr:`Likelihood.Y_prof_logpdf_max <DNNLikelihood.Likelihood.Y_prof_logpdf_max>`
 
-        The :attr:`Likelihood.logpdf <DNNLikelihood.Histfactory.logpdf>` attribute is not directly pickable, for this reason
+        The :attr:`Likelihood.logpdf <DNNLikelihood.Likelihood.logpdf>` attribute is not directly pickable, for this reason
         it is dump using the |cloudpickle_link| package, which offers mote flexible python objects serialization.
 
         This method is called by the
@@ -352,21 +345,21 @@ class Likelihood(show_prints.Verbosity):
         - **Arguments**
 
             - **overwrite**
-
-                It determines whether an existing file gets overwritten or if a new file is created.
-                If ``overwrite=True`` the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` is used
-                to append a time-stamp to the file name.
-
+            
+                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
+                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
+                function.
+                    
                     - **type**: ``bool``
                     - **default**: ``False``
 
             - **verbose**
-
-                Verbosity mode.
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
-
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
                     - **type**: ``bool``
-                    - **default**: ``None``
+                    - **default**: ``None`` 
 
         - **Produces file**
 
@@ -379,7 +372,8 @@ class Likelihood(show_prints.Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.likelihood_output_pickle_file)
+            utils.check_rename_file(
+                self.likelihood_output_pickle_file, verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {
             "action": "saved", "file name": path.split(self.likelihood_output_pickle_file)[-1], "file path": self.likelihood_output_pickle_file}
@@ -395,6 +389,66 @@ class Likelihood(show_prints.Verbosity):
 
     def save_likelihood(self, overwrite=False, verbose=True):
         """
+        :class:`Likelihood <DNNLikelihood.Likelihood>` objects are saved according to the following table.
+
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        | Saved | Atrributes                                                                                                       | Method                                                                                           |
+        +=======+==================================================================================================================+==================================================================================================+
+        |   X   | :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>`                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.likelihood_input_json_file <DNNLikelihood.Likelihood.likelihood_input_json_file>`              |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.likelihood_input_log_file <DNNLikelihood.Likelihood.likelihood_input_log_file>`                |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.likelihood_input_pickle_file <DNNLikelihood.Likelihood.likelihood_input_pickle_file>`          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.verbose <DNNLikelihood.Likelihood.verbose>`                                                    |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.X_prof_logpdf_max_tmp <DNNLikelihood.Likelihood.X_prof_logpdf_max_tmp>`                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.Y_prof_logpdf_max_tmp <DNNLikelihood.Likelihood.Y_prof_logpdf_max_tmp>`                        |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Likelihood.log <DNNLikelihood.Likelihood.log>`                                                            | :meth:`Likelihood.save_likelihood_log <DNNLikelihood.Likelihood.save_likelihood_log>`            |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Likelihood.figure_files_base_path <DNNLikelihood.Likelihood.figure_files_base_path>`                      | :meth:`Likelihood.save_likelihood_json <DNNLikelihood.Likelihood.save_likelihood_json>`          |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.figures_list <DNNLikelihood.Likelihood.figures_list>`                                          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.generic_pars_labels <DNNLikelihood.Likelihood.generic_pars_labels>`                            |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`            |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`              |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.likelihood_script_file <DNNLikelihood.Likelihood.likelihood_script_file>`                      |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.logpdf_args <DNNLikelihood.Likelihood.logpdf_args>`                                            |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>`                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.pars_bounds <DNNLikelihood.Likelihood.pars_bounds>`                                            |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.pars_init <DNNLikelihood.Likelihood.pars_init>`                                                |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>`                                            |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.pars_pos_nuis <DNNLikelihood.Likelihood.pars_pos_nuis>`                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.pars_pos_poi <DNNLikelihood.Likelihood.pars_pos_poi>`                                          |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Likelihood.logpdf <DNNLikelihood.Likelihood.logpdf>`                                                      | :meth:`Likelihood.save_likelihood_pickle <DNNLikelihood.Likelihood.save_likelihood_pickle>`      |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.X_logpdf_max <DNNLikelihood.Likelihood.X_logpdf_max>`                                          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.Y_logpdf_max <DNNLikelihood.Likelihood.Y_logpdf_max>`                                          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.X_prof_logpdf_max <DNNLikelihood.Likelihood.X_prof_logpdf_max>`                                |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.Y_prof_logpdf_max <DNNLikelihood.Likelihood.Y_prof_logpdf_max>`                                |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+
         This methos calls in order the :meth:`Likelihood.save_likelihood_pickle <DNNLikelihood.Likelihood.save_likelihood_pickle>`,
         :meth:`Likelihood.save_likelihood_json <DNNLikelihood.Likelihood.save_likelihood_json>`, and
         :meth:`Likelihood.save_likelihood_log <DNNLikelihood.Likelihood.save_likelihood_log>` methods to save the entire object.
@@ -421,12 +475,12 @@ class Likelihood(show_prints.Verbosity):
         - **Arguments**
 
             - **verbose**
-
-                Verbosity mode.
-                See the :ref:`verbosity mode <verbosity_mode>` for general behavior.
-
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
                     - **type**: ``bool``
-                    - **default**: ``None``
+                    - **default**: ``None`` 
 
         - **Produces file**
 
@@ -435,7 +489,7 @@ class Likelihood(show_prints.Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         with open(self.likelihood_script_file, 'w') as out_file:
             out_file.write("import sys\n" +
-                           "sys.path.append('../DNNLikelihood_dev/source')\n" +
+                           "sys.path.append('../../source')\n" +
                            "import DNNLikelihood\n"+"\n" +
                            "lik = DNNLikelihood.Likelihood(name=None,\n" +
                            "\tlikelihood_input_file="+r"'" + r"%s" % ((self.likelihood_output_json_file).replace(sep, '/'))+"', \n"+
@@ -449,8 +503,9 @@ class Likelihood(show_prints.Verbosity):
                            "logpdf_args = lik.logpdf_args\n" +
                            "pars_pos_poi = lik.pars_pos_poi\n" +
                            "pars_pos_nuis = lik.pars_pos_nuis\n" +
-                           "pars_init_vec = lik.X_prof_logpdf_max.tolist()\n" +
+                           "pars_init_vec = lik.X_prof_logpdf_max\n" +
                            "pars_labels = lik.pars_labels\n" +
+                           "pars_bounds = lik.pars_bounds\n" +
                            "output_folder = lik.output_folder"
                            )
         print("File", self.likelihood_script_file, "correctly generated.",show=verbose)
@@ -477,7 +532,7 @@ class Likelihood(show_prints.Verbosity):
 
             - **x_pars**
 
-                Value (values) of the parameters for which logpdf is computed.
+                Values of the parameters for which logpdf is computed.
                 It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``) 
                 or a list of points corresponding to an array with shape ``(n_points,n_pars)``, depending on the 
                 equivalent argument accepted by ``Likelihood.logpdf``.
@@ -554,8 +609,6 @@ class Likelihood(show_prints.Verbosity):
 .. |scipy_optimize_minimize_link| raw:: html
     
     <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html"  target="_blank"> scipy.optimize.minimize</a>
-        
-        
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if self.X_logpdf_max is None:
@@ -717,7 +770,7 @@ class Likelihood(show_prints.Verbosity):
         self.log[timestamp] = {"action": "computed profiled maxima", "pars": pars, "pars_ranges": pars_ranges, "number of maxima": len(X_tmp)}
         self.save_likelihood_log(overwrite=True, verbose=verbose_sub)
 
-    def plot_logpdf_par(self, pars=0, npoints=100, pars_init=None, pars_labels="original", overwrite=False, verbose=None):
+    def plot_logpdf_par(self, pars=[[0,0,1]], npoints=100, pars_init=None, pars_labels="original", overwrite=False, verbose=None):
         """
         Plots the logpdf as a function of of the parameter ``par`` in the range ``(min,max)``
         using a number ``npoints`` of points. Only the parameter ``par`` is veried, while all other parameters are kept
@@ -771,11 +824,11 @@ class Likelihood(show_prints.Verbosity):
                     - **type**: ``bool``
                     - **default**: ``False``
 
-
             - **verbose**
             
                 Verbosity mode. 
                 See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
                     
                     - **type**: ``bool``
                     - **default**: ``None`` 
@@ -783,7 +836,6 @@ class Likelihood(show_prints.Verbosity):
         - **Produces files**
 
             - :attr:`Likelihood.figure_files_base_path <DNNLikelihood.Likelihood.figure_files_base_path>` ``+ "_par_" + str(par[0]) + ".pdf"`` for each ``par`` in ``pars``.
-            
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         plt.style.use(mplstyle_path)
@@ -813,6 +865,7 @@ class Likelihood(show_prints.Verbosity):
                 plt.show()
             plt.close()
             timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-            self.log[timestamp] = {
-                "action": "saved figure", "file name": path.split(figure_filename)[-1], "file path": figure_filename}
-            self.save_likelihood_log(overwrite=True, verbose=verbose_sub)
+            self.log[timestamp] = {"action": "saved figure", 
+                                   "file name": path.split(figure_filename)[-1], 
+                                   "file path": figure_filename}
+        self.save_likelihood_log(overwrite=True, verbose=verbose_sub)

@@ -1,4 +1,5 @@
 .. _verbosity_mode:
+
 Verbosity mode
 --------------
 
@@ -70,8 +71,6 @@ To further clarify the verbosity implementation a scheme how classes are structu
             if verbose:
                 plt.show(...)
             ...
-
-.. _histfactory_arguments:
 
 Code documentation
 ^^^^^^^^^^^^^^^^^^
