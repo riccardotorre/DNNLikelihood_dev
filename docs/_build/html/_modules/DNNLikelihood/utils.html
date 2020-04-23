@@ -165,16 +165,16 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">fpdf</span> <span class="kn">import</span> <span class="n">FPDF</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">fpdf</span> <span class="k">import</span> <span class="n">FPDF</span>
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">timeit</span> <span class="k">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">show_prints</span>
-<span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="nb">print</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">show_prints</span>
+<span class="kn">from</span> <span class="nn">.show_prints</span> <span class="k">import</span> <span class="nb">print</span>
 
 <span class="c1">#class InputError(Exception):</span>
 <span class="c1">#    &quot;&quot;&quot;Base class for data error exceptions&quot;&quot;&quot;</span>
@@ -241,13 +241,13 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">file</span> <span class="o">=</span> <span class="n">file</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">extension</span>
 
-<div class="viewcode-block" id="check_rename_file"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.check_rename_file">[docs]</a><span class="k">def</span> <span class="nf">check_rename_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="check_rename_file"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.check_rename_file">[docs]</a><span class="k">def</span> <span class="nf">check_rename_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">now</span> <span class="o">=</span> <span class="n">timestamp</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The file&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;already exists.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The file&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;already exists. Renaming the old file.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">file</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d</span><span class="si">{4}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
