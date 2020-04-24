@@ -6,10 +6,10 @@ Quick start
 
 Requirements
 ------------
-Several packages are required by the DNNLikelihood module. We provide a script to automatically set up the environment.
-And a script for environment check, which allows the user to tune its existing environment to run the DNNLikelihood 
+Several packages are required by the DNNLikelihood module. We provide a script to automatically set up the environment
+and a script for environment check, which allows the user to tune its existing environment to run the DNNLikelihood 
 package. We also list here all required packages with links to their documentation. The list is divided in general
-requirements, i.e. packages that are needed by most of the objects and functions and the various classes with their
+requirements, i.e. packages that are needed by most of the objects and functions, and the various classes with their
 specific requirements.
 
 General requirements

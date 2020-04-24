@@ -165,13 +165,13 @@
 <span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">builtins</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">timeit</span> <span class="k">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="k">import</span> <span class="n">StandardScaler</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">show_prints</span><span class="p">,</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="nb">print</span>
@@ -182,7 +182,7 @@
 <span class="sd">    This class contains the ``Data`` object representing the dataset used for training, validating and testing</span>
 <span class="sd">    the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an existing ``Data`` obkect.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Data.__init__"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="Data.__init__"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">data_X</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">data_Y</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -210,7 +210,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="p">{</span><span class="n">timestamp</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;created&quot;</span><span class="p">}}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_name</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;float64&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_X</span> <span class="o">=</span> <span class="n">data_X</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_Y</span> <span class="o">=</span> <span class="n">data_Y</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_data</span><span class="p">()</span>

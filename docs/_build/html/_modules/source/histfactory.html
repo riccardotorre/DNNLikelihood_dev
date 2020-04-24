@@ -1,0 +1,501 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>source.histfactory &mdash; DNNLikelihood</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Python module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>source.histfactory</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for source.histfactory</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Histfactory&quot;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">builtins</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="k">import</span> <span class="n">listdir</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">stat</span>
+<span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
+<span class="kn">import</span> <span class="nn">pickle</span>
+<span class="c1">#import cloudpickle as pickle</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">jsonpatch</span><span class="o">,</span> <span class="nn">requests</span><span class="o">,</span> <span class="nn">jsonschema</span>
+<span class="kn">from</span> <span class="nn">timeit</span> <span class="k">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
+<span class="kn">from</span> <span class="nn">jsonpatch</span> <span class="k">import</span> <span class="n">JsonPatch</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;../&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pyhf</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.likelihood</span> <span class="k">import</span> <span class="n">Likelihood</span>
+
+<span class="n">ShowPrints</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">ShowPrints</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ShowPrints</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ShowPrints</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">builtins</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ShowPrints</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ShowPrints</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">builtins</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Histfactory"><a class="viewcode-back" href="../../histfactory.html#source.histfactory.Histfactory">[docs]</a><span class="k">class</span> <span class="nc">Histfactory</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    **The HistFactory object**</span>
+
+<span class="sd">    This class is a container for a ATLAS histfactory object which allows one to import histfactory workspaces, </span>
+<span class="sd">    read parameters and logpdf using the pyhf package, create ``likelihood`` objects (see :ref:`The Likelihood object &lt;likelihood_class&gt;`) </span>
+<span class="sd">    and save them for later use.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Histfactory.__init__"><a class="viewcode-back" href="../../histfactory.html#source.histfactory.Histfactory.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">workspace_folder</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">regions_folders_base_name</span> <span class="o">=</span> <span class="s2">&quot;Region&quot;</span><span class="p">,</span>
+                 <span class="n">bkg_files_base_name</span><span class="o">=</span><span class="s2">&quot;BkgOnly&quot;</span><span class="p">,</span>
+                 <span class="n">patch_files_base_name</span> <span class="o">=</span><span class="s2">&quot;patch&quot;</span><span class="p">,</span>
+                 <span class="n">out_folder</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">histfactory_input_file</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Instantiate the ``histfactory`` object. </span>
+<span class="sd">        If ``histfactory_input_file`` has the default value ``None``, the other arguments are parsed, otherwise the object is entirely</span>
+<span class="sd">        reconstructed from the input file. The input file should be a .pickle file exported through the ``histfactory.save_histfactory()`` method.</span>
+<span class="sd">        Method arguments: see Class arguments</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span> <span class="o">=</span> <span class="n">histfactory_input_file</span>
+        <span class="sd">&quot;&quot;&quot;Docstring for instance attribute spam.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">workspace_folder</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;histfactory_&quot;</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions_folders_base_name</span> <span class="o">=</span> <span class="n">regions_folders_base_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bkg_files_base_name</span> <span class="o">=</span> <span class="n">bkg_files_base_name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span> <span class="o">=</span> <span class="n">patch_files_base_name</span>
+            <span class="k">if</span> <span class="n">out_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">out_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">out_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">out_folder</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_file_base_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;_histfactory&quot;</span>
+            <span class="n">subfolders</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">,</span><span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">,</span><span class="n">f</span><span class="p">))]</span>
+            <span class="n">regions</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">regions_folders_base_name</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">regions</span><span class="p">,</span><span class="n">subfolders</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__import_histfactory</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.pickle&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;.pickle&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__load_histfactory</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__import_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method used by the ``__init__`` one to import all likelihoods in ``load_model=False`` mode.</span>
+<span class="sd">        It scans through the regions folders and build the ``histfactory.likelihoods_dict`` dictionary adding items </span>
+<span class="sd">        corresponding to the keys *&quot;signal_region&quot;*, *&quot;bg_only_file&quot;*, *&quot;patch_file&quot;*, *&quot;name&quot;*, </span>
+<span class="sd">        and *&quot;model_loaded = False&quot;*.</span>
+<span class="sd">        The method takes no arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">region_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">region</span><span class="p">]</span>
+            <span class="n">regionfiles</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">region_path</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">listdir</span><span class="p">(</span><span class="n">region_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">region_path</span><span class="p">,</span> <span class="n">f</span><span class="p">))]</span>
+            <span class="n">bgonly_file</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">regionfiles</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bkg_files_base_name</span> <span class="ow">in</span> <span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">signal_patch_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">regionfiles</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bgonly_file</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">signal_patch_files</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">range_region</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">len</span><span class="p">(</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">signal_patch_files</span><span class="p">)))</span>
+                <span class="n">dict_region</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">range_region</span><span class="p">,</span> <span class="p">[{</span><span class="s2">&quot;signal_region&quot;</span><span class="p">:</span> <span class="n">region</span><span class="p">,</span> 
+                                                       <span class="s2">&quot;bg_only_file&quot;</span><span class="p">:</span> <span class="n">bgonly_file</span><span class="p">,</span> 
+                                                       <span class="s2">&quot;patch_file&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
+                                                       <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;region_&quot;</span> <span class="o">+</span> <span class="n">region</span> <span class="o">+</span> <span class="s2">&quot;_patch_&quot;</span> <span class="o">+</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">),</span>
+                                                       <span class="s2">&quot;model_loaded&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">signal_patch_files</span><span class="p">]))</span>
+                <span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">likelihoods_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">dict_region</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Likelihoods import from folder&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">[</span><span class="n">region</span><span class="p">],</span><span class="s2">&quot; failed. Please check background and patch files base name.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;_likelihood&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="n">likelihoods_dict</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Successfully imported&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span><span class="s2">&quot;likelihoods from&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span><span class="s2">&quot;regions.&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__load_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Private method used by the ``__init__`` one to load the ``histfactory`` object from the file ``histfactory.histfactory_input_file``.</span>
+<span class="sd">        The method takes no arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="n">in_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">histfactory_input_file</span>
+        <span class="n">pickle_in</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regions_folders_base_name</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bkg_files_base_name</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_folder</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file_base_name</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">regions</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pickle_in</span><span class="p">)</span>
+        <span class="n">pickle_in</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">statinfo</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Likelihoods loaded in&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s1">&#39;seconds.</span><span class="se">\n</span><span class="s1">File size is &#39;</span><span class="p">,</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Histfactory.import_histfactory"><a class="viewcode-back" href="../../histfactory.html#source.histfactory.Histfactory.import_histfactory">[docs]</a>    <span class="k">def</span> <span class="nf">import_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Imports the likelihoods ``lik_numbers_list`` adding to the corresponding item in the ``histfactory.likelihoods_dict`` </span>
+<span class="sd">        dictionary the items corresponding to the keys *&quot;model&quot;*, *&quot;obs_data&quot;*, *&quot;pars_init&quot;*, *&quot;pars_bounds&quot;*, </span>
+<span class="sd">        *&quot;pars_labels&quot;*, *&quot;pars_pos_poi&quot;*, *&quot;pars_pos_nuis&quot;*.</span>
+<span class="sd">        When using interactive python in Jupyter notebooks the import process shows a progress bar through the widgets module.</span>
+<span class="sd">        Args:</span>
+
+<span class="sd">            - **lik_numbers_list** (list): list of likelihoods numbers (keys of the ``histfactory.likelihood_dict`` dictionary) to</span>
+<span class="sd">                import in ``model_loaded=True`` mode. The dictionary items corresponding to the keys ``lik_numbers_list`` are filled</span>
+<span class="sd">                while all other items are unchanged and remain in ``model_loaded=False`` mode. This allows to only quickly import some</span>
+<span class="sd">                likelihoods corresponding to interesting regions of the parameter space without having to import all the HistFactory </span>
+<span class="sd">                Workspace. If ``lik_numbers_list=None`` all available likelihoods are imported in ``model_loaded=True``.</span>
+<span class="sd">                default: ``None``</span>
+<span class="sd">            - **verbose (bool or int): verbose mode. See :ref:`_verbose_implementation`.</span>
+<span class="sd">                default: ``True``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">ShowPrints</span>
+        <span class="n">ShowPrints</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lik_numbers_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lik_numbers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> 
+        <span class="n">overall_progress</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FloatProgress</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">{</span>
+                                                 <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="s1">&#39;500px&#39;</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="s1">&#39;14px&#39;</span><span class="p">,</span> 
+                                                 <span class="s1">&#39;padding&#39;</span><span class="p">:</span> <span class="s1">&#39;0px&#39;</span><span class="p">,</span> <span class="s1">&#39;margin&#39;</span><span class="p">:</span> <span class="s1">&#39;-5px 0px -20px 0px&#39;</span><span class="p">})</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">overall_progress</span><span class="p">)</span>
+        <span class="n">iterator</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">lik_numbers_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;patch_file&quot;</span><span class="p">],</span> <span class="s2">&quot;already loaded.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">start_patch</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;bg_only_file&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                    <span class="n">bgonly</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;patch_file&quot;</span><span class="p">])</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+                    <span class="n">patch</span> <span class="o">=</span> <span class="n">JsonPatch</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">))</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">jsonpatch</span><span class="o">.</span><span class="n">apply_patch</span><span class="p">(</span><span class="n">bgonly</span><span class="p">,</span> <span class="n">patch</span><span class="p">)</span>
+                <span class="n">ws</span> <span class="o">=</span> <span class="n">pyhf</span><span class="o">.</span><span class="n">Workspace</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span>
+                <span class="n">pars_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">pars_settings</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">ii</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">par_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">pars_int</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">npars</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pars_int</span><span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s2">&quot;slice&quot;</span><span class="p">]]):</span>
+                        <span class="n">pars_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">pars_mapping</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">ii</span><span class="p">:</span> <span class="n">k</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)}}</span>
+                        <span class="n">pars_settings</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">pars_settings</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">ii</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">suggested_bounds</span><span class="p">()[</span><span class="n">ii</span><span class="p">]}}</span>
+                        <span class="n">ii</span> <span class="o">=</span> <span class="n">ii</span><span class="o">+</span><span class="mi">1</span>
+                <span class="n">obs_data</span> <span class="o">=</span> <span class="n">pyhf</span><span class="o">.</span><span class="n">tensorlib</span><span class="o">.</span><span class="n">astensor</span><span class="p">(</span><span class="n">ws</span><span class="o">.</span><span class="n">data</span><span class="p">(</span><span class="n">model</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;obs_data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obs_data</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">suggested_init</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">pars_settings</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_labels&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pars_mapping</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">poi_index</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]))</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">poi_index</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">schema</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;https://scikit-hep.org/pyhf/schemas/1.0.0/workspace.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+                <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">spec</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+                <span class="n">end_patch</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="s2">&quot;patch_file&quot;</span><span class="p">],</span> <span class="s2">&quot;processed in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end_patch</span><span class="o">-</span><span class="n">start_patch</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">)</span>
+            <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterator</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">overall_progress</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lik_numbers_list</span><span class="p">))</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Imported&quot;</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">lik_numbers_list</span><span class="p">),</span><span class="s2">&quot;likelihoods in &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Histfactory.save_histfactory"><a class="viewcode-back" href="../../histfactory.html#source.histfactory.Histfactory.save_histfactory">[docs]</a>    <span class="k">def</span> <span class="nf">save_histfactory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the ``histfactory`` object to the file ``histfactory.out_folder,histfactory.output_file_base_name+&quot;.pickle&quot;`` using pickle.</span>
+<span class="sd">        In particular it does a picle.dump of each of the attribuses ``workspace_folder``, name regions_folders_base_name bkg_files_base_name, patch_files_base_name,</span>
+<span class="sd">        out_folder, output_file_base_name, regions, likelihood_dict in sequence. To save space, in the likelihood_dict the members corresponding</span>
+<span class="sd">        to the keys ``lik_numbers_list`` are saved in the ``model_loaded=True`` mode (so with full model included), while the others</span>
+<span class="sd">        are saved in ``model_loaded=False`` mode.</span>
+<span class="sd">        Args:</span>
+
+<span class="sd">            - **lik_numbers_list** (list): list of likelihoods numbers (keys of the ``histfactory.likelihood_dict`` dictionary) that</span>
+<span class="sd">                are saved in ``model_loaded=True`` mode. The default value ``None`` implies that all members are saved in </span>
+<span class="sd">                ``model_loaded=True`` mode.</span>
+<span class="sd">                default: ``None``</span>
+<span class="sd">            - **overwrite** (bool): flag that determines whether an existing file gets overwritten or if a new file is created. </span>
+<span class="sd">                If ``overwrite=True`` the ``utils.check_rename_file()`` function (see :ref:`_utils_check_rename_file`) is used  </span>
+<span class="sd">                to append a time-stamp to the file name.</span>
+<span class="sd">                default: ``False``</span>
+<span class="sd">            - **verbose** (bool or int): verbose mode. See :ref:`_verbose_implementation`.</span>
+<span class="sd">                default: ``True``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">global</span> <span class="n">ShowPrints</span>
+        <span class="n">ShowPrints</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lik_numbers_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sub_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmp1</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lik_numbers_list</span><span class="p">}</span>
+            <span class="n">tmp2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">,</span><span class="n">lik_numbers_list</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tmp2</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">tmp2</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="n">tmp2</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;obs_data&quot;</span><span class="p">,</span> <span class="s2">&quot;pars_init&quot;</span><span class="p">,</span> 
+                                                           <span class="s2">&quot;pars_bounds&quot;</span><span class="p">,</span> <span class="s2">&quot;pars_labels&quot;</span><span class="p">,</span> <span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">,</span>
+                                                           <span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">,</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">])</span>
+                <span class="n">tmp2</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">sub_dict</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">tmp1</span><span class="p">,</span> <span class="o">**</span><span class="n">tmp2</span><span class="p">}</span>
+        <span class="n">sub_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">sub_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+            <span class="n">out_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_folder</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_base_name</span><span class="o">+</span><span class="s2">&quot;.pickle&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file_base_name</span><span class="o">+</span><span class="s2">&quot;.pickle&quot;</span><span class="p">))</span>
+        <span class="n">pickle_out</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workspace_folder</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span><span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions_folders_base_name</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bkg_files_base_name</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">patch_files_base_name</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span><span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_folder</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_file_base_name</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span><span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">regions</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span><span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sub_dict</span><span class="p">,</span> <span class="n">pickle_out</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">pickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+        <span class="n">pickle_out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">statinfo</span> <span class="o">=</span> <span class="n">stat</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Likelihoods saved in file&#39;</span><span class="p">,</span> <span class="n">out_file</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s1">&#39;seconds.</span><span class="se">\n</span><span class="s1">File size is &#39;</span><span class="p">,</span> <span class="n">statinfo</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Histfactory.get_lik_object"><a class="viewcode-back" href="../../histfactory.html#source.histfactory.Histfactory.get_lik_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_lik_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_number</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a ``likelihood`` object containing all properties needed for further processing. The logpdf method is built from</span>
+<span class="sd">        the ``pyhf.Workspace.model.logpdf()`` pyhf method, and it takes two arguments: the array of parameters values ``x`` and</span>
+<span class="sd">        the array of observed data ``obs_data``. With respect to the pyhf ``logpdf`` method, the logpdf in the ``likelihood`` object</span>
+<span class="sd">        is flattened to output a float (instead of a numpy.ndarray containing a float).</span>
+<span class="sd">        Args:</span>
+
+<span class="sd">            - **lik_number** (int): the number of the likelihood for which the ``likelihood`` object is constructed.</span>
+<span class="sd">                default: ``0``</span>
+<span class="sd">            - **verbose (bool or int): verbose mode. See :ref:`_verbose_implementation`.</span>
+<span class="sd">                default: ``True``</span>
+
+<span class="sd">        Returns:</span>
+
+<span class="sd">            - ``likelihood`` class object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="n">lik</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="n">lik_number</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;model_loaded&quot;</span><span class="p">]:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model for likelihood&quot;</span><span class="p">,</span><span class="n">lik_number</span><span class="p">,</span><span class="s2">&quot;not loaded. Attempting to load it.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">import_histfactory</span><span class="p">(</span><span class="n">lik_numbers_list</span><span class="o">=</span><span class="p">[</span><span class="n">lik_number</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">obs_data</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">obs_data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">logpdf_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">lik</span><span class="p">[</span><span class="s2">&quot;obs_data&quot;</span><span class="p">]]</span>
+        <span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_poi&quot;</span><span class="p">]</span>
+        <span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_pos_nuis&quot;</span><span class="p">]</span>
+        <span class="n">pars_init</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]</span>
+        <span class="n">pars_labels</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_labels&quot;</span><span class="p">]</span>
+        <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">lik</span><span class="p">[</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span>
+        <span class="n">out_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_folder</span>
+        <span class="n">lik_obj</span> <span class="o">=</span> <span class="n">Likelihood</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                      <span class="n">logpdf</span><span class="o">=</span><span class="n">logpdf</span><span class="p">,</span>
+                      <span class="n">logpdf_args</span><span class="o">=</span><span class="n">logpdf_args</span><span class="p">,</span>
+                      <span class="n">pars_pos_poi</span><span class="o">=</span><span class="n">pars_pos_poi</span><span class="p">,</span>
+                      <span class="n">pars_pos_nuis</span><span class="o">=</span><span class="n">pars_pos_nuis</span><span class="p">,</span>
+                      <span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
+                      <span class="n">pars_labels</span><span class="o">=</span><span class="n">pars_labels</span><span class="p">,</span>
+                      <span class="n">pars_bounds</span><span class="o">=</span><span class="n">pars_bounds</span><span class="p">,</span>
+                      <span class="n">out_folder</span><span class="o">=</span><span class="n">out_folder</span><span class="p">,</span>
+                      <span class="n">lik_input_file</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;likelihood object created for likelihood&quot;</span><span class="p">,</span><span class="n">lik_number</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;s.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lik_obj</span></div></div>
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
