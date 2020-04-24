@@ -176,13 +176,13 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">psutil</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
 
 <span class="kn">import</span> <span class="nn">emcee</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">show_prints</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">.data</span> <span class="k">import</span> <span class="n">Data</span>
-<span class="kn">from</span> <span class="nn">.show_prints</span> <span class="k">import</span> <span class="nb">print</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">show_prints</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">Data</span>
+<span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="nb">print</span>
 
 <span class="n">mplstyle_path</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))[</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot;matplotlib.mplstyle&quot;</span><span class="p">)</span>
 
@@ -201,7 +201,7 @@
 <span class="sd">    </span>
 <span class="sd">    &lt;a href=&quot;https://emcee.rhttps://emcee.readthedocs.io/en/stable/&quot;  target=&quot;_blank&quot;&gt; emcee&lt;/a&gt;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Sampler.__init__"><a class="viewcode-back" href="../../sampler.html#DNNLikelihood.Sampler.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="Sampler.__init__"><a class="viewcode-back" href="../../sampler.html#DNNLikelihood.Sampler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">new_sampler</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">likelihood_script_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">likelihood</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1167,7 +1167,7 @@
 <span class="sd">    &lt;a href=&quot;https://docs.python.org/3/library/importlib.html&quot;  target=&quot;_blank&quot;&gt;celerite&lt;/a&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="kn">from</span> <span class="nn">celerite</span> <span class="k">import</span> <span class="n">terms</span><span class="p">,</span> <span class="n">GP</span>
+        <span class="kn">from</span> <span class="nn">celerite</span> <span class="kn">import</span> <span class="n">terms</span><span class="p">,</span> <span class="n">GP</span>
         <span class="c1"># Compute the initial estimate of tau using the standard method</span>
         <span class="n">init</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">autocorr_new</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">y</span><span class="p">[:,</span> <span class="p">::</span><span class="n">thin</span><span class="p">]</span>

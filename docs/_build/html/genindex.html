@@ -241,8 +241,6 @@
 </li>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__set_data">_DNN_likelihood__set_data() (DNNLikelihood.DNN_likelihood method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__set_dtype">_DNN_likelihood__set_dtype() (DNNLikelihood.DNN_likelihood method)</a>
 </li>
       <li><a href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood._DNN_likelihood__set_member_name">_DNN_likelihood__set_member_name() (DNNLikelihood.DNN_likelihood method)</a>
@@ -372,6 +370,14 @@
       <ul>
         <li><a href="histfactory.html#cmdoption-arg-bkg-files-base-name">bkg_files_base_name</a>
 </li>
+        <li><a href="data.html#cmdoption-arg-data-input-file">data_input_file</a>
+</li>
+        <li><a href="data.html#cmdoption-arg-data-x">data_X</a>
+</li>
+        <li><a href="data.html#cmdoption-arg-data-y">data_Y</a>
+</li>
+        <li><a href="data.html#cmdoption-arg-dtype">dtype</a>
+</li>
         <li><a href="histfactory.html#cmdoption-arg-histfactory-input-file">histfactory_input_file</a>
 </li>
         <li><a href="sampler.html#cmdoption-arg-likelihood">likelihood</a>
@@ -380,31 +386,33 @@
 </li>
         <li><a href="sampler.html#cmdoption-arg-likelihood-script-file">likelihood_script_file</a>
 </li>
+        <li><a href="data.html#cmdoption-arg-load-on-ram">load_on_RAM</a>
+</li>
         <li><a href="likelihood.html#cmdoption-arg-logpdf">logpdf</a>
 </li>
         <li><a href="likelihood.html#cmdoption-arg-logpdf-args">logpdf_args</a>
 </li>
         <li><a href="sampler.html#cmdoption-arg-moves-str">moves_str</a>
 </li>
-        <li><a href="histfactory.html#cmdoption-arg-name">name</a>, <a href="likelihood.html#cmdoption-arg-name">[1]</a>
+        <li><a href="data.html#cmdoption-arg-name">name</a>, <a href="histfactory.html#cmdoption-arg-name">[1]</a>, <a href="likelihood.html#cmdoption-arg-name">[2]</a>
 </li>
         <li><a href="sampler.html#cmdoption-arg-new-sampler">new_sampler</a>
 </li>
         <li><a href="sampler.html#cmdoption-arg-nsteps-final">nsteps_final</a>
 </li>
-        <li><a href="histfactory.html#cmdoption-arg-output-folder">output_folder</a>, <a href="likelihood.html#cmdoption-arg-output-folder">[1]</a>
+        <li><a href="data.html#cmdoption-arg-output-folder">output_folder</a>, <a href="histfactory.html#cmdoption-arg-output-folder">[1]</a>, <a href="likelihood.html#cmdoption-arg-output-folder">[2]</a>
 </li>
         <li><a href="sampler.html#cmdoption-arg-parallel-cpu">parallel_CPU</a>
 </li>
-        <li><a href="likelihood.html#cmdoption-arg-pars-bounds">pars_bounds</a>
+        <li><a href="data.html#cmdoption-arg-pars-bounds">pars_bounds</a>, <a href="likelihood.html#cmdoption-arg-pars-bounds">[1]</a>
 </li>
         <li><a href="likelihood.html#cmdoption-arg-pars-init">pars_init</a>
 </li>
-        <li><a href="likelihood.html#cmdoption-arg-pars-labels">pars_labels</a>
+        <li><a href="data.html#cmdoption-arg-pars-labels">pars_labels</a>, <a href="likelihood.html#cmdoption-arg-pars-labels">[1]</a>
 </li>
-        <li><a href="likelihood.html#cmdoption-arg-pars-pos-nuis">pars_pos_nuis</a>
+        <li><a href="data.html#cmdoption-arg-pars-pos-nuis">pars_pos_nuis</a>, <a href="likelihood.html#cmdoption-arg-pars-pos-nuis">[1]</a>
 </li>
-        <li><a href="likelihood.html#cmdoption-arg-pars-pos-poi">pars_pos_poi</a>
+        <li><a href="data.html#cmdoption-arg-pars-pos-poi">pars_pos_poi</a>, <a href="likelihood.html#cmdoption-arg-pars-pos-poi">[1]</a>
 </li>
         <li><a href="histfactory.html#cmdoption-arg-patch-files-base-name">patch_files_base_name</a>
 </li>
@@ -412,9 +420,11 @@
 </li>
         <li><a href="sampler.html#cmdoption-arg-sampler-input-file">sampler_input_file</a>
 </li>
+        <li><a href="data.html#cmdoption-arg-test-fraction">test_fraction</a>
+</li>
         <li><a href="sampler.html#cmdoption-arg-vectorize">vectorize</a>
 </li>
-        <li><a href="histfactory.html#cmdoption-arg-verbose">verbose</a>, <a href="likelihood.html#cmdoption-arg-verbose">[1]</a>, <a href="sampler.html#cmdoption-arg-verbose">[2]</a>
+        <li><a href="data.html#cmdoption-arg-verbose">verbose</a>, <a href="histfactory.html#cmdoption-arg-verbose">[1]</a>, <a href="likelihood.html#cmdoption-arg-verbose">[2]</a>, <a href="sampler.html#cmdoption-arg-verbose">[3]</a>
 </li>
         <li><a href="histfactory.html#cmdoption-arg-workspace-folder">workspace_folder</a>
 </li>
@@ -441,18 +451,39 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data.html#DNNLikelihood.Data">Data (class in DNNLikelihood)</a>
 </li>
+      <li>
+    data_input_file
+
+      <ul>
+        <li><a href="data.html#cmdoption-arg-data-input-file">command line option</a>
+</li>
+      </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.data_input_file">data_input_file (DNNLikelihood.Data attribute)</a>
 </li>
+      <li>
+    data_X
+
+      <ul>
+        <li><a href="data.html#cmdoption-arg-data-x">command line option</a>
+</li>
+      </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.data_X">data_X (DNNLikelihood.Data attribute)</a>
 </li>
+      <li>
+    data_Y
+
+      <ul>
+        <li><a href="data.html#cmdoption-arg-data-y">command line option</a>
+</li>
+      </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.data_Y">data_Y (DNNLikelihood.Data attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils.html#DNNLikelihood.utils.define_generic_pars_labels">define_generic_pars_labels() (in module DNNLikelihood.utils)</a>
 </li>
       <li><a href="data.html#DNNLikelihood.Data.define_scalers">define_scalers() (DNNLikelihood.Data method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data.html#DNNLikelihood.Data.define_test_fraction">define_test_fraction() (DNNLikelihood.Data method)</a>
 </li>
       <li><a href="inference.html#DNNLikelihood.inference.delta_chi2_from_CI">delta_chi2_from_CI() (in module DNNLikelihood.inference)</a>
@@ -463,6 +494,13 @@
 </li>
       <li><a href="DNN_likelihood_ensemble.html#DNNLikelihood.DNN_likelihood_ensemble">DNN_likelihood_ensemble (class in DNNLikelihood)</a>
 </li>
+      <li>
+    dtype
+
+      <ul>
+        <li><a href="data.html#cmdoption-arg-dtype">command line option</a>
+</li>
+      </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.dtype">dtype (DNNLikelihood.Data attribute)</a>
 </li>
   </ul></td>
@@ -637,16 +675,23 @@
         <li><a href="sampler.html#cmdoption-arg-likelihood-script-file">command line option</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="likelihood.html#DNNLikelihood.Likelihood.likelihood_script_file">likelihood_script_file (DNNLikelihood.Likelihood attribute)</a>
 
       <ul>
         <li><a href="sampler.html#DNNLikelihood.Sampler.likelihood_script_file">(DNNLikelihood.Sampler attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="histfactory.html#DNNLikelihood.Histfactory.likelihoods_dict">likelihoods_dict (DNNLikelihood.Histfactory attribute)</a>
 </li>
+      <li>
+    load_on_RAM
+
+      <ul>
+        <li><a href="data.html#cmdoption-arg-load-on-ram">command line option</a>
+</li>
+      </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.load_on_RAM">load_on_RAM (DNNLikelihood.Data attribute)</a>
 </li>
       <li><a href="histfactory.html#DNNLikelihood.Histfactory.log">log (DNNLikelihood.Histfactory attribute)</a>
@@ -716,7 +761,7 @@
     name
 
       <ul>
-        <li><a href="histfactory.html#cmdoption-arg-name">command line option</a>, <a href="likelihood.html#cmdoption-arg-name">[1]</a>
+        <li><a href="data.html#cmdoption-arg-name">command line option</a>, <a href="histfactory.html#cmdoption-arg-name">[1]</a>, <a href="likelihood.html#cmdoption-arg-name">[2]</a>
 </li>
       </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.name">name (DNNLikelihood.Data attribute)</a>
@@ -769,7 +814,7 @@
     output_folder
 
       <ul>
-        <li><a href="histfactory.html#cmdoption-arg-output-folder">command line option</a>, <a href="likelihood.html#cmdoption-arg-output-folder">[1]</a>
+        <li><a href="data.html#cmdoption-arg-output-folder">command line option</a>, <a href="histfactory.html#cmdoption-arg-output-folder">[1]</a>, <a href="likelihood.html#cmdoption-arg-output-folder">[2]</a>
 </li>
       </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.output_folder">output_folder (DNNLikelihood.Data attribute)</a>
@@ -801,7 +846,7 @@
     pars_bounds
 
       <ul>
-        <li><a href="likelihood.html#cmdoption-arg-pars-bounds">command line option</a>
+        <li><a href="data.html#cmdoption-arg-pars-bounds">command line option</a>, <a href="likelihood.html#cmdoption-arg-pars-bounds">[1]</a>
 </li>
       </ul></li>
       <li><a href="likelihood.html#DNNLikelihood.Likelihood.pars_bounds">pars_bounds (DNNLikelihood.Likelihood attribute)</a>
@@ -821,7 +866,7 @@
     pars_labels
 
       <ul>
-        <li><a href="likelihood.html#cmdoption-arg-pars-labels">command line option</a>
+        <li><a href="data.html#cmdoption-arg-pars-labels">command line option</a>, <a href="likelihood.html#cmdoption-arg-pars-labels">[1]</a>
 </li>
       </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.pars_labels">pars_labels (DNNLikelihood.Data attribute)</a>
@@ -836,7 +881,7 @@
     pars_pos_nuis
 
       <ul>
-        <li><a href="likelihood.html#cmdoption-arg-pars-pos-nuis">command line option</a>
+        <li><a href="data.html#cmdoption-arg-pars-pos-nuis">command line option</a>, <a href="likelihood.html#cmdoption-arg-pars-pos-nuis">[1]</a>
 </li>
       </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.pars_pos_nuis">pars_pos_nuis (DNNLikelihood.Data attribute)</a>
@@ -853,7 +898,7 @@
     pars_pos_poi
 
       <ul>
-        <li><a href="likelihood.html#cmdoption-arg-pars-pos-poi">command line option</a>
+        <li><a href="data.html#cmdoption-arg-pars-pos-poi">command line option</a>, <a href="likelihood.html#cmdoption-arg-pars-pos-poi">[1]</a>
 </li>
       </ul></li>
       <li><a href="data.html#DNNLikelihood.Data.pars_pos_poi">pars_pos_poi (DNNLikelihood.Data attribute)</a>
@@ -1015,6 +1060,15 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    test_fraction
+
+      <ul>
+        <li><a href="data.html#cmdoption-arg-test-fraction">command line option</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data.html#DNNLikelihood.Data.test_fraction">test_fraction (DNNLikelihood.Data attribute)</a>
 </li>
   </ul></td>
@@ -1050,7 +1104,7 @@
     verbose
 
       <ul>
-        <li><a href="histfactory.html#cmdoption-arg-verbose">command line option</a>, <a href="likelihood.html#cmdoption-arg-verbose">[1]</a>, <a href="sampler.html#cmdoption-arg-verbose">[2]</a>
+        <li><a href="data.html#cmdoption-arg-verbose">command line option</a>, <a href="histfactory.html#cmdoption-arg-verbose">[1]</a>, <a href="likelihood.html#cmdoption-arg-verbose">[2]</a>, <a href="sampler.html#cmdoption-arg-verbose">[3]</a>
 </li>
       </ul></li>
   </ul></td>

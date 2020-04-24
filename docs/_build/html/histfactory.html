@@ -235,8 +235,8 @@ full class documentation for more details.</p>
 <p>The first time a <a class="reference internal" href="#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object is created, the <a class="reference internal" href="#cmdoption-arg-workspace-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">workspace_folder</span></code></a> argument,
 corresponding to the folder containing the histfactory workspace, needs to be specified. All other input arguments have a default value
 that may need to be changed (see <a class="reference internal" href="#histfactory-arguments"><span class="std std-ref">Arguments documentation</span></a>). Optionally, the user may specify the argument
-<a class="reference internal" href="likelihood.html#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a> containing the path (either relative or absolute) to a folder where output files will be saved and the argument
-<a class="reference internal" href="likelihood.html#cmdoption-arg-name"><code class="xref std std-option docutils literal notranslate"><span class="pre">name</span></code></a> with the name of the object (which is otherwise automatically generated).</p>
+<a class="reference internal" href="data.html#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a> containing the path (either relative or absolute) to a folder where output files will be saved and the argument
+<a class="reference internal" href="data.html#cmdoption-arg-name"><code class="xref std std-option docutils literal notranslate"><span class="pre">name</span></code></a> with the name of the object (which is otherwise automatically generated).</p>
 <p>A basic initialization code is</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
@@ -276,7 +276,7 @@ likelihood, the dictionary looks like this</p>
      <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+     <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">'model_loaded':</span> <span class="pre">False</span></code> flag indicates that the corresponding likelihood has not yet been fully imported, i.e. that the corresponding
@@ -297,7 +297,7 @@ attribute is updated, as well as the corresponding file &lt;my_output_folder&gt;
      <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+     <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
      <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">pyhf</span><span class="o">.</span><span class="n">pdf</span><span class="o">.</span><span class="n">Model</span> <span class="n">at</span> <span class="mh">0x22c40b29d48</span><span class="o">&gt;</span><span class="p">,</span>
      <span class="s1">&#39;obs_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">153.</span><span class="p">,</span>  <span class="mf">52.</span><span class="p">,</span>  <span class="mf">19.</span><span class="p">,</span>  <span class="mf">12.</span><span class="p">,</span>   <span class="mf">3.</span><span class="p">,</span>   <span class="mf">2.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>
               <span class="o">...</span><span class="p">]),</span>
@@ -763,7 +763,7 @@ It is used to generate output files names and is passed to the generated
 <dt id="DNNLikelihood.Histfactory.output_folder">
 <code class="sig-prename descclassname">DNNLikelihood.Histfactory.</code><code class="sig-name descname">output_folder</code><a class="headerlink" href="#DNNLikelihood.Histfactory.output_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path corresponding to the input argument
-<a class="reference internal" href="likelihood.html#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a>. If the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then
+<a class="reference internal" href="data.html#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a>. If the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then
 <a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">output_folder</span></code></a>
 is set to the code execution folder. If the folder does not exist it is created
 by the <a class="reference internal" href="utils.html#DNNLikelihood.utils.check_create_folder" title="DNNLikelihood.utils.check_create_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_create_folder</span></code></a>
@@ -870,7 +870,7 @@ See the documentation of the aforementioned methods for more details.</p>
 <blockquote>
 <div><p>The object is reconstructed from the input files through the private method
 <a class="reference internal" href="#DNNLikelihood.Histfactory._Histfactory__load_histfactory" title="DNNLikelihood.Histfactory._Histfactory__load_histfactory"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__load_histfactory</span></code></a>
-If the input argument <a class="reference internal" href="likelihood.html#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), the attribute <a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>
+If the input argument <a class="reference internal" href="data.html#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), the attribute <a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>
 is set from the input file, otherwise it is set to the input argument.</p>
 </div></blockquote>
 </li>

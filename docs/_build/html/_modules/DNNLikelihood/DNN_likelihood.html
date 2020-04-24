@@ -169,9 +169,9 @@
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">decimal</span> <span class="k">import</span> <span class="n">Decimal</span>
-<span class="kn">from</span> <span class="nn">timeit</span> <span class="k">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="n">Decimal</span>
+<span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">joblib</span>
@@ -181,31 +181,31 @@
 <span class="kn">import</span> <span class="nn">onnx</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">optimize</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="k">import</span> <span class="n">Input</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="k">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">K</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="k">import</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">optimizers</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="k">import</span> <span class="p">(</span><span class="n">AlphaDropout</span><span class="p">,</span> <span class="n">BatchNormalization</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">optimize</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">Input</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">K</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">callbacks</span><span class="p">,</span> <span class="n">losses</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">optimizers</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="p">(</span><span class="n">AlphaDropout</span><span class="p">,</span> <span class="n">BatchNormalization</span><span class="p">,</span> <span class="n">Dense</span><span class="p">,</span>
                                      <span class="n">Dropout</span><span class="p">,</span> <span class="n">InputLayer</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="k">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">load_model</span>
-<span class="kn">from</span> <span class="nn">tensorflow.keras.utils</span> <span class="k">import</span> <span class="n">plot_model</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">load_model</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.utils</span> <span class="kn">import</span> <span class="n">plot_model</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">livelossplot</span> <span class="k">import</span> <span class="n">PlotLossesTensorFlowKeras</span> <span class="k">as</span> <span class="n">PlotLossesKeras</span>
+    <span class="kn">from</span> <span class="nn">livelossplot</span> <span class="kn">import</span> <span class="n">PlotLossesTensorFlowKeras</span> <span class="k">as</span> <span class="n">PlotLossesKeras</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No module named &#39;livelossplot&#39;. Continuing without.</span><span class="se">\n</span><span class="s2">If you wish to plot the loss in real time please install &#39;livelossplot&#39;.&quot;</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">inference</span><span class="p">,</span> <span class="n">set_resources</span><span class="p">,</span> <span class="n">utils</span>
-<span class="kn">from</span> <span class="nn">.corner</span> <span class="k">import</span> <span class="n">corner</span>
-<span class="kn">from</span> <span class="nn">.data</span> <span class="k">import</span> <span class="n">Data</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">show_prints</span>
-<span class="kn">from</span> <span class="nn">.show_prints</span> <span class="k">import</span> <span class="nb">print</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">inference</span><span class="p">,</span> <span class="n">set_resources</span><span class="p">,</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">.corner</span> <span class="kn">import</span> <span class="n">corner</span>
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">Data</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">show_prints</span>
+<span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="nb">print</span>
 
 <span class="n">mplstyle_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))[</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot;matplotlib.mplstyle&quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="DNN_likelihood"><a class="viewcode-back" href="../../DNN_likelihood.html#DNNLikelihood.DNN_likelihood">[docs]</a><span class="k">class</span> <span class="nc">DNN_likelihood</span><span class="p">(</span><span class="n">show_prints</span><span class="o">.</span><span class="n">Verbosity</span><span class="p">):</span>
-<div class="viewcode-block" id="DNN_likelihood.__init__"><a class="viewcode-back" href="../../DNN_likelihood.html#DNNLikelihood.DNN_likelihood.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="DNN_likelihood.__init__"><a class="viewcode-back" href="../../DNN_likelihood.html#DNNLikelihood.DNN_likelihood.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">DNNLik_input_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ensemble_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">member_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
