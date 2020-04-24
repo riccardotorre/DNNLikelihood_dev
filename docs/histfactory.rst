@@ -464,6 +464,10 @@ Methods
 
    .. automethod:: DNNLikelihood.Histfactory.__init__
 
+   .. automethod:: DNNLikelihood.Histfactory._Histfactory__check_define_input_files
+
+   .. automethod:: DNNLikelihood.Histfactory._Histfactory__check_define_output_files
+
    .. automethod:: DNNLikelihood.Histfactory._Histfactory__check_define_name
 
    .. automethod:: DNNLikelihood.Histfactory._Histfactory__import_histfactory

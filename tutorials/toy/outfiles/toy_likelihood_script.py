@@ -18,4 +18,5 @@ pars_pos_nuis = lik.pars_pos_nuis
 pars_init_vec = lik.X_prof_logpdf_max
 pars_labels = lik.pars_labels
 pars_bounds = lik.pars_bounds
+ndims = lik.ndims
 output_folder = lik.output_folder

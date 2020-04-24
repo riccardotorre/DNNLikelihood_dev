@@ -561,6 +561,14 @@ Attributes
             
             - **type**: ``str``  
 
+    .. py:attribute:: DNNLikelihood.Likelihood.name
+
+        Number of dimensions of the likelihood, corresponding to the number of parameters.
+        It is set equal to the lenght of the array
+        :attr:`Likelihood.pars_init <DNNLikelihood.Likelihood.pars_init>`.
+            
+            - **type**: ``int``  
+
     .. py:attribute:: DNNLikelihood.Likelihood.output_folder
 
         Absolute path corresponding to the input argument
@@ -705,7 +713,13 @@ Methods
 
     .. automethod:: DNNLikelihood.Likelihood.__init__
 
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__check_define_input_files
+
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__check_define_output_files
+
     .. automethod:: DNNLikelihood.Likelihood._Likelihood__check_define_name
+
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__check_define_pars
 
     .. automethod:: DNNLikelihood.Likelihood._Likelihood__load_likelihood
 

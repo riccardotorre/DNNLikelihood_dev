@@ -65,20 +65,18 @@ class Histfactory(Verbosity):
 
             See class :ref:`Arguments documentation <histfactory_arguments>`.
 
-        - **Produces file**
+        - **Produces files**
 
             - :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`
             - :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`
-            - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`
+            - :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>` (only if :option:`histfactory_input_file` is ``None``)
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.histfactory_input_file = histfactory_input_file
+        self.__check_define_input_files()
         if self.histfactory_input_file is None:
-            self.histfactory_input_json_file = self.histfactory_input_file
-            self.histfactory_input_pickle_file = self.histfactory_input_file
-            self.histfactory_input_log_file = self.histfactory_input_file
             self.log = {timestamp: {"action": "created"}}
             self.workspace_folder = path.abspath(workspace_folder)
             self.name = name
@@ -86,27 +84,61 @@ class Histfactory(Verbosity):
             self.regions_folders_base_name = regions_folders_base_name
             self.bkg_files_base_name = path.splitext(bkg_files_base_name)[0]
             self.patch_files_base_name = patch_files_base_name
-            if output_folder is None:
-                output_folder = ""
-            self.output_folder = utils.check_create_folder(path.abspath(output_folder))
-            self.histfactory_output_json_file = path.join(self.output_folder, self.name+".json")
-            self.histfactory_output_log_file = path.join(self.output_folder, self.name+".log")
-            self.histfactory_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
+            self.output_folder = output_folder
+            self.__check_define_output_files()
             subfolders = [path.join(self.workspace_folder,f) for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder,f))]
             regions = [f.replace(regions_folders_base_name, "") for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder, f))]
             self.regions = dict(zip(regions,subfolders))
             self.__import_histfactory(verbose=verbose_sub)
+            self.save_histfactory(overwrite=False, verbose=verbose_sub)
+        else:
+            self.__load_histfactory(verbose=verbose_sub)
+            if output_folder is not None:
+                self.output_folder = path.abspath(output_folder)
+                self.__check_define_output_files()
+            self.save_histfactory_json(overwrite=True, verbose=verbose_sub)
+            self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
+
+    def __check_define_input_files(self):
+        """
+        Sets the attributes corresponding to input files
+        :attr:`Histfactory.histfactory_input_json_file <DNNLikelihood.Histfactory.histfactory_input_json_file>`,
+        :attr:`Histfactory.histfactory_input_pickle_file <DNNLikelihood.Histfactory.histfactory_input_pickle_file>`, and
+        :attr:`Histfactory.histfactory_input_log_file <DNNLikelihood.Histfactory.histfactory_input_log_file>`
+        depending on the value of the 
+        :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>` attribute.
+        """
+        if self.histfactory_input_file is None:
+            self.histfactory_input_json_file = self.histfactory_input_file
+            self.histfactory_input_pickle_file = self.histfactory_input_file
+            self.histfactory_input_log_file = self.histfactory_input_file
         else:
             self.histfactory_input_file = path.abspath(path.splitext(histfactory_input_file)[0])
             self.histfactory_input_json_file = self.histfactory_input_file+".json"
             self.histfactory_input_log_file = self.histfactory_input_file+".log"
             self.histfactory_input_pickle_file = self.histfactory_input_file+".pickle"
-            self.__load_histfactory(verbose=verbose_sub)
-            if output_folder is not None:
-                self.output_folder = path.abspath(output_folder)
-                self.histfactory_output_json_file = path.join(self.output_folder, self.name+".json")
-                self.histfactory_output_log_file = path.join(self.output_folder, self.name+".log")
-                self.histfactory_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
+
+    def __check_define_output_files(self):
+        """
+        Sets the attributes corresponding to output files
+        :attr:`Histfactory.histfactory_output_json_file <DNNLikelihood.Histfactory.histfactory_output_json_file>`,
+        :attr:`Histfactory.histfactory_output_log_file <DNNLikelihood.Histfactory.histfactory_output_log_file>`, and
+        :attr:`Histfactory.histfactory_output_pickle_file <DNNLikelihood.Histfactory.histfactory_output_pickle_file>`
+        depending on the value of the 
+        :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>` and
+        :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attributes.
+        """
+        if self.histfactory_input_file is None:
+            if self.output_folder is None:
+                self.output_folder = ""
+            self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
+            self.histfactory_output_json_file = path.join(self.output_folder, self.name+".json")
+            self.histfactory_output_log_file = path.join(self.output_folder, self.name+".log")
+            self.histfactory_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
+        else:
+            self.histfactory_output_json_file = path.join(self.output_folder, self.name+".json")
+            self.histfactory_output_log_file = path.join(self.output_folder, self.name+".log")
+            self.histfactory_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
 
     def __check_define_name(self):
         """
@@ -163,7 +195,6 @@ class Histfactory(Verbosity):
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "import histfactory","folder": self.workspace_folder}
         print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.",show=verbose)
-        self.save_histfactory(overwrite=False, verbose=verbose_sub)
 
     def __load_histfactory(self,verbose=None):
         """
@@ -206,7 +237,6 @@ class Histfactory(Verbosity):
                                                 self.histfactory_input_pickle_file]}
         self.log[timestamp] = {"action": "loaded","file name": path.split(self.histfactory_input_json_file)[-1],"file path": self.histfactory_input_json_file}
         print("Loaded likelihoods in", str(end-start),"seconds.\nFile size is ", statinfo.st_size, ".",show=verbose)
-        self.save_histfactory_log(overwrite=True, verbose=verbose_sub)
 
     def import_histfactory(self,lik_numbers_list=None, verbose=None):
         """

@@ -64,40 +64,29 @@ class Likelihood(show_prints.Verbosity):
 
             - :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`
             - :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`
-            - :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`
+            - :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>` (only if :option:`likelihood_input_file` is ``None``)
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.likelihood_input_file = likelihood_input_file
+        self.__check_define_input_files()
         if self.likelihood_input_file is None:
-            self.likelihood_input_json_file = self.likelihood_input_file
-            self.likelihood_input_log_file = self.likelihood_input_file
-            self.likelihood_input_pickle_file = self.likelihood_input_file
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
             self.logpdf = logpdf
             self.logpdf_args = logpdf_args
-            self.pars_pos_poi = np.array(pars_pos_poi)
-            self.pars_pos_nuis = np.array(pars_pos_nuis)
+            self.pars_pos_poi = pars_pos_poi
+            self.pars_pos_nuis = pars_pos_nuis
             self.pars_init = np.array(pars_init)
+            self.ndims = len(self.pars_init)
             self.pars_labels = pars_labels
             self.generic_pars_labels = utils.define_generic_pars_labels(self.pars_pos_poi, self.pars_pos_nuis)
-            if self.pars_labels is None:
-                self.pars_labels = self.generic_pars_labels
-            if pars_bounds is not None:
-                self.pars_bounds = np.array(pars_bounds)
-            else:
-                self.pars_bounds = np.vstack([np.full(len(self.pars_init),-np.inf),np.full(len(self.pars_init),np.inf)]).T
-            if output_folder is None:
-                output_folder = ""
-            self.output_folder = utils.check_create_folder(path.abspath(output_folder))
-            self.likelihood_output_json_file = path.join(self.output_folder, self.name+".json")
-            self.likelihood_output_log_file = path.join(self.output_folder, self.name+".log")
-            self.likelihood_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
-            self.likelihood_script_file = path.join(self.output_folder, self.name+"_script.py")
-            self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
+            self.pars_bounds = pars_bounds
+            self.__check_define_pars()
+            self.output_folder = output_folder
+            self.__check_define_output_files()
             self.X_logpdf_max = None
             self.Y_logpdf_max = None
             self.X_prof_logpdf_max = None
@@ -107,21 +96,60 @@ class Likelihood(show_prints.Verbosity):
             self.figures_list = []
             self.save_likelihood(overwrite=False, verbose=verbose_sub)
         else:
-            self.likelihood_input_file = path.abspath(path.splitext(likelihood_input_file)[0])
-            self.likelihood_input_json_file = self.likelihood_input_file+".json"
-            self.likelihood_input_log_file = self.likelihood_input_file+".log"
-            self.likelihood_input_pickle_file = self.likelihood_input_file+".pickle"
             self.__load_likelihood(verbose=verbose_sub)
             if output_folder is not None:
                 self.output_folder = path.abspath(output_folder)
-                self.likelihood_output_json_file = path.join(self.output_folder, self.name+".json")
-                self.likelihood_output_log_file = path.join(self.output_folder, self.name+".log")
-                self.likelihood_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
-                self.likelihood_script_file = path.join(self.output_folder, self.name+"_script.py")
-                self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
+                self.__check_define_output_files()
             self.save_likelihood_json(overwrite=True, verbose=verbose_sub)
             self.save_likelihood_log(overwrite=True, verbose=verbose_sub)
-            
+
+    def __check_define_input_files(self):
+        """
+        Sets the attributes corresponding to input files
+        :attr:`Likelihood.likelihood_input_json_file <DNNLikelihood.Likelihood.likelihood_input_json_file>`,
+        :attr:`Likelihood.likelihood_input_log_file <DNNLikelihood.Likelihood.likelihood_input_log_file>`, and
+        :attr:`Likelihood.likelihood_input_pickle_file <DNNLikelihood.Likelihood.likelihood_input_pickle_file>`
+        depending on the value of the 
+        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>` attribute.
+        """
+        if self.likelihood_input_file is None:
+            self.likelihood_input_json_file = self.likelihood_input_file
+            self.likelihood_input_log_file = self.likelihood_input_file
+            self.likelihood_input_pickle_file = self.likelihood_input_file
+        else:
+            self.likelihood_input_file = path.abspath(path.splitext(self.likelihood_input_file)[0])
+            self.likelihood_input_json_file = self.likelihood_input_file+".json"
+            self.likelihood_input_log_file = self.likelihood_input_file+".log"
+            self.likelihood_input_pickle_file = self.likelihood_input_file+".pickle"
+
+    def __check_define_output_files(self):
+        """
+        Sets the attributes corresponding to output files
+        :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`,
+        :attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>`,
+        :attr:`Likelihood.likelihood_output_pickle_file <DNNLikelihood.Likelihood.likelihood_output_pickle_file>`,
+        :attr:`Likelihood.likelihood_script_file <DNNLikelihood.Likelihood.likelihood_script_file>`, and
+        :attr:`Likelihood.figure_files_base_path <DNNLikelihood.Likelihood.figure_files_base_path>`
+        depending on the value of the 
+        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>` and
+        :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` attributes.
+        """
+        if self.likelihood_input_file is None:
+            if self.output_folder is None:
+                self.output_folder = ""
+            self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
+            self.likelihood_output_json_file = path.join(self.output_folder, self.name+".json")
+            self.likelihood_output_log_file = path.join(self.output_folder, self.name+".log")
+            self.likelihood_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
+            self.likelihood_script_file = path.join(self.output_folder, self.name+"_script.py")
+            self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
+        else:
+            self.likelihood_output_json_file = path.join(self.output_folder, self.name+".json")
+            self.likelihood_output_log_file = path.join(self.output_folder, self.name+".log")
+            self.likelihood_output_pickle_file = path.join(self.output_folder, self.name+".pickle")
+            self.likelihood_script_file = path.join(self.output_folder, self.name+"_script.py")
+            self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
+
     def __check_define_name(self):
         """
         Private method that defines the :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attribute.
@@ -134,6 +162,56 @@ class Likelihood(show_prints.Verbosity):
             self.name = "model_"+timestamp+"_likelihood"
         else:
             self.name = utils.check_add_suffix(self.name, "_likelihood")
+
+    def __check_define_pars(self, verbose=None):
+        """
+        Private method that checks the consistency of the 
+        :attr:`Likelihood.pars_pos_nuis <DNNLikelihood.Likelihood.pars_pos_nuis>`,
+        :attr:`Likelihood.pars_pos_poi <DNNLikelihood.Likelihood.pars_pos_poi>`,
+        :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>`,
+        and :attr:`Likelihood.pars_bounds <DNNLikelihood.Likelihood.pars_bounds>` 
+        attributes and converts :attr:`Likelihood.pars_pos_nuis <DNNLikelihood.Likelihood.pars_pos_nuis>`,
+        :attr:`Likelihood.pars_pos_poi <DNNLikelihood.Likelihood.pars_pos_poi>`, and
+        and :attr:`Likelihood.pars_bounds <DNNLikelihood.Likelihood.pars_bounds>` to |numpy_link| arrays.
+        If no parameters positions are specified, all parameters are assumed to be parameters of interest.
+        If only the position of the parameters of interest or of the nuisance parameters is specified,
+        the other is automatically generated by matching dimensions.
+        If labels are not provided then :attr:`Likelihood.pars_labels <DNNLikelihood.Likelihood.pars_labels>`
+        is set to the value of :attr:`Likelihood.generic_pars_labels <DNNLikelihood.Likelihood.generic_pars_labels>`.
+        If parameters bounds are not provided, they are set to ``(-np.inf,np.inf)``.
+        A check is performed on the length of the four attributes and an Exception is raised if the length
+        does not match :attr:`Likelihood.ndims <DNNLikelihood.Likelihood.ndims>`.
+        """
+        verbose, _ = self.set_verbosity(verbose)
+        if self.pars_pos_nuis is not None and self.pars_pos_poi is not None:
+            if len(self.pars_pos_poi)+len(self.pars_pos_nuis) == self.ndims:
+                self.pars_pos_nuis = np.array(self.pars_pos_nuis)
+                self.pars_pos_poi = np.array(self.pars_pos_poi)
+            else:
+                raise Exception("The number of parameters positions do not match the number of dimensions.")
+        elif self.pars_pos_nuis is None and self.pars_pos_poi is None:
+            print("The positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified.\
+                Assuming all parameters are parameters of interest.", show=verbose)
+            self.pars_pos_nuis = np.array([])
+            self.pars_pos_poi = np.array(list(range(self.ndims)))
+        elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
+            print("Only the positions of the nuisance parameters have been specified.\
+                Assuming all other parameters are parameters of interest.", show=verbose)
+            self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_nuis))
+        elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
+            print("Only the positions of the parameters of interest.\
+                Assuming all other parameters are nuisance parameters.", show=verbose)
+            self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_poi))
+        if self.pars_labels is None:
+            self.pars_labels = self.generic_pars_labels
+        elif len(self.pars_labels) != self.ndims:
+            raise Exception("The number of parameters labels do not match the number of dimensions.")
+        if self.pars_bounds is not None:
+            self.pars_bounds = np.array(self.pars_bounds)
+        else:
+            self.pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
+        if len(self.pars_bounds) != self.ndims:
+            raise Exception("The lenght of the parameters bounds array does not match the number of dimensions.")
 
     def __load_likelihood(self, verbose=None):
         """
@@ -176,13 +254,13 @@ class Likelihood(show_prints.Verbosity):
         self.Y_prof_logpdf_max_tmp = None
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {
-            "action": "loaded", "files names": [path.split(self.likelihood_input_json_file)[-1],
+        self.log[timestamp] = {"action": "loaded", 
+                               "files names": [path.split(self.likelihood_input_json_file)[-1],
                                                 path.split(self.likelihood_input_log_file)[-1],
                                                 path.split(self.likelihood_input_pickle_file)[-1]],
-                                "files paths": [self.likelihood_input_json_file,
-                                                self.likelihood_input_log_file,
-                                                self.likelihood_input_pickle_file]}
+                               "files paths": [self.likelihood_input_json_file,
+                                               self.likelihood_input_log_file,
+                                               self.likelihood_input_pickle_file]}
         print('Loaded likelihood in', str(end-start), '.',show=verbose)
         time.sleep(2)  # Removing this line prevents multiprocessing to work properly on Windows
 
@@ -426,6 +504,8 @@ class Likelihood(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Likelihood.logpdf_args <DNNLikelihood.Likelihood.logpdf_args>`                                            |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Likelihood.ndims <DNNLikelihood.Likelihood.ndims>`                                                          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>`                                        |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Likelihood.pars_bounds <DNNLikelihood.Likelihood.pars_bounds>`                                            |                                                                                                  |
@@ -506,6 +586,7 @@ class Likelihood(show_prints.Verbosity):
                            "pars_init_vec = lik.X_prof_logpdf_max\n" +
                            "pars_labels = lik.pars_labels\n" +
                            "pars_bounds = lik.pars_bounds\n" +
+                           "ndims = lik.ndims\n" +
                            "output_folder = lik.output_folder"
                            )
         print("File", self.likelihood_script_file, "correctly generated.",show=verbose)

@@ -1,11 +1,10 @@
 {
     "likelihood_script_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\toy_likelihood_script.py",
-    "nsteps":50000,
+    "nsteps_final":50000,
     "moves_str":"[(emcee.moves.StretchMove(), 0), (emcee.moves.GaussianMove(0.0002, mode='random',factor=None),1)]",
     "parallel_CPU":true,
     "vectorize":false,
-    "sampler_input_json_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\toy_sampler.json",
-    "sampler_input_log_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\toy_sampler.log",
+    "nsteps":50000,
     "figures_list":[],
     "name":"toy_sampler",
     "pars_bounds":[

@@ -53,9 +53,9 @@ Let us see the three options in code:
 
             sampler = DNNLikelihood.Sampler(new_sampler=True,
                                              likelihood_script_file=<my_output_folder>/toy_likelihood_script,
-                                             nsteps=50000)
+                                             nsteps_final=50000)
                                             
-        This initialize the object with a required number of steps ``nsteps=50000`` (this could then be changed to run for more steps). We have not
+        This initialize the object with a required number of steps ``nsteps_final=50000`` (this could then be changed to run for more steps). We have not
         passed a ``move_str`` input so that the default |emcee_link| move ``emcee.moves.StretchMove()`` will be set (see the 
         :attr:`Sampler.move_str <DNNLikelihood.Sampler.move_str>` attribute documentation for more details). Moreover, since 
         ``parallel_CPU`` has not been specified, the attribute :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.parallel_CPU>` 
@@ -80,7 +80,7 @@ Let us see the three options in code:
 
             sampler = DNNLikelihood.Sampler(new_sampler=True,
                                              likelihood=likelihood,
-                                             nsteps=50000)
+                                             nsteps_final=50000)
 
     - Initialization from :option:`sampler_input_file`
 
@@ -95,7 +95,7 @@ Let us see the three options in code:
             import DNNLikelihood
 
             sampler = DNNLikelihood.Sampler(new_sampler=True,
-                                             nsteps=50000,
+                                             nsteps_final=50000,
                                              sampler_input_file=<my_output_folder>/toy_sampler)
 
 
@@ -144,8 +144,8 @@ The following three code options produce the same result, importing the object s
                                              likelihood=likelihood)
 
 When the object is imported, the :attr:`Sampler.log <DNNLikelihood.Sampler.log>` attribute is updated, as well as the corresponding file
-<my_output_folder>/toy_sampler.log. If a new ``nsteps`` input, larger than the number of steps available in the existing backedn is passed,
-then this is saved in the :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>`, which is otherwise set to the number of available steps.
+<my_output_folder>/toy_sampler.log. If a new ``nsteps_final`` input, larger than the number of steps available in the existing backend is passed,
+then this is saved in the :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>`, which is otherwise set to the number of available steps.
 Also the ``moves_str`` input can be passed to update (change) the move of the sampler.
 
 Now that we have discussed how to create and import the object, let us see how to use it. The first thing we want to do is to produce 
@@ -292,13 +292,13 @@ The full list of figures we produced can be extracted from the :attr:`Sampler.fi
          '<my_output_folder>/toy_sampler_figure_chains_5.pdf',
          '<my_output_folder>/toy_sampler_figure_chains_logpdf.pdf']
 
-The :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>` can be increased at any time, and the method 
+The :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` can be increased at any time, and the method 
 :meth:`Sampler.run_sampler <DNNLikelihood.Sampler.run_sampler>` can be called again to run the steps missing to reach 
-:attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>`. For instance, to run for another 20K steps one does
+:attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>`. For instance, to run for another 20K steps one does
 
 .. code-block:: python
 
-    sampler.nsteps = 70000
+    sampler.nsteps_final = 70000
     sampler.run_sampler()
 
 Once a satisfactory sampling has been obtained, we can generate a :class:`Data <DNNLikelihood.Data>` object storing the
@@ -374,15 +374,15 @@ Arguments
             - **type**: :py:class:`Likelihood <DNNLikelihood.Likelihood>` object or ``None``
             - **default**: ``None``
 
-    .. option:: nsteps
+    .. option:: nsteps_final
 
         Final number of MCMC steps. When the object is initialized with the :option:`new_sampler` argument set to ``False``
-        then, if :option:`nsteps` is larger than the number of steps available in the backend, it is saved in the 
-        :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>`, otherwise the latter is set equal to the number of steps available
+        then, if :option:`nsteps_final` is larger than the number of steps available in the backend, it is saved in the 
+        :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>`, otherwise the latter is set equal to the number of steps available
         in the backend.
 
             - **type**: ``int`` or ``None``
-            - **default**: ``None`` 
+            - **default**: ``None``
 
     .. option:: moves_str
 
@@ -442,14 +442,6 @@ Attributes
         :meth:`Sampler.__init_backend <DNNLikelihood.Sampler._Sampler__init_backend>` method.
 
             - **type**: ``emcee.Backends`` object
-
-    .. py:attribute:: DNNLikelihood.Sampler.sampler_output_backend_file
-
-        Name (with absolute path) of the |emcee_link| HDF5 backend file. 
-        It is set to :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` ``+ "_backend.h5"``.
-        See the |emcee_backend_link| documentation for details about the ``emcee.Backends`` object.
-
-            - **type**: ``str``
 
     .. py:attribute:: DNNLikelihood.Sampler.figure_files_base_path
 
@@ -651,16 +643,29 @@ Attributes
             
             - **type**: ``bool``
 
-    .. py:attribute:: DNNLikelihood.Sampler.nsteps
+    .. py:attribute:: DNNLikelihood.Sampler.nsteps_final
 
-        Attribute corresponding to the input argument :option:`nsteps` and representing the
-        number of MCMC steps to run. When an existing :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>` is loaded 
-        if the value of the input argument :option:`nsteps` is smaller than the number of steps available, then
-        :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>` is automatically updated to the available steps.
-        The attribute always represents the final number of steps, so if
-        the number of existing steps is not zero, the sampling will only run until it reaches
-        :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>`.
+        Attribute corresponding to the input argument :option:`nsteps_final` and representing the
+        final number of MCMC steps to run. 
+        When the object is initialized with the :option:`new_sampler` argument set to ``False``
+        then, if :option:`nsteps_final` is larger than :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`,
+        then the :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` attribute is set equal to
+        :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`.
+        The attribute always represents the final number of steps, meaning that the sampling will always run 
+        for a number of steps given by the difference between
+        :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` and 
+        :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`.
             
+            - **type**: ``int``
+
+    .. py:attribute:: DNNLikelihood.Sampler.nsteps_available
+
+        Number of MCMC steps available in the current :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`. 
+        When the object is initialized with the :option:`new_sampler` argument set to ``False``
+        then, if :option:`nsteps_final` is larger than :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`,
+        then the :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` attribute is set equal to
+        :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`.
+
             - **type**: ``int``
 
     .. py:attribute:: DNNLikelihood.Sampler.nwalkers
@@ -746,6 +751,14 @@ Attributes
               
            - **type**: ``str`` or ``None``
 
+    .. py:attribute:: DNNLikelihood.Sampler.sampler_output_backend_file
+
+        Name (with absolute path) of the |emcee_link| HDF5 backend file. 
+        It is set to :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` ``+ "_backend.h5"``.
+        See the |emcee_backend_link| documentation for details about the ``emcee.Backends`` object.
+
+            - **type**: ``str``
+
     .. py:attribute:: DNNLikelihood.Sampler.sampler_output_json_file
          
         Absolute path to the .json file where part of the :class:`Sampler <DNNLikelihood.Sampler>` 
@@ -796,6 +809,10 @@ Methods
 """""""
 
     .. automethod:: DNNLikelihood.Sampler.__init__
+
+    .. automethod:: DNNLikelihood.Sampler._Sampler__check_define_input_files
+
+    .. automethod:: DNNLikelihood.Sampler._Sampler__check_define_output_files
 
     .. automethod:: DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_sampler_input_file
 

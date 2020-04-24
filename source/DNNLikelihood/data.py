@@ -1,6 +1,7 @@
 __all__ = ["Data"]
 
 from os import path
+import codecs
 import json
 import builtins
 from datetime import datetime
@@ -11,8 +12,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from . import utils
-from . import show_prints
+from . import show_prints, utils
 from .show_prints import print
 
 
@@ -44,61 +44,87 @@ class Data(show_prints.Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.data_input_file = data_input_file
+        self.__check_define_input_files()
         if self.data_input_file is None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
-            if dtype is None:
-                self.dtype = "float64"
-            else:
-                self.dtype = dtype
+            self.dtype = dtype
             self.data_X = data_X
             self.data_Y = data_Y
-            self.pars_pos_poi = np.array(pars_pos_poi)
-            self.pars_pos_nuis = np.array(pars_pos_nuis)
+            self.__check_define_data()
+            self.pars_pos_poi = pars_pos_poi
+            self.pars_pos_nuis = pars_pos_nuis
+            self.ndims = self.data_X.shape[1]
+            self.npoints = self.data_X.shape[0]
             self.pars_labels = pars_labels
             self.generic_pars_labels = utils.define_generic_pars_labels(self.pars_pos_poi, self.pars_pos_nuis)
-            if self.pars_labels is None:
-                self.pars_labels = self.generic_pars_labels
-            if pars_bounds is not None:
-                self.pars_bounds = np.array(pars_bounds)
-            else:
-                self.pars_bounds = np.vstack([np.full(len(self.pars_init),-np.inf),np.full(len(self.pars_init),np.inf)]).T
-            if test_fraction is None:
-                self.test_fraction = 0
-            else:
-                self.test_fraction = test_fraction
-            if output_folder is None:
-                output_folder = ""
-            self.output_folder = path.abspath(output_folder)
-            self.data_output_h5_file = path.join(self.output_folder, self.name+".h5")
-            self.data_output_log_file = path.join(self.output_folder, self.name+".log")
+            self.pars_bounds = pars_bounds
+            self.__check_define_pars(verbose=verbose_sub)
+            self.test_fraction = test_fraction
+            self.define_test_fraction()
+            self.output_folder = output_folder
+            self.__check_define_output_files()
             self.load_on_RAM = load_on_RAM
-            self.__create_data()
             self.save_data(overwrite=False, verbose=verbose_sub)
         else:
-            self.dtype = dtype
-            if output_folder is None:
-                output_folder = ""
-            self.output_folder = path.abspath(output_folder)
-            self.data_output_h5_file = path.join(self.output_folder, self.name+".h5")
             self.load_on_RAM = load_on_RAM
-            self.__load_data()
-            self.save_data(overwrite=True, verbose=verbose_sub)
-            
-        self.generic_pars_labels = utils.define_generic_pars_labels(self.pars_pos_poi, self.pars_pos_nuis)
-        #self.__check_define_mode()
-        #self.__init_mode()
-        #self.__check_data()
-        
-        self.__check_define_pars()
-        self.define_test_fraction()
+            if dtype is not None:
+                self.dtype = dtype
+            self.__load_data(verbose=verbose_sub)
+            self.define_test_fraction()
+            if output_folder is not None:
+                self.output_folder = path.abspath(output_folder)
+                self.__check_define_output_files()
+            self.save_data_json(overwrite=True, verbose=verbose_sub)
+            self.save_data_log(overwrite=True, verbose=verbose_sub)
+
         self.data_dictionary = {"X_train": np.array([[]], dtype=self.dtype), "Y_train": np.array([], dtype=self.dtype),
                                 "X_val": np.array([[]],dtype=self.dtype), "Y_val": np.array([],dtype=self.dtype),
                                 "X_test": np.array([[]], dtype=self.dtype), "Y_test": np.array([], dtype=self.dtype),
                                 "idx_train": np.array([], dtype="int"), "idx_val": np.array([], dtype="int"), "idx_test": np.array([], dtype="int")}
+
+    def __check_define_input_files(self):
+        """
+        Sets the attributes corresponding to input files
+        :attr:`Data.data_input_h5_file <DNNLikelihood.Data.data_input_h5_file>`,
+        :attr:`Data.data_input_json_file <DNNLikelihood.Data.data_input_json_file>`, and
+        :attr:`Data.data_input_log_file <DNNLikelihood.Data.data_input_log_file>`
+        depending on the value of the 
+        :attr:`Data.data_input_file <DNNLikelihood.Data.data_input_file>` attribute.
+        """
+        if self.data_input_file is None:
+            self.data_input_h5_file = self.data_input_file
+            self.data_input_json_file = self.data_input_file
+            self.data_input_log_file = self.data_input_file
+        else:
+            self.data_input_file = path.abspath(path.splitext(data_input_file)[0])
+            self.data_input_h5_file = self.data_input_file+".h5"
+            self.data_input_json_file = self.data_input_file+".json"
+            self.data_input_log_file = self.data_input_file+".log"
+
+    def __check_define_output_files(self):
+        """
+        Sets the attributes corresponding to output files
+        :attr:`Data.data_output_h5_file <DNNLikelihood.Data.data_output_h5_file>`,
+        :attr:`Data.data_output_json_file <DNNLikelihood.Data.data_output_json_file>`,
+        :attr:`Data.data_output_log_file <DNNLikelihood.Data.data_output_log_file>`
+        depending on the value of the 
+        :attr:`Data.data_input_file <DNNLikelihood.Data.data_input_file>` and
+        :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attributes.
+        """
+        if self.data_input_file is None:
+            if self.output_folder is None:
+                self.output_folder = ""
+            self.output_folder = path.abspath(self.output_folder)
+            self.data_output_h5_file = path.join(self.output_folder, self.name+".h5")
+            self.data_output_json_file = path.join(self.output_folder, self.name+".json")
+            self.data_output_log_file = path.join(self.output_folder, self.name+".log")
+        else:
+            self.data_output_h5_file = path.join(self.output_folder, self.name+".h5")
+            self.data_output_json_file = path.join(self.output_folder, self.name+".json")
+            self.data_output_log_file = path.join(self.output_folder, self.name+".log")
         
-    
     def __check_define_name(self):
         """
         Private method that defines the :attr:`Data.name <DNNLikelihood.Data.name>` attribute.
@@ -112,141 +138,121 @@ class Data(show_prints.Verbosity):
         else:
             self.name = utils.check_add_suffix(self.name, "_data")
 
-    def __check_define_mode(self, verbose=True):
-        """Checks which parameters have been passed and defines the working mode. Modes are:
-        0 = create (see documentation of __init_0__)
-        1 = load (see documentation of __init_1__)
+    def __check_define_data(self, verbose=None):
+        """ 
+        Checks that data_X and data_Y have the same length and sets the data type to
+        :attr:`Data.dtype <DNNLikelihood.Data.dtype>` (default "float64").
         """
-        # Checks
-        if (self.data_X is not None and self.data_Y is None) or (self.data_X is None and self.data_Y is not None):
-            raise Exception(
-                "You should specify either both or none of data_X and data_Y.\nPlease change parameters and execute again.")
-            # MyError(self, self.__check_define_mode)
-        if self.data_X is not None:
-            if self.load_on_RAM:
-                print(
-                    "When providing data load_on_RAM is automatically set to False (default value).")
-            if self.data_input_file is not None:
-                print(
-                    "When providing data data_input_file is automatically set to None (default value).")
-            self.mode = 0
-            #print("Working in 'create' mode (self.mode = 0)")
-        if self.data_X is None:
-            if self.data_input_file is None and self.load_on_RAM is False:
-                raise Exception(
-                    "No data neither file available. Please input either data or file and execute again.")
-                #MyError(self, self.__check_define_mode)
-            elif self.data_input_file is None and self.load_on_RAM:
-                raise Exception(
-                    "To import samples please specify data_input_file.\nPlease change parameters and execute again.")
-                #MyError(self, self.__check_define_mode)
-            elif self.data_input_file is not None:
-                self.mode = 1
-                #print("Working in 'load' mode (self.mode = 1).\nDepending on the value of load_on_RAM samples are either loaded into RAM as np.arrays or read from file as h5py dataset.")
-        try:
-            self.mode
-        except:
-            raise Exception(
-                "Unable to determine working mode. Please check input parameters.")
-            #MyError(self, self.__check_define_mode)
-            #return
-
-    def __check_define_pars(self):
-        if self.pars_pos_nuis is None and self.pars_pos_poi is None:
-            print(
-                "The positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified.\
-                Assuming all parameters are parameters of interest.")
-            self.pars_pos_nuis = []
-            self.pars_pos_poi = list(range(self.ndim))
-        elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
-            print(
-                "Only the positions of the nuisance parameters have been specified.\
-                Assuming all other parameters are parameters of interest.")
-            self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndim)), np.array(self.pars_pos_nuis)).tolist()
-        elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
-            print(
-                "Only the positions of the parameters of interest.\
-                Assuming all other parameters are nuisance parameters.")
-            self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndim)), np.array(self.pars_pos_poi)).tolist()
+        verbose, _ = self.set_verbosity(verbose)
+        if self.dtype is None:
+            self.dtype = "float64"
+        if len(self.data_X) == len(self.data_Y):
+            self.data_X = self.data_X.astype(self.dtype)
+            self.data_Y = self.data_Y.astype(self.dtype)
         else:
-            if len(self.pars_pos_poi)+len(self.pars_pos_nuis) != self.ndim:
+            raise Exception("data_X and data_Y have different length.")
+
+    def __check_define_pars(self, verbose=None):
+        """
+        Private method that checks the consistency of the 
+        :attr:`Data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>`,
+        :attr:`Data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`,
+        :attr:`Data.pars_labels <DNNLikelihood.Data.pars_labels>`,
+        and :attr:`Data.pars_bounds <DNNLikelihood.Data.pars_bounds>` 
+        attributes and converts :attr:`Data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>`,
+        :attr:`Data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`, and
+        and :attr:`Data.pars_bounds <DNNLikelihood.Data.pars_bounds>` to |numpy_link| arrays.
+        If no parameters positions are specified, all parameters are assumed to be parameters of interest.
+        If only the position of the parameters of interest or of the nuisance parameters is specified,
+        the other is automatically generated by matching dimensions.
+        If labels are not provided then :attr:`Data.pars_labels <DNNLikelihood.Data.pars_labels>`
+        is set to the value of :attr:`Data.generic_pars_labels <DNNLikelihood.Data.generic_pars_labels>`.
+        If parameters bounds are not provided, they are set to ``(-np.inf,np.inf)``.
+        A check is performed on the length of the four attributes and an Exception is raised if the length
+        does not match :attr:`Data.ndims <DNNLikelihood.Data.ndims>`.
+        """
+        verbose, _ = self.set_verbosity(verbose)
+        if self.pars_pos_nuis is not None and self.pars_pos_poi is not None:
+            if len(self.pars_pos_poi)+len(self.pars_pos_nuis) == self.ndims:
+                self.pars_pos_nuis = np.array(self.pars_pos_nuis)
+                self.pars_pos_poi = np.array(self.pars_pos_poi)
+            else:
                 raise Exception("The number of parameters positions do not match the number of dimensions.")
-        if self.pars_labels is not None:
-            if len(self.pars_labels) != self.ndim:
-                raise Exception("The number of parameters labels do not match the number of dimensions.")
+        elif self.pars_pos_nuis is None and self.pars_pos_poi is None:
+            print("The positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified.\
+                Assuming all parameters are parameters of interest.", show=verbose)
+            self.pars_pos_nuis = np.array([])
+            self.pars_pos_poi = np.array(list(range(self.ndims)))
+        elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
+            print("Only the positions of the nuisance parameters have been specified.\
+                Assuming all other parameters are parameters of interest.", show=verbose)
+            self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_nuis))
+        elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
+            print("Only the positions of the parameters of interest.\
+                Assuming all other parameters are nuisance parameters.", show=verbose)
+            self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_poi))
+        if self.pars_labels is None:
+            self.pars_labels = self.generic_pars_labels
+        elif len(self.pars_labels) != self.ndims:
+            raise Exception("The number of parameters labels do not match the number of dimensions.")
+        if self.pars_bounds is not None:
+            self.pars_bounds = np.array(self.pars_bounds)
         else:
-            self.pars_labels = []
-            i_poi = 1
-            i_nuis = 1
-            for i in range(len(self.pars_pos_poi)+len(self.pars_pos_nuis)):
-                if i in self.pars_pos_poi:
-                    self.pars_labels.append(r"$\theta_{%d}$" % i_poi)
-                    i_poi = i_poi+1
-                else:
-                    self.pars_labels.append(r"$\nu_{%d}$" % i_nuis)
-                    i_nuis = i_nuis+1
-    
-    def __create_data(self):
-        self.data_X = self.data_X.astype(self.dtype)
-        self.data_Y = self.data_Y.astype(self.dtype)
-        self.npoints = self.data_X.shape[0]
-        self.ndim = self.data_X.shape[1]
+            self.pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
+        if len(self.pars_bounds) != self.ndims:
+            raise Exception("The lenght of the parameters bounds array does not match the number of dimensions.")
 
-    def __load_data(self):
+    def __load_data(self,verbose=None):
         """ Loads samples as np.array (on RAM) if load_on_RAM=True or as h5py dataset (on disk) if load_on_RAM=False
         """
+        verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        self.opened_dataset = h5py.File(self.data_input_file, "r")
-        ds_list = list(self.opened_dataset.keys())
-        ds_list.remove("data")
-        self.name = ds_list[0]
-        parameters = self.opened_dataset["parameters"]
-        self.pars_pos_poi = parameters["pars_pos_poi"][:]
-        self.pars_pos_nuis = parameters["pars_pos_nuis"][:]
-        self.pars_labels = [str(i, 'utf-8') for i in parameters["pars_labels"]]
-        self.pars_bounds = parameters["pars_bounds"][:]
+        with open(self.data_input_json_file) as json_file:
+            dictionary = json.load(json_file)
+        self.__dict__.update(dictionary)
+        with open(self.data_input_log_file) as json_file:
+            dictionary = json.load(json_file)
+        self.log = dictionary
+        self.pars_pos_poi = np.array(self.pars_pos_poi)
+        self.pars_pos_nuis = np.array(self.pars_pos_nuis)
+        self.pars_bounds = np.array(self.pars_bounds)
+        self.opened_dataset = h5py.File(self.data_input_h5_file, "r")
         data = self.opened_dataset["data"]
-        self.npoints = data.get("shape")[0]
-        self.ndim = data.get("shape")[1]
         self.data_X = data.get("X")
         self.data_Y = data.get("Y")
-        self.test_fraction = data.get("test_fraction")[0]
-        if self.dtype is None:
-            self.dtype = str(self.data_X[0].dtype)
         if self.load_on_RAM:
             self.data_X = self.data_X[:].astype(self.dtype)
             self.data_Y = self.data_Y[:].astype(self.dtype)
             self.opened_dataset.close()
-            end = timer()
-            print("Loaded into RAM", str(self.npoints), "(data_X, data_Y) samples as np.arrays from file",self.data_input_file, "in", end-start, "s.")
-        else:
-            end = timer()
-            print("Opened h5py dataset with", str(self.npoints), "(data_X, data_Y) samples from file", self.data_input_file, "in", end-start, "s.")
-
-    def __check_data(self):
-        """ Checks that data_X and data_Y have the same length
-        """
-        if not (len(self.data_X) == len(self.data_Y)):
-            print("data_X and data_Y have different length.")
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "loaded", 
+                               "files names": [path.split(self.data_input_json_file)[-1],
+                                               path.split(self.data_input_log_file)[-1],
+                                               path.split(self.data_input_h5_file)[-1]],
+                               "files paths": [self.data_input_json_file,
+                                               self.data_input_log_file,
+                                               self.data_input_h5_file]}
+        print('Loaded likelihood in', str(end-start), '.', show=verbose)
+        if self.load_on_RAM:
+            print('Samples loaded on RAM.', show=verbose)
 
     def define_test_fraction(self):
-        #print(self.npoints)
-        #print(self.test_fraction)
-        #print(round(self.npoints*(1-self.test_fraction)))
-        #print(round(self.npoints*(1-self.test_fraction))))
+        if self.test_fraction is None:
+            self.test_fraction = 0
         self.train_range = range(int(round(self.npoints*(1-self.test_fraction))))
         self.test_range = range(int(round(self.npoints*(1-self.test_fraction))),self.npoints)
 
-    def close_samples(self,verbose=True):
+    def close_samples(self,verbose=None):
         """ Closes opened h5py datasets if there are any.
         """
-        show_prints.verbose = verbose
+        verbose, _ = self.set_verbosity(verbose)
         try:
             self.opened_dataset.close()
             del(self.opened_dataset)
-            print("Closed", self.data_input_file)
+            print("Closed", self.data_input_file,".",show=verbose)
         except:
-            print("No dataset to close.")
+            print("No dataset to close.", show=verbose)
 
     def save_data_log(self, overwrite=False, verbose=None):
         """
@@ -265,65 +271,25 @@ class Data(show_prints.Verbosity):
         end = timer()
         print("Data log file", self.data_output_log_file, "saved in", str(end-start), "s.", show=verbose)
 
+    def save_data_json(self, overwrite=False, verbose=True):
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if not overwrite:
+            utils.check_rename_file(self.data_output_json_file, verbose=verbose_sub)
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved", 
+                               "file name": path.split(self.data_output_json_file)[-1],
+                               "file path": self.data_output_json_file}
+        dictionary = utils.dic_minus_keys(self.__dict__, ["dataX", "dataY", "log", "data_input_file",
+                                                          "train_range", "test_range", "data_dictionary",
+                                                          "load_on_RAM", "verbose"])
+        dictionary = utils.convert_types_dict(dictionary)
+        with codecs.open(self.data_output_json_file, "w", encoding="utf-8") as f:
+            json.dump(dictionary, f, separators=(",", ":"), indent=4)
+        end = timer()
+        print("Data json file", self.data_output_json_file,"saved in", str(end-start), "s.",show=verbose)
 
- 
-
-
-    def save_data(self, overwrite=False, verbose=True):
-        """
-
-        'output_folder',
-        'data_output_file',
-        'load_on_RAM',
-        'npoints',
-        'ndim',
-        'train_range',
-        'test_range',
-        'data_dictionary']
-
-        :class:`Data <DNNLikelihood.Data>` objects are saved according to the following table.
-
-        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        | Saved | Atrributes                                                                                                       | Method                                                                                           |
-        +=======+==================================================================================================================+==================================================================================================+
-        |   X   | :attr:`Data.data_input_file <DNNLikelihood.Data.data_input_file>`                                                |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.generic_pars_labels <DNNLikelihood.Data.generic_pars_labels>`                                                                |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.verbose <DNNLikelihood.Data.verbose>`                                                                |                                                                                                  |
-        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Data.log <DNNLikelihood.Data.log>`                                                                        | :meth:`Data.save_data_log <DNNLikelihood.Data.save_data_log>`                        |
-        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Data.name <DNNLikelihood.Data.name>`                                                      | :meth:`Data.save_sampler_json <DNNLikelihood.Data.save_sampler_json>`                      |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`                            |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>`                                                |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.pars_labels <DNNLikelihood.Data.pars_labels>`                            |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.pars_bounds <DNNLikelihood.Data.pars_bounds>`                                                      |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.data_X <DNNLikelihood.Data.data_X>`                                                                |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`                                                            |                                                                                                  |
-        |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.test_fraction <DNNLikelihood.Data.test_fraction>`                                              |                                                                                                  |
-        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-
-        This methos calls in order the :meth:`Likelihood.save_sampler_json <DNNLikelihood.Likelihood.save_sampler_json>` and
-        :meth:`Likelihood.save_sampler_log <DNNLikelihood.Likelihood.save_sampler_log>` methods. The backend is automatically saved when running MCMC
-        through the :meth:`Data.run_sampler <DNNLikelihood.Data.run_sampler>` method.
-
-        - **Arguments**
-            
-            Same arguments as the called methods.
-
-        - **Produces files**
-
-            - :attr:`Data.data_output_json_file <DNNLikelihood.Data.data_output_json_file>`
-            - :attr:`Data.data_output_log_file <DNNLikelihood.Data.data_output_log_file>`
-        """
+    def save_data_h5(self, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
@@ -334,23 +300,89 @@ class Data(show_prints.Verbosity):
                                "file path": self.data_output_h5_file}
         start = timer()     
         h5_out = h5py.File(self.data_output_h5_file, "w")
-        h5_out.create_group(self.name)
-        parameters = h5_out.create_group("parameters")
-        parameters["pars_pos_poi"] = self.pars_pos_poi
-        parameters["pars_pos_nuis"] = self.pars_pos_nuis
-        parameters["pars_labels"] = np.string_(self.pars_labels)
-        parameters["pars_bounds"] = self.pars_bounds
         data = h5_out.create_group("data")
         data["shape"] = np.shape(self.data_X)
         data["X"] = self.data_X.astype(self.dtype)
         data["Y"] = self.data_Y.astype(self.dtype)
-        data["test_fraction"] = np.array([self.test_fraction])
         h5_out.close()
         end = timer()
         self.save_data_log(overwrite=overwrite, verbose=verbose)
-        print("Saved", str(self.npoints), "(data_X, data_Y) samples in file", self.data_output_h5_file,"in", end-start, "s.")
+        print("Saved", str(self.npoints), "(data_X, data_Y) samples in data h5 file", self.data_output_h5_file,"in", end-start, "s.",show=verbose)
 
-    def generate_train_indices(self, npoints_train, npoints_val, seed, verbose=False):
+    def save_data(self, overwrite=False, verbose=None):
+        """
+
+        :class:`Data <DNNLikelihood.Data>` objects are saved according to the following table.
+
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        | Saved | Atrributes                                                                                                       | Method                                                                                           |
+        +=======+==================================================================================================================+==================================================================================================+
+        |   X   | :attr:`Data.data_input_file <DNNLikelihood.Data.data_input_file>`                                                |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.train_range <DNNLikelihood.Data.train_range>`                                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.test_range <DNNLikelihood.Data.test_range>`                                                          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`                                                |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.load_on_RAM <DNNLikelihood.Data.load_on_RAM>`                                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.verbose <DNNLikelihood.Data.verbose>`                                                                |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Data.name <DNNLikelihood.Data.name>`                                                                      | :meth:`Data.save_data_json <DNNLikelihood.Data.save_data_json>`                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.ndims <DNNLikelihood.Data.ndims>`                                                                      |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.npoints <DNNLikelihood.Data.npoints>`                                                                |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.dtype <DNNLikelihood.Data.dtype>`                                                                |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.generic_pars_labels <DNNLikelihood.Data.generic_pars_labels>`                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`                                                    |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.data_output_h5_file <DNNLikelihood.Data.data_output_h5_file>`                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.data_output_json_file <DNNLikelihood.Data.data_output_json_file>`                                    |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.data_output_log_file <DNNLikelihood.Data.data_output_log_file>`                                      |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`                                                      |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>`                                                    |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.pars_labels <DNNLikelihood.Data.pars_labels>`                                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.pars_bounds <DNNLikelihood.Data.pars_bounds>`                                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.test_fraction <DNNLikelihood.Data.test_fraction>`                                                    |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Data.log <DNNLikelihood.Data.log>`                                                                        | :meth:`Data.save_data_log <DNNLikelihood.Data.save_data_log>`                                    |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+        |   ✔   | :attr:`Data.data_X <DNNLikelihood.Data.data_X>`                                                                  | :meth:`Data.save_data_h5 <DNNLikelihood.Data.save_data_h5>`                                      |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`                                                                  |                                                                                                  |
+        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
+
+        This methos calls in order the :meth:`Likelihood.save_data_json <DNNLikelihood.Likelihood.save_data_json>`, :meth:`Likelihood.save_data_h5 <DNNLikelihood.Likelihood.save_data_h5>` and
+        :meth:`Likelihood.save_data_log <DNNLikelihood.Likelihood.save_data_log>` methods.
+
+        - **Arguments**
+            
+            Same arguments as the called methods.
+
+        - **Produces files**
+
+            - :attr:`Data.data_output_json_file <DNNLikelihood.Data.data_output_json_file>`
+            - :attr:`Data.data_output_h5_file <DNNLikelihood.Data.data_output_h5_file>`
+            - :attr:`Data.data_output_log_file <DNNLikelihood.Data.data_output_log_file>`
+        """
+        verbose, _ = self.set_verbosity(verbose)
+        self.save_data_json(overwrite=overwrite, verbose=verbose)
+        self.save_data_h5(overwrite=overwrite, verbose=verbose)
+        self.save_data_log(overwrite=overwrite, verbose=verbose)
+
+    def generate_train_indices(self, npoints_train, npoints_val, seed, verbose=None):
         show_prints.verbose = verbose
         #Generate new indices
         np.random.seed(seed)
@@ -360,7 +392,7 @@ class Data(show_prints.Verbosity):
         self.data_dictionary["idx_train"] = idx_train
         self.data_dictionary["idx_val"] = idx_val
 
-    def generate_train_data(self, npoints_train, npoints_val, seed, verbose=True):
+    def generate_train_data(self, npoints_train, npoints_val, seed, verbose=None):
         show_prints.verbose = verbose
         start = timer()
         # Generate new indices
@@ -374,7 +406,7 @@ class Data(show_prints.Verbosity):
         show_prints.verbose = verbose
         print("Generated", str(npoints_train), "(X_train, Y_train) samples and ", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.")
 
-    def update_train_indices(self, npoints_train, npoints_val, seed, verbose=False):
+    def update_train_indices(self, npoints_train, npoints_val, seed, verbose=None):
         show_prints.verbose = verbose
         #Check existing indices
         existing_train = np.sort(np.concatenate((self.data_dictionary["idx_train"], self.data_dictionary["idx_val"])))
@@ -391,7 +423,7 @@ class Data(show_prints.Verbosity):
         #Return new indices
         return [idx_train, idx_val]
 
-    def update_train_data(self, npoints_train, npoints_val, seed, verbose=True):
+    def update_train_data(self, npoints_train, npoints_val, seed, verbose=None):
         show_prints.verbose = verbose
         start = timer()
         #Update number of points to generate
@@ -418,7 +450,7 @@ class Data(show_prints.Verbosity):
         show_prints.verbose = verbose
         print("Added", str(npoints_train), "(X_train, Y_train) samples and", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.")
 
-    def generate_test_indices(self, npoints_test, verbose=False):
+    def generate_test_indices(self, npoints_test, verbose=None):
         show_prints.verbose = verbose
         #Check existing indices
         n_existing_test = len(self.data_dictionary["idx_test"])
@@ -430,7 +462,7 @@ class Data(show_prints.Verbosity):
         #Return new indices
         return idx_test
 
-    def generate_test_data(self, npoints_test, verbose=True):
+    def generate_test_data(self, npoints_test, verbose=None):
         show_prints.verbose = verbose
         start = timer()
         #Update number of points to generate
@@ -457,7 +489,7 @@ class Data(show_prints.Verbosity):
         W = W/np.sum(W)*len(sample)
         return W
 
-    def define_scalers(self, X_train, Y_train, scalerX_bool, scalerY_bool, verbose=False):
+    def define_scalers(self, X_train, Y_train, scalerX_bool, scalerY_bool, verbose=None):
         show_prints.verbose = verbose
         if scalerX_bool:
             scalerX = StandardScaler(with_mean=True, with_std=True)

@@ -879,16 +879,39 @@ is set from the input file, otherwise it is set to the input argument.</p>
 <div><p>See class <a class="reference internal" href="#histfactory-arguments"><span class="std std-ref">Arguments documentation</span></a>.</p>
 </div></blockquote>
 </li>
-<li><p><strong>Produces file</strong></p>
+<li><p><strong>Produces files</strong></p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_output_log_file" title="DNNLikelihood.Histfactory.histfactory_output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_output_log_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_output_json_file" title="DNNLikelihood.Histfactory.histfactory_output_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_output_json_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_output_pickle_file" title="DNNLikelihood.Histfactory.histfactory_output_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_output_pickle_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_output_pickle_file" title="DNNLikelihood.Histfactory.histfactory_output_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_output_pickle_file</span></code></a> (only if <a class="reference internal" href="#cmdoption-arg-histfactory-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">histfactory_input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Histfactory._Histfactory__check_define_input_files">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__check_define_input_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__check_define_input_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the attributes corresponding to input files
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_input_json_file" title="DNNLikelihood.Histfactory.histfactory_input_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_input_json_file</span></code></a>,
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_input_pickle_file" title="DNNLikelihood.Histfactory.histfactory_input_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_input_pickle_file</span></code></a>, and
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_input_log_file" title="DNNLikelihood.Histfactory.histfactory_input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_input_log_file</span></code></a>
+depending on the value of the
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_input_file" title="DNNLikelihood.Histfactory.histfactory_input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_input_file</span></code></a> attribute.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Histfactory._Histfactory__check_define_output_files">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__check_define_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__check_define_output_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the attributes corresponding to output files
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_output_json_file" title="DNNLikelihood.Histfactory.histfactory_output_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_output_json_file</span></code></a>,
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_output_log_file" title="DNNLikelihood.Histfactory.histfactory_output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_output_log_file</span></code></a>, and
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_output_pickle_file" title="DNNLikelihood.Histfactory.histfactory_output_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_output_pickle_file</span></code></a>
+depending on the value of the
+<a class="reference internal" href="#DNNLikelihood.Histfactory.histfactory_input_file" title="DNNLikelihood.Histfactory.histfactory_input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.histfactory_input_file</span></code></a> and
+<a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attributes.</p>
 </dd></dl>
 
 <dl class="method">

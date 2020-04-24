@@ -17,6 +17,8 @@ Class
 .. autoclass:: DNNLikelihood.Data
    :undoc-members:
 
+.. _data_arguments:
+
 Arguments
 """""""""
 
@@ -70,6 +72,10 @@ Methods
 """""""
 
     .. automethod:: DNNLikelihood.Data.__init__
+
+    .. automethod:: DNNLikelihood.Data._Data__check_define_input_files
+
+    .. automethod:: DNNLikelihood.Data._Data__check_define_output_files
 
     .. automethod:: DNNLikelihood.Data._Data__check_define_name
 

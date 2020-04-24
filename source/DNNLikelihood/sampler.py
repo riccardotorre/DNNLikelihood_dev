@@ -44,7 +44,7 @@ class Sampler(show_prints.Verbosity):
                  new_sampler=None,
                  likelihood_script_file=None,
                  likelihood=None,
-                 nsteps=None,
+                 nsteps_final=None,
                  moves_str=None,
                  parallel_CPU=None,
                  vectorize=None,
@@ -72,7 +72,7 @@ class Sampler(show_prints.Verbosity):
         Attributes that are always set from input arguments (if they are not ``None``)
 
             - :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`
-            - :attr:`Sampler.nsteps <DNNLikelihood.Sampler.new_sampler>`
+            - :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.new_sampler>`
             - :attr:`Sampler.moves_str <DNNLikelihood.Sampler.new_sampler>`
             - :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.new_sampler>`
             - :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>`
@@ -83,7 +83,7 @@ class Sampler(show_prints.Verbosity):
 
             - :attr:`Sampler.name <DNNLikelihood.Sampler.name>`
             - :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
-            - :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>` (if not given as input)
+            - :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` (if not given as input)
             - :attr:`Sampler.moves_str <DNNLikelihood.Sampler.moves_str>` (if not given as input)
             - :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.parallel_CPU>` (if not given as input)
             - :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>` (if not given as input)
@@ -141,7 +141,7 @@ class Sampler(show_prints.Verbosity):
             self.new_sampler=new_sampler
         self.likelihood_script_file = likelihood_script_file
         self.likelihood = likelihood
-        self.nsteps = nsteps
+        self.nsteps_final = nsteps_final
         if moves_str is not None:
             self.moves_str = moves_str
         else:
@@ -156,7 +156,54 @@ class Sampler(show_prints.Verbosity):
         else:
             self.vectorize = vectorize
         self.sampler_input_file = sampler_input_file
-        ### Initializing existing sampler
+        self.__check_define_input_files(verbose=verbose_sub)
+        if not self.new_sampler:
+            #self.__load_sampler(verbose=verbose_sub)
+            try:
+                self.__load_sampler(verbose=verbose_sub)
+                self.nsteps_final = nsteps_final
+                if moves_str is not None:
+                    self.moves_str = moves_str
+                if parallel_CPU is not None:
+                    self.parallel_CPU = parallel_CPU
+                if vectorize is not None:
+                    self.vectorize = vectorize
+                self.__init_likelihood()
+            except:
+                print("Finisce qui")
+                self.new_sampler = True
+        if self.new_sampler:
+            self.log = {timestamp: {"action": "created"}}
+            self.figures_list = []
+            self.__init_likelihood()
+            self.__check_define_output_files()
+        self.moves = eval(self.moves_str)
+        self.__check_vectorize(verbose=verbose_sub)
+        self.__init_backend(verbose=verbose_sub)
+        self.__check_params_backend(verbose=verbose_sub)
+        del(self.likelihood)
+        if self.new_sampler:
+            self.save_sampler(overwrite=False, verbose=verbose_sub)
+        else:
+            self.save_sampler(overwrite=True, verbose=verbose_sub)
+
+    def __check_define_input_files(self,verbose=None):
+        """
+        Sets the input files attributes.
+        If :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler` is ``True``, the 
+        :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
+        from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from
+        ``sampler_input_file``.
+        If :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler` is ``False`` the 
+        :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`
+        attribute is set from ``sampler_input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
+        otherwise from ``likelihood``.
+        The attributes :attr:`Sampler.sampler_input_json_file <DNNLikelihood.Sampler.sampler_input_json_file>`
+        and :attr:`Sampler.sampler_input_log_file <DNNLikelihood.Sampler.sampler_input_log_file>` are set
+        from :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>` if it is not ``None``,
+        otherwise they are set to ``None``.
+        """
+        _, verbose_sub = self.set_verbosity(verbose)
         if not self.new_sampler:
             ### Tries to determine self.sampler_input_file from input arguements
             if self.sampler_input_file is not None:
@@ -171,26 +218,6 @@ class Sampler(show_prints.Verbosity):
                         self.__get_sampler_input_file_from_likelihood(verbose=verbose_sub)
                     else:
                         raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'sampler_input_file'.")
-            self.sampler_input_json_file = path.abspath(self.sampler_input_file+".json")
-            self.sampler_input_log_file = path.abspath(self.sampler_input_file+".log")
-            try:
-                self.__load_sampler(verbose=verbose_sub)
-                ##  Defines: name, likelihood_script_file, nsteps, moves_str, parallel_CPU, vectorize, log, figures_list,
-                #   sampler_output_json_file, sampler_output_log_file, backend_file, figure_files_base_path
-                ##  Already defined: verbose
-                ##  Updates nsteps, moves_str, parallel_CPU, and vectorize if given.
-                self.nsteps = nsteps
-                if moves_str is not None:
-                    self.moves_str = moves_str
-                if parallel_CPU is not None:
-                    self.parallel_CPU = parallel_CPU
-                if vectorize is not None:
-                    self.vectorize = vectorize
-                self.__init_likelihood()
-            except:
-                self.new_sampler = True
-                ### Already defined: likelihood_script_file, nsteps, moves_str, parallel_CPU, vectorize, verbose
-        ### Initializing new sampler
         if self.new_sampler:
             ### Tries to determine self.likelihood_script_file from input arguements
             if self.likelihood_script_file is not None:
@@ -204,29 +231,27 @@ class Sampler(show_prints.Verbosity):
                         self.__get_likelihood_script_file_from_sampler_input_file()
                     else:
                         raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'sampler_input_file'.")
-            ## Should define: log, figures_list, sampler_output_json_file, sampler_output_log_file,
-            #  backend_file, figure_files_base_path
-            self.log = {timestamp: {"action": "created"}}
-            self.figures_list = []
-            self.__init_likelihood()
-            self.sampler_output_json_file = path.join(self.output_folder, self.name+".json")
-            self.sampler_output_log_file = path.join(self.output_folder, self.name+".log")
-            self.sampler_output_backend_file = path.join(self.output_folder, self.name+"_backend.h5")
-            self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
-        #### Checking vectorize, setting moves, backend, sampler, and figures_list, and checking parameters consistency in backend
-        self.__check_vectorize(verbose=verbose_sub)
-        self.moves = eval(self.moves_str)
-        self.__init_backend(verbose=verbose_sub)
-        self.__check_params_backend(verbose=verbose_sub)
         try:
-            del(self.likelihood)
+            self.sampler_input_json_file = path.abspath(self.sampler_input_file+".json")
+            self.sampler_input_log_file = path.abspath(self.sampler_input_file+".log")
         except:
-            pass
-        #### Saving sampler
-        if self.new_sampler:
-            self.save_sampler(overwrite=False, verbose=verbose_sub)
-        else:
-            self.save_sampler(overwrite=True, verbose=verbose_sub)
+            self.sampler_input_json_file = None
+            self.sampler_input_log_file = None
+        
+    def __check_define_output_files(self):
+        """
+        Sets the attributes corresponding to output files
+        :attr:`Sampler.sampler_output_json_file <DNNLikelihood.Sampler.sampler_output_json_file>`,
+        :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`,
+        :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`,
+        and :attr:`Sampler.figure_files_base_path <DNNLikelihood.Sampler.figure_files_base_path>`
+        depending on the value of the 
+        :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
+        """
+        self.sampler_output_json_file = path.join(self.output_folder, self.name+".json")
+        self.sampler_output_log_file = path.join(self.output_folder, self.name+".log")
+        self.sampler_output_backend_file = path.join(self.output_folder, self.name+"_backend.h5")
+        self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
 
     def __get_likelihood_script_file_from_sampler_input_file(self):
         """
@@ -335,13 +360,13 @@ class Sampler(show_prints.Verbosity):
         self.pars_labels = lik.pars_labels
         self.pars_bounds = lik.pars_bounds
         self.generic_pars_labels = utils.define_generic_pars_labels(self.pars_pos_poi, self.pars_pos_nuis)
+        self.ndims = lik.ndims
         try:
             self.output_folder
         except:
             self.output_folder = lik.output_folder
         self.nwalkers = len(lik.pars_init_vec)
-        self.ndims = len(lik.pars_init_vec[0])
-
+        
     def __load_sampler(self,verbose=None):
         """
         Private method used to load
@@ -369,10 +394,10 @@ class Sampler(show_prints.Verbosity):
         self.log = dictionary
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {
-            "action": "loaded", "files names": [path.split(self.sampler_input_json_file)[-1],
+        self.log[timestamp] = {"action": "loaded", 
+                               "files names": [path.split(self.sampler_input_json_file)[-1],
                                                 path.split(self.sampler_input_log_file)[-1]],
-                                "files paths": [self.sampler_input_json_file,
+                               "files paths": [self.sampler_input_json_file,
                                                 self.sampler_input_log_file]}
         print('Loaded sampler in', str(end-start), '.',show=verbose)
 
@@ -410,11 +435,11 @@ class Sampler(show_prints.Verbosity):
         if self.new_sampler:
             #print("Creating sampler in backend file", self.sampler_output_backend_file)
             utils.check_rename_file(self.sampler_output_backend_file,verbose=verbose_sub)
-            nsteps_tmp = self.nsteps
-            self.nsteps = 0
+            nsteps_tmp = self.nsteps_final
+            self.nsteps_final = 0
             start = timer()
             self.__init_sampler(verbose=verbose_sub)
-            self.nsteps = nsteps_tmp
+            self.nsteps_final = nsteps_tmp
             end = timer()
             self.log[timestamp] = {"action": "created backend", 
                                    "file name": path.split(self.sampler_output_backend_file)[-1], 
@@ -422,13 +447,13 @@ class Sampler(show_prints.Verbosity):
             print("Created backend", self.sampler_output_backend_file, "for chains", self.name, "in", end-start, "s.",show=verbose)
         else:
             #print("Loading existing sampler from backend file", self.sampler_output_backend_file)
-            nsteps_tmp = self.nsteps
-            self.nsteps = 0
+            nsteps_tmp = self.nsteps_final
+            self.nsteps_final = 0
             self.backend = None
             start = timer()
             self.__init_sampler(verbose=verbose_sub)
-            self.nsteps = nsteps_tmp
-            #self.nsteps = self.sampler.iteration
+            self.nsteps_final = nsteps_tmp
+            #self.nsteps_final = self.sampler.iteration
             end = timer()
             self.log[timestamp] = {"action": "loaded backend", 
                                    "file name": path.split(self.sampler_output_backend_file)[-1], 
@@ -485,6 +510,10 @@ class Sampler(show_prints.Verbosity):
                 p0 = self.backend.get_last_sample()
             except:
                 p0 = self.pars_init_vec
+        try:
+            self.nsteps_available = self.backend.iteration
+        except:
+            self.nsteps_available = 0
         # Defines sampler and runs the chains
         start = timer()
         nsteps_to_run = self.__set_steps_to_run(verbose=verbose_sub)
@@ -541,8 +570,8 @@ class Sampler(show_prints.Verbosity):
         :attr:`Sampler.nwalkers <DNNLikelihood.Sampler.nwalkers>` and :attr:`Sampler.ndims <DNNLikelihood.Sampler.ndims>`
         assigned by the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood> method 
         with those determined from the existing backedn :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`.
-        It also checks if the value of :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>` is smaller than the number
-        of available steps in the backend and, in such case, it sets :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>`
+        It also checks if the value of :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` is smaller than the number
+        of available steps in the backend and, in such case, it sets :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>`
         equal to the number of available steps.
 
         - **Arguments**
@@ -557,22 +586,21 @@ class Sampler(show_prints.Verbosity):
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         nwalkers_from_backend, ndims_from_backend = self.backend.shape
-        nsteps_from_backend = self.backend.iteration
         if nwalkers_from_backend != self.nwalkers:
             raise Exception("Number of walkers (nwalkers) determined from the input likelihood is inconsitent with the loaded backend. Please check inputs.",show=verbose)
         if ndims_from_backend != self.ndims:
             raise Exception("Number of steps (nsteps)  determined from the input likelihood is inconsitent with loaded backend. Please check inputs.",show=verbose)
-        if nsteps_from_backend > self.nsteps:
+        if self.nsteps_available > self.nsteps_final:
             print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",nsteps_from_backend, ".",show=verbose)
-            self.nsteps = nsteps_from_backend
+            self.nsteps_final = self.nsteps_available
 
     def __set_steps_to_run(self,verbose=None):
         """
         Private method that returns the number of steps to run computed as the difference between the value of
-        :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>` and the number of steps available in 
+        :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` and the number of steps available in 
         :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`.
         If this difference is negative, a warning message asking to increase the value of 
-        :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>` is printed.
+        :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>` is printed.
 
         - **Arguments**
 
@@ -585,15 +613,11 @@ class Sampler(show_prints.Verbosity):
                     - **default**: ``None`` 
         """
         verbose, _ = self.set_verbosity(verbose)
-        try:
-            nsteps_current = self.backend.iteration
-        except:
-            nsteps_current = 0
-        if self.nsteps <= nsteps_current and nsteps_current > 0:
+        if self.nsteps_final <= self.nsteps_available and self.nsteps_available > 0:
             print("Please increase nsteps to run for more steps",show=verbose)
             nsteps_to_run = 0
         else:
-            nsteps_to_run = self.nsteps-nsteps_current
+            nsteps_to_run = self.nsteps_final-self.nsteps_available
         return nsteps_to_run
 
     def __set_pars_labels(self, pars_labels):
@@ -688,14 +712,14 @@ class Sampler(show_prints.Verbosity):
                     self.nwalkers, self.ndims, self.logpdf, moves=self.moves, pool=pool, backend=self.backend, args=self.logpdf_args)
                 self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store=True)
         else:
-            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndims, self.logpdf, moves=self.moves,
-                                                 args=self.logpdf_args, backend=self.backend, vectorize=self.vectorize)
+            self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndims, self.logpdf, moves=self.moves, args=self.logpdf_args, backend=self.backend, vectorize=self.vectorize)
             self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store=True)
+        self.nsteps_available = self.backend.iteration
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "run sampler", 
                                "nsteps": nsteps_to_run, 
-                               "available steps": self.backend.iteration,
+                               "available steps": self.nsteps_available,
                                "updated file name": path.split(self.sampler_output_backend_file)[-1],
                                "updated file path": self.sampler_output_backend_file}
         self.save_sampler_log(overwrite=True, verbose=verbose_sub)
@@ -799,7 +823,8 @@ class Sampler(show_prints.Verbosity):
         self.log[timestamp] = {"action": "saved", 
                                "file name": path.split(self.sampler_output_json_file)[-1], 
                                "file path": self.sampler_output_json_file}
-        dictionary = utils.dic_minus_keys(self.__dict__, ["sampler_input_file", "new_sampler","log", 
+        dictionary = utils.dic_minus_keys(self.__dict__, ["sampler_input_file","sampler_input_json_file", "sampler_input_log_file",
+                                                          "new_sampler", "log","nsteps_available",
                                                           "logpdf", "logpdf_args", "pars_pos_poi",
                                                           "pars_pos_nuis", "pars_init_vec", "pars_labels", "generic_pars_labels",
                                                           "nwalkers", "ndims", "backend", "sampler", "moves","verbose"])
@@ -817,6 +842,10 @@ class Sampler(show_prints.Verbosity):
         | Saved | Atrributes                                                                                                       | Method                                                                                           |
         +=======+==================================================================================================================+==================================================================================================+
         |   X   | :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`                                    |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Sampler.sampler_input_json_file <DNNLikelihood.Sampler.sampler_input_json_file>`                          |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Sampler.sampler_input_log_file <DNNLikelihood.Sampler.sampler_input_log_file>`                            |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`                                                  |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -842,6 +871,8 @@ class Sampler(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.ndims <DNNLikelihood.Sampler.ndims>`                                                              |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
+        |       | :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`                                        |                                                                                                  |
+        |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.sampler <DNNLikelihood.Sampler.sampler>`                                                          |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.moves <DNNLikelihood.Sampler.moves>`                                                              |                                                                                                  |
@@ -864,7 +895,7 @@ class Sampler(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.name <DNNLikelihood.Sampler.name>`                                                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>`                                                            |                                                                                                  |
+        |       | :attr:`Sampler.nsteps_final <DNNLikelihood.Sampler.nsteps_final>`                                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`                                              |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -1049,7 +1080,7 @@ class Sampler(show_prints.Verbosity):
 
                 Array or list of number of steps at which the metrics are computed. If it is an integer it is automatically converted
                 in a numpy array with a single entry. It it is ``"all"`` it is set to a list with the only entry
-                :attr:`Sampler.nsteps <DNNLikelihood.Sampler.nsteps>`. 
+                :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`. 
 
                     - **type**: ``str`` or ``int`` or ``list`` or ``numpy.ndarray``
                     - **allowed str**: ``all``
@@ -1079,7 +1110,7 @@ class Sampler(show_prints.Verbosity):
         pars = np.array([pars]).flatten()
         for par in pars:
             if nsteps is "all":
-                nsteps = np.array([self.nsteps])
+                nsteps = np.array([self.nsteps_available])
             else:
                 nsteps = np.array([nsteps]).flatten()
             for step in nsteps:
@@ -1167,8 +1198,8 @@ class Sampler(show_prints.Verbosity):
         pars_labels = self.__set_pars_labels(pars_labels)
         filename = self.figure_files_base_path
         for par in pars:
-            idx = np.sort([(i)*(10**j) for i in range(1, 11) for j in range(int(np.ceil(np.log10(self.nsteps))))])
-            idx = np.unique(idx[idx <= self.nsteps])
+            idx = np.sort([(i)*(10**j) for i in range(1, 11) for j in range(int(np.ceil(np.log10(self.nsteps_available))))])
+            idx = np.unique(idx[idx <= self.nsteps_available])
             idx = utils.get_spaced_elements(idx, numElems=npoints+1)
             idx = idx[1:]
             gr = self.gelman_rubin(par, nsteps=idx)
@@ -1518,8 +1549,7 @@ class Sampler(show_prints.Verbosity):
             self.nwalkers), n_chains, replace=False))
         for par in pars:
             chain = self.sampler.get_chain()[:, :, par]
-            idx = np.sort([(i)*(10**j) for i in range(1, 11)
-                           for j in range(int(np.ceil(np.log10(self.nsteps))))])
+            idx = np.sort([(i)*(10**j) for i in range(1, 11) for j in range(int(np.ceil(np.log10(self.nsteps_available))))])
             idx = np.unique(idx[idx < len(chain)])
             plt.plot(idx,chain[idx][:,rnd_chains], '-', alpha=0.8)
             plt.xlabel("number of steps, $S$")
@@ -1583,8 +1613,7 @@ class Sampler(show_prints.Verbosity):
         rnd_chains = np.sort(np.random.choice(np.arange(
             self.nwalkers), n_chains, replace=False))
         chain_lp = self.sampler.get_log_prob()
-        idx = np.sort([(i)*(10**j) for i in range(1, 11)
-                       for j in range(int(np.ceil(np.log10(self.nsteps))))])
+        idx = np.sort([(i)*(10**j) for i in range(1, 11) for j in range(int(np.ceil(np.log10(self.nsteps_available))))])
         idx = np.unique(idx[idx < len(chain_lp)])
         plt.plot(idx, -chain_lp[:, rnd_chains][idx], '-', alpha=0.8)
         plt.xlabel("number of steps, $S$")
@@ -1690,13 +1719,13 @@ class Sampler(show_prints.Verbosity):
             allsamples = self.sampler.get_chain(discard=burnin, thin=thin, flat=True)
             logpdf_values = self.sampler.get_log_prob(discard=burnin, thin=thin, flat=True)
         else:
-            if nsamples > (self.nsteps-burnin)*self.nwalkers/thin:
+            if nsamples > (self.nsteps_available-burnin)*self.nwalkers/thin:
                 print("Less samples than available are requested. Returning all available samples:",
-                  str((self.nsteps-burnin)*self.nwalkers/thin),"\nYou may try to reduce burnin and/or thin to get more samples.",show=verbose)
+                  str((self.nsteps_available-burnin)*self.nwalkers/thin),"\nYou may try to reduce burnin and/or thin to get more samples.",show=verbose)
                 allsamples = self.sampler.get_chain(discard=burnin, thin=thin, flat=True)
                 logpdf_values = self.sampler.get_log_prob(discard=burnin, thin=thin, flat=True)
             else:
-                burnin = int(self.nsteps-nsamples*thin/self.nwalkers)
+                burnin = int(self.nsteps_available-nsamples*thin/self.nwalkers)
                 allsamples=self.sampler.get_chain(discard = burnin, thin = thin, flat = True)
                 logpdf_values=self.sampler.get_log_prob(discard = burnin, thin = thin, flat = True)
         if len(np.unique(logpdf_values, axis=0, return_index=False)) < len(logpdf_values):
@@ -1719,10 +1748,13 @@ class Sampler(show_prints.Verbosity):
                   output_folder=self.output_folder,
                   data_input_file=None,
                   verbose=self.verbose)
-        ds.save_data()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "created data object", 
-                               "file name": path.split(ds.data_output_file)[-1], 
-                               "file path": ds.data_output_file}
+                               "files names": [path.split(ds.data_output_h5_file)[-1],
+                                               path.split(ds.data_output_json_file)[-1],
+                                               path.split(ds.data_output_log_file)[-1]],
+                               "files paths": [ds.data_output_h5_file,
+                                               ds.data_output_json_file,
+                                               ds.data_output_log_file]}
         self.save_sampler_log(overwrite=True, verbose=verbose_sub)
         return ds
