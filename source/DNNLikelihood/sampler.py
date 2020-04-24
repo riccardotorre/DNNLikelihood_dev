@@ -34,7 +34,7 @@ class Sampler(show_prints.Verbosity):
     MCMC the ``Sampler`` object contains several methods to check convergence, and export ``Data`` objects
     that can be used to train and test the DNNLikelihood.
     The object can be instantiated both passing a ``Likelihood`` object or a ``likelihood_script_file`` created 
-    with the ``Likelihood.save_likelihood_script`` method.
+    with the ``Likelihood.save_script`` method.
 
 .. |emcee_link| raw:: html
     
@@ -48,7 +48,7 @@ class Sampler(show_prints.Verbosity):
                  moves_str=None,
                  parallel_CPU=None,
                  vectorize=None,
-                 sampler_input_file=None,
+                 input_file=None,
                  verbose=True
                  ):
         """
@@ -58,13 +58,13 @@ class Sampler(show_prints.Verbosity):
         1. ``new_sampler=True``: all attributes are set from input arguments. The 
         :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
         from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from
-        ``sampler_input_file``. Afterwards the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
+        ``input_file``. Afterwards the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
         method is called.
         
-        2. ``new_sampler=False``: the :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`
-        attribute is set from ``sampler_input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
+        2. ``new_sampler=False``: the :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
+        attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
         otherwise from ``likelihood``. Arguments are set from 
-        :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`. Afterwards the 
+        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`. Afterwards the 
         :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
         method is called. If the import fails :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` 
         proceeds with ``new_sampler=True`` (see 1.).
@@ -78,7 +78,7 @@ class Sampler(show_prints.Verbosity):
             - :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>`
             - :attr:`Sampler.verbose <DNNLikelihood.Sampler.verbose>`
 
-        Attributes that are set from :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`
+        Attributes that are set from :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
         if ``new_sampler=False``:
 
             - :attr:`Sampler.name <DNNLikelihood.Sampler.name>`
@@ -90,14 +90,14 @@ class Sampler(show_prints.Verbosity):
             - :attr:`Sampler.log <DNNLikelihood.Sampler.log>`
             - :attr:`Sampler.figures_list <DNNLikelihood.Sampler.figures_list>`
             - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`
-            - :attr:`Sampler.sampler_output_json_file <DNNLikelihood.Sampler.sampler_output_json_file>`
-            - :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`
-            - :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`
-            - :attr:`Sampler.figure_files_base_path <DNNLikelihood.Sampler.figure_files_base_path>`
+            - :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`
+            - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
+            - :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
+            - :attr:`Sampler.output_figures_base_file <DNNLikelihood.Sampler.output_figures_base_file>`
 
         Attributes that are set by :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>`:
 
-            - :attr:`Sampler.name <DNNLikelihood.Sampler.name>` (if not imported from :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`)
+            - :attr:`Sampler.name <DNNLikelihood.Sampler.name>` (if not imported from :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`)
             - :attr:`Sampler.logpdf <DNNLikelihood.Sampler.logpdf>`
             - :attr:`Sampler.logpdf_args <DNNLikelihood.Sampler.logpdf_args>`
             - :attr:`Sampler.pars_pos_poi <DNNLikelihood.Sampler.pars_pos_poi>`
@@ -106,7 +106,7 @@ class Sampler(show_prints.Verbosity):
             - :attr:`Sampler.pars_labels <DNNLikelihood.Sampler.pars_labels>`
             - :attr:`Sampler.generic_pars_labels <DNNLikelihood.Sampler.generic_pars_labels>`
             - :attr:`Sampler.pars_bounds <DNNLikelihood.Sampler.pars_bounds>`
-            - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` (if not imported from :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`)
+            - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` (if not imported from :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`)
             - :attr:`Sampler.nwalkers <DNNLikelihood.Sampler.nwalkers>`
             - :attr:`Sampler.ndims <DNNLikelihood.Sampler.ndims>`
 
@@ -127,9 +127,9 @@ class Sampler(show_prints.Verbosity):
 
         - **Produces file**
 
-            - :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`
-            - :attr:`Sampler.sampler_output_json_file <DNNLikelihood.Sampler.sampler_output_json_file>`
-            - :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`
+            - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
+            - :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`
+            - :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -155,12 +155,12 @@ class Sampler(show_prints.Verbosity):
             self.vectorize = False
         else:
             self.vectorize = vectorize
-        self.sampler_input_file = sampler_input_file
+        self.input_file = input_file
         self.__check_define_input_files(verbose=verbose_sub)
         if not self.new_sampler:
-            #self.__load_sampler(verbose=verbose_sub)
+            #self.__load(verbose=verbose_sub)
             try:
-                self.__load_sampler(verbose=verbose_sub)
+                self.__load(verbose=verbose_sub)
                 self.nsteps_final = nsteps_final
                 if moves_str is not None:
                     self.moves_str = moves_str
@@ -183,9 +183,9 @@ class Sampler(show_prints.Verbosity):
         self.__check_params_backend(verbose=verbose_sub)
         del(self.likelihood)
         if self.new_sampler:
-            self.save_sampler(overwrite=False, verbose=verbose_sub)
+            self.save(overwrite=False, verbose=verbose_sub)
         else:
-            self.save_sampler(overwrite=True, verbose=verbose_sub)
+            self.save(overwrite=True, verbose=verbose_sub)
 
     def __check_define_input_files(self,verbose=None):
         """
@@ -193,75 +193,75 @@ class Sampler(show_prints.Verbosity):
         If :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler` is ``True``, the 
         :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
         from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from
-        ``sampler_input_file``.
+        ``input_file``.
         If :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler` is ``False`` the 
-        :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`
-        attribute is set from ``sampler_input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
+        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
+        attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
         otherwise from ``likelihood``.
-        The attributes :attr:`Sampler.sampler_input_json_file <DNNLikelihood.Sampler.sampler_input_json_file>`
-        and :attr:`Sampler.sampler_input_log_file <DNNLikelihood.Sampler.sampler_input_log_file>` are set
-        from :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>` if it is not ``None``,
+        The attributes :attr:`Sampler.input_json_file <DNNLikelihood.Sampler.input_json_file>`
+        and :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>` are set
+        from :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` if it is not ``None``,
         otherwise they are set to ``None``.
         """
         _, verbose_sub = self.set_verbosity(verbose)
         if not self.new_sampler:
-            ### Tries to determine self.sampler_input_file from input arguements
-            if self.sampler_input_file is not None:
-                self.sampler_input_file = path.abspath(path.splitext(self.sampler_input_file)[0])
+            ### Tries to determine self.input_file from input arguements
+            if self.input_file is not None:
+                self.input_file = path.abspath(path.splitext(self.input_file)[0])
             else:
                 if self.likelihood_script_file is not None:
-                    ### Try to detemine sampler_input_file from likelihood_script_file
-                    self.__get_sampler_input_file_from_likelihood_script_file()
+                    ### Try to detemine input_file from likelihood_script_file
+                    self.__get_input_file_from_likelihood_script_file()
                 else:
                     if self.likelihood is not None:
-                        ### Try to detemine sampler_input_file from likelihood
-                        self.__get_sampler_input_file_from_likelihood(verbose=verbose_sub)
+                        ### Try to detemine input_file from likelihood
+                        self.__get_input_file_from_likelihood(verbose=verbose_sub)
                     else:
-                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'sampler_input_file'.")
+                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
         if self.new_sampler:
             ### Tries to determine self.likelihood_script_file from input arguements
             if self.likelihood_script_file is not None:
                 self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
             else:
                 if self.likelihood is not None:
-                    ### Try to detemine sampler_input_file from likelihood
+                    ### Try to detemine input_file from likelihood
                     self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
                 else:
-                    if self.sampler_input_file is not None:
-                        self.__get_likelihood_script_file_from_sampler_input_file()
+                    if self.input_file is not None:
+                        self.__get_likelihood_script_file_from_input_file()
                     else:
-                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'sampler_input_file'.")
+                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
         try:
-            self.sampler_input_json_file = path.abspath(self.sampler_input_file+".json")
-            self.sampler_input_log_file = path.abspath(self.sampler_input_file+".log")
+            self.input_json_file = path.abspath(self.input_file+".json")
+            self.input_log_file = path.abspath(self.input_file+".log")
         except:
-            self.sampler_input_json_file = None
-            self.sampler_input_log_file = None
+            self.input_json_file = None
+            self.input_log_file = None
         
     def __check_define_output_files(self):
         """
         Sets the attributes corresponding to output files
-        :attr:`Sampler.sampler_output_json_file <DNNLikelihood.Sampler.sampler_output_json_file>`,
-        :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`,
-        :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`,
-        and :attr:`Sampler.figure_files_base_path <DNNLikelihood.Sampler.figure_files_base_path>`
+        :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`,
+        :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`,
+        :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`,
+        and :attr:`Sampler.output_figures_base_file <DNNLikelihood.Sampler.output_figures_base_file>`
         depending on the value of the 
         :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
         """
-        self.sampler_output_json_file = path.join(self.output_folder, self.name+".json")
-        self.sampler_output_log_file = path.join(self.output_folder, self.name+".log")
-        self.sampler_output_backend_file = path.join(self.output_folder, self.name+"_backend.h5")
-        self.figure_files_base_path = path.join(self.output_folder, self.name+"_figure")
+        self.output_json_file = path.join(self.output_folder, self.name+".json")
+        self.output_log_file = path.join(self.output_folder, self.name+".log")
+        self.backend_file = path.join(self.output_folder, self.name+"_backend.h5")
+        self.output_figures_base_file = path.join(self.output_folder, self.name+"_figure")
 
-    def __get_likelihood_script_file_from_sampler_input_file(self):
+    def __get_likelihood_script_file_from_input_file(self):
         """
         Private method that attempts to determine the 
         :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute
-        from the :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`
+        from the :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
         attribute.
         """
-        self.sampler_input_file = path.abspath(path.splitext(self.sampler_input_file)[0])
-        self.likelihood_script_file = self.sampler_input_file.replace("sampler","likelihood_script.py")
+        self.input_file = path.abspath(path.splitext(self.input_file)[0])
+        self.likelihood_script_file = self.input_file.replace("sampler","likelihood_script.py")
 
     def __get_likelihood_script_file_from_likelihood(self,verbose=None):
         """
@@ -283,29 +283,29 @@ class Sampler(show_prints.Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         tmp_likelihood = copy(self.likelihood)
         tmp_likelihood.verbose = verbose
-        self.likelihood_script_file = tmp_likelihood.likelihood_script_file
-        tmp_likelihood.save_likelihood_script(verbose=verbose_sub)
+        self.likelihood_script_file = tmp_likelihood.script_file
+        tmp_likelihood.save_script(verbose=verbose_sub)
 
-    def __get_sampler_input_file_from_likelihood_script_file(self):
+    def __get_input_file_from_likelihood_script_file(self):
         """
         Private method that attempts to determine the 
-        :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>` attribute
+        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attribute
         from the :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
         attribute.
         """
         self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
         folder, file = path.split(self.likelihood_script_file)
         file = path.splitext(file)[0]
-        sampler_input_file_name = file.replace("likelihood_script","sampler")
-        self.sampler_input_file = path.join(folder, sampler_input_file_name)
+        input_file_name = file.replace("likelihood_script","sampler")
+        self.input_file = path.join(folder, input_file_name)
 
-    def __get_sampler_input_file_from_likelihood(self, verbose=None):
+    def __get_input_file_from_likelihood(self, verbose=None):
         """
         Private method that attempts to determine the
-        :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>` attribute
+        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attribute
         from the :attr:`Sampler.likelihood <DNNLikelihood.Sampler.likelihood>`
         attribute through the :meth:`Sampler.__get_likelihood_script_file_from_likelihood <DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_likelihood>`
-        and :meth:`Sampler.__get_sampler_input_file_from_likelihood_script_file <DNNLikelihood.Sampler._Sampler__get_sampler_input_file_from_likelihood_script_file>`
+        and :meth:`Sampler.__get_input_file_from_likelihood_script_file <DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood_script_file>`
         methods.
 
         - **Arguments**
@@ -320,16 +320,16 @@ class Sampler(show_prints.Verbosity):
         """
         _, verbose_sub = self.set_verbosity(verbose)
         self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
-        self.__get_sampler_input_file_from_likelihood_script_file()
+        self.__get_input_file_from_likelihood_script_file()
 
     def __init_likelihood(self):
         """
         Private method that sets the likelihood related attributes from the 
-        :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>` attribute.
+        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attribute.
         It imports the latter as a module, which instantiates a :class:`Likelihood <DNNLikelihood.Likelihood>`
         object and defines parameters. It is used to set the attributes
 
-            - :attr:`Sampler.name <DNNLikelihood.Sampler.name>` (if not imported from :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`)
+            - :attr:`Sampler.name <DNNLikelihood.Sampler.name>` (if not imported from :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`)
             - :attr:`Sampler.logpdf <DNNLikelihood.Sampler.logpdf>`
             - :attr:`Sampler.logpdf_args <DNNLikelihood.Sampler.logpdf_args>`
             - :attr:`Sampler.pars_pos_poi <DNNLikelihood.Sampler.pars_pos_poi>`
@@ -338,7 +338,7 @@ class Sampler(show_prints.Verbosity):
             - :attr:`Sampler.pars_labels <DNNLikelihood.Sampler.pars_labels>`
             - :attr:`Sampler.pars_bounds <DNNLikelihood.Sampler.pars_bounds>`
             - :attr:`Sampler.generic_pars_labels <DNNLikelihood.Sampler.generic_pars_labels>`
-            - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` (if not imported from :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`)
+            - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` (if not imported from :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`)
             - :attr:`Sampler.nwalkers <DNNLikelihood.Sampler.nwalkers>`
             - :attr:`Sampler.ndims <DNNLikelihood.Sampler.ndims>`
         """
@@ -367,12 +367,12 @@ class Sampler(show_prints.Verbosity):
             self.output_folder = lik.output_folder
         self.nwalkers = len(lik.pars_init_vec)
         
-    def __load_sampler(self,verbose=None):
+    def __load(self,verbose=None):
         """
         Private method used to load
         :class:`Sampler <DNNLikelihood.Sampler>` attributes from the 
-        :attr:`Sampler.sampler_input_json_file <DNNLikelihood.Sampler.sampler_input_json_file>` and
-        :attr:`Sampler.sampler_input_log_file <DNNLikelihood.Sampler.sampler_input_log_file>` files.
+        :attr:`Sampler.input_json_file <DNNLikelihood.Sampler.input_json_file>` and
+        :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>` files.
 
         - **Arguments**
 
@@ -386,30 +386,30 @@ class Sampler(show_prints.Verbosity):
         """
         verbose, _ = self.set_verbosity(verbose)
         start = timer()
-        with open(self.sampler_input_json_file) as json_file:
+        with open(self.input_json_file) as json_file:
             dictionary = json.load(json_file)
         self.__dict__.update(dictionary)
-        with open(self.sampler_input_log_file) as json_file:
+        with open(self.input_log_file) as json_file:
             dictionary = json.load(json_file)
         self.log = dictionary
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
-                               "files names": [path.split(self.sampler_input_json_file)[-1],
-                                                path.split(self.sampler_input_log_file)[-1]],
-                               "files paths": [self.sampler_input_json_file,
-                                                self.sampler_input_log_file]}
+                               "files names": [path.split(self.input_json_file)[-1],
+                                                path.split(self.input_log_file)[-1]],
+                               "files paths": [self.input_json_file,
+                                                self.input_log_file]}
         print('Loaded sampler in', str(end-start), '.',show=verbose)
 
     def __init_backend(self, verbose=None):
         """
         Private method used to create a backend file 
-        :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`
+        :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
         when :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``True`` or
-        to load an existig backend file :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`
+        to load an existig backend file :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
         when :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``False``.
         In case :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``False`` but the backend file
-        :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>` does not exist, then
+        :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>` does not exist, then
         :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is automatically set to ``True`` and a new backend is created.
         The method creates or loads the backend by calling the :meth:`Sampler.__init_sampler <DNNLikelihood.Sampler._Sampler__init_sampler>`
         private method, which creates and runs the sampler for zero steps. This is done to properly sets both attributes 
@@ -428,13 +428,13 @@ class Sampler(show_prints.Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         if not self.new_sampler:
-            if not path.exists(self.sampler_output_backend_file):
-                print("The new_sampler flag was set to false but the backend file", self.sampler_output_backend_file,
+            if not path.exists(self.backend_file):
+                print("The new_sampler flag was set to false but the backend file", self.backend_file,
                       "does not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.",show=verbose)
                 self.new_sampler = True
         if self.new_sampler:
-            #print("Creating sampler in backend file", self.sampler_output_backend_file)
-            utils.check_rename_file(self.sampler_output_backend_file,verbose=verbose_sub)
+            #print("Creating sampler in backend file", self.backend_file)
+            utils.check_rename_file(self.backend_file,verbose=verbose_sub)
             nsteps_tmp = self.nsteps_final
             self.nsteps_final = 0
             start = timer()
@@ -442,11 +442,11 @@ class Sampler(show_prints.Verbosity):
             self.nsteps_final = nsteps_tmp
             end = timer()
             self.log[timestamp] = {"action": "created backend", 
-                                   "file name": path.split(self.sampler_output_backend_file)[-1], 
-                                   "file path": self.sampler_output_backend_file}
-            print("Created backend", self.sampler_output_backend_file, "for chains", self.name, "in", end-start, "s.",show=verbose)
+                                   "file name": path.split(self.backend_file)[-1], 
+                                   "file path": self.backend_file}
+            print("Created backend", self.backend_file, "for chains", self.name, "in", end-start, "s.",show=verbose)
         else:
-            #print("Loading existing sampler from backend file", self.sampler_output_backend_file)
+            #print("Loading existing sampler from backend file", self.backend_file)
             nsteps_tmp = self.nsteps_final
             self.nsteps_final = 0
             self.backend = None
@@ -456,9 +456,9 @@ class Sampler(show_prints.Verbosity):
             #self.nsteps_final = self.sampler.iteration
             end = timer()
             self.log[timestamp] = {"action": "loaded backend", 
-                                   "file name": path.split(self.sampler_output_backend_file)[-1], 
-                                   "file path": self.sampler_output_backend_file}
-            print("Loaded backend", self.sampler_output_backend_file, "for chains",self.name, "in", end-start, "s.",show=verbose)
+                                   "file name": path.split(self.backend_file)[-1], 
+                                   "file path": self.backend_file}
+            print("Loaded backend", self.backend_file, "for chains",self.name, "in", end-start, "s.",show=verbose)
             #print("Available number of steps: {0}.".format(self.backend.iteration),".",show=verbose)
 
     def __init_sampler(self, verbose=None):
@@ -495,15 +495,15 @@ class Sampler(show_prints.Verbosity):
         # Initializes backend (either connecting to existing one or generating new one)
         # Initilized p0 (chains initial state)
         if self.new_sampler:
-            print("Initialize backend in file", self.sampler_output_backend_file,".",show=verbose)
-            self.backend = emcee.backends.HDFBackend(self.sampler_output_backend_file, name=self.name)
+            print("Initialize backend in file", self.backend_file,".",show=verbose)
+            self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
             self.backend.reset(self.nwalkers, self.ndims)
             p0 = self.pars_init_vec
         else:
             if self.backend is None:
                 try:
-                    print("Initialize backend from file", self.sampler_output_backend_file,".",show=verbose)
-                    self.backend = emcee.backends.HDFBackend(self.sampler_output_backend_file, name=self.name)
+                    print("Initialize backend from file", self.backend_file,".",show=verbose)
+                    self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
                 except:
                     raise Exception("Backend file does not exist. Please either change the filename or run with new_sampler=True.")
             try:
@@ -591,7 +591,7 @@ class Sampler(show_prints.Verbosity):
         if ndims_from_backend != self.ndims:
             raise Exception("Number of steps (nsteps)  determined from the input likelihood is inconsitent with loaded backend. Please check inputs.",show=verbose)
         if self.nsteps_available > self.nsteps_final:
-            print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",nsteps_from_backend, ".",show=verbose)
+            print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",self.nsteps_available, ".",show=verbose)
             self.nsteps_final = self.nsteps_available
 
     def __set_steps_to_run(self,verbose=None):
@@ -645,7 +645,7 @@ class Sampler(show_prints.Verbosity):
         else:
             return pars_labels
 
-    def run_sampler(self, verbose=None):
+    def run_sampler(self, progress=True, verbose=None):
         """
         Runs MCMC sampling. Parameters are initialized to the last last sample available in 
         :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>` or to 
@@ -658,9 +658,15 @@ class Sampler(show_prints.Verbosity):
         See the documentation of the |emcee_ensemble_sampler_link| class and of the |multiprocessing_link| package 
         for more details on parallel sampling.
 
-        When using interactive python in Jupyter notebooks if ``verbose=2`` a progress bar is shown.
-
         - **Arguments**
+
+            - **progress**
+            
+                If ``True`` 
+                then  a progress monitor is shown.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``True`` 
 
             - **verbose**
             
@@ -684,10 +690,6 @@ class Sampler(show_prints.Verbosity):
     <a href="https://pypi.org/project/psutil/"  target="_blank"> psutil</a>
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if verbose == 2:
-            progress = True
-        else:
-            progress = False
         # Initializes backend (either connecting to existing one or generating new one)
         # Initilized p0 (chains initial state)
         try:
@@ -720,21 +722,21 @@ class Sampler(show_prints.Verbosity):
         self.log[timestamp] = {"action": "run sampler", 
                                "nsteps": nsteps_to_run, 
                                "available steps": self.nsteps_available,
-                               "updated file name": path.split(self.sampler_output_backend_file)[-1],
-                               "updated file path": self.sampler_output_backend_file}
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+                               "updated file name": path.split(self.backend_file)[-1],
+                               "updated file path": self.backend_file}
+        self.save_log(overwrite=True, verbose=verbose_sub)
         print("Done in", end-start, "seconds.", show=verbose)
         print("Final number of steps: {0}.".format(self.backend.iteration), ".", show=verbose)
 
-    def save_sampler_log(self, overwrite=False, verbose=None):
+    def save_log(self, overwrite=False, verbose=None):
         """
         Saves the content of the :attr:`Sampler.log <DNNLikelihood.Sampler.log>` attribute in the file
-        :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`
+        :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
 
         This method is called by the methods
         
         - :meth:`Sampler.run_sampler <DNNLikelihood.Sampler.run_sampler>` with ``overwrite=True`` and ``verbose=verbose_sub``
-        - :meth:`Sampler.save_sampler <DNNLikelihood.Sampler.save_sampler>` with ``overwrite=overwrite`` and ``verbose=verbose``
+        - :meth:`Sampler.save <DNNLikelihood.Sampler.save>` with ``overwrite=overwrite`` and ``verbose=verbose``
         - :meth:`Sampler.get_data_object <DNNLikelihood.Sampler.get_data_object>` with ``overwrite=True`` and ``verbose=verbose_sub``
         - :meth:`Sampler.gelman_rubin <DNNLikelihood.Sampler.gelman_rubin>` with ``overwrite=True`` and ``verbose=verbose_sub``
         - :meth:`Sampler.plot_gelman_rubin <DNNLikelihood.Sampler.plot_gelman_rubin>` with ``overwrite=True`` and ``verbose=verbose_sub``
@@ -764,33 +766,33 @@ class Sampler(show_prints.Verbosity):
 
         - **Produces file**
 
-            - :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`
+            - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.sampler_output_log_file, verbose=verbose_sub)
+            utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
         #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        #self.log[timestamp] = {"action": "saved", "file name": path.split(self.likelihood_output_log_file)[-1], "file path": self.likelihood_output_log_file}
+        #self.log[timestamp] = {"action": "saved", "file name": path.split(self.output_log_file)[-1], "file path": self.output_log_file}
         dictionary = self.log
         dictionary = utils.convert_types_dict(dictionary)
-        with codecs.open(self.sampler_output_log_file, "w", encoding="utf-8") as f:
+        with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Sampler log file", self.sampler_output_log_file,"saved in", str(end-start), "s.",show=verbose)
+        print("Sampler log file", self.output_log_file,"saved in", str(end-start), "s.",show=verbose)
 
-    def save_sampler_json(self, overwrite=False, verbose=None):
+    def save_json(self, overwrite=False, verbose=None):
         """
         :class:`Sampler <DNNLikelihood.Sampler>` objects are saved to three files: a .json, a .log, and ah .h5, 
         corresponding to the three attributes
-        :attr:`Sampler.sampler_output_json_file <DNNLikelihood.Sampler.sampler_output_json_file>`,
-        :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`,
-        and :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`.
-        See the :meth:`Sampler.save_sampler <DNNLikelihood.Sampler.save_sampler>` method documentation
+        :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`,
+        :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`,
+        and :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`.
+        See the :meth:`Sampler.save <DNNLikelihood.Sampler.save>` method documentation
         for the list of saved attributes.
 
         This method is called by the
-        :meth:`Sampler.save_sampler <DNNLikelihood.Sampler.save_sampler>` method to save the entire object.
+        :meth:`Sampler.save <DNNLikelihood.Sampler.save>` method to save the entire object.
 
         - **Arguments**
 
@@ -813,39 +815,39 @@ class Sampler(show_prints.Verbosity):
 
         - **Produces file**
 
-            - :attr:`Likelihood.likelihood_output_json_file <DNNLikelihood.Likelihood.likelihood_output_json_file>`
+            - :attr:`Likelihood.output_json_file <DNNLikelihood.Likelihood.output_json_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.sampler_output_json_file, verbose=verbose_sub)
+            utils.check_rename_file(self.output_json_file, verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved", 
-                               "file name": path.split(self.sampler_output_json_file)[-1], 
-                               "file path": self.sampler_output_json_file}
-        dictionary = utils.dic_minus_keys(self.__dict__, ["sampler_input_file","sampler_input_json_file", "sampler_input_log_file",
+                               "file name": path.split(self.output_json_file)[-1], 
+                               "file path": self.output_json_file}
+        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file","input_json_file", "input_log_file",
                                                           "new_sampler", "log","nsteps_available",
                                                           "logpdf", "logpdf_args", "pars_pos_poi",
                                                           "pars_pos_nuis", "pars_init_vec", "pars_labels", "generic_pars_labels",
                                                           "nwalkers", "ndims", "backend", "sampler", "moves","verbose"])
         dictionary = utils.convert_types_dict(dictionary)
-        with codecs.open(self.sampler_output_json_file, "w", encoding="utf-8") as f:
+        with codecs.open(self.output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Sampler json file", self.sampler_output_json_file,"saved in", str(end-start), "s.",show=verbose)
+        print("Sampler json file", self.output_json_file,"saved in", str(end-start), "s.",show=verbose)
 
-    def save_sampler(self, overwrite=False, verbose=True):
+    def save(self, overwrite=False, verbose=True):
         """
         :class:`Sampler <DNNLikelihood.Sampler>` objects are saved according to the following table.
 
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
         | Saved | Atrributes                                                                                                       | Method                                                                                           |
         +=======+==================================================================================================================+==================================================================================================+
-        |   X   | :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>`                                    |                                                                                                  |
+        |   X   | :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`                                    |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.sampler_input_json_file <DNNLikelihood.Sampler.sampler_input_json_file>`                          |                                                                                                  |
+        |       | :attr:`Sampler.input_json_file <DNNLikelihood.Sampler.input_json_file>`                          |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.sampler_input_log_file <DNNLikelihood.Sampler.sampler_input_log_file>`                            |                                                                                                  |
+        |       | :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>`                            |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`                                                  |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -879,13 +881,13 @@ class Sampler(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.verbose <DNNLikelihood.Sampler.verbose>`                                                          |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Sampler.log <DNNLikelihood.Sampler.log>`                                                                  | :meth:`Sampler.save_sampler_log <DNNLikelihood.Sampler.save_sampler_log>`                        |
+        |   ✔   | :attr:`Sampler.log <DNNLikelihood.Sampler.log>`                                                                  | :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`                        |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
         |   ✔   | :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`                                                          | :meth:`Sampler.run_sampler <DNNLikelihood.Sampler.run_sampler>`                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`                                                | :meth:`Sampler.save_sampler_json <DNNLikelihood.Sampler.save_sampler_json>`                      |
+        |   ✔   | :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`                                                | :meth:`Sampler.save_json <DNNLikelihood.Sampler.save_json>`                      |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.figure_files_base_path <DNNLikelihood.Sampler.figure_files_base_path>`                            |                                                                                                  |
+        |       | :attr:`Sampler.output_figures_base_file <DNNLikelihood.Sampler.output_figures_base_file>`                            |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.figures_list <DNNLikelihood.Sampler.figures_list>`                                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -901,15 +903,15 @@ class Sampler(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.parallel_CPU>`                                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.sampler_output_json_file <DNNLikelihood.Sampler.sampler_output_json_file>`                        |                                                                                                  |
+        |       | :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`                        |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`                          |                                                                                                  |
+        |       | :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`                          |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>`                                                      |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
 
-        This methos calls in order the :meth:`Likelihood.save_sampler_json <DNNLikelihood.Likelihood.save_sampler_json>` and
-        :meth:`Likelihood.save_sampler_log <DNNLikelihood.Likelihood.save_sampler_log>` methods. The backend is automatically saved when running MCMC
+        This methos calls in order the :meth:`Likelihood.save_json <DNNLikelihood.Likelihood.save_json>` and
+        :meth:`Likelihood.save_log <DNNLikelihood.Likelihood.save_log>` methods. The backend is automatically saved when running MCMC
         through the :meth:`Sampler.run_sampler <DNNLikelihood.Sampler.run_sampler>` method.
 
         - **Arguments**
@@ -918,12 +920,12 @@ class Sampler(show_prints.Verbosity):
 
         - **Produces files**
 
-            - :attr:`Sampler.sampler_output_json_file <DNNLikelihood.Sampler.sampler_output_json_file>`
-            - :attr:`Sampler.sampler_output_log_file <DNNLikelihood.Sampler.sampler_output_log_file>`
+            - :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`
+            - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, _ = self.set_verbosity(verbose)
-        self.save_sampler_json(overwrite=overwrite, verbose=verbose)
-        self.save_sampler_log(overwrite=overwrite, verbose=verbose)
+        self.save_json(overwrite=overwrite, verbose=verbose)
+        self.save_log(overwrite=overwrite, verbose=verbose)
     
     ##### Functions from the emcee documentation (with some modifications) #####
 
@@ -1134,7 +1136,7 @@ class Sampler(show_prints.Verbosity):
         self.log[timestamp] = {"action": "computed Gelman-Rubin", 
                                "pars": pars, 
                                "nsteps": nsteps}
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
         print("Gelman-Rubin statistics for parameters", pars,"computed in",str(end-start),"s.",show=verbose)
         return np.array(res)
 
@@ -1196,7 +1198,7 @@ class Sampler(show_prints.Verbosity):
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
-        filename = self.figure_files_base_path
+        filename = self.output_figures_base_file
         for par in pars:
             idx = np.sort([(i)*(10**j) for i in range(1, 11) for j in range(int(np.ceil(np.log10(self.nsteps_available))))])
             idx = np.unique(idx[idx <= self.nsteps_available])
@@ -1257,7 +1259,7 @@ class Sampler(show_prints.Verbosity):
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
             
     def plot_dist(self, pars=0, pars_labels="original", overwrite=False, verbose=None):
         """
@@ -1313,7 +1315,7 @@ class Sampler(show_prints.Verbosity):
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
-        filename = self.figure_files_base_path
+        filename = self.output_figures_base_file
         for par in pars:
             chain = self.sampler.get_chain()[:, :, par].T
             counts, bins = np.histogram(chain.flatten(), 100)
@@ -1336,7 +1338,7 @@ class Sampler(show_prints.Verbosity):
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
 
     def plot_autocorr(self, pars=0, pars_labels="original", methods=["G&W 2010", "Fardal 2017", "DFM 2017: ML"], overwrite=False, verbose=None):
         """
@@ -1401,7 +1403,7 @@ class Sampler(show_prints.Verbosity):
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
-        filename = self.figure_files_base_path
+        filename = self.output_figures_base_file
         for par in pars:
             chain = self.sampler.get_chain()[:, :, par].T
             # Compute the largest number of duplicated at the beginning of chains
@@ -1483,7 +1485,7 @@ class Sampler(show_prints.Verbosity):
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
 
     def plot_chains(self, pars=0, n_chains=100, pars_labels="original", overwrite=False, verbose=None):
         """
@@ -1541,7 +1543,7 @@ class Sampler(show_prints.Verbosity):
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
-        filename = self.figure_files_base_path
+        filename = self.output_figures_base_file
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
             print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
@@ -1569,7 +1571,7 @@ class Sampler(show_prints.Verbosity):
             if verbose:
                 plt.show()
             plt.close()
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
 
     def plot_chains_logpdf(self, n_chains=100, overwrite=False, verbose=None):
         """
@@ -1606,7 +1608,7 @@ class Sampler(show_prints.Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        filename = self.figure_files_base_path
+        filename = self.output_figures_base_file
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
             print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
@@ -1633,7 +1635,7 @@ class Sampler(show_prints.Verbosity):
         if verbose:
             plt.show()
         plt.close()
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
 
     def get_data_object(self, nsamples="all", burnin=0, thin=1, dtype="float64", test_fraction=0, verbose=None):
         """
@@ -1746,15 +1748,15 @@ class Sampler(show_prints.Verbosity):
                   test_fraction=test_fraction,
                   load_on_RAM=False,
                   output_folder=self.output_folder,
-                  data_input_file=None,
+                  input_file=None,
                   verbose=self.verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "created data object", 
-                               "files names": [path.split(ds.data_output_h5_file)[-1],
-                                               path.split(ds.data_output_json_file)[-1],
-                                               path.split(ds.data_output_log_file)[-1]],
-                               "files paths": [ds.data_output_h5_file,
-                                               ds.data_output_json_file,
-                                               ds.data_output_log_file]}
-        self.save_sampler_log(overwrite=True, verbose=verbose_sub)
+                               "files names": [path.split(ds.output_h5_file)[-1],
+                                               path.split(ds.output_json_file)[-1],
+                                               path.split(ds.output_log_file)[-1]],
+                               "files paths": [ds.output_h5_file,
+                                               ds.output_json_file,
+                                               ds.output_log_file]}
+        self.save_log(overwrite=True, verbose=verbose_sub)
         return ds

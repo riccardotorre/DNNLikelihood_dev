@@ -3,7 +3,7 @@ sys.path.append('../../source')
 import DNNLikelihood
 
 lik = DNNLikelihood.Likelihood(name=None,
-	likelihood_input_file='C:/Users/Admin/Dropbox/Work/09_Resources/Git/GitHub/DNNLikelihood/DNNLikelihood_dev/tutorials/toy/outfiles/toy_likelihood.json', 
+	input_file='C:/Users/Admin/Dropbox/Work/09_Resources/Git/GitHub/DNNLikelihood/DNNLikelihood_dev/tutorials/toy/outfiles/toy_likelihood.json', 
 verbose = 1)
 
 name = lik.name

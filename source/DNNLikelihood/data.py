@@ -33,7 +33,7 @@ class Data(show_prints.Verbosity):
                  test_fraction = None,
                  load_on_RAM=False,
                  output_folder = None,
-                 data_input_file=None,
+                 input_file=None,
                  verbose = True
                  ):
         """Initializes the ``data`` object
@@ -43,9 +43,9 @@ class Data(show_prints.Verbosity):
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.data_input_file = data_input_file
+        self.input_file = input_file
         self.__check_define_input_files()
-        if self.data_input_file is None:
+        if self.input_file is None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
@@ -66,18 +66,18 @@ class Data(show_prints.Verbosity):
             self.output_folder = output_folder
             self.__check_define_output_files()
             self.load_on_RAM = load_on_RAM
-            self.save_data(overwrite=False, verbose=verbose_sub)
+            self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.load_on_RAM = load_on_RAM
             if dtype is not None:
                 self.dtype = dtype
-            self.__load_data(verbose=verbose_sub)
+            self.__load(verbose=verbose_sub)
             self.define_test_fraction()
             if output_folder is not None:
                 self.output_folder = path.abspath(output_folder)
                 self.__check_define_output_files()
-            self.save_data_json(overwrite=True, verbose=verbose_sub)
-            self.save_data_log(overwrite=True, verbose=verbose_sub)
+            self.save_json(overwrite=True, verbose=verbose_sub)
+            self.save_log(overwrite=True, verbose=verbose_sub)
 
         self.data_dictionary = {"X_train": np.array([[]], dtype=self.dtype), "Y_train": np.array([], dtype=self.dtype),
                                 "X_val": np.array([[]],dtype=self.dtype), "Y_val": np.array([],dtype=self.dtype),
@@ -87,43 +87,43 @@ class Data(show_prints.Verbosity):
     def __check_define_input_files(self):
         """
         Sets the attributes corresponding to input files
-        :attr:`Data.data_input_h5_file <DNNLikelihood.Data.data_input_h5_file>`,
-        :attr:`Data.data_input_json_file <DNNLikelihood.Data.data_input_json_file>`, and
-        :attr:`Data.data_input_log_file <DNNLikelihood.Data.data_input_log_file>`
+        :attr:`Data.input_h5_file <DNNLikelihood.Data.input_h5_file>`,
+        :attr:`Data.input_json_file <DNNLikelihood.Data.input_json_file>`, and
+        :attr:`Data.input_log_file <DNNLikelihood.Data.input_log_file>`
         depending on the value of the 
-        :attr:`Data.data_input_file <DNNLikelihood.Data.data_input_file>` attribute.
+        :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute.
         """
-        if self.data_input_file is None:
-            self.data_input_h5_file = self.data_input_file
-            self.data_input_json_file = self.data_input_file
-            self.data_input_log_file = self.data_input_file
+        if self.input_file is None:
+            self.input_h5_file = self.input_file
+            self.input_json_file = self.input_file
+            self.input_log_file = self.input_file
         else:
-            self.data_input_file = path.abspath(path.splitext(data_input_file)[0])
-            self.data_input_h5_file = self.data_input_file+".h5"
-            self.data_input_json_file = self.data_input_file+".json"
-            self.data_input_log_file = self.data_input_file+".log"
+            self.input_file = path.abspath(path.splitext(input_file)[0])
+            self.input_h5_file = self.input_file+".h5"
+            self.input_json_file = self.input_file+".json"
+            self.input_log_file = self.input_file+".log"
 
     def __check_define_output_files(self):
         """
         Sets the attributes corresponding to output files
-        :attr:`Data.data_output_h5_file <DNNLikelihood.Data.data_output_h5_file>`,
-        :attr:`Data.data_output_json_file <DNNLikelihood.Data.data_output_json_file>`,
-        :attr:`Data.data_output_log_file <DNNLikelihood.Data.data_output_log_file>`
+        :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`,
+        :attr:`Data.output_json_file <DNNLikelihood.Data.output_json_file>`,
+        :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
         depending on the value of the 
-        :attr:`Data.data_input_file <DNNLikelihood.Data.data_input_file>` and
+        :attr:`Data.input_file <DNNLikelihood.Data.input_file>` and
         :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attributes.
         """
-        if self.data_input_file is None:
+        if self.input_file is None:
             if self.output_folder is None:
                 self.output_folder = ""
             self.output_folder = path.abspath(self.output_folder)
-            self.data_output_h5_file = path.join(self.output_folder, self.name+".h5")
-            self.data_output_json_file = path.join(self.output_folder, self.name+".json")
-            self.data_output_log_file = path.join(self.output_folder, self.name+".log")
+            self.output_h5_file = path.join(self.output_folder, self.name+".h5")
+            self.output_json_file = path.join(self.output_folder, self.name+".json")
+            self.output_log_file = path.join(self.output_folder, self.name+".log")
         else:
-            self.data_output_h5_file = path.join(self.output_folder, self.name+".h5")
-            self.data_output_json_file = path.join(self.output_folder, self.name+".json")
-            self.data_output_log_file = path.join(self.output_folder, self.name+".log")
+            self.output_h5_file = path.join(self.output_folder, self.name+".h5")
+            self.output_json_file = path.join(self.output_folder, self.name+".json")
+            self.output_log_file = path.join(self.output_folder, self.name+".log")
         
     def __check_define_name(self):
         """
@@ -202,21 +202,21 @@ class Data(show_prints.Verbosity):
         if len(self.pars_bounds) != self.ndims:
             raise Exception("The lenght of the parameters bounds array does not match the number of dimensions.")
 
-    def __load_data(self,verbose=None):
+    def __load(self,verbose=None):
         """ Loads samples as np.array (on RAM) if load_on_RAM=True or as h5py dataset (on disk) if load_on_RAM=False
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        with open(self.data_input_json_file) as json_file:
+        with open(self.input_json_file) as json_file:
             dictionary = json.load(json_file)
         self.__dict__.update(dictionary)
-        with open(self.data_input_log_file) as json_file:
+        with open(self.input_log_file) as json_file:
             dictionary = json.load(json_file)
         self.log = dictionary
         self.pars_pos_poi = np.array(self.pars_pos_poi)
         self.pars_pos_nuis = np.array(self.pars_pos_nuis)
         self.pars_bounds = np.array(self.pars_bounds)
-        self.opened_dataset = h5py.File(self.data_input_h5_file, "r")
+        self.opened_dataset = h5py.File(self.input_h5_file, "r")
         data = self.opened_dataset["data"]
         self.data_X = data.get("X")
         self.data_Y = data.get("Y")
@@ -227,12 +227,12 @@ class Data(show_prints.Verbosity):
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
-                               "files names": [path.split(self.data_input_json_file)[-1],
-                                               path.split(self.data_input_log_file)[-1],
-                                               path.split(self.data_input_h5_file)[-1]],
-                               "files paths": [self.data_input_json_file,
-                                               self.data_input_log_file,
-                                               self.data_input_h5_file]}
+                               "files names": [path.split(self.input_json_file)[-1],
+                                               path.split(self.input_log_file)[-1],
+                                               path.split(self.input_h5_file)[-1]],
+                               "files paths": [self.input_json_file,
+                                               self.input_log_file,
+                                               self.input_h5_file]}
         print('Loaded likelihood in', str(end-start), '.', show=verbose)
         if self.load_on_RAM:
             print('Samples loaded on RAM.', show=verbose)
@@ -250,66 +250,66 @@ class Data(show_prints.Verbosity):
         try:
             self.opened_dataset.close()
             del(self.opened_dataset)
-            print("Closed", self.data_input_file,".",show=verbose)
+            print("Closed", self.input_file,".",show=verbose)
         except:
             print("No dataset to close.", show=verbose)
 
-    def save_data_log(self, overwrite=False, verbose=None):
+    def save_log(self, overwrite=False, verbose=None):
         """
         Bla bla
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.data_output_log_file, verbose=verbose_sub)
+            utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
         #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        #self.log[timestamp] = {"action": "saved", "file name": path.split(self.likelihood_output_log_file)[-1], "file path": self.likelihood_output_log_file}
+        #self.log[timestamp] = {"action": "saved", "file name": path.split(self.output_log_file)[-1], "file path": self.output_log_file}
         dictionary = self.log
         dictionary = utils.convert_types_dict(dictionary)
-        with codecs.open(self.data_output_log_file, "w", encoding="utf-8") as f:
+        with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Data log file", self.data_output_log_file, "saved in", str(end-start), "s.", show=verbose)
+        print("Data log file", self.output_log_file, "saved in", str(end-start), "s.", show=verbose)
 
-    def save_data_json(self, overwrite=False, verbose=True):
+    def save_json(self, overwrite=False, verbose=True):
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.data_output_json_file, verbose=verbose_sub)
+            utils.check_rename_file(self.output_json_file, verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved", 
-                               "file name": path.split(self.data_output_json_file)[-1],
-                               "file path": self.data_output_json_file}
-        dictionary = utils.dic_minus_keys(self.__dict__, ["dataX", "dataY", "log", "data_input_file",
+                               "file name": path.split(self.output_json_file)[-1],
+                               "file path": self.output_json_file}
+        dictionary = utils.dic_minus_keys(self.__dict__, ["dataX", "dataY", "log", "input_file",
                                                           "train_range", "test_range", "data_dictionary",
                                                           "load_on_RAM", "verbose"])
         dictionary = utils.convert_types_dict(dictionary)
-        with codecs.open(self.data_output_json_file, "w", encoding="utf-8") as f:
+        with codecs.open(self.output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Data json file", self.data_output_json_file,"saved in", str(end-start), "s.",show=verbose)
+        print("Data json file", self.output_json_file,"saved in", str(end-start), "s.",show=verbose)
 
-    def save_data_h5(self, overwrite=False, verbose=None):
+    def save_h5(self, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.data_output_h5_file,verbose=verbose_sub)
+            utils.check_rename_file(self.output_h5_file,verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.data_output_h5_file)[-1],
-                               "file path": self.data_output_h5_file}
+                               "file name": path.split(self.output_h5_file)[-1],
+                               "file path": self.output_h5_file}
         start = timer()     
-        h5_out = h5py.File(self.data_output_h5_file, "w")
+        h5_out = h5py.File(self.output_h5_file, "w")
         data = h5_out.create_group("data")
         data["shape"] = np.shape(self.data_X)
         data["X"] = self.data_X.astype(self.dtype)
         data["Y"] = self.data_Y.astype(self.dtype)
         h5_out.close()
         end = timer()
-        self.save_data_log(overwrite=overwrite, verbose=verbose)
-        print("Saved", str(self.npoints), "(data_X, data_Y) samples in data h5 file", self.data_output_h5_file,"in", end-start, "s.",show=verbose)
+        self.save_log(overwrite=overwrite, verbose=verbose)
+        print("Saved", str(self.npoints), "(data_X, data_Y) samples in data h5 file", self.output_h5_file,"in", end-start, "s.",show=verbose)
 
-    def save_data(self, overwrite=False, verbose=None):
+    def save(self, overwrite=False, verbose=None):
         """
 
         :class:`Data <DNNLikelihood.Data>` objects are saved according to the following table.
@@ -317,7 +317,7 @@ class Data(show_prints.Verbosity):
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
         | Saved | Atrributes                                                                                                       | Method                                                                                           |
         +=======+==================================================================================================================+==================================================================================================+
-        |   X   | :attr:`Data.data_input_file <DNNLikelihood.Data.data_input_file>`                                                |                                                                                                  |
+        |   X   | :attr:`Data.input_file <DNNLikelihood.Data.input_file>`                                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Data.train_range <DNNLikelihood.Data.train_range>`                                                        |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -329,7 +329,7 @@ class Data(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Data.verbose <DNNLikelihood.Data.verbose>`                                                                |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Data.name <DNNLikelihood.Data.name>`                                                                      | :meth:`Data.save_data_json <DNNLikelihood.Data.save_data_json>`                                  |
+        |   ✔   | :attr:`Data.name <DNNLikelihood.Data.name>`                                                                      | :meth:`Data.save_json <DNNLikelihood.Data.save_json>`                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Data.ndims <DNNLikelihood.Data.ndims>`                                                                      |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -341,11 +341,11 @@ class Data(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`                                                    |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.data_output_h5_file <DNNLikelihood.Data.data_output_h5_file>`                                        |                                                                                                  |
+        |       | :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`                                        |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.data_output_json_file <DNNLikelihood.Data.data_output_json_file>`                                    |                                                                                                  |
+        |       | :attr:`Data.output_json_file <DNNLikelihood.Data.output_json_file>`                                    |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Data.data_output_log_file <DNNLikelihood.Data.data_output_log_file>`                                      |                                                                                                  |
+        |       | :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`                                      |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`                                                      |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -357,15 +357,15 @@ class Data(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Data.test_fraction <DNNLikelihood.Data.test_fraction>`                                                    |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Data.log <DNNLikelihood.Data.log>`                                                                        | :meth:`Data.save_data_log <DNNLikelihood.Data.save_data_log>`                                    |
+        |   ✔   | :attr:`Data.log <DNNLikelihood.Data.log>`                                                                        | :meth:`Data.save_log <DNNLikelihood.Data.save_log>`                                    |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Data.data_X <DNNLikelihood.Data.data_X>`                                                                  | :meth:`Data.save_data_h5 <DNNLikelihood.Data.save_data_h5>`                                      |
+        |   ✔   | :attr:`Data.data_X <DNNLikelihood.Data.data_X>`                                                                  | :meth:`Data.save_h5 <DNNLikelihood.Data.save_h5>`                                      |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`                                                                  |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
 
-        This methos calls in order the :meth:`Likelihood.save_data_json <DNNLikelihood.Likelihood.save_data_json>`, :meth:`Likelihood.save_data_h5 <DNNLikelihood.Likelihood.save_data_h5>` and
-        :meth:`Likelihood.save_data_log <DNNLikelihood.Likelihood.save_data_log>` methods.
+        This methos calls in order the :meth:`Likelihood.save_json <DNNLikelihood.Likelihood.save_json>`, :meth:`Likelihood.save_h5 <DNNLikelihood.Likelihood.save_h5>` and
+        :meth:`Likelihood.save_log <DNNLikelihood.Likelihood.save_log>` methods.
 
         - **Arguments**
             
@@ -373,14 +373,14 @@ class Data(show_prints.Verbosity):
 
         - **Produces files**
 
-            - :attr:`Data.data_output_json_file <DNNLikelihood.Data.data_output_json_file>`
-            - :attr:`Data.data_output_h5_file <DNNLikelihood.Data.data_output_h5_file>`
-            - :attr:`Data.data_output_log_file <DNNLikelihood.Data.data_output_log_file>`
+            - :attr:`Data.output_json_file <DNNLikelihood.Data.output_json_file>`
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
         """
         verbose, _ = self.set_verbosity(verbose)
-        self.save_data_json(overwrite=overwrite, verbose=verbose)
-        self.save_data_h5(overwrite=overwrite, verbose=verbose)
-        self.save_data_log(overwrite=overwrite, verbose=verbose)
+        self.save_json(overwrite=overwrite, verbose=verbose)
+        self.save_h5(overwrite=overwrite, verbose=verbose)
+        self.save_log(overwrite=overwrite, verbose=verbose)
 
     def generate_train_indices(self, npoints_train, npoints_val, seed, verbose=None):
         show_prints.verbose = verbose

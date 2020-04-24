@@ -45,12 +45,12 @@ When the object is created, it is automatically saved and three files are create
    - <my_output_folder>/ATLAS_sbottom_search_histfactory.json 
    - <my_output_folder>/ATLAS_sbottom_search_histfactory.log
 
-See the documentation of the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` and of the corresponding methods
-with a :meth:`_json <DNNLikelihood.Histfactory.save_histfactory_json>`,
-:meth:`_log <DNNLikelihood.Histfactory.save_histfactory_log>`,
-and :meth:`_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>` suffix.
+See the documentation of the :meth:`Histfactory.save <DNNLikelihood.Histfactory.save>` and of the corresponding methods
+with a :meth:`_json <DNNLikelihood.Histfactory.save_json>`,
+:meth:`_log <DNNLikelihood.Histfactory.save_log>`,
+and :meth:`_pickle <DNNLikelihood.Histfactory.save_pickle>` suffix.
 
-The object can also be initialized importing it from saved files. In this case only the :option:`histfactory_input_file` argument needs to be specified,
+The object can also be initialized importing it from saved files. In this case only the :option:`input_file` argument needs to be specified,
 while all other arguments are ignored.
 One could also optionally specify a new ``output_folder``. In case this is not specified, the 
 :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute from the imported object is used.
@@ -60,7 +60,7 @@ For instance we could import the object created above with
     
    import DNNLikelihood
 
-   histfactory = DNNLikelihood.Histfactory(histfactory_input_file="<my_output_folder>/ATLAS_sbottom_search_histfactory")
+   histfactory = DNNLikelihood.Histfactory(input_file="<my_output_folder>/ATLAS_sbottom_search_histfactory")
 
 The object we created above has the attribute :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`, whichs contains
 a dictionary with items corresponsing to likelihoods and their properties. For instance, for the first
@@ -78,15 +78,16 @@ likelihood, the dictionary looks like this
 
 The ``'model_loaded': False`` flag indicates that the corresponding likelihood has not yet been fully imported, i.e. that the corresponding
 parameters information and logpdf are not available. Likelihoods can be imported using the
-:meth:`Histfactory.import_histfactory <DNNLikelihood.Histfactory.import_histfactory>` method. One can choose to import only one likelihood,
+:meth:`Histfactory.import_likelihoods <DNNLikelihood.Histfactory.import_likelihoods>` method. One can choose to import only one likelihood,
 only some of them, or all of them, specifying the ``lik_numbers_list`` argument. For instance the first likelihood
 can be imported through:
 
 .. code-block:: python
 
-   histfactory.import_histfactory(lik_numbers_list=[0])
+   histfactory.import_likelihoods(lik_numbers_list=[0])
 
-The imported likelihood are stored in the dictionary so that the corresponding item now contains full likelihood information, 
+When importing more than one likelihood, the option ``progressbar``, which by default is ``True``, allows to monitor the import with
+a progress bar. The imported likelihood are stored in the dictionary so that the corresponding item now contains full likelihood information, 
 and the ``model_loaded`` flag is set to ``True``. When the object is imported, the :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>` 
 attribute is updated, as well as the corresponding file <my_output_folder>/ATLAS_sbottom_search_histfactory.log.
 
@@ -114,17 +115,17 @@ Looking at the dictionary for the fist likelihood, now one gets
         'pars_pos_nuis': array([ 0,  1,  2,  3,  4,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17,
                ...])}
 
-Once likelihoods are imported the object can be saved using the :meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>`
+Once likelihoods are imported the object can be saved using the :meth:`Histfactory.save <DNNLikelihood.Histfactory.save>`
 method. This saves the whole object, unless the optional argument ``lik_numbers_list`` is specified. It it is specified, then only the listed likelihoods
 are saved in ``'model_loaded': True`` mode (if they have been previously imported), so with full likelihood information, while all other likelihoods 
 are saved in ``'model_loaded': False`` mode, that means without full likelihood information. This may allow to save disk space. If only some likelihoods 
 have been imported and no ``lik_numbers_list`` argument is specified in the 
-:meth:`Histfactory.save_histfactory <DNNLikelihood.Histfactory.save_histfactory>` method, then the object is saved in its current state. For instance,
+:meth:`Histfactory.save <DNNLikelihood.Histfactory.save>` method, then the object is saved in its current state. For instance,
 we can save our object (which only contains the first likelihood in ``'model_loaded': True`` mode), simply by writing
 
 .. code-block:: python
 
-   histfactory.save_histfactory()
+   histfactory.save()
 
 Finally, from any of the imported likelihoods, one can obtain a :class:`Likelihood <DNNLikelihood.Likelihood>` object through the 
 :meth:`Histfactory.get_likelihood_object <DNNLikelihood.Histfactory.get_likelihood_object>`, which, by default, aslo saves it. For instance, for our
@@ -207,12 +208,12 @@ Arguments
          - **type**: ``str`` or ``None``
          - **default**: ``None`` 
 
-   .. option:: histfactory_input_file
+   .. option:: input_file
          
       File name (either relative to the code execution folder or absolute, with or without any of the
       .json or .pickle extensions) of a saved :class:`Histfactory <DNNLikelihood.Histfactory>` object. 
       It is used to set the 
-      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>` 
+      :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>` 
       attribute.
             
          - **type**: ``str`` or ``None``
@@ -240,22 +241,22 @@ Attributess
             
          - **type**: ``str``
 
-   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_file
+   .. py:attribute:: DNNLikelihood.Histfactory.input_file
 
-      Attribute corresponding to the input argument :option:`histfactory_input_file`.
+      Attribute corresponding to the input argument :option:`input_file`.
       Whenever this parameter is not ``None`` the :class:`Histfactory <DNNLikelihood.Histfactory>` object
       is reconstructed from input files (see the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>`
       method for details).
             
          - **type**: ``str`` or ``None``
 
-   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_json_file    
+   .. py:attribute:: DNNLikelihood.Histfactory.input_json_file    
 
       Absolute path to the .json file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` json (see
-      the :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>`
+      the :meth:`Histfactory.save_json <DNNLikelihood.Histfactory.save_json>`
       method for details).
       This is automatically generated from the attribute
-      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
+      :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`.
       When the latter is ``None``, the attribute is set to ``None``.
             
          - **type**: ``str`` or ``None``
@@ -263,10 +264,10 @@ Attributess
    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_log_file    
 
       Absolute path to the .log file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` log (see
-      the :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>`
+      the :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>`
       method for details).
       This is automatically generated from the attribute
-      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
+      :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`.
       When the latter is ``None``, the attribute is set to ``None``.
             
          - **type**: ``str`` or ``None``
@@ -274,10 +275,10 @@ Attributess
    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_input_pickle_file    
 
       Absolute path to the .pickle file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` pickle (see
-      the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>`
+      the :meth:`Histfactory.save_pickle <DNNLikelihood.Histfactory.save_pickle>`
       method for details).
       This is automatically generated from the attribute
-      :attr:`Histfactory.histfactory_input_file <DNNLikelihood.Histfactory.histfactory_input_file>`.
+      :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`.
       When the latter is ``None``, the attribute is set to ``None``.
             
          - **type**: ``str`` or ``None``
@@ -285,7 +286,7 @@ Attributess
    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_json_file
 
       Absolute path to the .json file where part of the :class:`Histfactory <DNNLikelihood.Histfactory>` 
-      object is saved (see the :meth:`Histfactory.save_histfactory_json <DNNLikelihood.Histfactory.save_histfactory_json>`
+      object is saved (see the :meth:`Histfactory.save_json <DNNLikelihood.Histfactory.save_json>`
       method for details).
       This is automatically generated from the attribute
       :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
@@ -295,17 +296,17 @@ Attributess
    .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_log_file
 
       Absolute path to the .log file where the :class:`Histfactory <DNNLikelihood.Histfactory>` 
-      object log is saved (see the :meth:`Histfactory.save_histfactory_log <DNNLikelihood.Histfactory.save_histfactory_log>`
+      object log is saved (see the :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>`
       method for details).
       This is automatically generated from the attribute
       :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
             
          - **type**: ``str`` 
 
-   .. py:attribute:: DNNLikelihood.Histfactory.histfactory_output_pickle_file
+   .. py:attribute:: DNNLikelihood.Histfactory.output_pickle_file
 
       Absolute path to the .pickle file where part of the :class:`Histfactory <DNNLikelihood.Histfactory>` 
-      object is saved (see the :meth:`Histfactory.save_histfactory_pickle <DNNLikelihood.Histfactory.save_histfactory_pickle>`
+      object is saved (see the :meth:`Histfactory.save_pickle <DNNLikelihood.Histfactory.save_pickle>`
       method for details).
       This is automatically generated from the attribute
       :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
@@ -433,7 +434,7 @@ Attributess
    .. py:attribute:: DNNLikelihood.Histfactory.regions_folders_base_name
 
       Attribute corresponding to the input argument :option:`regions_folders_base_name`.
-      When determining the regions, the :meth:`Histfactory.__import_histfactory <DNNLikelihood.Histfactory._Histfactory__import_histfactory>` 
+      When determining the regions, the :meth:`Histfactory.__import <DNNLikelihood.Histfactory._Histfactory__import>` 
       method looks at all subfolders of :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>`
       containing the string :attr:`Histfactory.regions_folders_base_name <DNNLikelihood.Histfactory.regions_folders_base_name>`, 
       then deletes this latter string (and a dot) to obtain the region names and build the :attr:`Histfactory.regions <DNNLikelihood.Histfactory.regions>` 
@@ -470,19 +471,19 @@ Methods
 
    .. automethod:: DNNLikelihood.Histfactory._Histfactory__check_define_name
 
-   .. automethod:: DNNLikelihood.Histfactory._Histfactory__import_histfactory
+   .. automethod:: DNNLikelihood.Histfactory._Histfactory__import
 
-   .. automethod:: DNNLikelihood.Histfactory._Histfactory__load_histfactory
+   .. automethod:: DNNLikelihood.Histfactory._Histfactory__load
 
-   .. automethod:: DNNLikelihood.Histfactory.import_histfactory
+   .. automethod:: DNNLikelihood.Histfactory.import_likelihoods
 
-   .. automethod:: DNNLikelihood.Histfactory.save_histfactory_log
+   .. automethod:: DNNLikelihood.Histfactory.save_log
 
-   .. automethod:: DNNLikelihood.Histfactory.save_histfactory_json
+   .. automethod:: DNNLikelihood.Histfactory.save_json
 
-   .. automethod:: DNNLikelihood.Histfactory.save_histfactory_pickle
+   .. automethod:: DNNLikelihood.Histfactory.save_pickle
 
-   .. automethod:: DNNLikelihood.Histfactory.save_histfactory
+   .. automethod:: DNNLikelihood.Histfactory.save
 
    .. automethod:: DNNLikelihood.Histfactory.get_likelihood_object
 

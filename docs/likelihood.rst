@@ -25,7 +25,7 @@ automatically,
 in case the likelihood function comes from an ATLAS histfactory workspace, by the :class:`Histfactory <DNNLikelihood.Histfactory>` object 
 through the :meth:`Histfactory.get_likelihood_object <DNNLikelihood.Histfactory.get_likelihood_object>` method. In the 
 :ref:`the Histfactory object Usage <histfactory_usage>` section of the documentation we already gave an example of the latter method.
-We give here a very simple (toy) example of creation of the object from direct likelihood_input_json_file.
+We give here a very simple (toy) example of creation of the object from direct input_json_file.
 
 The first time a :class:`Likelihood <DNNLikelihood.Likelihood>` object is created, the :option:`logpdf`, :option:`logpdf_args` (
 if required by :option:`logpdf`), :option:`pars_pos_poi`, :option:`pars_pos_nuis`, and :option:`pars_init` arguments need to be specified. 
@@ -109,12 +109,12 @@ When the object is created, it is automatically saved and three files are create
    - <my_output_folder>/toy_likelihood.json 
    - <my_output_folder>/toy_likelihood.log
 
-See the documentation of the :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` and of the corresponding methods
-with a :meth:`_json <DNNLikelihood.Likelihood.save_likelihood_json>`,
-:meth:`_log <DNNLikelihood.Likelihood.save_likelihood_log>`,
-and :meth:`_pickle <DNNLikelihood.Likelihood.save_likelihood_pickle>` suffix.
+See the documentation of the :meth:`Likelihood.save <DNNLikelihood.Likelihood.save>` and of the corresponding methods
+with a :meth:`_json <DNNLikelihood.Likelihood.save_json>`,
+:meth:`_log <DNNLikelihood.Likelihood.save_log>`,
+and :meth:`_pickle <DNNLikelihood.Likelihood.save_pickle>` suffix.
 
-The object can also be initialized importing it from saved files. In this case only the :option:`likelihood_input_file` argument needs to be specified,
+The object can also be initialized importing it from saved files. In this case only the :option:`input_file` argument needs to be specified,
 while all other arguments are ignored. One could also optionally specify a new ``output_folder``. In case this is not specified, the 
 :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` attribute from the imported object is used.
 For instance we could import the object created above with
@@ -123,7 +123,7 @@ For instance we could import the object created above with
     
    import DNNLikelihood
 
-   likelihood = DNNLikelihood.Likelihood(likelihood_input_file="<my_output_folder>/toy_likelihood")
+   likelihood = DNNLikelihood.Likelihood(input_file="<my_output_folder>/toy_likelihood")
 
 When the object is imported, the :attr:`Likelihood.log <DNNLikelihood.Likelihood.log>` 
 attribute is updated, as well as the corresponding file <my_output_folder>/toy_likelihood.log.
@@ -204,12 +204,12 @@ argument ``spacing="random"`` can be passed.
 
 Each of the above calls :class:`Likelihood <DNNLikelihood.Likelihood>` methods have updated the 
 :attr:`Likelihood.log <DNNLikelihood.Likelihood.log>` attribute and the corresponding 
-:attr:`Likelihood.likelihood_output_log_file <DNNLikelihood.Likelihood.likelihood_output_log_file>` file. The full
+:attr:`Likelihood.output_log_file <DNNLikelihood.Likelihood.output_log_file>` file. The full
 object can be saved at any time through
 
 .. code-block:: python 
 
-    likelihood.save_likelihood(overwrite=True)
+    likelihood.save(overwrite=True)
 
 The ``overwrite=True`` ensure that the output files (generated when initializing the object) are updated.
 
@@ -218,7 +218,7 @@ Finally, we can save a likelihood script file that will be used to initialize a 
 
 .. code-block:: python
 
-    likelihood.save_likelihood_script()
+    likelihood.save_script()
 
 which produces the file <my_output_folder>/toy_likelihood_script.py.
 
@@ -339,12 +339,12 @@ Arguments
             - **type**: ``str`` or ``None``
             - **default**: ``None``
 
-    .. option:: likelihood_input_file   
+    .. option:: input_file   
 
         File name (either relative to the code execution folder or absolute, with or without any of the
         .json or .pickle extensions) of a saved :class:`Likelihood <DNNLikelihood.Likelihood>` object. 
         It is used to set the 
-        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>` 
+        :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>` 
         attribute.
 
            - **type**: ``str`` or ``None``
@@ -362,7 +362,7 @@ Arguments
 Attributes
 """"""""""
 
-    .. py:attribute:: DNNLikelihood.Likelihood.figure_files_base_path
+    .. py:attribute:: DNNLikelihood.Likelihood.output_figures_base_file
 
         Absolute path to the exported figures. It includes the base figure name and is 
         automatically generated from the
@@ -391,52 +391,52 @@ Attributes
             - **shape**: ``[ ]``
             - **length**: ``n_pars``
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_file   
+    .. py:attribute:: DNNLikelihood.Likelihood.input_file   
 
-        Attribute corresponding to the input argument :option:`likelihood_input_file`.
+        Attribute corresponding to the input argument :option:`input_file`.
         Whenever this parameter is not ``None`` the :class:`Likelihood <DNNLikelihood.Likelihood>` object
         is reconstructed from input files (see the :meth:`Likelihood.__init__ <DNNLikelihood.Likelihood.__init__>`
         method for details).
               
            - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_json_file    
+    .. py:attribute:: DNNLikelihood.Likelihood.input_json_file    
 
         Absolute path to the .json file containing saved :class:`Likelihood <DNNLikelihood.Likelihood>` json (see
-        the :meth:`Likelihood.save_likelihood_json <DNNLikelihood.Likelihood.save_likelihood_json>`
+        the :meth:`Likelihood.save_json <DNNLikelihood.Likelihood.save_json>`
         method for details).
         This is automatically generated from the attribute
-        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>`.
+        :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
              
             - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_log_file    
+    .. py:attribute:: DNNLikelihood.Likelihood.input_log_file    
 
         Absolute path to the .log file containing saved :class:`Likelihood <DNNLikelihood.Likelihood>` log (see
-        the :meth:`Likelihood.save_likelihood_log <DNNLikelihood.Likelihood.save_likelihood_log>`
+        the :meth:`Likelihood.save_log <DNNLikelihood.Likelihood.save_log>`
         method for details).
         This is automatically generated from the attribute
-        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>`.
+        :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
               
            - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_input_pickle_file    
+    .. py:attribute:: DNNLikelihood.Likelihood.input_pickle_file    
 
         Absolute path to the .pickle file containing saved :class:`Likelihood <DNNLikelihood.Likelihood>` pickle (see
-        the :meth:`Likelihood.save_likelihood_pickle <DNNLikelihood.Likelihood.save_likelihood_pickle>`
+        the :meth:`Likelihood.save_pickle <DNNLikelihood.Likelihood.save_pickle>`
         method for details).
         This is automatically generated from the attribute
-        :attr:`Likelihood.likelihood_input_file <DNNLikelihood.Likelihood.likelihood_input_file>`.
+        :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
              
           - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_output_json_file
+    .. py:attribute:: DNNLikelihood.Likelihood.output_json_file
 
         Absolute path to the .json file where part of the :class:`Likelihood <DNNLikelihood.Likelihood>` 
-        object is saved (see the :meth:`Likelihood.save_likelihood_json <DNNLikelihood.Likelihood.save_likelihood_json>`
+        object is saved (see the :meth:`Likelihood.save_json <DNNLikelihood.Likelihood.save_json>`
         method for details).
         This is automatically generated from the
         :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
@@ -444,10 +444,10 @@ Attributes
               
            - **type**: ``str`` 
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_output_log_file
+    .. py:attribute:: DNNLikelihood.Likelihood.output_log_file
 
         Absolute path to the .log file where the :class:`Likelihood <DNNLikelihood.Likelihood>` 
-        object log is saved (see the :meth:`Likelihood.save_likelihood_log <DNNLikelihood.Likelihood.save_likelihood_log>`
+        object log is saved (see the :meth:`Likelihood.save_log <DNNLikelihood.Likelihood.save_log>`
         method for details).
         This is automatically generated from the
         :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
@@ -455,10 +455,10 @@ Attributes
               
            - **type**: ``str`` 
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_output_pickle_file
+    .. py:attribute:: DNNLikelihood.Likelihood.output_pickle_file
 
         Absolute path to the .pickle file where part of the :class:`Likelihood <DNNLikelihood.Likelihood>` 
-        object is saved (see the :meth:`Likelihood.save_likelihood_pickle <DNNLikelihood.Likelihood.save_likelihood_pickle>`
+        object is saved (see the :meth:`Likelihood.save_pickle <DNNLikelihood.Likelihood.save_pickle>`
         method for details).
         This is automatically generated from the
         :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
@@ -466,12 +466,12 @@ Attributes
              
           - **type**: ``str`` 
 
-    .. py:attribute:: DNNLikelihood.Likelihood.likelihood_script_file
+    .. py:attribute:: DNNLikelihood.Likelihood.script_file
 
         Absolute path to the .py script containing the code necessary to intantiate a 
         :class:`Likelihood <DNNLikelihood.Likelihood>` object and define the corresponing parameters. 
         This file can be generated using the 
-        :meth:`Likelihood.save_likelihood_script <DNNLikelihood.Likelihood.save_likelihood_script>` method
+        :meth:`Likelihood.save_script <DNNLikelihood.Likelihood.save_script>` method
         and is used to initialize a :class:`Sampler <DNNLikelihood.Sampler>` object 
         (see :ref:`the Sampler object <sampler_object>`). This is to ensure that that Markov Chain Monte Carlo properly 
         runs in parallel (using the |multiprocessing_link| package) inside Jupyter notebooks also on the Windows OS.
@@ -511,7 +511,7 @@ Attributes
     .. py:attribute:: DNNLikelihood.Likelihood.logpdf
 
         Attribute corresponding to the input argument :option:`logpdf`. When this input is ``None`` the argument
-        :option:`likelihood_input_file` should be given to import the attribute from files.
+        :option:`input_file` should be given to import the attribute from files.
         This function is used to construct the :meth:`Likelihood.logpdf_fn <DNNLikelihood.Likelihood.logpdf_fn>` method.
             
             - **type**: ``callable``
@@ -669,7 +669,7 @@ Attributes
         generated profiled maxima to an incompatible existing 
         :attr:`Likelihood.X_prof_logpdf_max <DNNLikelihood.Likelihood.X_prof_logpdf_max>`.
         This is a temporary attribute and it is not saved by the 
-        :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` method.
+        :meth:`Likelihood.save <DNNLikelihood.Likelihood.save>` method.
 
             - **type**: ``numpy.ndarray`` or ``None``
             - **shape**: ``np.array(n_points,n_pars)``
@@ -703,7 +703,7 @@ Attributes
         generated profiled maxima to an incompatible existing 
         :attr:`Likelihood.X_prof_logpdf_max <DNNLikelihood.Likelihood.X_prof_logpdf_max>`.
         This is a temporary attribute and it is not saved by the 
-        :meth:`Likelihood.save_likelihood <DNNLikelihood.Likelihood.save_likelihood>` method.
+        :meth:`Likelihood.save <DNNLikelihood.Likelihood.save>` method.
 
             - **type**: ``numpy.ndarray`` or ``None``
             - **shape**: ``np.array(n_points,)``
@@ -721,19 +721,19 @@ Methods
 
     .. automethod:: DNNLikelihood.Likelihood._Likelihood__check_define_pars
 
-    .. automethod:: DNNLikelihood.Likelihood._Likelihood__load_likelihood
+    .. automethod:: DNNLikelihood.Likelihood._Likelihood__load
 
     .. automethod:: DNNLikelihood.Likelihood._Likelihood__set_pars_labels
 
-    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_log
+    .. automethod:: DNNLikelihood.Likelihood.save_log
 
-    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_json
+    .. automethod:: DNNLikelihood.Likelihood.save_json
 
-    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_pickle
+    .. automethod:: DNNLikelihood.Likelihood.save_pickle
 
-    .. automethod:: DNNLikelihood.Likelihood.save_likelihood
+    .. automethod:: DNNLikelihood.Likelihood.save
 
-    .. automethod:: DNNLikelihood.Likelihood.save_likelihood_script
+    .. automethod:: DNNLikelihood.Likelihood.save_script
 
     .. automethod:: DNNLikelihood.Likelihood.logpdf_fn
 
