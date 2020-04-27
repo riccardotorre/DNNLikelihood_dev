@@ -1,3 +1,5 @@
+.. _DNN_likelihood_ensemble_object:
+
 The DNN_likelihood_ensemble object
 ----------------------------------
 

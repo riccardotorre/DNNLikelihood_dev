@@ -382,8 +382,6 @@ class Histfactory(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file,verbose=verbose_sub)
-        #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        #self.log[timestamp] = {"action": "saved", "file name": path.split(self.output_log_file)[-1], "file path": self.output_log_file}
         dictionary = self.log
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
@@ -530,23 +528,23 @@ class Histfactory(Verbosity):
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
         | Saved | Atrributes                                                                                                       | Method                                                                                           |
         +=======+==================================================================================================================+==================================================================================================+
-        |   X   | :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`                    |                                                                                                  |
+        |   X   | :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`                                            |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Histfactory.input_json_file <DNNLikelihood.Histfactory.input_json_file>`          |                                                                                                  |
+        |       | :attr:`Histfactory.input_json_file <DNNLikelihood.Histfactory.input_json_file>`                                  |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Histfactory.input_log_file <DNNLikelihood.Histfactory.input_log_file>`            |                                                                                                  |
+        |       | :attr:`Histfactory.input_log_file <DNNLikelihood.Histfactory.input_log_file>`                                    |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Histfactory.input_pickle_file <DNNLikelihood.Histfactory.input_pickle_file>`      |                                                                                                  |
+        |       | :attr:`Histfactory.input_pickle_file <DNNLikelihood.Histfactory.input_pickle_file>`                              |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Histfactory.verbose <DNNLikelihood.Histfactory.verbose>`                                                  |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>`                                                          | :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>`        |
+        |   ✔   | :attr:`Histfactory.log <DNNLikelihood.Histfactory.log>`                                                          | :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>`                                |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Histfactory.bkg_files_base_name <DNNLikelihood.Histfactory.bkg_files_base_name>`                          | :meth:`Histfactory.save_json <DNNLikelihood.Histfactory.save_json>`      |
+        |   ✔   | :attr:`Histfactory.bkg_files_base_name <DNNLikelihood.Histfactory.bkg_files_base_name>`                          | :meth:`Histfactory.save_json <DNNLikelihood.Histfactory.save_json>`                              |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Histfactory.output_json_file <DNNLikelihood.Histfactory.output_json_file>`        |                                                                                                  |
+        |       | :attr:`Histfactory.output_json_file <DNNLikelihood.Histfactory.output_json_file>`                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Histfactory.output_pickle_file <DNNLikelihood.Histfactory.output_pickle_file>`    |                                                                                                  |
+        |       | :attr:`Histfactory.output_pickle_file <DNNLikelihood.Histfactory.output_pickle_file>`                            |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>`                                                        |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -560,7 +558,7 @@ class Histfactory(Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>`                                |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`                                | :meth:`Histfactory.save_pickle <DNNLikelihood.Histfactory.save_pickle>`  |
+        |   ✔   | :attr:`Histfactory.likelihoods_dict <DNNLikelihood.Histfactory.likelihoods_dict>`                                | :meth:`Histfactory.save_pickle <DNNLikelihood.Histfactory.save_pickle>`                          |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
         
         This methos calls in order the :meth:`Histfactory.save_pickle <DNNLikelihood.Histfactory.save_pickle>`,

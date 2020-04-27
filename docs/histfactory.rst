@@ -255,7 +255,7 @@ Attributess
       Absolute path to the .json file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` json (see
       the :meth:`Histfactory.save_json <DNNLikelihood.Histfactory.save_json>`
       method for details).
-      This is automatically generated from the attribute
+      It is automatically generated from the attribute
       :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`.
       When the latter is ``None``, the attribute is set to ``None``.
             
@@ -266,7 +266,7 @@ Attributess
       Absolute path to the .log file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` log (see
       the :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>`
       method for details).
-      This is automatically generated from the attribute
+      It is automatically generated from the attribute
       :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`.
       When the latter is ``None``, the attribute is set to ``None``.
             
@@ -277,7 +277,7 @@ Attributess
       Absolute path to the .pickle file containing saved :class:`Histfactory <DNNLikelihood.Histfactory>` pickle (see
       the :meth:`Histfactory.save_pickle <DNNLikelihood.Histfactory.save_pickle>`
       method for details).
-      This is automatically generated from the attribute
+      It is automatically generated from the attribute
       :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>`.
       When the latter is ``None``, the attribute is set to ``None``.
             
@@ -288,7 +288,7 @@ Attributess
       Absolute path to the .json file where part of the :class:`Histfactory <DNNLikelihood.Histfactory>` 
       object is saved (see the :meth:`Histfactory.save_json <DNNLikelihood.Histfactory.save_json>`
       method for details).
-      This is automatically generated from the attribute
+      It is automatically generated from the attribute
       :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
             
          - **type**: ``str`` 
@@ -298,7 +298,7 @@ Attributess
       Absolute path to the .log file where the :class:`Histfactory <DNNLikelihood.Histfactory>` 
       object log is saved (see the :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>`
       method for details).
-      This is automatically generated from the attribute
+      It is automatically generated from the attribute
       :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
             
          - **type**: ``str`` 
@@ -308,7 +308,7 @@ Attributess
       Absolute path to the .pickle file where part of the :class:`Histfactory <DNNLikelihood.Histfactory>` 
       object is saved (see the :meth:`Histfactory.save_pickle <DNNLikelihood.Histfactory.save_pickle>`
       method for details).
-      This is automatically generated from the attribute
+      It is automatically generated from the attribute
       :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
             
          - **type**: ``str`` 
@@ -393,8 +393,9 @@ Attributess
 
    .. py:attribute:: DNNLikelihood.Histfactory.name
 
-      Name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object generated from
-      the :attr:`name` input argument. If ``None`` is passed, then ``name`` is assigned the value 
+      Attribute corresponding to the input argument :option:`name` and containing the
+      name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object. 
+      If ``None`` is passed, then ``name`` is assigned the value 
       ``model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_histfactory"``, 
       while if a string is passed, the ``"_histfactory"`` suffix is appended 
       (preventing duplication if it is already present).
@@ -407,7 +408,7 @@ Attributess
 
       Absolute path corresponding to the input argument
       :option:`output_folder`. If the latter is ``None``, then 
-      :attr:`output_folder <DNNLikelihood.Histfactory.output_folder>`
+      :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
       is set to the code execution folder. If the folder does not exist it is created
       by the :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
       function.

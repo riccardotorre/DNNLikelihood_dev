@@ -15,6 +15,8 @@ at any time of the sampling process. See also :ref:`the Likelihood object <likel
 :ref:`the Data object <data_object>`, which are respectively used to initialize the 
 :class:`Sampler <DNNLikelihood.Sampler>` class and to export the :class:`Data <DNNLikelihood.Data>` object.
 
+.. _sampler_usage:
+
 Usage
 ^^^^^
 
@@ -95,8 +97,8 @@ Let us see the three options in code:
             import DNNLikelihood
 
             sampler = DNNLikelihood.Sampler(new_sampler=True,
-                                             nsteps_final=50000,
-                                             input_file=<my_output_folder>/toy_sampler)
+                                            nsteps_final=50000,
+                                            input_file=<my_output_folder>/toy_sampler)
 
 
 A previously saved :class:`Sampler <DNNLikelihood.Sampler>` could be imported by using the ``new_sampler=False`` input. 
@@ -309,10 +311,10 @@ random number generator would need ``thin`` equal or slightly larger than the au
 
 .. code-block:: python
 
-    data = sampler.get_data_object(nsamples=100000, burnin=5000, thin=10, dtype="float64", test_fraction=0)
+    data = sampler.get_data_object(nsamples=200000, burnin=5000, thin=2, dtype="float64", test_fraction=0)
 
-This generates a :class:`Data <DNNLikelihood.Data>` object with ``100000`` sampler obtained by discarding from the sampling the first
-``5000`` steps and by taking one every ``10`` steps after (until the required ``nsamples`` is reached). If the number ``nsamples`` is
+This generates a :class:`Data <DNNLikelihood.Data>` object with ``200000`` sampler obtained by discarding from the sampling the first
+``5000`` steps and by taking one every ``2`` steps after (until the required ``nsamples`` is reached). If the number ``nsamples`` is
 larger than the one available consistently with the ``burnin`` and ``thin`` options, then all available samples are taken (and a warning
 message is printed). The user may choose the data type of the exported samples ``dtype`` (default is ``"float64"``), which is useful
 to format data with the precision needed to train the DNNLikelihood. Finally, the user may already choose a ``test_fraction``, so that
@@ -513,37 +515,6 @@ Attributes
                    List of file names of files involved in the action.
                 - *"files paths"* (value type: ``list`` of ``str``)
                    List of paths of files involved in the action.
-                - *"updated file name"*
-                   File name of file involved in the action.
-                - *"updated file path"* (value type: ``str``)
-                   Path of file involved in the action.
-
-        
-            
-            - **type**: ``callable``
-
-        - **Could accept**
-
-            - **x_pars**
-                
-                Values of the parameters for which logpdf is computed.
-                It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``
-                or a list of points corresponding to an array with shape ``(n_points,n_pars)``.
-                    
-                    - **type**: ``numpy.ndarray``
-                    - **possible shapes**: ``(n_pars,)`` or ``(n_points,n_pars)``
-
-            - **args**
-
-                List of additional arguments required 
-                by the :option:`logpdf` function and passed through the :option:`logpdf_args` input argument. 
-                    
-                    - **type**: ``list`` or None
-                    - **shape of list**: ``[ ]``
-         
-        - **Could return**
-
-            ``float`` or ``numpy.ndarray`` with shape ``(n_points,)``
 
     .. py:attribute:: DNNLikelihood.Sampler.logpdf:
 
@@ -692,6 +663,16 @@ Attributes
 
             - **type**: ``bool``
 
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_bounds   
+
+        |Numpy_link| array containing the parameters bounds.
+        It is automatically set to the corresponding attribute of the :class:`Likelihood <DNNLikelihood.Likelihood>
+        object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
+        :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
+
+            - **type**: ``numpy.ndarray``
+            - **shape**: ``(n_pars,2)``
+
     .. py:attribute:: DNNLikelihood.Sampler.pars_init_vec
 
         Array of points with parameters initialization for each 
@@ -756,7 +737,7 @@ Attributes
         Absolute path to the .json file containing saved :class:`Sampler <DNNLikelihood.Sampler>` json (see
         the :meth:`Sampler.save_json <DNNLikelihood.Sampler.save_json>`
         method for details).
-        This is automatically generated from the attribute
+        It is automatically generated from the attribute
         :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
              
@@ -767,7 +748,7 @@ Attributes
         Absolute path to the .log file containing saved :class:`Sampler <DNNLikelihood.Sampler>` log (see
         the :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`
         method for details).
-        This is automatically generated from the attribute
+        It is automatically generated from the attribute
         :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
               
@@ -786,7 +767,7 @@ Attributes
         Absolute path to the .json file where part of the :class:`Sampler <DNNLikelihood.Sampler>` 
         object is saved (see the :meth:`Sampler.save_json <DNNLikelihood.Sampler.save_json>`
         method for details).
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
         :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
               
@@ -797,7 +778,7 @@ Attributes
         Absolute path to the .log file where the :attr:`Sampler.log <DNNLikelihood.Sampler.log>` attribute
         is saved (see the :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`
         method for details).
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
         :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
               

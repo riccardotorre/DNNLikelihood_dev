@@ -614,7 +614,6 @@ class Sampler(show_prints.Verbosity):
         """
         verbose, _ = self.set_verbosity(verbose)
         if self.nsteps_final <= self.nsteps_available and self.nsteps_available > 0:
-            print("Please increase nsteps to run for more steps",show=verbose)
             nsteps_to_run = 0
         else:
             nsteps_to_run = self.nsteps_final-self.nsteps_available
@@ -703,6 +702,7 @@ class Sampler(show_prints.Verbosity):
         #print(nsteps_to_run)
         if nsteps_to_run == 0:
             progress = False
+            print("Please increase nsteps to run for more steps", show=verbose)
         if self.parallel_CPU:
             n_processes = psutil.cpu_count(logical=False)
             #if __name__ == "__main__":
@@ -722,8 +722,8 @@ class Sampler(show_prints.Verbosity):
         self.log[timestamp] = {"action": "run sampler", 
                                "nsteps": nsteps_to_run, 
                                "available steps": self.nsteps_available,
-                               "updated file name": path.split(self.backend_file)[-1],
-                               "updated file path": self.backend_file}
+                               "file name": path.split(self.backend_file)[-1],
+                               "file path": self.backend_file}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Done in", end-start, "seconds.", show=verbose)
         print("Final number of steps: {0}.".format(self.backend.iteration), ".", show=verbose)
@@ -772,8 +772,6 @@ class Sampler(show_prints.Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
-        #timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        #self.log[timestamp] = {"action": "saved", "file name": path.split(self.output_log_file)[-1], "file path": self.output_log_file}
         dictionary = self.log
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
@@ -825,7 +823,7 @@ class Sampler(show_prints.Verbosity):
         self.log[timestamp] = {"action": "saved", 
                                "file name": path.split(self.output_json_file)[-1], 
                                "file path": self.output_json_file}
-        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file","input_json_file", "input_log_file",
+        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", "input_json_file", "input_log_file", "input_h5_file",
                                                           "new_sampler", "log","nsteps_available",
                                                           "logpdf", "logpdf_args", "pars_pos_poi",
                                                           "pars_pos_nuis", "pars_init_vec", "pars_labels", "generic_pars_labels",
@@ -843,11 +841,11 @@ class Sampler(show_prints.Verbosity):
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
         | Saved | Atrributes                                                                                                       | Method                                                                                           |
         +=======+==================================================================================================================+==================================================================================================+
-        |   X   | :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`                                    |                                                                                                  |
+        |   X   | :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`                                                    |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.input_json_file <DNNLikelihood.Sampler.input_json_file>`                          |                                                                                                  |
+        |       | :attr:`Sampler.input_json_file <DNNLikelihood.Sampler.input_json_file>`                                          |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>`                            |                                                                                                  |
+        |       | :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>`                                            |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`                                                  |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -881,13 +879,13 @@ class Sampler(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.verbose <DNNLikelihood.Sampler.verbose>`                                                          |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Sampler.log <DNNLikelihood.Sampler.log>`                                                                  | :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`                        |
+        |   ✔   | :attr:`Sampler.log <DNNLikelihood.Sampler.log>`                                                                  | :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`                                        |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
         |   ✔   | :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`                                                          | :meth:`Sampler.run_sampler <DNNLikelihood.Sampler.run_sampler>`                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+
-        |   ✔   | :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`                                                | :meth:`Sampler.save_json <DNNLikelihood.Sampler.save_json>`                      |
+        |   ✔   | :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`                                                | :meth:`Sampler.save_json <DNNLikelihood.Sampler.save_json>`                                      |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.output_figures_base_file <DNNLikelihood.Sampler.output_figures_base_file>`                            |                                                                                                  |
+        |       | :attr:`Sampler.output_figures_base_file <DNNLikelihood.Sampler.output_figures_base_file>`                        |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.figures_list <DNNLikelihood.Sampler.figures_list>`                                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
@@ -903,9 +901,9 @@ class Sampler(show_prints.Verbosity):
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.parallel_CPU>`                                                |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`                        |                                                                                                  |
+        |       | :attr:`Sampler.output_json_file <DNNLikelihood.Sampler.output_json_file>`                                        |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
-        |       | :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`                          |                                                                                                  |
+        |       | :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`                                          |                                                                                                  |
         |       |                                                                                                                  |                                                                                                  |
         |       | :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>`                                                      |                                                                                                  |
         +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+

@@ -1,3 +1,5 @@
+.. _DNN_likelihood_object:
+
 The DNN_likelihood object
 -------------------------
 

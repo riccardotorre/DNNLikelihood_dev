@@ -3,6 +3,7 @@ import itertools
 import json
 import math
 import os
+import shutil
 import re
 from fpdf import FPDF
 from PIL import Image
@@ -96,7 +97,7 @@ def check_rename_file(path,timestamp=None,verbose=True):
             new_path = file.replace(match,now)+extension
         else:
             new_path = file+"_old_"+now+extension
-        os.rename(path,new_path)
+        shutil.move(path, new_path)
         #print("New file name set to", path)
     #return path
 
@@ -115,7 +116,7 @@ def check_rename_folder(path, timestamp=None):
             new_path = path.replace(match, now)
         else:
             new_path = path+"_"+now
-        os.rename(path, new_path)
+        shutil.move(path, new_path)
         #print("New folder name set to", path)
     #return path
 

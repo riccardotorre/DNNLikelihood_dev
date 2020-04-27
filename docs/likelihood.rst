@@ -115,18 +115,19 @@ with a :meth:`_json <DNNLikelihood.Likelihood.save_json>`,
 and :meth:`_pickle <DNNLikelihood.Likelihood.save_pickle>` suffix.
 
 The object can also be initialized importing it from saved files. In this case only the :option:`input_file` argument needs to be specified,
-while all other arguments are ignored. One could also optionally specify a new ``output_folder``. In case this is not specified, the 
-:attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` attribute from the imported object is used.
+while all other arguments are ignored. One could also optionally specify a new :option:`output_folder`. In case this is not specified, the 
+:attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` attribute from the imported object is used and the object is
+saved overwriting existing files. If a new :option:`output_folder` is specified, then the updated object is saved to the new location.
 For instance we could import the object created above with
 
 .. code-block:: python
     
    import DNNLikelihood
 
-   likelihood = DNNLikelihood.Likelihood(input_file="<my_output_folder>/toy_likelihood")
+   likelihood = DNNLikelihood.Likelihood(input_file="<my_output_folder>/toy_likelihood")                
 
 When the object is imported, the :attr:`Likelihood.log <DNNLikelihood.Likelihood.log>` 
-attribute is updated, as well as the corresponding file <my_output_folder>/toy_likelihood.log.
+attribute is updated and saved in the corresponding file :attr:`Likelihood.output_log_file <DNNLikelihood.Likelihood.output_log_file>`.
 
 The logpdf for a given value of the parameters (for instance the 
 :attr:`Likelihood.pars_init <DNNLikelihood.Likelihood.pars_init>`
@@ -204,8 +205,9 @@ argument ``spacing="random"`` can be passed.
 
 Each of the above calls :class:`Likelihood <DNNLikelihood.Likelihood>` methods have updated the 
 :attr:`Likelihood.log <DNNLikelihood.Likelihood.log>` attribute and the corresponding 
-:attr:`Likelihood.output_log_file <DNNLikelihood.Likelihood.output_log_file>` file. The full
-object can be saved at any time through
+:attr:`Likelihood.output_log_file <DNNLikelihood.Likelihood.output_log_file>` file. 
+Even though the files corresponding to the saved object are usually kept sync with the object state, manual change of some attributes
+does not update them. Nevertheless, the full object can be saved at any time through
 
 .. code-block:: python 
 
@@ -405,7 +407,7 @@ Attributes
         Absolute path to the .json file containing saved :class:`Likelihood <DNNLikelihood.Likelihood>` json (see
         the :meth:`Likelihood.save_json <DNNLikelihood.Likelihood.save_json>`
         method for details).
-        This is automatically generated from the attribute
+        It is automatically generated from the attribute
         :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
              
@@ -416,7 +418,7 @@ Attributes
         Absolute path to the .log file containing saved :class:`Likelihood <DNNLikelihood.Likelihood>` log (see
         the :meth:`Likelihood.save_log <DNNLikelihood.Likelihood.save_log>`
         method for details).
-        This is automatically generated from the attribute
+        It is automatically generated from the attribute
         :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
               
@@ -427,7 +429,7 @@ Attributes
         Absolute path to the .pickle file containing saved :class:`Likelihood <DNNLikelihood.Likelihood>` pickle (see
         the :meth:`Likelihood.save_pickle <DNNLikelihood.Likelihood.save_pickle>`
         method for details).
-        This is automatically generated from the attribute
+        It is automatically generated from the attribute
         :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>`.
         When the latter is ``None``, the attribute is set to ``None``.
              
@@ -438,7 +440,7 @@ Attributes
         Absolute path to the .json file where part of the :class:`Likelihood <DNNLikelihood.Likelihood>` 
         object is saved (see the :meth:`Likelihood.save_json <DNNLikelihood.Likelihood.save_json>`
         method for details).
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
         :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
               
@@ -449,7 +451,7 @@ Attributes
         Absolute path to the .log file where the :class:`Likelihood <DNNLikelihood.Likelihood>` 
         object log is saved (see the :meth:`Likelihood.save_log <DNNLikelihood.Likelihood.save_log>`
         method for details).
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
         :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
               
@@ -460,7 +462,7 @@ Attributes
         Absolute path to the .pickle file where part of the :class:`Likelihood <DNNLikelihood.Likelihood>` 
         object is saved (see the :meth:`Likelihood.save_pickle <DNNLikelihood.Likelihood.save_pickle>`
         method for details).
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
         :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
              
@@ -475,7 +477,7 @@ Attributes
         and is used to initialize a :class:`Sampler <DNNLikelihood.Sampler>` object 
         (see :ref:`the Sampler object <sampler_object>`). This is to ensure that that Markov Chain Monte Carlo properly 
         runs in parallel (using the |multiprocessing_link| package) inside Jupyter notebooks also on the Windows OS.
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Likelihood.output_folder <DNNLikelihood.Likelihood.output_folder>` and 
         :attr:`Likelihood.name <DNNLikelihood.Likelihood.name>` attributes.
 
@@ -483,8 +485,8 @@ Attributes
 
     .. py:attribute:: DNNLikelihood.Likelihood.log    
 
-         Dictionary containing a log of the :class:`Likelihood <DNNLikelihood.Likelihood>` object calls. The dictionary has datetime 
-         strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
+        Dictionary containing a log of the :class:`Likelihood <DNNLikelihood.Likelihood>` object calls. The dictionary has datetime 
+        strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
                
             - **type**: ``dict``
             - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``

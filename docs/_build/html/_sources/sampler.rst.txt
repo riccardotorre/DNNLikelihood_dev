@@ -15,6 +15,8 @@ at any time of the sampling process. See also :ref:`the Likelihood object <likel
 :ref:`the Data object <data_object>`, which are respectively used to initialize the 
 :class:`Sampler <DNNLikelihood.Sampler>` class and to export the :class:`Data <DNNLikelihood.Data>` object.
 
+.. _sampler_usage:
+
 Usage
 ^^^^^
 
@@ -36,10 +38,10 @@ Windows machines, where the |multiprocessing_link| package may have unexpected b
 Let us start by creating a new :class:`Sampler <DNNLikelihood.Sampler>` object, which requires the input argument
 ``new_sampler=True``. We can proceed in three different ways, by giving as input one of the three arguments
 :option:`likelihood_script_file`, :option:`likelihood`, and, in case we have previously saved a :class:`Sampler <DNNLikelihood.Sampler>`
-and we are interested in creating a new sampler with the same parameters, the argument :option:`sampler_input_file`. Each of these
+and we are interested in creating a new sampler with the same parameters, the argument :option:`input_file`. Each of these
 arguments is used to determine the attribute :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
 which is then used to import the likelihood related attributes. If more than one of these inputs is give, only one is used,
-with priority in the order :option:`likelihood_script_file`, :option:`likelihood`, and :option:`sampler_input_file`. 
+with priority in the order :option:`likelihood_script_file`, :option:`likelihood`, and :option:`input_file`. 
 Let us see the three options in code:
 
     - Initialization from :option:`likelihood_script_file`
@@ -76,16 +78,16 @@ Let us see the three options in code:
 
             import DNNLikelihood
 
-            likelihood = DNNLikelihood.Likelihood(likelihood_input_file="<my_output_folder>/toy_likelihood")
+            likelihood = DNNLikelihood.Likelihood(input_file="<my_output_folder>/toy_likelihood")
 
             sampler = DNNLikelihood.Sampler(new_sampler=True,
                                              likelihood=likelihood,
                                              nsteps_final=50000)
 
-    - Initialization from :option:`sampler_input_file`
+    - Initialization from :option:`input_file`
 
         Finally, in the case the object has been initialized in the past, and the output files are available, a new object can be initialized
-        with the same parameters by passing the :option:`sampler_input_file` input. In this case, again, the 
+        with the same parameters by passing the :option:`input_file` input. In this case, again, the 
         :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` method uses the argument to determine or create the
         :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` and then proceeds in the usual way.
         The following code produces an object identical to the previous ones:
@@ -95,30 +97,30 @@ Let us see the three options in code:
             import DNNLikelihood
 
             sampler = DNNLikelihood.Sampler(new_sampler=True,
-                                             nsteps_final=50000,
-                                             sampler_input_file=<my_output_folder>/toy_sampler)
+                                            nsteps_final=50000,
+                                            input_file=<my_output_folder>/toy_sampler)
 
 
 A previously saved :class:`Sampler <DNNLikelihood.Sampler>` could be imported by using the ``new_sampler=False`` input. 
 Again, one could provide one of the three arguments :option:`likelihood_script_file`, :option:`likelihood`, 
-and :option:`sampler_input_file`. This time, each of these
+and :option:`input_file`. This time, each of these
 arguments is used to determine the :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` and
-:attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>` attributes, used to build the object. If more than 
-one of these inputs is give, only one is used, with priority in the order :option:`sampler_input_file`, 
+:attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attributes, used to build the object. If more than 
+one of these inputs is give, only one is used, with priority in the order :option:`input_file`, 
 :option:`likelihood_script_file`, and :option:`likelihood`. Obviously, independently on the passed input arguments, 
-the files corresponding to :attr:`Sampler.sampler_input_file <DNNLikelihood.Sampler.sampler_input_file>` should exist (i.e. a 
+the files corresponding to :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` should exist (i.e. a 
 saved :class:`Sampler <DNNLikelihood.Sampler>` object should be available).
 
 The following three code options produce the same result, importing the object saved before:
 
-    - Import from :option:`sampler_input_file`
+    - Import from :option:`input_file`
 
         .. code-block:: python
 
             import DNNLikelihood
 
             sampler = DNNLikelihood.Sampler(new_sampler=False,
-                                             sampler_input_file=<my_output_folder>/toy_sampler)
+                                             input_file=<my_output_folder>/toy_sampler)
 
     - Import from :option:`likelihood_script_file`
 
@@ -138,7 +140,7 @@ The following three code options produce the same result, importing the object s
 
             import DNNLikelihood
 
-            likelihood = DNNLikelihood.Likelihood(likelihood_input_file="<my_output_folder>/toy_likelihood")
+            likelihood = DNNLikelihood.Likelihood(input_file="<my_output_folder>/toy_likelihood")
 
             sampler = DNNLikelihood.Sampler(new_sampler=False,
                                              likelihood=likelihood)
@@ -158,7 +160,7 @@ a sampling, which is done as follows:
 This runs the sampler and, through the ``verbose=2`` argument, shows a progress bar, together with the remaining time. Since the object
 has attribute :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.parallel_CPU>` set to ``True`` the sampling is run in ``n`` parallel
 processes, with ``n`` equal to the number of physical (not logical) cores. While the sampler runs, all produced sampler are saved in related
-time in the backend file corresponding to the :attr:`Sampler.sampler_output_backend_file <DNNLikelihood.Sampler.sampler_output_backend_file>`
+time in the backend file corresponding to the :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
 attribute. At the end of the sampling also the log attribute and file are updated. 
 The :attr:`Sampler.sampler <DNNLikelihood.Sampler.sampler>` and :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>` correspond to the
 |emcee_link| objects |emcee_ensemble_sampler_link| and |emcee_backend_link| and we refer to the |emcee_link| documentation for their use.
@@ -309,10 +311,10 @@ random number generator would need ``thin`` equal or slightly larger than the au
 
 .. code-block:: python
 
-    data = sampler.get_data_object(nsamples=100000, burnin=5000, thin=10, dtype="float64", test_fraction=0)
+    data = sampler.get_data_object(nsamples=200000, burnin=5000, thin=2, dtype="float64", test_fraction=0)
 
-This generates a :class:`Data <DNNLikelihood.Data>` object with ``100000`` sampler obtained by discarding from the sampling the first
-``5000`` steps and by taking one every ``10`` steps after (until the required ``nsamples`` is reached). If the number ``nsamples`` is
+This generates a :class:`Data <DNNLikelihood.Data>` object with ``200000`` sampler obtained by discarding from the sampling the first
+``5000`` steps and by taking one every ``2`` steps after (until the required ``nsamples`` is reached). If the number ``nsamples`` is
 larger than the one available consistently with the ``burnin`` and ``thin`` options, then all available samples are taken (and a warning
 message is printed). The user may choose the data type of the exported samples ``dtype`` (default is ``"float64"``), which is useful
 to format data with the precision needed to train the DNNLikelihood. Finally, the user may already choose a ``test_fraction``, so that
@@ -321,11 +323,11 @@ and the other used as test data. If ``test_fraction`` is left to the default val
 the :class:`Data <DNNLikelihood.Data>` object itself.
 
 As a final step we can save the state of the :class:`Sampler <DNNLikelihood.Sampler>` object by using the 
-:meth:`Sampler.save_sampler <DNNLikelihood.Sampler.save_sampler>` method.
+:meth:`Sampler.save <DNNLikelihood.Sampler.save>` method.
 
 .. code-block:: python
 
-    sampler.save_sampler(overwrite=True)
+    sampler.save(overwrite=True)
 
 The user should remember that the default value of the ``overwrite`` argument for saving functions is ``False``. Therefore, in order not
 to produce new files, ``overwrite=True`` should be explicitly specified when making intermediate or final saving of the objects.
@@ -355,7 +357,7 @@ Arguments
     .. option:: likelihood_script_file
 
         File name (either relative to the code execution folder or absolute) of a ``likelihood_script_file`` 
-        genetated by the :meth:`Likelihood.save_likelihood_script <DNNLikelihood.Likelihood.save_likelihood_script>` method. 
+        genetated by the :meth:`Likelihood.save_script <DNNLikelihood.Likelihood.save_script>` method. 
         It is used to build the :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute.
 
             - **type**: ``str`` or ``None``
@@ -413,11 +415,11 @@ Arguments
         is automatically set to ``False``. See the |emcee_ensemble_sampler_link| documentation for more details.
         It is used to set the :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>` attribute.
 
-    .. option:: sampler_input_file   
+    .. option:: input_file   
 
         File name (either relative to the code execution folder or absolute, with or without any of the
         .json extensions) of a saved :class:`Sampler <DNNLikelihood.Sampler>` object. 
-        It is used to set the :attr:`Likelihood.sampler_input_file <DNNLikelihood.Likelihood.sampler_input_file>` 
+        It is used to set the :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>` 
         attribute.
 
            - **type**: ``str`` or ``None``
@@ -443,7 +445,7 @@ Attributes
 
             - **type**: ``emcee.Backends`` object
 
-    .. py:attribute:: DNNLikelihood.Sampler.figure_files_base_path
+    .. py:attribute:: DNNLikelihood.Sampler.output_figures_base_file
 
         Absolute path to the exported figures. It includes the base figure name and is 
         automatically generated from the
@@ -513,37 +515,6 @@ Attributes
                    List of file names of files involved in the action.
                 - *"files paths"* (value type: ``list`` of ``str``)
                    List of paths of files involved in the action.
-                - *"updated file name"*
-                   File name of file involved in the action.
-                - *"updated file path"* (value type: ``str``)
-                   Path of file involved in the action.
-
-        
-            
-            - **type**: ``callable``
-
-        - **Could accept**
-
-            - **x_pars**
-                
-                Values of the parameters for which logpdf is computed.
-                It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``
-                or a list of points corresponding to an array with shape ``(n_points,n_pars)``.
-                    
-                    - **type**: ``numpy.ndarray``
-                    - **possible shapes**: ``(n_pars,)`` or ``(n_points,n_pars)``
-
-            - **args**
-
-                List of additional arguments required 
-                by the :option:`logpdf` function and passed through the :option:`logpdf_args` input argument. 
-                    
-                    - **type**: ``list`` or None
-                    - **shape of list**: ``[ ]``
-         
-        - **Could return**
-
-            ``float`` or ``numpy.ndarray`` with shape ``(n_points,)``
 
     .. py:attribute:: DNNLikelihood.Sampler.logpdf:
 
@@ -692,6 +663,16 @@ Attributes
 
             - **type**: ``bool``
 
+    .. py:attribute:: DNNLikelihood.Likelihood.pars_bounds   
+
+        |Numpy_link| array containing the parameters bounds.
+        It is automatically set to the corresponding attribute of the :class:`Likelihood <DNNLikelihood.Likelihood>
+        object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
+        :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
+
+            - **type**: ``numpy.ndarray``
+            - **shape**: ``(n_pars,2)``
+
     .. py:attribute:: DNNLikelihood.Sampler.pars_init_vec
 
         Array of points with parameters initialization for each 
@@ -741,9 +722,9 @@ Attributes
 
             - **type**: ``emcee.EnsembleSampler`` object
 
-    .. py:attribute:: DNNLikelihood.Sampler.sampler_input_file   
+    .. py:attribute:: DNNLikelihood.Sampler.input_file   
 
-        Attribute corresponding to the input argument :option:`sampler_input_file`.
+        Attribute corresponding to the input argument :option:`input_file`.
         Whenever the :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` attribute is ``False``,
         it is used to reconstructed the object from input files 
         (see the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>`
@@ -751,7 +732,29 @@ Attributes
               
            - **type**: ``str`` or ``None``
 
-    .. py:attribute:: DNNLikelihood.Sampler.sampler_output_backend_file
+    .. py:attribute:: DNNLikelihood.Sampler.input_json_file   
+
+        Absolute path to the .json file containing saved :class:`Sampler <DNNLikelihood.Sampler>` json (see
+        the :meth:`Sampler.save_json <DNNLikelihood.Sampler.save_json>`
+        method for details).
+        It is automatically generated from the attribute
+        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`.
+        When the latter is ``None``, the attribute is set to ``None``.
+             
+            - **type**: ``str`` or ``None``
+
+    .. py:attribute:: DNNLikelihood.Sampler.input_log_file   
+
+        Absolute path to the .log file containing saved :class:`Sampler <DNNLikelihood.Sampler>` log (see
+        the :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`
+        method for details).
+        It is automatically generated from the attribute
+        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`.
+        When the latter is ``None``, the attribute is set to ``None``.
+              
+           - **type**: ``str`` or ``None``
+
+    .. py:attribute:: DNNLikelihood.Sampler.backend_file
 
         Name (with absolute path) of the |emcee_link| HDF5 backend file. 
         It is set to :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` ``+ "_backend.h5"``.
@@ -759,23 +762,23 @@ Attributes
 
             - **type**: ``str``
 
-    .. py:attribute:: DNNLikelihood.Sampler.sampler_output_json_file
+    .. py:attribute:: DNNLikelihood.Sampler.output_json_file
          
         Absolute path to the .json file where part of the :class:`Sampler <DNNLikelihood.Sampler>` 
-        object is saved (see the :meth:`Sampler.save_sampler_json <DNNLikelihood.Sampler.save_sampler_json>`
+        object is saved (see the :meth:`Sampler.save_json <DNNLikelihood.Sampler.save_json>`
         method for details).
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
         :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
               
            - **type**: ``str`` 
 
-    .. py:attribute:: DNNLikelihood.Sampler.sampler_output_log_file
+    .. py:attribute:: DNNLikelihood.Sampler.output_log_file
          
         Absolute path to the .log file where the :attr:`Sampler.log <DNNLikelihood.Sampler.log>` attribute
-        is saved (see the :meth:`Sampler.save_sampler_log <DNNLikelihood.Sampler.save_sampler_log>`
+        is saved (see the :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`
         method for details).
-        This is automatically generated from the
+        It is automatically generated from the
         :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
         :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
               
@@ -814,17 +817,17 @@ Methods
 
     .. automethod:: DNNLikelihood.Sampler._Sampler__check_define_output_files
 
-    .. automethod:: DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_sampler_input_file
+    .. automethod:: DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_input_file
 
     .. automethod:: DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_likelihood
 
-    .. automethod:: DNNLikelihood.Sampler._Sampler__get_sampler_input_file_from_likelihood_script_file
+    .. automethod:: DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood_script_file
 
-    .. automethod:: DNNLikelihood.Sampler._Sampler__get_sampler_input_file_from_likelihood
+    .. automethod:: DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood
 
     .. automethod:: DNNLikelihood.Sampler._Sampler__init_likelihood
 
-    .. automethod:: DNNLikelihood.Sampler._Sampler__load_sampler
+    .. automethod:: DNNLikelihood.Sampler._Sampler__load
     
     .. automethod:: DNNLikelihood.Sampler._Sampler__init_backend
 
@@ -840,11 +843,11 @@ Methods
 
     .. automethod:: DNNLikelihood.Sampler.run_sampler
 
-    .. automethod:: DNNLikelihood.Sampler.save_sampler_log
+    .. automethod:: DNNLikelihood.Sampler.save_log
 
-    .. automethod:: DNNLikelihood.Sampler.save_sampler_json
+    .. automethod:: DNNLikelihood.Sampler.save_json
 
-    .. automethod:: DNNLikelihood.Sampler.save_sampler
+    .. automethod:: DNNLikelihood.Sampler.save
 
     .. automethod:: DNNLikelihood.Sampler.get_data_object
 
