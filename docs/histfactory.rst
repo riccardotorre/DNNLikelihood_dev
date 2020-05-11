@@ -243,7 +243,7 @@ Attributess
 
    .. py:attribute:: DNNLikelihood.Histfactory.input_file
 
-      Attribute corresponding to the input argument :option:`input_file`.
+      Absolute path corresponding to the input argument :option:`input_file`.
       Whenever this parameter is not ``None`` the :class:`Histfactory <DNNLikelihood.Histfactory>` object
       is reconstructed from input files (see the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>`
       method for details).
@@ -488,7 +488,10 @@ Methods
 
    .. automethod:: DNNLikelihood.Histfactory.get_likelihood_object
 
-   .. automethod:: DNNLikelihood.Histfactory.set_verbosity
+   .. py:method:: DNNLikelihood.Histfactory.set_verbosity
+
+      Method inherited from the :class:`Verbosity <DNNLikelihood.Verbosity>` object.
+      See the documentation of :meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>`.
 
 .. |histfactory_sbottom_link| raw:: html
     

@@ -193,7 +193,8 @@ class Histfactory(Verbosity):
             likelihoods_dict[n]["name"] = self.name+"_" + str(n)+"_"+likelihoods_dict[n]["name"]+"_likelihood"
         self.likelihoods_dict = likelihoods_dict
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "import histfactory","folder": self.workspace_folder}
+        self.log[timestamp] = {"action": "import histfactory",
+                               "folder": self.workspace_folder}
         print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.",show=verbose)
 
     def __load(self,verbose=None):
@@ -228,14 +229,13 @@ class Histfactory(Verbosity):
         statinfo = stat(self.input_pickle_file)
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {
-            "action": "loaded", "files names": [path.split(self.input_json_file)[-1],
-                                                path.split(self.input_log_file)[-1],
-                                                path.split(self.input_pickle_file)[-1]],
-                                "files paths": [self.input_json_file,
-                                                self.input_log_file,
-                                                self.input_pickle_file]}
-        self.log[timestamp] = {"action": "loaded","file name": path.split(self.input_json_file)[-1],"file path": self.input_json_file}
+        self.log[timestamp] = {"action": "loaded", 
+                               "files names": [path.split(self.input_json_file)[-1],
+                                               path.split(self.input_log_file)[-1],
+                                               path.split(self.input_pickle_file)[-1]],
+                               "files paths": [self.input_json_file,
+                                               self.input_log_file,
+                                               self.input_pickle_file]}
         print("Loaded likelihoods in", str(end-start),"seconds.\nFile size is ", statinfo.st_size, ".",show=verbose)
 
     def import_likelihoods(self,lik_numbers_list=None, progressbar=True, verbose=None):
@@ -338,7 +338,8 @@ class Histfactory(Verbosity):
                 overall_progress.value = float(iterator)/(len(lik_numbers_list))
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "imported likelihoods","likelihoods numbers": lik_numbers_list}
+        self.log[timestamp] = {"action": "imported likelihoods",
+                               "likelihoods numbers": lik_numbers_list}
         self.save_log(overwrite=True, verbose=verbose_sub)
         self.set_verbosity(verbose)
         print("Imported",len(lik_numbers_list),"likelihoods in ", str(end-start), "s.",show=verbose)
@@ -428,19 +429,17 @@ class Histfactory(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_json_file,verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "saved", "file name": path.split(self.output_json_file)[-1], "file path": self.output_json_file}
-        dictionary = utils.dic_minus_keys(self.__dict__, ["log",
-                                                          "likelihoods_dict",
-                                                          "input_file",
-                                                          "input_json_file",
-                                                          "input_log_file",
-                                                          "input_pickle_file",
-                                                          "verbose"])
+        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file","input_json_file",
+                                                          "input_log_file","input_pickle_file",
+                                                          "likelihoods_dict","log","verbose"])
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved",
+                               "file name": path.split(self.output_json_file)[-1],
+                               "file path": self.output_json_file}
         print("Histfactory json file", self.output_json_file, "saved in", str(end-start), "s.",show=verbose)
 
     def save_pickle(self, lik_numbers_list=None, overwrite=False, verbose=None):
@@ -500,18 +499,16 @@ class Histfactory(Verbosity):
             utils.check_rename_file(self.output_pickle_file,verbose=verbose_sub)
         if lik_numbers_list is None:
             lik_numbers_list = list(self.likelihoods_dict.keys())
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "saved", "likelihoods numbers": lik_numbers_list, "file name": path.split(
-            self.output_pickle_file)[-1], "file path": self.output_pickle_file}
         #if lik_numbers_list is None:
         #    sub_dict = dict(self.likelihoods_dict)
         #else:
         tmp1 = {i: self.likelihoods_dict[i] for i in lik_numbers_list}
         tmp2 = utils.dic_minus_keys(self.likelihoods_dict,lik_numbers_list)
         for key in tmp2.keys():
-            tmp2[key] = utils.dic_minus_keys(tmp2[key], ["model", "obs_data", "pars_init", 
-                                                       "pars_bounds", "pars_labels", "pars_pos_poi",
-                                                       "pars_pos_poi","pars_pos_nuis"])
+            tmp2[key] = utils.dic_minus_keys(tmp2[key], ["model","obs_data","pars_bounds",
+                                                         "pars_init","pars_labels",
+                                                         "pars_pos_nuis","pars_pos_poi",
+                                                         "pars_pos_poi"])
             tmp2[key]["model_loaded"] = False
         sub_dict = {**tmp1, **tmp2}
         sub_dict = dict(sorted(sub_dict.items()))
@@ -519,6 +516,11 @@ class Histfactory(Verbosity):
         pickle.dump(sub_dict, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved",
+                               "likelihoods numbers": lik_numbers_list,
+                               "file name": path.split(self.output_pickle_file)[-1],
+                               "file path": self.output_pickle_file}
         print("Histfactory pickle file", self.output_pickle_file, "saved in", str(end-start), "s.",show=verbose)
 
     def save(self, lik_numbers_list=None, overwrite=True, verbose=None):
@@ -657,7 +659,8 @@ class Histfactory(Verbosity):
                                "files paths": [lik_obj.output_pickle_file, 
                                                lik_obj.output_json_file, 
                                                lik_obj.output_log_file]}
+        self.save_log(overwrite=True, verbose=verbose_sub)
         print("Likelihood object for likelihood", lik_number, "created and saved to files", lik_obj.output_pickle_file, ", ",
               lik_obj.output_json_file, ", and", lik_obj.output_log_file, "in", str(end-start), "s.", show=verbose)
-        self.save_log(overwrite=True, verbose=verbose_sub)
+        
         return lik_obj

@@ -1,5 +1,5 @@
 {
-    "name":"new_data",
+    "name":"toy_data",
     "dtype_stored":"float64",
     "pars_pos_poi":[
         0
@@ -17,7 +17,7 @@
         10
     ],
     "ndims":11,
-    "npoints":100000,
+    "npoints":112500,
     "pars_labels":[
         "$\\theta_{1}$",
         "$\\nu_{1}$",
@@ -33,8 +33,8 @@
     ],
     "pars_bounds":[
         [
-            -Infinity,
-            Infinity
+            -5.0,
+            5.0
         ],
         [
             -Infinity,
@@ -90,9 +90,9 @@
         "$\\nu_{9}$",
         "$\\nu_{10}$"
     ],
-    "test_fraction":0.3,
+    "test_fraction":0,
     "output_folder":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles",
-    "output_h5_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\new_data.h5",
-    "output_json_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\new_data.json",
-    "output_log_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\new_data.log"
+    "output_h5_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\toy_data.h5",
+    "output_json_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\toy_data.json",
+    "output_log_file":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\toy_data.log"
 }

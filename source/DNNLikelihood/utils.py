@@ -35,7 +35,7 @@ from .show_prints import print
 def flatten_list(lst):
     out = []
     for item in lst:
-        if isinstance(item, (list, tuple)):
+        if isinstance(item, (list, tuple, np.ndarray)):
             out.extend(flatten_list(item))
         else:
             out.append(item)
@@ -100,6 +100,10 @@ def check_rename_file(path,timestamp=None,verbose=True):
         shutil.move(path, new_path)
         #print("New file name set to", path)
     #return path
+
+def check_delete_file(path):
+    if os.path.exists(path):
+        os.remove(path)
 
 def check_rename_folder(path, timestamp=None):
     if os.path.exists(path):
@@ -320,3 +324,62 @@ def define_generic_pars_labels(pars_pos_poi, pars_pos_nuis):
             generic_pars_labels.append(r"$\nu_{%d}$" % i_nuis)
             i_nuis = i_nuis+1
     return generic_pars_labels
+
+def latex_float(f):
+    float_str = "{0:.2g}".format(f)
+    if "e" in float_str:
+        base, exponent = float_str.split("e")
+        if base == "1":
+            return r"10^{{{0}}}".format(int(exponent))
+        else:
+            return r"{0} \times 10^{{{1}}}".format(base, int(exponent))
+    else:
+        return float_str
+
+def dict_structure(dic):
+    excluded_keys = []
+    def dict_structure_sub(dic,excluded_keys = []):
+        res = {}
+        for key, value in dic.items():
+            if isinstance(value, dict):
+                res[key], kk = dict_structure_sub(value,excluded_keys)
+                excluded_keys = np.unique(excluded_keys+kk+list(value.keys())).tolist()
+                for k in excluded_keys:
+                    try:
+                        res.pop(k)
+                    except:
+                        for i in res.keys():
+                            if res[i] == {}:
+                                res[i] = "..."
+            else:
+                res[key] = type(value)
+                for k in excluded_keys:
+                    try:
+                        res.pop(k)
+                    except:
+                        for i in res.keys():
+                            if res[i] == {}:
+                                res[i] = "..."
+        return res, excluded_keys
+    res = {}
+    for key, value in dic.items():
+        if isinstance(value, dict):
+            res[key], kk = dict_structure_sub(value,excluded_keys)
+            excluded_keys = np.unique(excluded_keys+kk+list(value.keys())).tolist()
+            for k in excluded_keys:
+                try:
+                    res.pop(k)
+                except:
+                    for i in res.keys():
+                        if res[i] == {}:
+                            res[i] = "..."
+        else:
+            res[key] = type(value)
+            for k in excluded_keys:
+                try:
+                    res.pop(k)
+                except:
+                    for i in res.keys():
+                        if res[i] == {}:
+                            res[i] = "..."
+    return res

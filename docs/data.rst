@@ -364,7 +364,7 @@ Arguments
         File name (either relative to the code execution folder or absolute, with or without any of the
         .json or .h5 extensions) of a saved :class:`Data <DNNLikelihood.Data>` object. 
         It is used to set the 
-        :attr:`Data.input_file <Data.Likelihood.input_file>` attribute.
+        :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute.
 
            - **type**: ``str`` or ``None``
            - **default**: ``None``
@@ -464,7 +464,7 @@ Attributes
 
     .. py:attribute:: DNNLikelihood.Data.input_file
 
-        Attribute corresponding to the input argument :option:`input_file`.
+        Absolute path corresponding to the input argument :option:`input_file`.
         Whenever this attribute is not ``None``, it is used to reconstructed the object from input files 
         (see the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>`
         method for details).
@@ -564,7 +564,7 @@ Attributes
 
         Number of dimensions of the X data (i.e. number of 
         parameters entering in the logpdf). It is automatically set to the length of
-        the first point in the input argument :option:`data_X`.
+        the first vector in the input argument :option:`data_X`.
 
             - **type**: ``int``
 
@@ -654,14 +654,14 @@ Attributes
 
         |Numpy_link| array corresponding to the input argument :option:`pars_pos_nuis`.
 
-            - **type**: ``list`` or ```numpy.ndarray``
+            - **type**: ``list`` or ``numpy.ndarray``
             - **shape**: ``(n_nuis,)``
 
     .. py:attribute:: DNNLikelihood.Data.pars_pos_poi   
 
         |Numpy_link| array corresponding to the input argument :option:`pars_pos_poi`.
 
-            - **type**: ``list`` or ```numpy.ndarray``
+            - **type**: ``list`` or ``numpy.ndarray``
             - **shape**: ``(n_poi,)``
 
     .. py:attribute:: DNNLikelihood.Data.test_fraction
@@ -711,6 +711,8 @@ Methods
 
     .. automethod:: DNNLikelihood.Data._Data__check_define_pars
 
+    .. automethod:: DNNLikelihood.Data._Data__check_sync_data_dictionary
+
     .. automethod:: DNNLikelihood.Data._Data__load
 
     .. automethod:: DNNLikelihood.Data._Data__define_test_fraction
@@ -742,6 +744,11 @@ Methods
     .. automethod:: DNNLikelihood.Data.compute_sample_weights
 
     .. automethod:: DNNLikelihood.Data.define_scalers
+
+    .. py:method:: DNNLikelihood.Data.set_verbosity
+
+      Method inherited from the :class:`Verbosity <DNNLikelihood.Verbosity>` object.
+      See the documentation of :meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>`.
 
 .. |numpy_link| raw:: html
     

@@ -25,49 +25,46 @@ from concurrent.futures import ThreadPoolExecutor
 from . import utils
 from .data import Data
 from .DNN_likelihood import DNN_likelihood
-from . import set_resources
-from . import show_prints
 from .show_prints import print
+from .resources import Resources
 
-
-class DNN_likelihood_ensemble(show_prints.Verbosity):
+class DNN_likelihood_ensemble(Resources): #show_prints.Verbosity inherited from resources.Resources
     def __init__(self,
                  DNNLik_ensemble_input_folder=None,
                  ensemble_name=None,
-                 data_sample=None,
-                 data_sample_input_filename=None,
+                 data=None,
+                 input_data_file=None,
                  ensemble_folder=None,
                  load_on_RAM=False,
                  seed=1,
                  dtype = None,
                  same_data=True,
-                 model_data_ensemble_kwargs=None,
-                 model_define_ensemble_kwargs=None,
-                 model_optimizers_ensemble_kwargs=None,
-                 model_compile_ensemble_kwargs=None,
+                 model_data_ensemble_inputs=None,
+                 model_define_ensemble_inputs=None,
+                 model_optimizers_ensemble_inputs=None,
+                 model_compile_ensemble_inputs=None,
                  model_callbacks_ensemble_kwargs=None,
                  model_train_ensemble_kwargs=None,
                  gpus_id_list='all',
                  verbose=True
                  ):
-        show_prints.verbose = verbose
         self.verbose = verbose
-        self.ensemble_verbose_mode = verbose
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         #### Set model date time
         self.ensemble_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         #### Set resources
         self.get_available_gpus(verbose=True)
         self.get_available_cpu(verbose=True)
         self.set_gpus(gpus_id_list,verbose=True)
-        ShowPrints = self.ensemble_verbose_mode
         ############ Check wheather to create a new DNNLik_ensemble object from inputs or from files
         self.DNNLik_ensemble_input_folder = DNNLik_ensemble_input_folder
         if self.DNNLik_ensemble_input_folder is None:
             ############ Initialize input parameters from arguments
             #### Set main inputs and DataSample
             self.ensemble_name = ensemble_name
-            self.data_sample = data_sample
-            self.data_sample_input_filename = os.path.abspath(data_sample_input_filename)
+            self.data = data
+            self.input_data_file = os.path.abspath(input_data_file)
             self.ensemble_folder = ensemble_folder
             self.load_on_RAM = load_on_RAM
             self.seed = seed
@@ -78,16 +75,16 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
             self.same_data = same_data
             self.__set_seed()
             self.__set_dtype()
-            self.__set_data_sample()
+            self.__set_data()
             self.__set_ensemble_name()
             self.__set_ensemble_folder()
             self.__set_ensemble_results_folder()
-            self.__model_data_ensemble_kwargs = model_data_ensemble_kwargs
-            self.__model_define_ensemble_kwargs = model_define_ensemble_kwargs
-            self.__model_optimizers_ensemble_kwargs = model_optimizers_ensemble_kwargs
-            self.__model_compile_ensemble_kwargs = model_compile_ensemble_kwargs
-            self.__model_callbacks_ensemble_kwargs = model_callbacks_ensemble_kwargs
-            self.__model_train_ensemble_kwargs = model_train_ensemble_kwargs
+            self.__model_data_ensemble_inputs = model_data_ensemble_inputs
+            self.__model_define_ensemble_inputs = model_define_ensemble_inputs
+            self.__model_optimizers_ensemble_inputs = model_optimizers_ensemble_inputs
+            self.__model_compile_ensemble_inputs = model_compile_ensemble_inputs
+            self.__model_callbacks_ensemble_inputs = model_callbacks_ensemble_kwargs
+            self.__model_train_ensemble_inputs = model_train_ensemble_kwargs
         else:
             ############ Initialize input parameters from file
             #### Load summary_log dictionary
@@ -96,8 +93,8 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
 
             #### Set main inputs and DataSample
             self.ensemble_name = summary_log['ensemble_name']
-            self.data_sample = None
-            self.data_sample_input_filename = summary_log['data_sample_input_filename']
+            self.data = None
+            self.input_data_file = summary_log['input_data_file']
             self.ensemble_folder = summary_log['ensemble_folder']
             self.load_on_RAM = load_on_RAM
             self.seed = summary_log['seed']
@@ -107,15 +104,15 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
             self.same_data = summary_log['same_data']
             self.__set_seed()
             self.__set_dtype()
-            self.__set_data_sample() # This also fixes self.ndim and self.ensemble_name if not given
+            self.__set_data() # This also fixes self.ndims and self.ensemble_name if not given
             self.ensemble_folder = summary_log['ensemble_folder']
             self.ensemble_results_folder = summary_log['ensemble_results_folder']
-            self.__model_data_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_data_ensemble_kwargs']
-            self.__model_define_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_define_ensemble_kwargs']
-            self.__model_optimizers_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_optimizers_ensemble_kwargs']
-            self.__model_compile_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_compile_ensemble_kwargs']
-            self.__model_callbacks_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_callbacks_ensemble_kwargs']
-            self.__model_train_ensemble_kwargs = summary_log['_DNNLik_ensemble__model_train_ensemble_kwargs']
+            self.__model_data_ensemble_inputs = summary_log['_DNNLik_ensemble__model_data_ensemble_inputs']
+            self.__model_define_ensemble_inputs = summary_log['_DNNLik_ensemble__model_define_ensemble_inputs']
+            self.__model_optimizers_ensemble_inputs = summary_log['_DNNLik_ensemble__model_optimizers_ensemble_inputs']
+            self.__model_compile_ensemble_inputs = summary_log['_DNNLik_ensemble__model_compile_ensemble_inputs']
+            self.__model_callbacks_ensemble_inputs = summary_log['_DNNLik_ensemble__model_callbacks_ensemble_inputs']
+            self.__model_train_ensemble_inputs = summary_log['_DNNLik_ensemble__model_train_ensemble_inputs']
             self.n_members = summary_log['n_members']
             self.seeds = np.array(summary_log['seeds'])
 
@@ -125,65 +122,68 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
         self.summary_log_json_filename = self.ensemble_results_folder + \
             "/"+self.ensemble_name+"_summary_log.json"
 
-        #### Set model_data_ensemble_kwargs
-        # example: model_data_ensemble_kwargs = {'npoints_list': [[1000,300],[2000,600],[3000,1000]]}
-        self.__check_model_data_ensemble_kwargs()
-        self.__model_data_ensemble_kwargs_list = list(utils.product_dict(**self.__model_data_ensemble_kwargs))
-        self.__model_data_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_data_ensemble_kwargs_list]
+        #### Set model_data_ensemble_inputs
+        # example: model_data_ensemble_inputs = {'npoints_list': [[1000,300],[2000,600],[3000,1000]]}
+        self.__check_model_data_ensemble_inputs()
+        self.__model_data_ensemble_inputs_list = list(utils.product_dict(**self.__model_data_ensemble_inputs))
+        self.__model_data_ensemble_inputs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_data_ensemble_inputs_list]
 
-        #### Set model_define_ensemble_kwargs
-        # example: model_define_ensemble_kwargs={"hid_layers_list": [[[50, "selu"], [50, "selu"]],[[100, "selu"], [100, "selu"]], ...],
+        #### Set model_define_ensemble_inputs
+        # example: model_define_ensemble_inputs={"hidden_layers_list": [[[50, "selu"], [50, "selu"]],[[100, "selu"], [100, "selu"]], ...],
         #                                        "act_func_out_layer_list": ["linear"], 
         #                                        "dropout_rate_list": [0.1], 
         #                                        "batch_norm_list": [True], 
         #                                        "kernel_initializer_list": ['glorot_uniform']}
-        self.__check_model_define_ensemble_kwargs()
-        self.__model_define_ensemble_kwargs_list = list(utils.product_dict(**self.__model_define_ensemble_kwargs))
-        self.__model_define_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_define_ensemble_kwargs_list]
+        self.__check_model_define_ensemble_inputs()
+        self.__model_define_ensemble_inputs_list = list(utils.product_dict(**self.__model_define_ensemble_inputs))
+        self.__model_define_ensemble_inputs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_define_ensemble_inputs_list]
 
-        #### Set model_optimizers_ensemble_kwargs
-        # example: model_optimizers_ensemble_kwargs={"optimizers_list": [{"Adam": {"learning_rate": 0.001,
+        #### Set model_optimizers_ensemble_inputs
+        # example: model_optimizers_ensemble_inputs={"optimizers_list": [{"Adam": {"learning_rate": 0.001,
         #                                                                          "beta_1": 0.9,
         #                                                                          "beta_2": 0.999,
         #                                                                          "amsgrad": False}},
         #                                                                {"SGD": {"learning_rate": 0.01,
         #                                                                         "momentum": 0.0, 
         #                                                                         "nesterov": False}}]}
-        self.__check_model_optimizers_ensemble_kwargs()
-        self.__model_optimizers_ensemble_kwargs_list = list(utils.product_dict(**self.__model_optimizers_ensemble_kwargs))
-        self.__model_optimizers_ensemble_kwargs_list = [{k.replace("optimizers_list", "optimizer"): v for k, v in i.items()} for i in self.__model_optimizers_ensemble_kwargs_list]
+        #### TO BE REWRITTEN
+        #self.__check_model_optimizers_ensemble_inputs()
+        self.__model_optimizers_ensemble_inputs_list = self.__model_optimizers_ensemble_inputs
+        #list(utils.product_dict(**self.__model_optimizers_ensemble_inputs))
+        #self.__model_optimizers_ensemble_inputs_list = [{k.replace("optimizers_list", "optimizer"): v for k, v in i.items()} for i in self.__model_optimizers_ensemble_inputs_list]
 
-        #### Set model_compile_ensemble_kwargs
-        # example: model_compile_ensemble_kwargs={"losses_list": ["mae","mse",...],
+        #### Set model_compile_ensemble_inputs
+        # example: model_compile_ensemble_inputs={"losses_list": ["mae","mse",...],
         #                                         "optimizers_list": [optimizers.Adam(lr=0.001, beta_1=0.95, beta_2=0.999, epsilon=1e-10, decay=0.0, amsgrad=False),...],
         #                                         "metrics":["mse","msle",...]}
-        self.__check_model_compile_ensemble_kwargs()
-        self.__model_compile_ensemble_kwargs_list = list(utils.product_dict(**utils.dic_minus_keys(self.__model_compile_ensemble_kwargs,"metrics")))
-        self.__model_compile_ensemble_kwargs_list = [{**{k.replace("_list", "").replace("losses", "loss"): v for k, v in i.items()}, **{
-            "metrics": self.__model_compile_ensemble_kwargs["metrics"]}} for i in self.__model_compile_ensemble_kwargs_list]
+        self.__check_model_compile_ensemble_inputs()
+        self.__model_compile_ensemble_inputs_list = list(utils.product_dict(**utils.dic_minus_keys(self.__model_compile_ensemble_inputs,"metrics")))
+        self.__model_compile_ensemble_inputs_list = [{**{k.replace("_list", "").replace("losses", "loss"): v for k, v in i.items()}, **{
+            "metrics": self.__model_compile_ensemble_inputs["metrics"]}} for i in self.__model_compile_ensemble_inputs_list]
 
         #### Set model_callbacks_ensemble_kwargs
         # example: model_callbacks_ensemble_kwargs={"callbacks_list": [{"PlotLossesKeras": True,
-        #                                                          "EarlyStopping": {"monitor": model_compile_ensemble_kwargs["metrics"],
+        #                                                          "EarlyStopping": {"monitor": model_compile_ensemble_inputs["metrics"],
         #                                                                            "mode": "min",
         #                                                                            ...},
-        #                                                          "ReduceLROnPlateau": {"monitor": model_compile_ensemble_kwargs["metrics"],                                                                   "mode": "min",
+        #                                                          "ReduceLROnPlateau": {"monitor": model_compile_ensemble_inputs["metrics"],                                                                   "mode": "min",
         #                                                                                "mode": "min",
         #                                                                                ...},
-        #                                                          "ModelCheckpoint": {"monitor": model_compile_ensemble_kwargs["metrics"],
+        #                                                          "ModelCheckpoint": {"monitor": model_compile_ensemble_inputs["metrics"],
         #                                                                              ...},
         #                                                          "TerminateOnNaN": True,
         #                                                          ...}]
-        self.__check_model_callbacks_ensemble_kwargs()
-        self.__model_callbacks_ensemble_kwargs_list = [
-            {"callbacks": i} for i in self.__model_callbacks_ensemble_kwargs["callbacks_list"]]
+        #### TO BE REWRITTEN
+        #self.__check_model_callbacks_ensemble_kwargs()
+        self.__model_callbacks_ensemble_inputs_list = self.__model_callbacks_ensemble_inputs
+        #[{"callbacks": i} for i in self.__model_callbacks_ensemble_inputs["callbacks_list"]]
 
         #### Set model_train_ensemble_kwargs
         # example: model_train_ensemble_kwargs={"epochs_list": [200,1000],
         #                                       "batch_size_list": [512,1024,2048],
         self.__check_model_train_ensemble_kwargs()
-        self.__model_train_ensemble_kwargs_list = list(utils.product_dict(**self.__model_train_ensemble_kwargs))
-        self.__model_train_ensemble_kwargs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_train_ensemble_kwargs_list]
+        self.__model_train_ensemble_inputs_list = list(utils.product_dict(**self.__model_train_ensemble_inputs))
+        self.__model_train_ensemble_inputs_list = [{k.replace("_list", ""): v for k, v in i.items()} for i in self.__model_train_ensemble_inputs_list]
 
         #### Generate or import members (and save summary_log)
         #
@@ -202,34 +202,37 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
         print("Working with",self.dtype,"precision.")
         #tf.DType = ""
 
-    def __set_data_sample(self):
-        if self.data_sample is not None and self.data_sample_input_filename is not None:
-            print("Input file is ignored when a data_sample object is provided")
-        elif self.data_sample is None and self.data_sample_input_filename is None:
+    def __set_data(self):
+        if self.data is not None and self.input_data_file is not None:
+            print("Input file is ignored when a data object is provided")
+        elif self.data is None and self.input_data_file is None:
             raise Exception("Either a DataSample object or a dataset input file name should be passed while you passed none.\nPlease input one and retry.")
-        elif self.data_sample is None and self.data_sample_input_filename is not None:
-            self.data_sample = Data_sample(data_X=None,
-                                           data_Y=None,
-                                           dtype=self.dtype,
-                                           pars_pos_poi=None,
-                                           pars_pos_nuis=None,
-                                           pars_labels=None,
-                                           test_fraction=None,
-                                           name=None,
-                                           data_sample_input_filename=self.data_sample_input_filename,
-                                           data_sample_output_filename=None,
-                                           load_on_RAM=self.load_on_RAM)
-        self.ndim = self.data_sample.ndim
+        elif self.data is None and self.input_data_file is not None:
+            self.data = Data(name=None,
+                             data_X=None,
+                             data_Y=None,
+                             dtype=self.dtype,
+                             pars_pos_poi=None,
+                             pars_pos_nuis=None,
+                             pars_labels=None,
+                             pars_bounds=None,
+                             test_fraction=None,
+                             load_on_RAM=self.load_on_RAM,
+                             output_folder=None,
+                             input_file=self.input_data_file,
+                             verbose=True
+                             )
+        self.ndims = self.data.ndims
         self.__set_pars_info()
 
     def __set_pars_info(self):
-        self.pars_pos_poi = self.data_sample.pars_pos_poi.tolist()
-        self.pars_pos_nuis = self.data_sample.pars_pos_nuis.tolist()
-        self.pars_labels = self.data_sample.pars_labels
+        self.pars_pos_poi = self.data.pars_pos_poi.tolist()
+        self.pars_pos_nuis = self.data.pars_pos_nuis.tolist()
+        self.pars_labels = self.data.pars_labels
         
     def __set_ensemble_name(self):
         if self.ensemble_name is None:
-            string = self.data_sample.name
+            string = self.data.name
             try:
                 match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', string).group()
             except:
@@ -239,23 +242,23 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
             self.ensemble_name = self.ensemble_name+"_"+self.ensemble_date_time
 
     def __check_npoints(self):
-        available_points_tot = self.data_sample.npoints
-        available_points_train = (1-self.data_sample.test_fraction)*available_points_tot
-        available_points_test = self.data_sample.test_fraction*available_points_tot
-        max_required_points_train = np.max(np.array(self.__model_data_ensemble_kwargs['npoints_list'])[:,0]+np.array(self.__model_data_ensemble_kwargs['npoints_list'])[:,1])
+        available_points_tot = self.data.npoints
+        available_points_train = (1-self.data.test_fraction)*available_points_tot
+        available_points_test = self.data.test_fraction*available_points_tot
+        max_required_points_train = np.max(np.array(self.__model_data_ensemble_inputs['npoints_list'])[:,0]+np.array(self.__model_data_ensemble_inputs['npoints_list'])[:,1])
         if max_required_points_train > available_points_train:
-            raise Exception("For some models requiring more training points than available in data_sample. Please reduce npoints_train+npoints_val.")
-        max_required_points_test=np.max(np.array(self.__model_data_ensemble_kwargs['npoints_list'])[:,2])
+            print("Some models require more training points than available in data. Please reduce npoints_train+npoints_val or change test_fraction in the Data object.")
+        max_required_points_test=np.max(np.array(self.__model_data_ensemble_inputs['npoints_list'])[:,2])
         if max_required_points_test > available_points_test:
-            raise Exception("For some models requiring more test points than available in data_sample. Please reduce npoints_test.")
+            print("Some models requiring more test points than available in data. Please reduce npoints_test or change test_fraction in the Data object.")
         
     def __set_ensemble_folder(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
         if self.ensemble_folder is not None:
-            self.ensemble_folder = utils.check_rename_folder(self.ensemble_folder).replace('\\', '/')
+            utils.check_rename_folder(self.ensemble_folder)
         else:
-            self.ensemble_folder = utils.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
+            utils.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
         os.mkdir(self.ensemble_folder)
         print("Ensemble folder", self.ensemble_folder, "created.")
 
@@ -278,114 +281,114 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
             summary_log = json.load(json_file)
         return summary_log
 
-    def __check_model_data_ensemble_kwargs(self):
+    def __check_model_data_ensemble_inputs(self):
         try:
-            self.__model_data_ensemble_kwargs["npoints_list"]
+            self.__model_data_ensemble_inputs["npoints_list"]
         except:
             print(
                 "model_data_kwargs dictionary should contain at least a keyword 'npoints_list'. \
                 It may also contain the keys 'scaleX_list', 'scaleY_list', and 'weighted_list'. In case these are not present by \
                 default they are set to {'scaleX': False}, {'scaleY': False}, and {'weighted_list':[False]}.")
-        for npoints in self.__model_data_ensemble_kwargs["npoints_list"]:
+        for npoints in self.__model_data_ensemble_inputs["npoints_list"]:
             if npoints[1] <= 1:
                 npoints[1] = round(npoints[1]*npoints[0])
-        max_npoints_train = int(np.max(np.array(self.__model_data_ensemble_kwargs["npoints_list"])[:, 0]))
-        for npoints in self.__model_data_ensemble_kwargs["npoints_list"]:
+        max_npoints_train = int(np.max(np.array(self.__model_data_ensemble_inputs["npoints_list"])[:, 0]))
+        for npoints in self.__model_data_ensemble_inputs["npoints_list"]:
             if len(npoints)==2:
                 npoints.append(max_npoints_train)
         self.__check_npoints()
         try:
-            self.__model_train_ensemble_kwargs["scaleX_list"]
+            self.__model_train_ensemble_inputs["scaleX_list"]
         except:
-            self.__model_train_ensemble_kwargs["scaleX_list"] = [False]
+            self.__model_train_ensemble_inputs["scaleX_list"] = [False]
         try:
-            self.__model_train_ensemble_kwargs["scaleY_list"]
+            self.__model_train_ensemble_inputs["scaleY_list"]
         except:
-            self.__model_train_ensemble_kwargs["scaleY_list"] = [False]
+            self.__model_train_ensemble_inputs["scaleY_list"] = [False]
         try:
-            self.__model_train_ensemble_kwargs["weighted_list"]
+            self.__model_train_ensemble_inputs["weighted_list"]
         except:
-            self.__model_train_ensemble_kwargs["weighted_list"] = [False]
+            self.__model_train_ensemble_inputs["weighted_list"] = [False]
 
-    def __check_model_define_ensemble_kwargs(self):
+    def __check_model_define_ensemble_inputs(self):
         try:
-            self.__model_define_ensemble_kwargs["hid_layers_list"]
+            self.__model_define_ensemble_inputs["hidden_layers_list"]
         except:
             print(
-                "model_define_kwargs dictionary should contain at least the keyword 'hid_layers_list'. \
+                "model_define_kwargs dictionary should contain at least the keyword 'hidden_layers_list'. \
                 It may also contain keys 'act_func_out_layer_list', 'dropout_rate_list', 'batch_norm_list', and 'kernel_initializer_list'. \
                 In case these are not present by default they are set to {'act_func_out_layer_list': ['linear']}, {'batch_norm_list': [False]},\
                 {'dropout_rate_list': [0]}, {'kernel_initializers': ['glorot_uniform']}. In case of selu activation Dropout layers are replaced \
                 with AlphaDropout and kernel_initializers is set to ['lecun_normal'].")
         try:
-            self.__model_define_ensemble_kwargs["act_func_out_layer_list"]
+            self.__model_define_ensemble_inputs["act_func_out_layer_list"]
         except:
-            self.__model_define_ensemble_kwargs["act_func_out_layer_list"] = ["linear"] # Batch normalization layers are added between each pair of layers
+            self.__model_define_ensemble_inputs["act_func_out_layer_list"] = ["linear"] # Batch normalization layers are added between each pair of layers
         try:
-            self.__model_define_ensemble_kwargs["batch_norm_list"]
+            self.__model_define_ensemble_inputs["batch_norm_list"]
         except:
             # Batch normalization layers are added between each pair of layers
-            self.__model_define_ensemble_kwargs["batch_norm_list"] = [False]
+            self.__model_define_ensemble_inputs["batch_norm_list"] = [False]
         try:
-            self.__model_define_ensemble_kwargs["dropout_rate_list"]
+            self.__model_define_ensemble_inputs["dropout_rate_list"]
         except:
             # The same dropout is performed between each pair of layers
-            self.__model_define_ensemble_kwargs["dropout_rate_list"] = [0]
+            self.__model_define_ensemble_inputs["dropout_rate_list"] = [0]
         try:
-            self.__model_define_ensemble_kwargs["kernel_initializer_list"]
+            self.__model_define_ensemble_inputs["kernel_initializer_list"]
         except:
-            self.__model_define_ensemble_kwargs["kernel_initializer_list"] = [
+            self.__model_define_ensemble_inputs["kernel_initializer_list"] = [
                 'glorot_uniform']  # The same dropout is performed between each pair of layers
         
-    def __check_model_optimizers_ensemble_kwargs(self):
-        #  example: model_optimizers_ensemble_kwargs = {"optimizers_list": [{"Adam": {"learning_rate": 0.001,
-        #                                                                             "beta_1": 0.9,
-        #                                                                             "beta_2": 0.999,
-        #                                                                             "amsgrad": False}},
-        #                                                                   {"SGD": {"learning_rate": 0.01,
-        #                                                                            "momentum": 0.0, 
-        #                                                                            "nesterov": False}}]}
-        try:
-            self.__model_optimizers_ensemble_kwargs["optimizers_list"]
-        except:
-            print(
-                "model_optimizers_kwargs dictionary should contain at least one keyword 'optimizers_list'")
-            raise
+    #def __check_model_optimizers_ensemble_inputs(self):
+    #    #  example: model_optimizers_ensemble_inputs = {"optimizers_list": [{"Adam": {"learning_rate": 0.001,
+    #    #                                                                             "beta_1": 0.9,
+    #    #                                                                             "beta_2": 0.999,
+    #    #                                                                             "amsgrad": False}},
+    #    #                                                                   {"SGD": {"learning_rate": 0.01,
+    #    #                                                                            "momentum": 0.0, 
+    #    #                                                                            "nesterov": False}}]}
+    #    try:
+    #        self.__model_optimizers_ensemble_inputs["optimizers_list"]
+    #    except:
+    #        print(
+    #            "model_optimizers_kwargs dictionary should contain at least one keyword 'optimizers_list'")
+    #        raise
         
-    def __check_model_compile_ensemble_kwargs(self):
+    def __check_model_compile_ensemble_inputs(self):
         try:
-            self.__model_compile_ensemble_kwargs["losses_list"]
+            self.__model_compile_ensemble_inputs["losses_list"]
         except:
             print(
                 "model_compile_kwargs dictionary should contain at least the keyword 'losses_list'. \
                 It may also contain the key 'metrics'. \
                 In case this is not present by default it is set to {'metrics': (value of losses_list)}.")
         try:
-            self.__model_compile_ensemble_kwargs["metrics"]
+            self.__model_compile_ensemble_inputs["metrics"]
         except:
-            self.__model_compile_ensemble_kwargs["metrics"] = self.__model_compile_ensemble_kwargs["losses_list"]
+            self.__model_compile_ensemble_inputs["metrics"] = self.__model_compile_ensemble_inputs["losses_list"]
     
-    def __check_model_callbacks_ensemble_kwargs(self):
-        #  example: model_callbacks_ensemble_kwargs = {"callbacks_list": [{"PlotLossesKeras": True,
-        #                                                             "EarlyStopping": {"monitor": model_compile_ensemble_kwargs["metrics"],
-        #                                                                               ...},
-        #                                                             "ReduceLROnPlateau": {"monitor": model_compile_ensemble_kwargs["metrics"],                                                                   "mode": "min",
-        #                                                                                   ...},
-        #                                                             "ModelCheckpoint": {"monitor": model_compile_ensemble_kwargs["metrics"],
-        #                                                                                 ...},
-        #                                                             "TerminateOnNaN": True,
-        #                                                             ...}]
-        try:
-            self.__model_callbacks_ensemble_kwargs["callbacks_list"]
-        except:
-            self.__model_callbacks_ensemble_kwargs["callbacks_list"] = [["TerminateOnNaN"]]
+    #def __check_model_callbacks_ensemble_kwargs(self):
+    #    #  example: model_callbacks_ensemble_kwargs = {"callbacks_list": [{"PlotLossesKeras": True,
+    #    #                                                             "EarlyStopping": {"monitor": model_compile_ensemble_inputs["metrics"],
+    #    #                                                                               ...},
+    #    #                                                             "ReduceLROnPlateau": {"monitor": model_compile_ensemble_inputs["metrics"],                                                                   "mode": "min",
+    #    #                                                                                   ...},
+    #    #                                                             "ModelCheckpoint": {"monitor": model_compile_ensemble_inputs["metrics"],
+    #    #                                                                                 ...},
+    #    #                                                             "TerminateOnNaN": True,
+    #    #                                                             ...}]
+    #    try:
+    #        self.__model_callbacks_ensemble_inputs["callbacks_list"]
+    #    except:
+    #        self.__model_callbacks_ensemble_inputs["callbacks_list"] = [["TerminateOnNaN"]]
 
     def __check_model_train_ensemble_kwargs(self):
         # example: model_train_kwargs_list={"epochs_list": [200,1000],
         #                                 "batch_size_list": [512,1024,2048],
         try:
-            self.__model_train_ensemble_kwargs["epochs_list"]
-            self.__model_train_ensemble_kwargs["batch_size_list"]
+            self.__model_train_ensemble_inputs["epochs_list"]
+            self.__model_train_ensemble_inputs["batch_size_list"]
         except:
             print(
                 "model_train_kwargs dictionary should contain the keywords 'epochs_list' and 'batch_size_list'.")
@@ -412,8 +415,8 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
             DNNLik_input_folder = self.ensemble_folder+"/member_"+str(n)
             if self.__check_member_existence(DNNLik_input_folder):
                 self.members[n] = DNN_likelihood(DNNLik_input_folder=DNNLik_input_folder,
-                                         data_sample=self.data_sample,
-                                         resources_member_kwargs=self.get_resources_member_kwargs(),
+                                         data=self.data,
+                                         resources_inputs=self.get_resources_inputs(),
                                          verbose=False
                                          )
                 n_with_results.append(n)
@@ -426,7 +429,7 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
         print("Results not available for members",n_without_results,".")
         print(self.n_members,"members imported in", str(end-start), "s.")
 
-    def get_resources_member_kwargs(self):
+    def get_resources_inputs(self):
         return {"available_cpu": self.available_cpu, 
                 "available_gpus": self.available_gpus, 
                 "active_gpus": self.active_gpus,
@@ -445,7 +448,7 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
         else:
             self.gpu_mode = False
 
-    def generate_member(self, n, seed, model_data_member_kwargs, model_define_member_kwargs, model_optimizer_member_kwargs, model_compile_member_kwargs, model_callbacks_member_kwargs, model_train_member_kwargs, verbose=False):
+    def generate_member(self, n, seed, model_data_inputs, model_define_inputs, model_optimizer_inputs, model_compile_inputs, model_callbacks_inputs, model_train_inputs, verbose=False):
         global ShowPrints
         ShowPrints = verbose
         start = timer()
@@ -453,35 +456,30 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
         self.members[n] = DNN_likelihood(DNNLik_input_folder=None,
                                  ensemble_name=self.ensemble_name,
                                  member_number=n,
-                                 data_sample=self.data_sample,
-                                 data_sample_input_filename=self.data_sample_input_filename,
+                                 data=self.data,
+                                 input_data_file=self.input_data_file,
                                  ensemble_folder=self.ensemble_folder,
                                  load_on_RAM=False,
                                  seed=seed,
                                  dtype=self.dtype,
                                  same_data=self.same_data,
-                                 model_data_member_kwargs=model_data_member_kwargs,
-                                 model_define_member_kwargs=model_define_member_kwargs,
-                                 model_optimizer_member_kwargs=model_optimizer_member_kwargs,
-                                 model_compile_member_kwargs=model_compile_member_kwargs,
-                                 model_callbacks_member_kwargs=model_callbacks_member_kwargs,
-                                 model_train_member_kwargs=model_train_member_kwargs,
-                                 resources_member_kwargs=self.get_resources_member_kwargs(),
+                                 model_data_inputs=model_data_inputs,
+                                 model_define_inputs=model_define_inputs,
+                                 model_optimizer_inputs=model_optimizer_inputs,
+                                 model_compile_inputs=model_compile_inputs,
+                                 model_callbacks_inputs=model_callbacks_inputs,
+                                 model_train_inputs=model_train_inputs,
+                                 resources_inputs=self.get_resources_inputs(),
                                  verbose=False
                                  )
         end = timer()
         ShowPrints = verbose
         print("DNN Likelihood member",str(n),"created in",str(end-start),"s.")
 
-    def generate_members(self,n="all",verbose=-1):
-        global ShowPrints
-        ShowPrints = verbose
-        if verbose < 0:
-            verbose_2 = 0
-        else:
-            verbose_2 = verbose
+    def generate_members(self,n="all",verbose=None):
+        verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        all_kwargs = [[A, B, C, D, E, F] for A in self.__model_data_ensemble_kwargs_list for B in self.__model_define_ensemble_kwargs_list for C in self.__model_optimizers_ensemble_kwargs_list for D in self.__model_compile_ensemble_kwargs_list for E in self.__model_callbacks_ensemble_kwargs_list for F in self.__model_train_ensemble_kwargs_list]
+        all_kwargs = [[A, B, C, D, E, F] for A in self.__model_data_ensemble_inputs_list for B in self.__model_define_ensemble_inputs_list for C in self.__model_optimizers_ensemble_inputs_list for D in self.__model_compile_ensemble_inputs_list for E in self.__model_callbacks_ensemble_inputs_list for F in self.__model_train_ensemble_inputs_list]
         self.n_members = len(all_kwargs)
         if self.same_data:
             self.seeds = np.full(self.n_members,self.seed)
@@ -493,21 +491,21 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
         else:
             members_to_generate = np.array([n]).flatten()
         for i in members_to_generate:
-            model_data_member_kwargs, model_define_member_kwargs, model_optimizer_member_kwargs, model_compile_member_kwargs, model_callbacks_member_kwargs, model_train_member_kwargs = all_kwargs[i]
+            model_data_inputs, model_define_inputs, model_optimizer_inputs, model_compile_inputs, model_callbacks_inputs, model_train_inputs = all_kwargs[i]
             self.generate_member(i, 
                                  self.seeds[i], 
-                                 model_data_member_kwargs, 
-                                 model_define_member_kwargs,
-                                 model_optimizer_member_kwargs,
-                                 model_compile_member_kwargs, 
-                                 model_callbacks_member_kwargs,
-                                 model_train_member_kwargs, 
-                                 verbose=verbose_2)
+                                 model_data_inputs, 
+                                 model_define_inputs,
+                                 model_optimizer_inputs,
+                                 model_compile_inputs, 
+                                 model_callbacks_inputs,
+                                 model_train_inputs, 
+                                 verbose=verbose_sub)
         #self.save_summary_log_json(verbose=False)
         end = timer()
         ShowPrints = verbose
-        print(self.n_members,"members (DNNLikelihoods) generated in", str(end-start), "s.")
-        print("Results for member 'n' will be saved in the folders",self.ensemble_name,"_member_n.")
+        print(self.n_members,"members (DNNLikelihoods) generated in", str(end-start), "s.",show=verbose)
+        print("Results for member 'n' will be saved in the folders",self.ensemble_name,"_member_n.",show=verbose)
 
     def generate_data_members(self, members_list="all",force=False,test=False,verbose=False):
         global ShowPrints
@@ -699,22 +697,21 @@ class DNN_likelihood_ensemble(show_prints.Verbosity):
     def save_summary_log_json(self, verbose=True):
         """ Save summary log (history plus model specifications) to json
         """
-        global ShowPrints
-        ShowPrints = verbose
+        verbose, verbose_sub = self.set_verbosity(verbose)
         print("Saving summary_log to json file",
               self.summary_log_json_filename)
         start = timer()
         now = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-        history = {**{'Date time': str(now)}, **utils.dic_minus_keys(self.__dict__, ['data_sample',
+        history = {**{'Date time': str(now)}, **utils.dic_minus_keys(self.__dict__, ['data',
                                                                                        'members', 'stacks',
-                                                                                       '_DNNLik_ensemble__model_data_ensemble_kwargs_list',
-                                                                                       '_DNNLik_ensemble__model_define_ensemble_kwargs_list',
-                                                                                       '_DNNLik_ensemble__model_optimizers_ensemble_kwargs_list',
-                                                                                       '_DNNLik_ensemble__model_compile_ensemble_kwargs_list',
-                                                                                       '_DNNLik_ensemble__model_callbacks_ensemble_kwargs_list',
-                                                                                       '_DNNLik_ensemble__model_train_ensemble_kwargs_list'])}
+                                                                                       '_DNNLik_ensemble__model_data_ensemble_inputs_list',
+                                                                                       '_DNNLik_ensemble__model_define_ensemble_inputs_list',
+                                                                                       '_DNNLik_ensemble__model_optimizers_ensemble_inputs_list',
+                                                                                       '_DNNLik_ensemble__model_compile_ensemble_inputs_list',
+                                                                                       '_DNNLik_ensemble__model_callbacks_ensemble_inputs_list',
+                                                                                       '_DNNLik_ensemble__model_train_ensemble_inputs_list'])}
         new_hist = utils.convert_types_dict(history)
-        self.summary_log_json_filename = utils.check_rename_file(self.summary_log_json_filename, verbose=verbose_sub)
+        utils.check_rename_file(self.summary_log_json_filename, verbose=verbose_sub)
         with codecs.open(self.summary_log_json_filename, 'w', encoding='utf-8') as f:
             json.dump(new_hist, f, separators=(
                 ',', ':'), indent=4)

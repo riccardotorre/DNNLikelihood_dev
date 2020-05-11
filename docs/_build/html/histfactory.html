@@ -112,7 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data.html">The Data object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
@@ -489,7 +489,7 @@ including the string <code class="docutils literal notranslate"><span class="pre
 <dl class="attribute">
 <dt id="DNNLikelihood.Histfactory.input_file">
 <code class="sig-prename descclassname">DNNLikelihood.Histfactory.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Histfactory.input_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a>.
+<dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a>.
 Whenever this parameter is not <code class="docutils literal notranslate"><span class="pre">None</span></code> the <a class="reference internal" href="#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object
 is reconstructed from input files (see the <a class="reference internal" href="#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a>
 method for details).</p>
@@ -1354,36 +1354,9 @@ See the <a class="reference internal" href="show_prints.html#verbosity-mode"><sp
 
 <dl class="method">
 <dt id="DNNLikelihood.Histfactory.set_verbosity">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><em class="sig-param">verbose</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory.set_verbosity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method inherited by all classes (from the <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> class)
-used to set the verbosity mode. If the input argument <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is
-set to the default class verbosity <code class="docutils literal notranslate"><span class="pre">self.verbose</span></code>. If the input argument <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is negative
-then <code class="docutils literal notranslate"><span class="pre">verbose_sub</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code> (<code class="docutils literal notranslate"><span class="pre">False</span></code>), otherwise it is set to <code class="docutils literal notranslate"><span class="pre">verbose</span></code>.</p>
-<ul>
-<li><p><strong>Arguments</strong></p>
-<blockquote>
-<div><ul>
-<li><p><strong>verbose</strong></p>
-<blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for more details.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><strong>Returns</strong></p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">[verbose,verbose_sub]</span></code>.</p>
-</div></blockquote>
-</li>
-</ul>
+<code class="sig-prename descclassname">DNNLikelihood.Histfactory.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method inherited from the <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> object.
+See the documentation of <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a>.</p>
 </dd></dl>
 
 </div></blockquote>

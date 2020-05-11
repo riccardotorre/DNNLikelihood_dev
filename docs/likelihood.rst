@@ -395,7 +395,7 @@ Attributes
 
     .. py:attribute:: DNNLikelihood.Likelihood.input_file   
 
-        Attribute corresponding to the input argument :option:`input_file`.
+        Absolute path corresponding to the input argument :option:`input_file`.
         Whenever this parameter is not ``None`` the :class:`Likelihood <DNNLikelihood.Likelihood>` object
         is reconstructed from input files (see the :meth:`Likelihood.__init__ <DNNLikelihood.Likelihood.__init__>`
         method for details).
@@ -745,7 +745,10 @@ Methods
 
     .. automethod:: DNNLikelihood.Likelihood.plot_logpdf_par
 
-    .. automethod:: DNNLikelihood.Likelihood.set_verbosity
+    .. py:method:: DNNLikelihood.Likelihood.set_verbosity
+
+      Method inherited from the :class:`Verbosity <DNNLikelihood.Verbosity>` object.
+      See the documentation of :meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>`.
 
 
 .. |pyhf_model_logpdf_link| raw:: html

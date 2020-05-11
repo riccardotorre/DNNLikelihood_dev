@@ -21,8 +21,8 @@ Arguments
 """""""""
 
 
-Additional attributes
-"""""""""""""""""""""
+Attributes
+""""""""""
 
 
 Methods

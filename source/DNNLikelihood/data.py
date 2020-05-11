@@ -13,11 +13,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from . import show_prints, utils
-from .show_prints import print
+from . import utils
+from .show_prints import Verbosity, print
 
 
-class Data(show_prints.Verbosity):
+class Data(Verbosity):
     """
     This class contains the ``Data`` object representing the dataset used for training, validating and testing
     the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an existing ``Data`` obkect.
@@ -150,13 +150,9 @@ class Data(show_prints.Verbosity):
             if self.output_folder is None:
                 self.output_folder = ""
             self.output_folder = path.abspath(self.output_folder)
-            self.output_h5_file = path.join(self.output_folder, self.name+".h5")
-            self.output_json_file = path.join(self.output_folder, self.name+".json")
-            self.output_log_file = path.join(self.output_folder, self.name+".log")
-        else:
-            self.output_h5_file = path.join(self.output_folder, self.name+".h5")
-            self.output_json_file = path.join(self.output_folder, self.name+".json")
-            self.output_log_file = path.join(self.output_folder, self.name+".log")
+        self.output_h5_file = path.join(self.output_folder, self.name+".h5")
+        self.output_json_file = path.join(self.output_folder, self.name+".json")
+        self.output_log_file = path.join(self.output_folder, self.name+".log")
         
     def __check_define_name(self):
         """
@@ -302,9 +298,9 @@ class Data(show_prints.Verbosity):
                                "files paths": [self.input_json_file,
                                                self.input_log_file,
                                                self.input_h5_file]}
-        print('Loaded likelihood in', str(end-start), '.', show=verbose)
+        print("Loaded data in", str(end-start), ".", show=verbose)
         if self.load_on_RAM:
-            print('Samples loaded on RAM.', show=verbose)
+            print("Samples loaded on RAM.", show=verbose)
 
     def __define_test_fraction(self):
         """ 
@@ -319,6 +315,35 @@ class Data(show_prints.Verbosity):
             self.test_fraction = 0
         self.train_range = range(int(round(self.npoints*(1-self.test_fraction))))
         self.test_range = range(int(round(self.npoints*(1-self.test_fraction))),self.npoints)
+
+    def __check_sync_data_dictionary(self,verbose=None):
+        """
+        Private method that checks that indices and data are synced in the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`
+        dictionary. It is called by all methods generating or updating data.
+        This is needed when the :class:`Data <DNNLikelihood.Data>` object is used by the 
+        :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` one. In particular, when the latter is imported from files
+        only indices are loaded and properly put in the corresponding 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`, while, to gain speed, data are not.
+        Whenever the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` needs data, and calls any of its method that
+        generate them, the method :meth:`Data.__check_sync_data_dictionary <DNNLikelihood.Data._Data__check_sync_data_dictionary>`
+        automatically loads the data corresponding to the existing indices in the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` of the corresponding 
+        :class:`Data <DNNLikelihood.Data>` object. See the documentation of 
+        :ref:`the DNN_likelihood object <DNN_likelihood_object>` for more details.
+        """
+        if len(self.data_dictionary["idx_train"]) != 0 and len(self.data_dictionary["idx_train"]) != len(self.data_dictionary["X_train"]):
+            self.data_dictionary["X_train"] = self.data_X[self.data_dictionary["idx_train"]].astype(self.dtype_required)
+            self.data_dictionary["Y_train"] = self.data_Y[self.data_dictionary["idx_train"]].astype(self.dtype_required)
+            print("Loaded train data corresponding to existing indices.")
+        if len(self.data_dictionary["idx_val"]) != 0 and len(self.data_dictionary["idx_val"]) != len(self.data_dictionary["X_val"]):
+            self.data_dictionary["X_val"] = self.data_X[self.data_dictionary["idx_val"]].astype(self.dtype_required)
+            self.data_dictionary["Y_val"] = self.data_Y[self.data_dictionary["idx_val"]].astype(self.dtype_required)
+            print("Loaded val data corresponding to existing indices.")
+        if len(self.data_dictionary["idx_test"]) != 0 and len(self.data_dictionary["idx_test"]) != len(self.data_dictionary["X_test"]):
+            self.data_dictionary["X_test"] = self.data_X[self.data_dictionary["idx_test"]].astype(self.dtype_required)
+            self.data_dictionary["Y_test"] = self.data_Y[self.data_dictionary["idx_test"]].astype(self.dtype_required)
+            print("Loaded test data corresponding to existing indices.")
 
     def define_test_fraction(self,verbose=None):
         """ 
@@ -427,7 +452,10 @@ class Data(show_prints.Verbosity):
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Data log file", self.output_log_file, "saved in", str(end-start), "s.", show=verbose)
+        if overwrite:
+            print("Data log file", self.output_log_file, "updated in", str(end-start), "s.", show=verbose)
+        else:
+            print("Data log file", self.output_log_file, "saved in", str(end-start), "s.", show=verbose)
 
     def save_json(self, overwrite=False, verbose=True):
         """
@@ -468,19 +496,23 @@ class Data(show_prints.Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_json_file, verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "saved", 
-                               "file name": path.split(self.output_json_file)[-1],
-                               "file path": self.output_json_file}
-        dictionary = utils.dic_minus_keys(self.__dict__, ["data_X", "data_Y", "log", "dtype_required",
-                                                          "input_file", "input_log_file", "input_json_file", "input_h5_file",
-                                                          "train_range", "test_range", "data_dictionary", "opened_dataset",
-                                                          "load_on_RAM", "verbose"])
+        dictionary = utils.dic_minus_keys(self.__dict__, ["data_dictionary","data_X","data_Y",
+                                                          "dtype_required","input_file","input_h5_file",
+                                                          "input_json_file","input_log_file","load_on_RAM",
+                                                          "log","opened_dataset","test_range",
+                                                          "train_range","verbose"])
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        print("Data json file", self.output_json_file,"saved in", str(end-start), "s.",show=verbose)
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved",
+                               "file name": path.split(self.output_json_file)[-1],
+                               "file path": self.output_json_file}
+        if overwrite:
+            print("Data json file", self.output_json_file,"updated in", str(end-start), "s.",show=verbose)
+        else:
+            print("Data json file", self.output_json_file,"saved in", str(end-start), "s.",show=verbose)
 
     def save_h5(self, overwrite=False, verbose=None):
         """
@@ -528,10 +560,6 @@ class Data(show_prints.Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_h5_file,verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.output_h5_file)[-1],
-                               "file path": self.output_h5_file}
         start = timer()     
         h5_out = h5py.File(self.output_h5_file, "w")
         data = h5_out.create_group("data")
@@ -540,6 +568,10 @@ class Data(show_prints.Verbosity):
         data["Y"] = self.data_Y.astype(self.dtype_stored)
         h5_out.close()
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved",
+                               "file name": path.split(self.output_h5_file)[-1],
+                               "file path": self.output_h5_file}
         print("Saved", str(self.npoints), "(data_X, data_Y) samples in data h5 file", self.output_h5_file,"in", end-start, "s.",show=verbose)
 
     def save(self, overwrite=False, verbose=None):
@@ -666,17 +698,17 @@ class Data(show_prints.Verbosity):
                     - **default**: ``None`` 
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "updated data dictionary",
-                               "data": ["idx_train", "idx_val"],
-                               "npoints train": npoints_train,
-                               "npoints val": npoints_val}
         np.random.seed(seed)
         idx_train = np.random.choice(self.train_range, npoints_train+npoints_val, replace=False)
         idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val)]
         self.data_dictionary["idx_train"] = idx_train
         self.data_dictionary["idx_val"] = idx_val
-        self.save_log(overwrite=True, verbose=verbose_sub)
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "updated data dictionary",
+                               "data": ["idx_train", "idx_val"],
+                               "npoints train": npoints_train,
+                               "npoints val": npoints_val}
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by generate_train_data
 
     def generate_train_data(self, npoints_train, npoints_val, seed, verbose=None):
         """
@@ -720,18 +752,19 @@ class Data(show_prints.Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "updated data dictionary",
-                               "data": ["X_train", "Y_train","X_val","Y_val"],
-                               "npoints train": npoints_train,
-                               "npoints val": npoints_val}
         start = timer()
+        self.__check_sync_data_dictionary(verbose=verbose_sub)
         self.generate_train_indices(npoints_train, npoints_val, seed)
         self.data_dictionary["X_train"] = self.data_X[self.data_dictionary["idx_train"]].astype(self.dtype_required)
         self.data_dictionary["Y_train"] = self.data_Y[self.data_dictionary["idx_train"]].astype(self.dtype_required)
         self.data_dictionary["X_val"] = self.data_X[self.data_dictionary["idx_val"]].astype(self.dtype_required)
         self.data_dictionary["Y_val"] = self.data_Y[self.data_dictionary["idx_val"]].astype(self.dtype_required)
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "updated data dictionary",
+                               "data": ["X_train", "Y_train", "X_val", "Y_val"],
+                               "npoints train": npoints_train,
+                               "npoints val": npoints_val}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Generated", str(npoints_train), "(X_train, Y_train) samples and ", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.",show=verbose)
 
@@ -775,11 +808,6 @@ class Data(show_prints.Verbosity):
                     - **default**: ``None`` 
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "updated data dictionary",
-                               "data": ["idx_train", "idx_val"],
-                               "npoints train": npoints_train,
-                               "npoints val": npoints_val}
         existing_train = np.sort(np.concatenate((self.data_dictionary["idx_train"], self.data_dictionary["idx_val"])))
         np.random.seed(seed)
         idx_train = np.random.choice(np.setdiff1d(np.array(self.train_range), existing_train), npoints_train+npoints_val, replace=False)
@@ -789,7 +817,12 @@ class Data(show_prints.Verbosity):
             idx_val = idx_train
         self.data_dictionary["idx_train"] = np.sort(np.concatenate((self.data_dictionary["idx_train"],idx_train)))
         self.data_dictionary["idx_val"] = np.sort(np.concatenate((self.data_dictionary["idx_val"],idx_val)))
-        self.save_log(overwrite=True, verbose=verbose_sub)
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "updated data dictionary",
+                               "data": ["idx_train", "idx_val"],
+                               "npoints train": npoints_train,
+                               "npoints val": npoints_val}
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by update_train_data
         return [idx_train, idx_val]
 
     def update_train_data(self, npoints_train, npoints_val, seed, verbose=None):
@@ -832,14 +865,10 @@ class Data(show_prints.Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "updated data dictionary",
-                               "data": ["X_train", "Y_train", "X_val", "Y_val"],
-                               "npoints train": npoints_train,
-                               "npoints val": npoints_val}
         start = timer()
-        [npoints_train, npoints_val] = [(i > 0) * i for i in [npoints_train-len(self.data_dictionary["Y_train"]), 
-                                                                            npoints_val-len(self.data_dictionary["Y_val"])]]
+        self.__check_sync_data_dictionary(verbose=verbose_sub)
+        [npoints_train, npoints_val] = [(i > 0) * i for i in [npoints_train-len(self.data_dictionary["idx_train"]), 
+                                                                            npoints_val-len(self.data_dictionary["idx_val"])]]
         idx_train, idx_val = self.update_train_indices(npoints_train, npoints_val, seed, verbose=verbose)
         if idx_train != []:
             if self.data_dictionary["X_train"].size == 0:
@@ -856,6 +885,11 @@ class Data(show_prints.Verbosity):
                 self.data_dictionary["X_val"] = np.concatenate((self.data_dictionary["X_val"], self.data_X[idx_val])).astype(self.dtype_required)
                 self.data_dictionary["Y_val"] = np.concatenate((self.data_dictionary["Y_val"], self.data_Y[idx_val])).astype(self.dtype_required)
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "updated data dictionary",
+                               "data": ["X_train", "Y_train", "X_val", "Y_val"],
+                               "npoints train": npoints_train,
+                               "npoints val": npoints_val}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Added", str(npoints_train), "(X_train, Y_train) samples and", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.",show=verbose)
 
@@ -887,15 +921,14 @@ class Data(show_prints.Verbosity):
                     - **default**: ``None`` 
         """
         _, verbose_sub = self.set_verbosity(verbose)
+        n_existing_test = len(self.data_dictionary["idx_test"])
+        idx_test = np.array(self.test_range)[range(n_existing_test, n_existing_test+npoints_test)]
+        self.data_dictionary["idx_test"] = np.concatenate((self.data_dictionary["idx_test"],idx_test))
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_test"],
                                "npoints test": npoints_test}
-        n_existing_test = len(self.data_dictionary["idx_test"])
-        idx_test = np.array(self.test_range)[range(
-            n_existing_test, n_existing_test+npoints_test)]
-        self.data_dictionary["idx_test"] = np.concatenate((self.data_dictionary["idx_test"],idx_test))
-        self.save_log(overwrite=True, verbose=verbose_sub)
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by generate_test_data
         return idx_test
 
     def generate_test_data(self, npoints_test, verbose=None):
@@ -931,11 +964,8 @@ class Data(show_prints.Verbosity):
                     - **default**: ``None``
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "updated data dictionary",
-                               "data": ["X_train", "Y_train", "X_val", "Y_val"],
-                               "npoints train": npoints_test}
         start = timer()
+        self.__check_sync_data_dictionary(verbose=verbose_sub)
         npoints_test = npoints_test-len(self.data_dictionary["Y_test"])
         idx_test = self.generate_test_indices(npoints_test, verbose=verbose)
         if idx_test != []:
@@ -946,6 +976,10 @@ class Data(show_prints.Verbosity):
                 self.data_dictionary["X_test"] = np.concatenate((self.data_dictionary["X_test"], self.data_X[idx_test])).astype(self.dtype_required)
                 self.data_dictionary["Y_test"] = np.concatenate((self.data_dictionary["Y_test"], self.data_Y[idx_test])).astype(self.dtype_required)
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "updated data dictionary",
+                               "data": ["X_train", "Y_train", "X_val", "Y_val"],
+                               "npoints train": npoints_test}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Added", str(npoints_test), "(X_test, Y_test) samples in", end-start, "s.",show=verbose)
 
@@ -998,15 +1032,18 @@ class Data(show_prints.Verbosity):
                 - **type**: ``numpy.ndarray``
                 - **shape**: ``(len(sample),)``
         """
-        _, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "computed sample weights"}
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
         hist, edges = np.histogram(sample, bins=nbins)
         hist = np.where(hist < 5, 5, hist)
         tmp = np.digitize(sample, edges, right=True)
         W = 1/np.power(hist[np.where(tmp == nbins, nbins-1, tmp)], power)
         W = W/np.sum(W)*len(sample)
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "computed sample weights"}
         self.save_log(overwrite=True, verbose=verbose_sub)
+        print("Sample weights computed in", end-start, "s.",show=verbose)
         return W
 
     def define_scalers(self, data_X, data_Y, scalerX_bool, scalerY_bool, verbose=None):
@@ -1065,10 +1102,7 @@ class Data(show_prints.Verbosity):
     <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScaler</a>
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "defines scalers",
-                               "scaler X": scalerX_bool,
-                               "scaler Y": scalerY_bool}
+        start = timer()
         if scalerX_bool:
             scalerX = StandardScaler(with_mean=True, with_std=True)
             scalerX.fit(data_X)
@@ -1081,5 +1115,11 @@ class Data(show_prints.Verbosity):
         else:
             scalerY = StandardScaler(with_mean=False, with_std=False)
             scalerY.fit(data_Y.reshape(-1, 1))
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "defined scalers",
+                               "scaler X": scalerX_bool,
+                               "scaler Y": scalerY_bool}
         self.save_log(overwrite=True, verbose=verbose_sub)
+        print("Standard scalers defined in", end-start, "s.", show=verbose)
         return [scalerX, scalerY]

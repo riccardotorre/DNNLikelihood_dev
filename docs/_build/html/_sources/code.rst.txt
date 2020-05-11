@@ -12,7 +12,7 @@ The Python code consists of bla bla bla
    data
    DNN_likelihood
    DNN_likelihood_ensemble
-   set_resources
+   resources
    inference
    utils
    corner

@@ -1,0 +1,310 @@
+{
+    "2020-05-10-10-06-36.1583":{
+        "action":"created"
+    },
+    "2020-05-10-10-06-39.8574":{
+        "action":"optimizer set",
+        "optimizer":"optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, amsgrad=False)"
+    },
+    "2020-05-10-10-06-39.8584":{
+        "action":"loss set",
+        "loss":"mse"
+    },
+    "2020-05-10-10-06-39.8594":{
+        "action":"metrics set",
+        "metrics":[
+            "mean_squared_error",
+            "mae",
+            "msle",
+            "me"
+        ]
+    },
+    "2020-05-10-10-06-39.8634":{
+        "action":"callbacks set",
+        "metrics":[
+            "callbacks.TerminateOnNaN()",
+            "PlotLossesKeras(fig_path=r'C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_figure_plot_losses_keras.pdf')",
+            "callbacks.EarlyStopping(monitor='val_loss', mode='min', patience=100, min_delta=0.0001, restore_best_weights=True)",
+            "callbacks.ReduceLROnPlateau(monitor='val_loss', mode='min', factor=0.2, min_lr=8e-05, patience=10, min_delta=0.0001)",
+            "callbacks.ModelCheckpoint(filepath = r'C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\checkpoints\\DNNLikelihood_toy_checkpoint.{epoch:02d}-{val_loss:.2f}.h5', monitor='val_loss', mode='min', save_best_only=True, save_freq='epoch')"
+        ]
+    },
+    "2020-05-10-10-06-39.8654":{
+        "action":"saved summary json",
+        "file name":"DNNLikelihood_toy_summary.json",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_summary.json"
+    },
+    "2020-05-10-10-06-41.8981":{
+        "action":"defined tf model",
+        "model summary":[
+            "Model: 'model'",
+            "_________________________________________________________________",
+            "Layer (type)                 Output Shape              Param #   ",
+            "=================================================================",
+            "input_1 (InputLayer)         [(None, 11)]              0         ",
+            "_________________________________________________________________",
+            "dense (Dense)                (None, 300)               3600      ",
+            "_________________________________________________________________",
+            "batch_normalization_1 (Batch (None, 300)               1200      ",
+            "_________________________________________________________________",
+            "dense_1 (Dense)              (None, 300)               90300     ",
+            "_________________________________________________________________",
+            "batch_normalization_2 (Batch (None, 300)               1200      ",
+            "_________________________________________________________________",
+            "dense_2 (Dense)              (None, 300)               90300     ",
+            "_________________________________________________________________",
+            "dense_3 (Dense)              (None, 300)               90300     ",
+            "_________________________________________________________________",
+            "batch_normalization_3 (Batch (None, 300)               1200      ",
+            "_________________________________________________________________",
+            "dense_4 (Dense)              (None, 300)               90300     ",
+            "_________________________________________________________________",
+            "batch_normalization_4 (Batch (None, 300)               1200      ",
+            "_________________________________________________________________",
+            "dense_5 (Dense)              (None, 1)                 301       ",
+            "=================================================================",
+            "Total params: 369,901",
+            "Trainable params: 367,501",
+            "Non-trainable params: 2,400",
+            "_________________________________________________________________"
+        ]
+    },
+    "2020-05-10-10-06-41.9630":{
+        "action":"compiled tf model"
+    },
+    "2020-05-10-10-06-41.9650":{
+        "action":"defined and compiled tf model",
+        "gpu mode":true,
+        "device id":"/device:GPU:0"
+    },
+    "2020-05-10-10-06-57.7548":{
+        "action":"defined scalers",
+        "scaler X":true,
+        "scaler Y":true
+    },
+    "2020-05-10-10-06-57.7558":{
+        "action":"generated train data",
+        "data":[
+            "idx_train",
+            "X_train",
+            "Y_train",
+            "idx_val",
+            "X_val",
+            "Y_val"
+        ],
+        "npoints train":10000,
+        "npoints val":3000
+    },
+    "2020-05-10-10-20-50.9054":{
+        "action":"trained tf model",
+        "epochs run":300,
+        "epochs total":300,
+        "batch size":512,
+        "training time":848.9379617
+    },
+    "2020-05-10-10-20-50.9124":{
+        "action":"saved train/val indices",
+        "file name":"DNNLikelihood_toy_idx.h5",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_idx.h5"
+    },
+    "2020-05-10-10-20-50.9174":{
+        "action":"saved tf model json",
+        "file name":"DNNLikelihood_toy_model.json",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_model.json"
+    },
+    "2020-05-10-10-20-50.9783":{
+        "action":"saved tf model h5",
+        "file name":"DNNLikelihood_toy_model.h5",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_model.h5"
+    },
+    "2020-05-10-10-20-51.0871":{
+        "action":"saved tf model onnx",
+        "file name":"DNNLikelihood_toy_model.onnx",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_model.onnx"
+    },
+    "2020-05-10-10-20-51.1041":{
+        "action":"saved history json",
+        "file name":"DNNLikelihood_toy_history.json",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_history.json"
+    },
+    "2020-05-10-10-20-51.1061":{
+        "action":"saved summary json",
+        "file name":"DNNLikelihood_toy_summary.json",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_summary.json"
+    },
+    "2020-05-10-10-20-51.1071":{
+        "action":"saved scalers h5",
+        "file name":"DNNLikelihood_toy_scalerX.pickle",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_scalerX.pickle"
+    },
+    "2020-05-10-10-20-53.3365":{
+        "action":"saved model graph pdf",
+        "file name":"DNNLikelihood_toy_model_graph.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_model_graph.pdf"
+    },
+    "2020-05-10-10-21-13.0722":{
+        "action":"generated test data",
+        "data":[
+            "idx_test",
+            "X_test",
+            "Y_test"
+        ],
+        "npoints test":5000
+    },
+    "2020-05-10-10-21-13.0772":{
+        "action":"saved train/val indices",
+        "file name":"DNNLikelihood_toy_idx.h5",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_idx.h5"
+    },
+    "2020-05-10-10-21-13.3937":{
+        "action":"evaluated tf model",
+        "npoints":10000,
+        "evaluation time":0.31565790000001925
+    },
+    "2020-05-10-10-21-13.6373":{
+        "action":"evaluated tf model",
+        "npoints":3000,
+        "evaluation time":0.2413490000000138
+    },
+    "2020-05-10-10-21-13.8909":{
+        "action":"evaluated tf model",
+        "npoints":5000,
+        "evaluation time":0.2507538999999497
+    },
+    "2020-05-10-10-21-14.0925":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":10000,
+        "prediction time":0.19935110000005807
+    },
+    "2020-05-10-10-21-14.2453":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":3000,
+        "prediction time":0.15039379999996072
+    },
+    "2020-05-10-10-21-14.4200":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":5000,
+        "prediction time":0.17289579999999205
+    },
+    "2020-05-10-10-21-14.8773":{
+        "action":"saved predictions json",
+        "file name":"DNNLikelihood_toy_predictions.json",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_predictions.json"
+    },
+    "2020-05-10-10-21-34.7934":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_training_history_loss.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_training_history_loss.pdf"
+    },
+    "2020-05-10-10-21-35.4264":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_training_history_mean_error.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_training_history_mean_error.pdf"
+    },
+    "2020-05-10-10-21-35.5931":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":1000,
+        "prediction time":0.16378149999991365
+    },
+    "2020-05-10-10-21-36.3868":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_par_lik_coverage_0.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_par_lik_coverage_0.pdf"
+    },
+    "2020-05-10-10-21-36.5366":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":1000,
+        "prediction time":0.14883589999999458
+    },
+    "2020-05-10-10-21-37.2964":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_par_lik_coverage_2.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_par_lik_coverage_2.pdf"
+    },
+    "2020-05-10-10-21-37.4471":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":1000,
+        "prediction time":0.1493795000000091
+    },
+    "2020-05-10-10-21-38.6422":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_par_lik_coverage_4.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_par_lik_coverage_4.pdf"
+    },
+    "2020-05-10-10-21-38.7830":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":1000,
+        "prediction time":0.1393715000000384
+    },
+    "2020-05-10-10-21-39.4928":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_par_lik_coverage_5.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_par_lik_coverage_5.pdf"
+    },
+    "2020-05-10-10-21-39.6456":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":1000,
+        "prediction time":0.15144650000002002
+    },
+    "2020-05-10-10-21-40.6829":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_par_lik_coverage_8.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_par_lik_coverage_8.pdf"
+    },
+    "2020-05-10-10-21-40.8427":{
+        "action":"predicted with tf model",
+        "batch size":512,
+        "npoints":5000,
+        "prediction time":0.15709719999995286
+    },
+    "2020-05-10-10-21-41.6674":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_lik_distribution.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_lik_distribution.pdf"
+    },
+    "2020-05-10-10-21-48.6252":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_corner_pars_train.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_corner_pars_train.pdf"
+    },
+    "2020-05-10-10-21-54.0894":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_corner_pars_test.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_corner_pars_test.pdf"
+    },
+    "2020-05-10-10-21-57.8784":{
+        "action":"saved figure",
+        "file name":"DNNLikelihood_toy_figure_corner_pars_train_vs_test.pdf",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\figures\\DNNLikelihood_toy_figure_corner_pars_train_vs_test.pdf"
+    },
+    "2020-05-10-10-21-57.8814":{
+        "action":"saved summary json",
+        "file name":"DNNLikelihood_toy_summary.json",
+        "file path":"C:\\Users\\Admin\\Dropbox\\Work\\09_Resources\\Git\\GitHub\\DNNLikelihood\\DNNLikelihood_dev\\tutorials\\toy\\outfiles\\DNNLikelihood_toy\\DNNLikelihood_toy_summary.json"
+    },
+    "2020-05-10-10-21-57.8824":{
+        "action":"computed predictions",
+        "confidence intervals":[
+            0.5,
+            0.6826894921370859,
+            0.9544997361036416,
+            0.9973002039367398
+        ],
+        "pars":[
+            0,
+            2,
+            4,
+            5,
+            8
+        ],
+        "batch size":512
+    }
+}

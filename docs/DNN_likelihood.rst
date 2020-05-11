@@ -8,6 +8,8 @@ Summary
 
 Bla bla bla
 
+.. _DNN_likelihood_usage:
+
 Usage
 ^^^^^
 
@@ -17,49 +19,1572 @@ Class
 .. autoclass:: DNNLikelihood.DNN_likelihood
    :undoc-members:
 
+.. _DNN_likelihood_arguments:
+
 Arguments
 """""""""
 
+   .. option:: name
 
-Additional attributes
-"""""""""""""""""""""
+      Name of the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object.
+      It is used to build the :attr:`DNN_likelihood.name <DNNLikelihood.DNN_likelihood.name>` attribute.
+         
+         - **type**: ``str`` or ``None``
+         - **default**: ``None``
+
+   .. option:: data
+
+      Input :class:`Data <DNNLikelihood.Data>` object.
+      Either this or the :option:`input_data_file` input argument should be provided to initialize a 
+      :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object and to set the
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>` attribute.
+         
+         - **type**: :class:`Data <DNNLikelihood.Data>` object or ``None``
+         - **default**: ``None``
+
+   .. option:: input_data_file
+
+      File name (either relative to the code execution folder or absolute, with or without any of the
+      .json or .h5 extensions) of a saved :class:`Data <DNNLikelihood.Data>` object. 
+      Either this or the :option:`data` input argument should be provided to initialize a 
+      :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` objectand to set the
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>` attribute.
+
+         - **type**: ``str`` or ``None``
+         - **default**: ``None``
+
+   .. option:: load_on_RAM
+
+      If ``True`` all data available in the dataset corresponding to the :option:`input_data_file` input
+      are loaded into the RAM for faster generation of train/validation/test data. If ``False`` the HDF5
+      dataset file is open in read mode and train/validation/test data are generated on demand.
+      It is used to build the :attr:`DNN_likelihood.load_on_RAM <DNNLikelihood.DNN_likelihood.load_on_RAM>` attribute.
+
+         - **type**: ``bool``
+         - **default**: ``False``
+
+   .. option:: seed
+
+      Seed of the random number generator. It is used to initialize the |numpy_link| and |tf_link| random state.
+      It is used to ste the :attr:`DNN_likelihood.seed <DNNLikelihood.DNN_likelihood.seed>` attribute.
+
+         - **type**: ``int`` or ``None``
+         - **default**: ``None``
+
+   .. option:: dtype
+
+      It represents the data type into which train/val/test data are converted. 
+      It is used to ste the :attr:`DNN_likelihood.dtype <DNNLikelihood.DNN_likelihood.dtype>` attribute.
+
+         - **type**: ``str`` or ``None``
+         - **default**: ``None``
+
+   .. option:: same_data
+
+      This option is passed to the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object by the 
+      :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` object to specify if the same
+      train/val data are used for the different :class:`DNN_likelihoods <DNNLikelihood.DNN_likelihood>` in the
+      ensemble or not. In this way :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object knows how to
+      deal with the corresponding :class:`Data <DNNLikelihood.Data>` object to generate train/val data.
+      It is used to ste the :attr:`DNN_likelihood.same_data <DNNLikelihood.DNN_likelihood.same_data>` attribute.
+
+         - **type**: ``bool``
+         - **default**: ``True``
+
+   .. option:: model_data_inputs
+
+      Dictionary specifying inputs related to data.
+      It is used to set the private attribute
+      :attr:`DNN_likelihood.__model_data_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_data_inputs>`.
+
+         - **type**: ``None`` or ``dict`` with the following structure:
+
+            - *"npoints"* (value type: ``list``, shape: ``[n_train, n_val, n_test]``)
+               List with number of train, validation, and test points. 
+               The validation and test entries could also be passed in the form of fractions (<=1) of n_train. 
+               These will be automatically converted in absolute numbers.
+            - *"scalerX"* (value type: ``bool``)
+               If ``True`` X input points are scaled with a |standard_scaler_link| fit to the train data.
+               If not given it is automatically set to ``False``.
+            - *"scalerY"* (value type: ``bool``)
+               If ``True`` Y input points are scaled with a |standard_scaler_link| fit to the train data.
+               If not given it is automatically set to ``False``.
+            - *"weighted"* (value type: ``bool``)
+               If ``True`` X input points are weighted (see the 
+               :meth:`DNN_likelihood.compute_sample_weights <DNNLikelihood.DNN_likelihood.compute_sample_weights>` 
+               method). If not given it is automatically set to ``False``.
+
+         - **example**: 
+         
+            .. code-block:: python
+
+               model_data_inputs = {"npoints": [n_train, n_val, n_test],
+                                    "scalerX": True,
+                                    "scalerY": True,
+                                    "weighted": False}
+         
+         - **default**: ``None``
+
+   .. option:: model_define_inputs
+
+      Dictionary specifying inputs related to the |tf_keras_model_link| specifications, including the structure of hidden 
+      |tf_keras_layers_link| with their |tf_keras_activations_link| and |tf_keras_initializers_link|, 
+      |tf_keras_activations_link| in the output layer, |tf_keras_dropout_link| rate, and |tf_keras_batch_normalization_link|.
+      It is used to set the private attribute
+      :attr:`DNN_likelihood.__model_define_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_define_inputs>`.
+      The |tf_keras_activations_link| and the |tf_keras_initializers_link| in each layer are specified together with the number 
+      of nodes in the layer (see the example below). All |tf_keras_link| specifications for the |tf_keras_activations_link| 
+      and |tf_keras_initializers_link| are supported. In the case of |tf_keras_selu_link| activation the 
+      |tf_keras_lecun_normal_link| initializer is automatically used and possible |tf_keras_dropout_link| layers are replaced 
+      by |tf_keras_alpha_dropout_link| ones. In case of |tf_keras_activations_link| other than |tf_keras_selu_link|, 
+      if no |tf_keras_initializers_link| is specified, then the default one is used.
+
+         - **type**: ``None`` or ``dict`` with the following structure
+
+            - *"hidden_layers"* (value type: ``list``, shape: ``[[int,str,str],...,[int,str,str]]``)
+               List with hidden layers specifications. Each hidden layer is represented by a list with number of nodes (``int``),
+               activation function (``str``), and (optionally) initializer (``str``).
+            - *"act_func_out_layer"* (value type: ``str``)
+               Activation function for the output layer. If not specified it is automatically set to ``"linear"``.
+            - *"dropout_rate"* (value type: ``float``)
+               If different than ``0``, then |tf_keras_dropout_link| layers with the given dropout_rate are added
+               between each pair of hidden layers. If not specified it is automatically set to ``0``.
+            - *"batch_norm"* (value type: ``bool``)
+               If ``True``, then |tf_keras_batch_normalization_link| layers are added after the input layer and between 
+               each pair of hidden layers. If not specified it is automatically set to ``False``.
+
+         - **example**: 
+         
+            .. code-block:: python
+
+               model_define_inputs = {"hidden_layers": [[300, "selu"],
+                                                        [300, "relu"], 
+                                                        [300, "selu", "lecun_normal"], 
+                                                        [300, "relu", "glorot_uniform"]],
+                                      "act_func_out_layer": "linear",
+                                      "dropout_rate": 0,
+                                      "batch_norm": True}
+
+         - **default**: ``None``
+
+   .. option:: model_optimizer_inputs
+
+      String or dictionary specifying inputs related to the |tf_keras_optimizers_link| specifications.
+      It is used to set the private attribute
+      :attr:`DNN_likelihood.__model_optimizer_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_optimizer_inputs>`.
+      It could be specified either as a string with the name of the |tf_keras_optimizers_link_2| (all default parameters will 
+      be used in this case) or as a dictionary with one item of the form ``"name": "optimizer_name"`` and all other items 
+      specifying parameters related to that |tf_keras_optimizers_link_2| in the form ``"parameter": value`` (see the example below). 
+      All unspecified parameters are set to their default value.
+
+         - **type**: ``str`` or ``None`` or ``dict`` with the following structure:
+
+            - *"name"* (value type: ``str``)
+               Name of the |tf_keras_optimizers_link_2|.
+            - others
+               All input arguments accepted by the corresponding |tf_keras_optimizers_link|.
+               For all unspecified inputs default values will be used.
+            
+         - **example**: 
+
+            .. code-block:: python
+   
+               model_optimizer_inputs = {"name": "Adam",
+                                         "lr": 0.001,
+                                         "beta_1": 0.9,
+                                         "beta_2": 0.999,
+                                         "amsgrad": False}
+
+         - **default**: ``None``
+         
+   .. option:: model_compile_inputs
+
+      Dictionary specifying inputs related to the |tf_keras_model_compile_link| specifications, including |tf_keras_losses_link|
+      and |tf_keras_metrics_link|.
+      It is used to set the private attribute
+      :attr:`DNN_likelihood.__model_compile_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_compile_inputs>`.
+      Both the short name and the true name of a metrix are allowed (for instance, both ``"mse"`` and ``"mean_squared_error"``
+      are allowed).
+
+         - **type**: ``None`` or ``dict`` with the following structure:
+
+            - *"loss"* (value type: ``str``)
+               Name of the loss (either abbreviated or extended).
+               If not specified the user is warned that it will be automatically set to ``"mse"``.
+            - *"metrics"* (value type: ``list``)
+               List with the name (either abbreviated or extended) of the metrics to be monitored.
+               If not specified it will be automatically set to ``["mse","mae","mape","msle"]``
+
+         - **example**: 
+
+            .. code-block:: python
+   
+               model_compile_inputs = {"loss": "mse", 
+                                       "metrics": ["mean_squared_error", "mae", "msle"]}
+
+         - **default**: ``None``
+
+   .. option:: model_callbacks_inputs
+
+      List of strings and/or dictionaries specifying inputs related to the |tf_keras_callbacks_link| specifications.
+      It is used to set the private attribute
+      :attr:`DNN_likelihood.__model_callbacks_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_callbacks_inputs>`.
+      Each item in the list could be specified either as a string with the name of the |tf_keras_callbacks_link_2| 
+      (all default parameters will be used in this case) or as a dictionary with one item of the form 
+      ``"name": "callback_name"`` and all other items specifying parameters related to that |tf_keras_callbacks_link_2|
+      in the form ``"parameter": value`` (see the example below). All unspecified parameters are set to their default value.
+      All |tf_keras_callbacks_link| are available, together with the ``"PlotLossesKeras"`` callback from the |livelossplot_link|
+      package.
+      Arguments specifying output files/folders for callbacks writing to files, that are ``"PlotLossesKeras"``, 
+      ``"ModelCheckpoint"``, and ``"TensorBoard"``, are automatically set and the related inputs are ignored.
+
+         - **type**: ``list`` or ``None``
+         - **list items type**: ``str`` and/or ``dict`` with the following structure
+
+            - *"name"* (value type: ``str``)
+               Name of the |tf_keras_callbacks_link_2|.
+            - *others*
+               All input arguments accepted by the corresponding |tf_keras_callbacks_link|.
+               For all unspecified inputs default values will be used.
+            
+         - **example**: 
+
+            .. code-block:: python
+   
+               model_callbacks_inputs = [{"name": "EarlyStopping",
+                                          "monitor": "loss",
+                                          "mode": "min",
+                                          "patience": 100,
+                                          "min_delta": 0.0001,
+                                          "restore_best_weights": True},
+                                         "TerminateOnNaN",
+                                         "PlotLossesKeras",
+                                         {"name": "ReduceLROnPlateau",
+                                          "monitor": "loss",
+                                          "mode": "min",
+                                          "factor": 0.2,
+                                          "min_lr": 0.00008,
+                                          "patience": 10,
+                                          "min_delta": 0.0001},
+                                         {"name": "ModelCheckpoint",
+                                          "filepath": "this is ignored and automatically set",
+                                          "monitor": "loss",
+                                          "mode": "min",
+                                          "save_best_only": True,
+                                          "save_freq": "epoch"}]
+         
+         - **default**: ``None``
+
+   .. option:: model_train_inputs
+
+      Dictionary specifying inputs related to the |tf_keras_model_fit_link| specifications, including number of epochs
+      and batch size.
+      It is used to set the private attribute
+      :attr:`DNN_likelihood.__model_train_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_train_inputs>`.
+      Both the short name and the true name of a metrix are allowed (for instance, both ``"mse"`` and ``"mean_squared_error"``
+      are allowed).
+
+         - **type**: ``None`` or ``dict`` with the following structure:
+
+            - *"epochs"* (value type: ``int``)
+               Number of epochs to run.
+            - *"batch_size"* (value type: ``int``)
+               Batch size to use in training, evaluation, and prediction.
+            
+         - **example**: 
+
+            .. code-block:: python
+   
+               model_train_inputs={"epochs": 300,
+                                   "batch_size": 512}
+
+         - **default**: ``None``
+
+   .. option:: resources_inputs
+
+      Dictionary specifying available resources. This input argument is assumed to be specified automatically when the 
+      :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object is created from within the 
+      :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` one in order to sync resources between the 
+      different :class:`DNN_likelihoods <DNNLikelihood.DNN_likelihood>`
+      (see :ref:`the DNN_likelihood_ensemble object <DNN_likelihood_ensemble_object>`).
+
+      - **type**: ``None`` or ``dict`` with the following structure:
+
+            - *"available_gpus"* (value type: ``list``, shape: ``(n_gpus,2)``)
+               List of lists with device ID and information of the available GPUs.
+            - *"available_cpu"* (value type: ``list``, shape: ``(3,)``)
+               List with device ID, specifications, number of cores of the available CPU.
+            - *"active_gpus"* (value type: ``list``, shape: ``(n_active_gpus,2)``)
+               List of lists with device ID and information of the subset of available GPUs that are active in the current environment.
+            - *"gpu_mode"* (value type: ``bool``)
+               ``True`` if the current machine has available GPUs, ``False`` otherwise.
+
+      - **default**: ``None``
+
+   .. option:: output_folder
+
+      Path (either relative to the code execution folder or absolute) where output files are saved.
+      It is used to set the :attr:`DNN_likelihood.output_folder <DNNLikelihood.DNN_likelihood.output_folder>` attribute.
+            
+            - **type**: ``str`` or ``None``
+            - **default**: ``None``
+
+   .. option:: ensemble_name
+
+      Name of the :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` object
+      of which the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object is a member. This input argument
+      is automatically passed by the generating :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` object.
+      If the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object is not a member of an ensemble, this input should be
+      ``None`` (default).
+      It is used to set the :attr:`DNN_likelihood.ensemble_name <DNNLikelihood.DNN_likelihood.ensemble_name>`
+      and :attr:`DNN_likelihood.ensemble_folder <DNNLikelihood.DNN_likelihood.ensemble_folder>` attributes.
+            
+            - **type**: ``str`` or ``None``
+            - **default**: ``None``
+
+   .. option:: input_summary_json_file
+
+      File name (either relative to the code execution folder or absolute, with or without the
+      .json extensions) of a saved :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object. 
+      It is used to set the :attr:`DNN_likelihood.input_summary_json_file <DNNLikelihood.DNN_likelihood.input_summary_json_file>` attribute.
+
+         - **type**: ``str`` or ``None``
+         - **default**: ``None``
+
+   .. option:: verbose
+
+      Argument used to set the verbosity mode of the :meth:`DNN_likelihood.__init__ <DNNLikelihood.DNN_likelihood.__init__>` 
+      method and the default verbosity mode of all class methods that accept a ``verbose`` argument.
+      See :ref:`Verbosity mode <verbosity_mode>`.
+
+         - **type**: ``bool``
+         - **default**: ``True``
+
+
+Attributes
+""""""""""
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood._DNN_likelihood__model_callbacks_inputs
+
+      Private attribute corresponding to the input argument :option:`model_callbacks_inputs`. 
+      If the object is initialized from input arguments it is set to the value of :option:`model_callbacks_inputs`,
+      otherwise it is set from the file corresponding to the 
+      :attr:`DNN_likelihood.input_summary_json_file <DNNLikelihood.DNN_likelihood.input_summary_json_file>` attribute.
+
+         - **type**: ``list``
+         - **list items type**: ``str`` and/or ``dict`` (see :option:`model_callbacks_inputs` for the dictionary structure).
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood._DNN_likelihood__model_compile_inputs
+
+      Private attribute corresponding to the input argument :option:`model_compile_inputs`.
+      If the object is initialized from input arguments it is set to the value of :option:`model_compile_inputs` if present,
+      otherwise it is constructed setting the loss to ``"mse"`` and the metrics to ``["mse","mae","mape","msle"]``. If the
+      object is imported from files the attribute is set from the file corresponding to the 
+      :attr:`DNN_likelihood.input_summary_json_file <DNNLikelihood.DNN_likelihood.input_summary_json_file>` attribute.
+
+         - **type**: ``dict`` (see :option:`model_compile_inputs` for the dictionary structure).
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood._DNN_likelihood__model_data_inputs
+
+      Private attribute corresponding to the input argument :option:`model_data_inputs`.
+      If the object is initialized from input arguments it is set to the value of :option:`model_data_inputs`
+      otherwise is set from the file corresponding to the 
+      :attr:`DNN_likelihood.input_summary_json_file <DNNLikelihood.DNN_likelihood.input_summary_json_file>` attribute.
+      If the number of validation and test data points are smaller than one, then they are treated as fractions of the
+      corresponding number of training points and are replaced by the absolute numbers. If ``"scaleX"`, ``"scaleY"``,
+      and/or ``"weighted"`` are not specified than they are set to ``False``.
+
+         - **type**: ``dict`` (see :option:`model_data_inputs` for the dictionary structure).
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood._DNN_likelihood__model_define_inputs
+
+      Private attribute corresponding to the input argument :option:`model_define_inputs`.
+      If the object is initialized from input arguments it is set to the value of :option:`model_define_inputs`
+      otherwise is set from the file corresponding to the 
+      :attr:`DNN_likelihood.input_summary_json_file <DNNLikelihood.DNN_likelihood.input_summary_json_file>` attribute.
+      If ``"act_func_out_layer"`, ``"dropout_rate"``,
+      and/or ``"batch_norm"`` are not specified than they are set to ``"linear"``, ``0``, and ``False``, respectively.
+
+         - **type**: ``dict`` (see :option:`model_define_inputs` for the dictionary structure).
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood._DNN_likelihood__model_optimizer_inputs
+
+      Private attribute corresponding to the input argument :option:`model_optimizer_inputs`. 
+      If the object is initialized from input arguments it is set to the value of :option:`model_optimizer_inputs`,
+      otherwise it is set from the file corresponding to the 
+      :attr:`DNN_likelihood.input_summary_json_file <DNNLikelihood.DNN_likelihood.input_summary_json_file>` attribute.
+      For all arguments of the |tf_keras_optimizers_link_2| that are not specified the default value is used.
+
+         - **type**: ``str`` or ``dict`` (see :option:`model_optimizer_inputs` for the dictionary structure).
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood._DNN_likelihood__model_train_inputs
+
+      Private attribute corresponding to the input argument :option:`model_train_inputs`. 
+      If the object is initialized from input arguments it is set to the value of :option:`model_train_inputs`,
+      otherwise it is set from the file corresponding to the 
+      :attr:`DNN_likelihood.input_summary_json_file <DNNLikelihood.DNN_likelihood.input_summary_json_file>` attribute.
+
+         - **type**: ``dict`` (see :option:`model_train_inputs` for the dictionary structure).
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood._DNN_likelihood__resources_inputs
+
+      Private attribute corresponding to the input argument :option:`resources_inputs`. If the input argument is not given, 
+      i.e. it is set to the default value ``None``, the dictionary is set by the 
+      :meth:`DNN_likelihood.__set_resources <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_resources>` private method.
+
+         - **type**: ``dict`` (see :option:`resources_inputs` for the dictionary structure).
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.act_func_out_layer
+
+      String representing the activation function in the output layer. 
+      It is set from the 
+      :attr:`DNN_likelihood.__model_define_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_define_inputs>`
+      dictionary.
+
+         - **type**: ``str``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.active_gpus
+
+      List specifying the GPUs active in the current environment.
+      For each GPU the list contains two strings with device ID and information, respectively.
+      It is either set from the the 
+      :attr:`DNN_likelihood.__resources_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__resources_inputs>`
+      dictionary if available or initialized by the 
+      :attr:`DNN_likelihood.__set_resources <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_resources>` method.
+
+         - **type**: ``list``
+         - **shape**: ``(n_active_gpus,2)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.available_cpu
+
+      List specifying the CPU resources.
+      It contains three strings with device ID, specifications, number of cores, respectively.
+      It is either set from the the 
+      :attr:`DNN_likelihood.__resources_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__resources_inputs>`
+      dictionary if available or initialized by the 
+      :attr:`DNN_likelihood.__set_resources <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_resources>` method.
+
+         - **type**: ``list``
+         - **shape**: ``(3,)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.available_gpus
+
+      List specifying the GPUs available on the current machine.
+      For each GPU the list contains two strings with device ID and information, respectively.
+      It is either set from the the 
+      :attr:`DNN_likelihood.__resources_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__resources_inputs>`
+      dictionary if available or initialized by the 
+      :attr:`DNN_likelihood.__set_resources <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_resources>` method.
+
+         - **type**: ``list``
+         - **shape**: ``(n_available_gpus,2)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.batch_norm
+
+      If ``True``, then |tf_keras_batch_normalization_link| layers are added after the input layer and between 
+      each pair of hidden layers. It is set from the the 
+      :attr:`DNN_likelihood.__model_define_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_define_inputs>`
+      dictionary (``False`` if not specified in the input argument :option:`model_define_inputs`).
+
+         - **type**: ``bool``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.batch_size
+
+      Specifies the default batch size used for training, evaluation, and prediction.
+      It is set from the  
+      :attr:`DNN_likelihood.__model_train_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_train_inputs>`
+      dictionary.
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.callbacks
+
+      List of |tf_keras_callbacks_link| objects.
+      It is set by the :meth:`DNN_likelihood.__set_callbacks <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_callbacks>` 
+      method by evaluating
+      the corresponding strings in the :attr:`DNN_likelihood.callbacks_strings <DNNLikelihood.DNN_likelihood.callbacks_strings>`
+      attribute.
+
+         - **type**: ``list`` of |tf_keras_callbacks_link| objects
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.callbacks_strings
+
+      List of |tf_keras_callbacks_link| strings.
+      It is set by the :meth:`DNN_likelihood.__set_callbacks <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_callbacks>` 
+      method by parsing the content of the 
+      :attr:`DNN_likelihood.__model_callbacks_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_callbacks_inputs>`
+      dictionary.
+
+         - **type**: ``list`` of ``str``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.data
+
+      The :class:`Data <DNNLikelihood.Data>` object used by the 
+      :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` one for data management.
+      It is set to the value of the input ärgument :option:`data` if passed. Otherwise,
+      the :meth:`DNN_likelihood.__set_data <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_data>`
+      sets it to a :class:`Data <DNNLikelihood.Data>` object imported from the 
+      :attr:`DNN_likelihood.input_data_file <DNNLikelihood.DNN_likelihood.input_data_file>`.
+
+         - **type**: :class:`Data <DNNLikelihood.Data>` object
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_data_file
+
+      Absolute path corresponding to the input argument :option:`input_data_file`. If the latter is not passed,
+      :attr:`DNN_likelihood.input_data_file <DNNLikelihood.DNN_likelihood.input_data_file>` is set to
+      :class:`DNN_likelihood.data.input_file <DNNLikelihood.Data.input_file>`.
+              
+           - **type**: ``str``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.dropout_rate
+
+      Specifies the dropout rate for the |tf_keras_dropout_link| layers.
+      It is set from the  
+      :attr:`DNN_likelihood.__model_define_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_define_inputs>`
+      dictionary. If the value is ``0`` no |tf_keras_dropout_link| layers are added to the model.
+
+         - **type**: ``float``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.dtype
+
+      Required data type for the generation of the train/validation/test datasets. The attribute is set by the
+      :meth:`DNN_likelihood.__set_dtype <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_dtype>` methods to
+      the value of the :option:`dtype` if it is not ``None`` and to ``"float64"`` otherwise.
+
+         - **type**: ``str``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.ensemble_folder
+
+      If the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object is a member of a 
+      :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` object, then this attribute is set to the
+      parent directory of :attr:`DNN_likelihood.output_folder <DNNLikelihood.DNN_likelihood.output_folder>`, where, by default,
+      the :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` object is stored
+      (and corresponding to the 
+      :attr:`DNN_likelihood_ensemble.ensemble_folder <DNNLikelihood.DNN_likelihood_ensemble.ensemble_folder>` attribute of the
+      :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` object).
+      The attribute is by the 
+      :meth:`DNN_likelihood.__check_define_ensemble_name_folder <DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_ensemble_name_folder>`
+      method based on the value of the 
+      :attr:`DNN_likelihood.ensemble_name <DNNLikelihood.DNN_likelihood.ensemble_name>` attribute. If the latter is ``None``,
+      then also :attr:`DNN_likelihood.output_folder <DNNLikelihood.DNN_likelihood.output_folder>` attribute is set to ``None``,
+      the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object is considered "standalone", and the 
+      :attr:`DNN_likelihood.standalone <DNNLikelihood.DNN_likelihood.standalone>` is set to ``True``.
+
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.ensemble_name
+
+      Attribute corresponding to the input argument :option:`ensemble_name`. 
+      If the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object is a member of a
+      :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` object, then the latter automatically passes
+      the input argument :option:`ensemble_name` when it creates the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object.
+      The attribute is by the 
+      :meth:`DNN_likelihood.__check_define_ensemble_name_folder <DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_ensemble_name_folder>`
+      method. If the input argument is ``None``,
+      then also the attribute is set to ``None``,
+      the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object is considered "standalone", and the 
+      :attr:`DNN_likelihood.standalone <DNNLikelihood.DNN_likelihood.standalone>` is set to ``True``.
+
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.epochs_available
+
+      Number if epochs for which :attr:`DNN_likelihood.model <DNNLikelihood.DNN_likelihood.model>` has been trained. It is updated by
+      the :meth:`DNN_likelihood.model_train <DNNLikelihood.DNN_likelihood.model_train>` method after each training.
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.epochs_required
+
+      Number of epochs required for the training. The first time the object is created it is set to the value of the
+      "epochs" item in the :attr:`DNN_likelihood.__model_train_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_train_inputs>`
+      dictionary. It can be manually changed before calling the 
+      :meth:`DNN_likelihood.model_train <DNNLikelihood.DNN_likelihood.model_train>` method to train for more epochs.
+      Notice that each call to the 
+      :meth:`DNN_likelihood.model_train <DNNLikelihood.DNN_likelihood.model_train>` method only trains for a number of epochs
+      equal to the difference between :attr:`DNN_likelihood.epochs_required <DNNLikelihood.DNN_likelihood.epochs_required>`
+      and :attr:`DNN_likelihood.epochs_available <DNNLikelihood.DNN_likelihood.epochs_available>` (set by the
+      private method :meth:`DNN_likelihood.__set_epochs_to_run <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_epochs_to_run>`).    
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.figures_list
+
+      List of absolute paths to the generated figures.
+
+         - **type**: ``list`` of ``str`` 
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.generic_pars_labels
+
+      Copy of the :attr:`DNN_likelihood.data.generic_pars_labels <DNNLikelihood.Data.generic_pars_labels>`
+      attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management
+      (see the doc of the :attr:`Data.generic_pars_labels <DNNLikelihood.Data.generic_pars_labels>` attribute).
+
+         - **type**: ``list``
+         - **shape**: ``[ ]``
+         - **length**: ``n_pars``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.gpu_mode
+
+      Attribute set by the 
+      :meth:`DNN_likelihood.__set_resources <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_resources>` method and indicating
+      whether the object has GPU support (``True``) or not (``False``). If the object is a mamber of a 
+      :class:`DNN_likelihood_ensemble <DNNLikelihood.DNN_likelihood_ensemble>` one, then the attribute is set from the
+      :attr:`DNN_likelihood.__resources_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__resources_inputs>` attribute.
+
+         - **type**: ``bool`` 
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.hidden_layers
+
+      Attribute corresponding to the "hidden_layer" item of the 
+      :attr:`DNN_likelihood.__model_define_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_define_inputs>`
+      attribute.
+      It is a list with hidden layers specifications. Each hidden layer is represented by a list with number of nodes (``int``),
+      activation function (``str``), and (optionally) initializer (``str``)
+
+         - **type**: ``list``
+         - **shape**: ``(n_hidden_layers,3)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.history
+
+      Attribute corresponding to the "history" dictionary of the ``History`` object returned by the |tf_keras_model_fit|
+      method. It contains a list with the history of values of metrics for each training epoch. The contento of this 
+      dictionary is saved into the file
+      :attr:`DNN_likelihood.output_history_json_file <DNNLikelihood.DNN_likelihood.output_history_json_file>`.
+
+         - **type**: ``dict`` with the following structure:
+
+            - *"metric"* (value type: ``list``)
+               List with values of metric for each epoch. This key is present for all metric with the corresponding 
+               full name of the metric, such as, for instance, ``"mean_squared_error_best", etc. Metrics include ``"loss"``.
+            - *"lr"* (value type: ``float``)
+               List with values of the learning rate at each epoch.
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.idx_test
+
+      |Numpy_link| array with the integer position (indices) of the test data points in the data arrays contained in
+      :attr:`DNN_likelihood.data.data_X <DNNLikelihood.Data.data_X>` and
+      :attr:`DNN_likelihood.data.data_Y <DNNLikelihood.Data.data_Y>`.
+      The same indices are also stored in the "idx_test" item of the 
+      :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` object 
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>`.
+
+         - **type**: ``numpy.ndarray``
+         - **shape**: ``(n_points_test,)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.idx_train
+
+      |Numpy_link| array with the integer position (indices) of the training data points in the data arrays contained in
+      :attr:`DNN_likelihood.data.data_X <DNNLikelihood.Data.data_X>` and
+      :attr:`DNN_likelihood.data.data_Y <DNNLikelihood.Data.data_Y>`.
+      The same indices are also stored in the "idx_train" item of the 
+      :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` object 
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>`.
+
+         - **type**: ``numpy.ndarray``
+         - **shape**: ``(n_points_train,)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.idx_val
+
+      |Numpy_link| array with the integer position (indices) of the validation data points in the data arrays contained in
+      :attr:`DNN_likelihood.data.data_X <DNNLikelihood.Data.data.data_X>` and
+      :attr:`DNN_likelihood.data.data_Y <DNNLikelihood.Data.data.data_Y>`.
+      The same indices are also stored in the "idx_val" item of the 
+      :attr:`DNN_likelihood.data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute.
+
+         - **type**: ``numpy.ndarray``
+         - **shape**: ``(n_points_val,)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_files_base_name
+
+      Absolute path with base file name corresponding to the input argument :option:`input_summary_json_file` without
+      the "_summary" suffix. Whenever this attribute is not ``None``, it is used to set all input file names and to
+      reconstructed the object from input files (see the :meth:`DNN_likelihood.__init__ <DNNLikelihood.DNN_likelihood.__init__>`
+      method for details).
+              
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_history_json_file
+
+      Absolute path to the .json file containing saved :attr:`DNN_likelihood.history <DNNLikelihood.DNN_likelihood.history>`
+      attribute (see the :meth:`DNN_likelihood.save_history_json <DNNLikelihood.DNN_likelihood.save_history_json>`
+      method for details).
+      It is automatically generated from the attribute 
+      :attr:`DNN_likelihood.input_files_base_name <DNNLikelihood.DNN_likelihood.input_files_base_name>`.
+      When the latter is ``None``, the attribute is set to ``None``.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_idx_h5_file
+
+      Absolute path to the .h5 file containing saved data indices (see the 
+      :meth:`DNN_likelihood.save_data_indices <DNNLikelihood.DNN_likelihood.save_data_indices>`
+      method for details).
+      It is automatically generated from the attribute 
+      :attr:`DNN_likelihood.input_files_base_name <DNNLikelihood.DNN_likelihood.input_files_base_name>`.
+      When the latter is ``None``, the attribute is set to ``None``.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_log_file
+
+      Absolute path to the .log file containing saved :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>`log (see the 
+      :meth:`DNN_likelihood.save_log <DNNLikelihood.DNN_likelihood.save_log>`
+      method for details).
+      It is automatically generated from the attribute 
+      :attr:`DNN_likelihood.input_files_base_name <DNNLikelihood.DNN_likelihood.input_files_base_name>`.
+      When the latter is ``None``, the attribute is set to ``None``.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_predictions_json_file
+
+      Absolute path to the .json file containing saved 
+      :attr:`DNN_likelihood.predictions <DNNLikelihood.DNN_likelihood.predictions>` (see the 
+      :meth:`DNN_likelihood.save_data_indices <DNNLikelihood.DNN_likelihood.save_data_indices>`
+      method for details).
+      It is automatically generated from the attribute 
+      :attr:`DNN_likelihood.input_files_base_name <DNNLikelihood.DNN_likelihood.input_files_base_name>`.
+      When the latter is ``None``, the attribute is set to ``None``.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_scalers_pickle_file
+
+      Absolute path to the .pickle file containing saved data standard scalers (see the 
+      :meth:`DNN_likelihood.save_scalers <DNNLikelihood.DNN_likelihood.save_scalers>`
+      method for details).
+      It is automatically generated from the attribute 
+      :attr:`DNN_likelihood.input_files_base_name <DNNLikelihood.DNN_likelihood.input_files_base_name>`.
+      When the latter is ``None``, the attribute is set to ``None``.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_summary_json_file
+
+      Absolute path to the .json file containing saved :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object 
+      (see the :meth:`DNN_likelihood.save_summary_json <DNNLikelihood.DNN_likelihood.save_summary_json>`
+      method for details).
+      It is automatically generated from the attribute 
+      :attr:`DNN_likelihood.input_files_base_name <DNNLikelihood.DNN_likelihood.input_files_base_name>`.
+      When the latter is ``None``, the attribute is set to ``None``.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.input_tf_model_h5_file
+
+      Absolute path to the .h5 file containing saved |tf_keras_model_link| corresponding to the 
+      :attr:`DNN_likelihood.model <DNNLikelihood.DNN_likelihood.model>` 
+      (see the :meth:`DNN_likelihood.save_summary_json <DNNLikelihood.DNN_likelihood.save_summary_json>`
+      method for details).
+      It is automatically generated from the attribute 
+      :attr:`DNN_likelihood.input_files_base_name <DNNLikelihood.DNN_likelihood.input_files_base_name>`.
+      When the latter is ``None``, the attribute is set to ``None``.
+             
+         - **type**: ``str`` or ``None``
+   
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.load_on_RAM
+
+      Attribute corresponding to the input argument :option:`load_on_RAM`.
+      If ``True`` all data available in the HDF5 dataset 
+      :attr:`DNN_likelihood.input_data_file <DNNLikelihood.DNN_likelihood.input_data_file>`
+      are loaded into the RAM for faster generation of train/validation/test data. 
+      If ``False`` the HDF5 file is open in read mode and train/validation/test data are generated on demand.
+            
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.log
+
+      Dictionary containing a log of the :class:`Data <DNNLikelihood.DNN_likelihood>` object calls. The dictionary has datetime 
+      strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
+              
+         - **type**: ``dict``
+         - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``
+         - **values**: ``dict`` with the following structure:
+
+            - *"action"* (value type: ``str``)
+               Short description of the action.
+               **possible values**: ``"created"``, ``""loaded summary json""``, ``"loaded history json"``, ``"loaded tf model h5"``, 
+               ``"loaded scalers h5"``, ``"loaded data indices h5"``, ``"loaded predictions json"``, ``"optimizer set"``,
+               ``"loss set"``, ``"metrics set"``, ``"callbacks set"``, ``"computed sample weights"``, ``"defined scalers"``,
+               ``"generated train data"``, ``"generated test data"``, ``"defined tf model"``, ``"compiled tf model"``, ``"built tf model"``, 
+               ``"trained tf model"``, ``"predicted with tf model"``, ``"computed maximum logpdf"``, ``"evaluated tf model"``,
+               ``"saved figure"``, ``"computed predictions"``, ``"saved indices"``, ``"saved tf model json"``, ``"saved tf model h5"``,
+               ``"saved tf model onnx"``, ``"saved history json"``, ``"saved summary json"``, ``"saved predictions json"``, 
+               ``"saved scalers h5"``, ``"saved model graph pdf"``.
+            - *"file name"* (value type: ``str``)
+               File name of file involved in the action.
+            - *"file path"* (value type: ``str``)
+               Path of file involved in the action.
+            - *"files names"* (value type: ``list`` of ``str``)
+               List of file names of files involved in the action.
+            - *"files paths"* (value type: ``list`` of ``str``)
+               List of paths of files involved in the action.
+            - *"optimizer"* (value type: ``str``)
+               String corresponding to the attribute :attr:`DNN_likelihood.optimizer_string <DNNLikelihood.DNN_likelihood.optimizer_string>`.
+            - *"loss"* (value type: ``str``)
+               String corresponding to the attribute :attr:`DNN_likelihood.loss_string <DNNLikelihood.DNN_likelihood.loss_string>`.
+            - *"metrics"* (value type: ``list`` of ``str``)
+               List corresponding to the attribute :attr:`DNN_likelihood.metrics_string <DNNLikelihood.DNN_likelihood.metrics_string>`.
+            - *"callbacks"* (value type: ``list`` of ``str``)
+               List corresponding to the attribute :attr:`DNN_likelihood.callbacks_strings <DNNLikelihood.DNN_likelihood.callbacks_strings>`.
+            - *"scaler X"* (value type: ``bool``)
+               Boolean corresponding to the attribute :attr:`DNN_likelihood.scalerX_bool <DNNLikelihood.DNN_likelihood.scalerX_bool>`.
+            - *"scaler Y"* (value type: ``bool``)
+               Boolean corresponding to the attribute :attr:`DNN_likelihood.scalerY_bool <DNNLikelihood.DNN_likelihood.scalerY_bool>`.
+            - *"data"* (value type: ``list`` of ``str``)
+               List of data involved in the action. It could include the strings: "idx_train", "X_train", "Y_train", 
+               "idx_val", "X_val", "Y_val", "idx_test", "X_test", "Y_test".
+            - *"npoints train"* (value type: ``int``)
+               Number of training points corresponding to the attribute
+               :attr:`DNN_likelihood.npoints_train <DNNLikelihood.DNN_likelihood.npoints_train>`.
+            - *"npoints val"* (value type: ``int``)
+               Number of validation points corresponding to the attribute
+               :attr:`DNN_likelihood.npoints_val <DNNLikelihood.DNN_likelihood.npoints_val>`.
+            - *"npoints test"* (value type: ``int``)
+               Number of test points corresponding to the attribute
+               :attr:`DNN_likelihood.npoints_test <DNNLikelihood.DNN_likelihood.npoints_test>`.
+            - *"model summary"* (value type: ``list``)
+               List rendering a print of the ``model.summary()`` method of |tf_keras_model_link|.
+            - *"gpu mode"* (value type: ``bool``)
+               Boolean corresponding to the attribute :attr:`DNN_likelihood.gpu_mode <DNNLikelihood.DNN_likelihood.gpu_mode>`. 
+            - *"device id"* (value type: ``str``)
+               String with the ID of the device on which model has been built (see the
+               :meth:`DNN_likelihood.model_build <DNNLikelihood.DNN_likelihood.model_build>` method).
+            - *"epochs run"* (value type: ``int``)
+               Number of epochs of the current training run.
+            - *"epochs total"* (value type: ``int``)
+               Total number of training epochs.
+            - *"batch size"* (value type: ``int``)
+               Batch size used for action (training, predicting, evaluating), corresponding to the attribute
+               :attr:`DNN_likelihood.batch_size <DNNLikelihood.DNN_likelihood.batch_size>`.
+            - *"training time"* (value type: ``float``)
+               Training time in seconds of the last training.
+            - *"prediction time"* (value type: ``float``)
+               Prediction time in seconds of the last prediction.
+            - *"evaluation time"* (value type: ``float``)
+               Evaluation time in seconds of the last evaluation.
+            - *"npoints"* (value type: ``int``)
+               Number of points involved in the corresponding action.
+            - *"optimizer"* (value type: ``str``)
+               String representing the optimizer used to maximise the logpdf.
+            - *"optimization time"* (value type: ``float``)
+               Time in second for computation of the maximum of logpdf.
+            - *"probability intervals"* (value type: ``list``)
+               Probability intervals used for predictions.
+            - *"pars"* (value type: ``list``)
+               Parameters involved in predictions.
+                        
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.loss
+
+      |tf_keras_losses_link| object.
+      It is set by the :meth:`DNN_likelihood.__set_loss <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_loss>` method by evaluating
+      the corresponding strings in the :attr:`DNN_likelihood.loss_string <DNNLikelihood.DNN_likelihood.loss_string>`
+      attribute.
+
+         - **type**: |tf_keras_losses_link| object
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.loss_string
+
+      String representing a |tf_keras_losses_link| object.
+      It is set by the :meth:`DNN_likelihood.__set_loss <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_loss>` method by parsing
+      the content of the 
+      :attr:`DNN_likelihood.__model_compile_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_compile_inputs>`
+      dictionary.
+
+         - **type**: ``str``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.metrics
+
+      List of |tf_keras_metrics_link| objects.
+      It is set by the :meth:`DNN_likelihood.__set_metrics <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_metrics>` 
+      method by evaluating
+      the corresponding strings in the :attr:`DNN_likelihood.metrics_string <DNNLikelihood.DNN_likelihood.metrics_string>`
+      attribute.
+
+         - **type**: ``list`` of |tf_keras_metrics_link| objects
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.metrics_string
+
+      List of |tf_keras_metrics_link| strings.
+      It is set by the :meth:`DNN_likelihood.__set_metrics <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_metrics>` 
+      method by parsing the content of the 
+      :attr:`DNN_likelihood.__model_compile_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_compile_inputs>`
+      dictionary.
+
+         - **type**: ``list`` of ``str``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.model
+
+      |tf_keras_model_link| object representing the DNNLikelihood.
+
+         - **type**: |tf_keras_model_link| object
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.name
+
+      Name of the :class:`DNN_likelihood <DNNLikelihood.DNN_likelihood>` object generated from
+      the :option:`name` input argument. If ``None`` is passed, then ``name`` is assigned the value 
+      ``model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_DNNlikelihood"``.
+      It is used to generate output files names.
+          
+         - **type**: ``str`` 
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.ndims
+
+      Number of dimensions of the input vector (i.e. number of 
+      parameters entering in the logpdf). It is automatically set to the corresponding attribute 
+      :attr:`Data.ndims <DNNLikelihood.Data.ndims>` of the :class:`Data <DNNLikelihood.Data>` object
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>`. 
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.npoints_available
+
+      Total number of points available in the class:`Data <DNNLikelihood.Data>` object
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>`, corresponding to the
+      :attr:`Data.npoints <DNNLikelihood.Data.npoints>` attribute.
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.npoints_test
+
+      Number of test points for the current model. It is set by the  
+      :meth:`DNN_likelihood.__init__ <DNNLikelihood.DNN_likelihood.__init__>` method by parsing
+      the item ``"npoints"`` of the 
+      :attr:`DNN_likelihood.__model_data_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_data_inputs>`
+      dictionary.
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.npoints_test_available
+
+      Total number of test points available in the class:`Data <DNNLikelihood.Data>` object
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>`, computed as the rounded product of
+      one minus :attr:`Data.test_fraction <DNNLikelihood.Data.test_fraction>` and
+      :attr:`DNN_likelihood.npoints_available <DNNLikelihood.DNN_likelihood.npoints_available>`.
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.npoints_train
+
+      Number of training points for the current model. It is set by the  
+      :meth:`DNN_likelihood.__init__ <DNNLikelihood.DNN_likelihood.__init__>` method by parsing
+      the item ``"npoints"`` of the 
+      :attr:`DNN_likelihood.__model_data_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_data_inputs>`
+      dictionary.
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.npoints_train_val_available
+
+      Total number of train plus validation points available in the class:`Data <DNNLikelihood.Data>` object
+      :attr:`DNN_likelihood.data <DNNLikelihood.DNN_likelihood.data>`, computed as the rounded product of
+      :attr:`Data.test_fraction <DNNLikelihood.Data.test_fraction>` and
+      :attr:`DNN_likelihood.npoints_available <DNNLikelihood.DNN_likelihood.npoints_available>`.
+
+            - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.npoints_val
+
+      Number of validation points for the current model. It is set by the  
+      :meth:`DNN_likelihood.__init__ <DNNLikelihood.DNN_likelihood.__init__>` method by parsing
+      the item ``"npoints"`` of the 
+      :attr:`DNN_likelihood.__model_data_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_data_inputs>`
+      dictionary.
+
+         - **type**: ``int``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.optimizer
+
+      |tf_keras_optimizers_link| object.
+      It is set by the :meth:`DNN_likelihood.__set_optimizer <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_optimizer>` 
+      method by evaluating the corresponding strings in the 
+      :attr:`DNN_likelihood.optimizer_string <DNNLikelihood.DNN_likelihood.optimizer_string>`
+      attribute.
+
+         - **type**: |tf_keras_optimizers_link| object
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.optimizer_string
+
+      String representing a |tf_keras_optimizers_link| object.
+      It is set by the :meth:`DNN_likelihood.__set_optimizer <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_optimizer>`
+      method by parsing the content of the 
+      :attr:`DNN_likelihood.__model_optimizer_inputs <DNNLikelihood.DNN_likelihood._DNN_likelihood__model_optimizer_inputs>`
+      dictionary.
+
+         - **type**: ``str``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_checkpoints_files
+
+      When the callback |tf_keras_model_checkpoint_callback_link| is present, this attribute represents the absolute path 
+      to the .h5 files containing model checkpoints.
+      It is initialized to ``None`` by the 
+      :meth:`DNN_likelihood.__check_define_output_files <DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_output_files>`
+      method and automatically generated when needed by the
+      :meth:`DNN_likelihood.__set_callbacks <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_callbacks>` method
+      from the attribute 
+      :attr:`DNN_likelihood.output_files_base_name <DNNLikelihood.DNN_likelihood.output_files_base_name>`.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_checkpoints_files
+
+      When the callback |tf_keras_model_checkpoint_callback_link| is present, this attribute represents the absolute path 
+      to the folder where the .h5 files containing model checkpoints are saved.
+      It is initialized to ``None`` by the 
+      :meth:`DNN_likelihood.__check_define_output_files <DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_output_files>`
+      method and automatically generated when needed by the
+      :meth:`DNN_likelihood.__set_callbacks <DNNLikelihood.DNN_likelihood._DNN_likelihood__set_callbacks>` method
+      from the attribute 
+      :attr:`DNN_likelihood.output_folder <DNNLikelihood.DNN_likelihood.output_folder>`.
+             
+         - **type**: ``str`` or ``None``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_checkpoints_files
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_checkpoints_folder
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_figure_plot_losses_keras_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_figures_base_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_figures_folder
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_files_base_name
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_folder
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_history_json_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_idx_h5_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_log_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_model_graph_pdf_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_predictions_json_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_scalers_pickle_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_summary_json_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_tensorboard_log_dir
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_tf_model_h5_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_tf_model_json_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.output_tf_model_onnx_file
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.pars_bounds
+
+      Copy of the :attr:`DNN_likelihood.data.pars_bounds <DNNLikelihood.Data.pars_bounds>`
+      attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+
+         - **type**: ``numpy.ndarray``
+         - **shape**: ``(n_pars,2)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.pars_labels
+
+      Copy of the :attr:`DNN_likelihood.data.pars_labels <DNNLikelihood.Data.pars_labels>`
+      attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+
+         - **type**: ``list``
+         - **shape**: ``[ ]``
+         - **length**: ``n_pars``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.pars_pos_nuis
+
+      Copy of the :attr:`DNN_likelihood.data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>`
+      attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+
+         - **type**: ``list`` or ``numpy.ndarray``
+         - **shape**: ``(n_nuis,)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.pars_pos_poi
+
+      Copy of the :attr:`DNN_likelihood.data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`
+      attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+
+         - **type**: ``list`` or ``numpy.ndarray``
+         - **shape**: ``(n_poi,)``
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.predictions
+
+      Nested dictionary containing all predictions generated by the 
+      :meth:`DNN_likelihood.model_compute_predictions <DNNLikelihood.DNN_likelihood.model_compute_predictions>`
+      method. The contento of this dictionary is saved into the file
+      :attr:`DNN_likelihood.output_predictions_json_file <DNNLikelihood.DNN_likelihood.output_predictions_json_file>`.
+
+         - **type**: ``dict`` with the following structure:
+
+            - *"HPDI"* (value type: ``dict``)
+               Highest posterior density intervals (HPDI) for the parameters. This dictionary has the following structure:
+
+               - *"par"* (value type: ``dict``)
+                  Dictionary corresponding to parameter par. This dictionary has the following structure:
+
+                  - *"pred"* (value type: ``dict``)
+                     Dictionary corresponding to the prediction computed reweighting distributions using the DNN prediction. 
+                     Has the same structure as the item "true".
+                  - *"true"* (value type: ``dict``)
+                     Dictionary corresponding to the prediction computed using the original data. 
+                     This dictionary has the following structure:
+
+                     - *"test"* (value type: ``dict``)
+                        Dictionary corresponding to the prediction computed from test data.
+                        Has the same structure as the items "train" and "val".
+                     - *"train"* (value type: ``dict``)
+                        Dictionary corresponding to the prediction computed from test data. 
+                        Has the same structure as the items "test" and "val".
+                     - *"val"* (value type: ``dict``)
+                        Dictionary corresponding to the prediction computed from test data. 
+                        This dictionary has the following structure:
+
+                        - *"Probability"* (value type: ``dict``)
+                           Dictionary with HPDI corresponding to the interval ``interval``. Default intervals for the
+                           :meth:`DNN_likelihood.model_compute_predictions <DNNLikelihood.DNN_likelihood.model_compute_predictions>`
+                           method are ``"0.5"``, ``"0.6826894921370859"``, ``"0.9544997361036416"``, and ``"0.9973002039367398"``.
+                           The latter three correspond to 1,2,3 standard deviations for a 1D normal distribution (obtained through the
+                           :func:`inference.CI_from_sigma <DNNLikelihood.inference.CI_from_sigma>` function).
+                           This dictionary has the following structure:
+
+                           - *"Bin width"* (value type: ``float``)
+                              Width of the binning used to compute the HPDI (see the 
+                              :func:`inference.HPDI <DNNLikelihood.inference.HPDI>`
+                              function for details). It gives an estimate of the uncertainty due to the algorithm for computing
+                              HPDI.
+                           - *"Intervals"* (value type: ``list`` of ``list``)
+                              List of intervals of parameter values for the given probability.
+                           - *"Number of bins"* (value type: ``int``)
+                              Number of bins used for the computation of HPDI (see the 
+                              :func:`inference.HPDI <DNNLikelihood.inference.HPDI>`
+                              function for details).
+                           - *"Probability"* (value type: ``float``)
+                              Probability interval.
+
+            - *"HPDI_error"* (value type: ``dict``)
+               Errors on the HPDI quantified as differences (absolute and relative) between the predictions of HPDI computed
+               with input data and with DNN reweight. This dictionary has the following structure:
+
+               - *"par"* (value type: ``dict``)
+                  Dictionary corresponding to parameter par. This dictionary has the following structure:
+
+                  - *"test"* (value type: ``dict``)
+                     Dictionary corresponding to the prediction computed from test data.
+                     Has the same structure as the items "train" and "val".
+                  - *"train"* (value type: ``dict``)
+                     Dictionary corresponding to the prediction computed from test data. 
+                     Has the same structure as the items "test" and "val".
+                  - *"val"* (value type: ``dict``)
+                     Dictionary corresponding to the prediction computed from test data. 
+                     This dictionary has the following structure:
+
+                     - *"Probability"* (value type: ``dict``)
+                        Dictionary with HPDI corresponding to the interval ``interval``. Default intervals for the
+                        :meth:`DNN_likelihood.model_compute_predictions <DNNLikelihood.DNN_likelihood.model_compute_predictions>`
+                        method are ``"0.5"``, ``"0.6826894921370859"``, ``"0.9544997361036416"``, and ``"0.9973002039367398"``.
+                        The latter three correspond to 1,2,3 standard deviations for a 1D normal distribution (obtained through the
+                        :func:`inference.CI_from_sigma <DNNLikelihood.inference.CI_from_sigma>` function).
+                        This dictionary has the following structure:
+
+                        - *"Absolute error"* (value type: ``list`` of ``list``)
+                           List of absolute errors (computed as ``true-pred``) for each boundary of the intervals (see the 
+                           :func:`inference.HPDI_error <DNNLikelihood.inference.HPDI_error>`
+                           function for details)
+                        - *"Probability"* (value type: ``float``)
+                           Probability interval.
+                        - *"Relative error"* (value type: ``list`` of ``list``)
+                           List of relative errors (computed as ``(true-pred)/true``) for each boundary of the intervals (see the 
+                           :func:`inference.HPDI_error <DNNLikelihood.inference.HPDI_error>`
+                           function for details)
+
+            - *"KS"* (value type: ``dict``)
+               Weighted Kolmogorov-Smirnov test statistics and p-values for two sample distributions for each parameter
+               (see the :func:`inference.ks_w <DNNLikelihood.inference.ks_w>` function for details).
+               This dictionary has the following structure:
+
+               - *"Test vs pred on train"* (value type: ``list``, shape: ``(n_pars,2)``)
+                  List of KS test statistics and p-value for each parameter for two sample KS test between input test data and
+                  DNN reweighted prediction on train data.
+               - *"Test vs pred on val"* (value type: ``list``, shape: ``(n_pars,2)``)
+                  List of KS test statistics and p-value for each parameter for two sample KS test between input test data and
+                  DNN reweighted prediction on validation data.
+               - *"Train vs pred on train"* (value type: ``list``, shape: ``(n_pars,2)``)
+                  List of KS test statistics and p-value for each parameter for two sample KS test between input train data and
+                  DNN reweighted prediction on train data.
+               - *"Val vs pred on test"* (value type: ``list``, shape: ``(n_pars,2)``)
+                  List of KS test statistics and p-value for each parameter for two sample KS test between input validation data and
+                  DNN reweighted prediction on test data.
+
+            - *"KS medians"* (value type: ``dict``)
+               Median over parameters of the KS p-values for two sample distributions.
+               This dictionary has the following structure:
+
+               - *"Test vs pred on train"* (value type: ``float``)
+                  Median over parameters of the p-values for two sample KS test between input test data and
+                  DNN reweighted prediction on train data.
+               - *"Test vs pred on val"* (value type: ``float``)
+                  Median over parameters of the p-values for two sample KS test between input test data and
+                  DNN reweighted prediction on validation data.
+               - *"Train vs pred on train"* (value type: ``float``)
+                  Median over parameters of the p-values for two sample KS test between input train data and
+                  DNN reweighted prediction on train data.
+               - *"Val vs pred on test"* (value type: ``float``)
+                  Median over parameters of the p-values for two sample KS test between input validation data and
+                  DNN reweighted prediction on test data.
+
+            - *"Metrics on scaled data"* (value type: ``dict``)
+               Value of all metrics (loss and metrics) evaluated on scaled data for train/val/test data.
+               This dictionary has the following structure:
+
+               - *"metric_best"* (value type: ``float``)
+                  Value of each metric evaluated on train data.
+                  This key is present for all metric with the corresponding full name of the metric, such as,
+                  for instance, ``"mean_squared_error_best", etc. Metrics include ``"loss"``.
+               - *"test_metric_best"* (value type: ``float``)
+                  Value of each metric evaluated on test data.
+                  This key is present for all metric with the corresponding full name of the metric, such as,
+                  for instance, ``"test_mean_squared_error_best", etc. Metrics include ``"loss"``.
+               - *"val_metric_best"* (value type: ``float``)
+                  Value of each metric evaluated on validation data.
+                  This key is present for all metric with the corresponding full name of the metric, such as,
+                  for instance, ``"val_mean_squared_error_best", etc. Metrics include ``"loss"``.
+         
+            - *"Metrics on unscaled data"* (value type: ``dict``)
+               Value of all metrics (loss and metrics) evaluated on original data for train/val/test data.
+               This dictionary has the same structure of the previous one with all keys having the suffix "_unscaled".
+
+            - *"Prediction time"* (value type: ``float``)
+               Averege prediction time per point in second with batch size equal to 
+               :attr:`DNN_likelihood.batch_size <DNNLikelihood.DNN_likelihood.batch_size>`. 
+
+         - **schematic example**:
+
+            .. code-block:: python
+
+               {'HPDI': {'par_1': {'pred': {'test': {'prob_1': {'Bin width': float,
+                                                                'Intervals': list,
+                                                                'Number of bins': int,
+                                                                'Probability': float
+                                                               },
+                                                     ...,
+                                                     {'prob_n': ...
+                                                     },
+                                            'train': ...,
+                                            'val': ...
+                                           },
+                                   'true': ...},
+                         ...,
+                         'par_n': ...
+                        },
+                'HPDI_error': {'par_1': {'test': {'prob_1': {'Absolute error': list,
+                                                             'Probability': float,
+                                                             'Relative error': list
+                                                            },
+                                                  ...,
+                                                  {'prob_n': ...
+                                                  },
+                                         'train': ...,
+                                         'val': '...
+                                        },
+                               ...,
+                               'par_n': ...
+                              },
+                'KS': {'Test vs pred on train': list,
+                       'Test vs pred on val': list,
+                       'Train vs pred on train': list,
+                       'Val vs pred on test': list},
+                'KS medians': {'Test vs pred on train': float,
+                               'Test vs pred on val': float,
+                               'Train vs pred on train': float,
+                               'Val vs pred on test': float},
+                'Metrics on scaled data': {'loss_best': float,
+                                           'mean_absolute_error_best': float,
+                                           ...
+                                          },
+                'Metrics on unscaled data': {'loss_best_unscaled': float,
+                                             'mean_absolute_error_best_unscaled': float,
+                                             ...
+                                            },
+                'Prediction time': float}
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.same_data
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.scalerX
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.scalerX_bool
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.scalerY
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.scalerY_bool
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.seed
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.standalone
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.verbose
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.W_train
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.weighted
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.X_test
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.X_train
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.X_val
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.Y_test
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.Y_train
+
+   .. py:attribute:: DNNLikelihood.DNN_likelihood.Y_val
 
 
 Methods
 """""""
 
-    .. automethod:: DNNLikelihood.DNN_likelihood.__init__
+   .. automethod:: DNNLikelihood.DNN_likelihood.__init__
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_seed
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_resources
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_dtype
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_input_files
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_data
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_output_files
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_pars_info
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_name
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_member_name
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_define_ensemble_name_folder
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_npoints
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_seed
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_create_ensemble_folder
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_dtype
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_create_member_results_folder
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_data
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_summary_log
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__check_npoints
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_history
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_pars_info
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_model
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_model_hyperparameters
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_scalers
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_tf_objects
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_indices
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_summary_json_and_log
 
-    .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_predictions
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_history
 
-    .. automethod:: DNNLikelihood.DNN_likelihood.get_available_gpus
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_model
 
-    .. automethod:: DNNLikelihood.DNN_likelihood.get_available_cpu
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_scalers
 
-    .. automethod:: DNNLikelihood.DNN_likelihood.set_gpus
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_data_indices
+
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__load_predictions
+
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_optimizer
+
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_loss
+
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_metrics
+
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_callbacks
+
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_epochs_to_run
+
+   .. automethod:: DNNLikelihood.DNN_likelihood._DNN_likelihood__set_pars_labels
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.compute_sample_weights
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.define_scalers
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.generate_train_data
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.generate_test_data
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_define
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_compile
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_build
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_train
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_predict
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_predict_scalar
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_compute_max_logpdf
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_evaluate
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.generate_fig_base_title
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.plot_training_history
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.plot_pars_coverage
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.plot_lik_distribution
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.plot_corners_2samp
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_compute_predictions
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_log
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_data_indices
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_model_json
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_model_h5
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_model_onnx
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_history_json
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_summary_json
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.generate_summary_text
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_predictions_json
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_scalers
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.save_model_graph_pdf
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.model_store
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.show_figures
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.mean_error
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.mean_percentage_error
+
+   .. automethod:: DNNLikelihood.DNN_likelihood.R2_metric
+
+   .. py:method:: DNNLikelihood.DNN_likelihood.get_available_gpus
+
+      Method inherited from the :class:`Resources <DNNLikelihood.Resources>` object.
+      See the documentation of :meth:`Resources.get_available_gpus <DNNLikelihood.Resources.get_available_gpus>`.
+
+   .. py:method:: DNNLikelihood.DNN_likelihood.get_available_cpu
+
+      Method inherited from the :class:`Resources <DNNLikelihood.Resources>` object.
+      See the documentation of :meth:`Resources.get_available_cpu <DNNLikelihood.Resources.get_available_cpu>`.
+
+   .. py:method:: DNNLikelihood.DNN_likelihood.set_gpus
+
+      Method inherited from the :class:`Resources <DNNLikelihood.Resources>` object.
+      See the documentation of :meth:`Resources.set_gpus <DNNLikelihood.Resources.set_gpus>`.
+      
+   .. py:method:: DNNLikelihood.DNN_likelihood.set_gpus_env
+
+      Method inherited from the :class:`Resources <DNNLikelihood.Resources>` object.
+      See the documentation of :meth:`Resources.set_gpus_env <DNNLikelihood.Resources.set_gpus_env>`.
+
+   .. py:method:: DNNLikelihood.DNN_likelihood.set_verbosity
+
+      Method inherited from the :class:`Verbosity <DNNLikelihood.Verbosity>` object.
+      See the documentation of :meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>`.
+
+
+.. |numpy_link| raw:: html
+    
+   <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a>
+
+.. |Numpy_link| raw:: html
+    
+   <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a>
+
+.. |standard_scaler_link| raw:: html
+    
+   <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScaler</a>
+
+.. |tf_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/"  target="_blank"> tensorflow</a>
+
+.. |tf_keras_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras"  target="_blank"> tf.keras</a>
+
+.. |tf_keras_model_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model"  target="_blank"> tf.keras.Model</a>
+
+.. |tf_keras_layers_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers"  target="_blank"> layers</a>
+
+.. |tf_keras_batch_normalization_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization"  target="_blank"> batch normalization</a>
+
+.. |tf_keras_selu_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations/selu"  target="_blank"> selu</a> 
+
+.. |tf_keras_lecun_normal_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers/lecun_normal"  target="_blank"> lecun_normal</a> 
+
+.. |tf_keras_dropout_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout"  target="_blank"> Dropout</a> 
+
+.. |tf_keras_alpha_dropout_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/AlphaDropout"  target="_blank"> AlphaDropout</a> 
+
+.. |tf_keras_initializers_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers"  target="_blank"> kerner initializers</a> 
+
+.. |tf_keras_activations_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a> 
+
+.. |tf_keras_optimizers_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> tf.keras.optimizers</a> 
+
+.. |tf_keras_optimizers_link_2| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> optimizer</a> 
+
+.. |tf_keras_model_compile_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#compile"  target="_blank"> tf.keras.Model.compile</a>
+
+.. |tf_keras_model_fit_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit"  target="_blank"> tf.keras.Model.fit</a>
+
+.. |tf_keras_losses_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/losses"  target="_blank"> loss</a> 
+
+.. |tf_keras_metrics_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics"  target="_blank"> metrics</a> 
+
+.. |tf_keras_callbacks_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> tf.keras.callbacks</a> 
+
+.. |tf_keras_callbacks_link_2| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> callback</a> 
+
+.. |tf_keras_callbacks_link_3| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> callbacks</a> 
+
+.. |livelossplot_link| raw:: html
+    
+   <a href="https://github.com/stared/livelossplot/"  target="_blank"> livelossplot</a> 
+
+.. |tf_keras_model_checkpoint_callback_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint"  target="_blank"> tf.keras.callbacks.ModelCheckpoint</a> 

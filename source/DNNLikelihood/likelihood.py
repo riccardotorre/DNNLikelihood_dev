@@ -14,13 +14,13 @@ import ipywidgets as widgets
 import matplotlib.pyplot as plt
 import numpy as np
 
-from . import inference, show_prints, utils
-from .show_prints import print
+from . import inference, utils
+from .show_prints import Verbosity, print
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 
-class Likelihood(show_prints.Verbosity):
+class Likelihood(Verbosity):
     """
     This class is a container for the ``Likelihood`` object, storing all information of the likelihood function.
     The object can be directly created or obtained from an ATLAS histfactory workspace through the 
@@ -382,20 +382,20 @@ class Likelihood(show_prints.Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_json_file, verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "saved", 
-                               "file name": path.split(self.output_json_file)[-1], 
-                               "file path": self.output_json_file}
-        dictionary = utils.dic_minus_keys(self.__dict__, ["log", "logpdf", "verbose",
-                                                          "input_file", "input_json_file",
+        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file","input_json_file",
                                                           "input_log_file","input_pickle_file",
-                                                          "X_logpdf_max", "Y_logpdf_max"
-                                                          "X_prof_logpdf_max", "Y_prof_logpdf_max"
-                                                          "X_prof_logpdf_max_tmp", "Y_prof_logpdf_max_tmp"])
+                                                          "log","logpdf","verbose",
+                                                          "X_logpdf_max","X_prof_logpdf_max",
+                                                          "X_prof_logpdf_max_tmp","Y_logpdf_max",
+                                                          "Y_prof_logpdf_max","Y_prof_logpdf_max_tmp"])
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved",
+                               "file name": path.split(self.output_json_file)[-1],
+                               "file path": self.output_json_file}
         print("Likelihood json file", self.output_json_file,"saved in", str(end-start), "s.",show=verbose)
 
     def save_pickle(self, overwrite=False, verbose=None):
@@ -453,9 +453,6 @@ class Likelihood(show_prints.Verbosity):
         if not overwrite:
             utils.check_rename_file(
                 self.output_pickle_file, verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {
-            "action": "saved", "file name": path.split(self.output_pickle_file)[-1], "file path": self.output_pickle_file}
         pickle_out = open(self.output_pickle_file, "wb")
         cloudpickle.dump(self.logpdf, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.X_logpdf_max, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
@@ -464,6 +461,10 @@ class Likelihood(show_prints.Verbosity):
         pickle.dump(self.Y_prof_logpdf_max, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved",
+                               "file name": path.split(self.output_pickle_file)[-1],
+                               "file path": self.output_pickle_file}
         print("Likelihood pickle file", self.output_pickle_file, "saved in", str(end-start), "s.",show=verbose)
 
     def save(self, overwrite=False, verbose=True):
@@ -568,7 +569,7 @@ class Likelihood(show_prints.Verbosity):
             - :attr:`Likelihood.script_file <DNNLikelihood.Likelihood.script_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        with open(self.script_file, 'w') as out_file:
+        with open(self.script_file, "w") as out_file:
             out_file.write("import sys\n" +
                            "sys.path.append('../../source')\n" +
                            "import DNNLikelihood\n"+"\n" +
@@ -590,10 +591,12 @@ class Likelihood(show_prints.Verbosity):
                            "ndims = lik.ndims\n" +
                            "output_folder = lik.output_folder"
                            )
-        print("File", self.script_file, "correctly generated.",show=verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "saved", "file name": path.split(self.script_file)[-1], "file path": self.script_file}
+        self.log[timestamp] = {"action": "saved", 
+                               "file name": path.split(self.script_file)[-1], 
+                               "file path": self.script_file}
         self.save_log(overwrite=True, verbose=verbose_sub)
+        print("File", self.script_file, "correctly generated.", show=verbose)
 
     def logpdf_fn(self, x_pars, *logpdf_args):
         """
@@ -798,7 +801,6 @@ class Likelihood(show_prints.Verbosity):
                 import ipywidgets as widgets
             except:
                 progressbar = False
-                show_prints.verbose = True
                 print("If you want to show a progress bar please install the ipywidgets package.",show=verbose)
         else:
             progressbar = False
@@ -846,11 +848,14 @@ class Likelihood(show_prints.Verbosity):
                 self.X_prof_logpdf_max = X_tmp
                 self.Y_prof_logpdf_max = Y_tmp
         end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "computed profiled maxima", 
+                               "pars": pars, 
+                               "pars_ranges": pars_ranges, 
+                               "number of maxima": len(X_tmp)}
+        self.save_log(overwrite=True, verbose=verbose_sub)
         print("Log-pdf values lie in the range [",np.min(self.Y_prof_logpdf_max),",",np.max(self.Y_prof_logpdf_max),"]",show=verbose)
         print(len(pars_vals_bounded),"local maxima computed in", end-start, "s.",show=verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "computed profiled maxima", "pars": pars, "pars_ranges": pars_ranges, "number of maxima": len(X_tmp)}
-        self.save_log(overwrite=True, verbose=verbose_sub)
 
     def plot_logpdf_par(self, pars=[[0,0,1]], npoints=100, pars_init=None, pars_labels="original", overwrite=False, verbose=None):
         """

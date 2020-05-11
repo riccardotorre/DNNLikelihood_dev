@@ -43,7 +43,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Resources management" href="set_resources.html" />
+    <link rel="next" title="Resources management" href="resources.html" />
     <link rel="prev" title="The DNN_likelihood object" href="DNN_likelihood.html" /> 
 </head>
 
@@ -106,13 +106,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#class">Class</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#arguments">Arguments</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#additional-attributes">Additional attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#attributes">Attributes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#methods">Methods</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="set_resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
@@ -225,21 +225,21 @@
 <h2>Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="DNNLikelihood.DNN_likelihood_ensemble">
-<em class="property">class </em><code class="sig-prename descclassname">DNNLikelihood.</code><code class="sig-name descname">DNN_likelihood_ensemble</code><span class="sig-paren">(</span><em class="sig-param">DNNLik_ensemble_input_folder=None</em>, <em class="sig-param">ensemble_name=None</em>, <em class="sig-param">data_sample=None</em>, <em class="sig-param">data_sample_input_filename=None</em>, <em class="sig-param">ensemble_folder=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">seed=1</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">same_data=True</em>, <em class="sig-param">model_data_ensemble_kwargs=None</em>, <em class="sig-param">model_define_ensemble_kwargs=None</em>, <em class="sig-param">model_optimizers_ensemble_kwargs=None</em>, <em class="sig-param">model_compile_ensemble_kwargs=None</em>, <em class="sig-param">model_callbacks_ensemble_kwargs=None</em>, <em class="sig-param">model_train_ensemble_kwargs=None</em>, <em class="sig-param">gpus_id_list='all'</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/DNN_likelihood_ensemble.html#DNN_likelihood_ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DNN_likelihood_ensemble" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">DNNLikelihood.</code><code class="sig-name descname">DNN_likelihood_ensemble</code><span class="sig-paren">(</span><em class="sig-param">DNNLik_ensemble_input_folder=None</em>, <em class="sig-param">ensemble_name=None</em>, <em class="sig-param">data=None</em>, <em class="sig-param">input_data_file=None</em>, <em class="sig-param">ensemble_folder=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">seed=1</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">same_data=True</em>, <em class="sig-param">model_data_ensemble_inputs=None</em>, <em class="sig-param">model_define_ensemble_inputs=None</em>, <em class="sig-param">model_optimizers_ensemble_inputs=None</em>, <em class="sig-param">model_compile_ensemble_inputs=None</em>, <em class="sig-param">model_callbacks_ensemble_kwargs=None</em>, <em class="sig-param">model_train_ensemble_kwargs=None</em>, <em class="sig-param">gpus_id_list='all'</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/DNN_likelihood_ensemble.html#DNN_likelihood_ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DNN_likelihood_ensemble" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <div class="section" id="arguments">
 <h3>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h3>
 </div>
-<div class="section" id="additional-attributes">
-<h3>Additional attributes<a class="headerlink" href="#additional-attributes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="methods">
 <h3>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="method">
 <dt id="DNNLikelihood.DNN_likelihood_ensemble.__init__">
-<code class="sig-prename descclassname">DNN_likelihood_ensemble.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">DNNLik_ensemble_input_folder=None</em>, <em class="sig-param">ensemble_name=None</em>, <em class="sig-param">data_sample=None</em>, <em class="sig-param">data_sample_input_filename=None</em>, <em class="sig-param">ensemble_folder=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">seed=1</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">same_data=True</em>, <em class="sig-param">model_data_ensemble_kwargs=None</em>, <em class="sig-param">model_define_ensemble_kwargs=None</em>, <em class="sig-param">model_optimizers_ensemble_kwargs=None</em>, <em class="sig-param">model_compile_ensemble_kwargs=None</em>, <em class="sig-param">model_callbacks_ensemble_kwargs=None</em>, <em class="sig-param">model_train_ensemble_kwargs=None</em>, <em class="sig-param">gpus_id_list='all'</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/DNN_likelihood_ensemble.html#DNN_likelihood_ensemble.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DNN_likelihood_ensemble.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">DNN_likelihood_ensemble.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">DNNLik_ensemble_input_folder=None</em>, <em class="sig-param">ensemble_name=None</em>, <em class="sig-param">data=None</em>, <em class="sig-param">input_data_file=None</em>, <em class="sig-param">ensemble_folder=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">seed=1</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">same_data=True</em>, <em class="sig-param">model_data_ensemble_inputs=None</em>, <em class="sig-param">model_define_ensemble_inputs=None</em>, <em class="sig-param">model_optimizers_ensemble_inputs=None</em>, <em class="sig-param">model_compile_ensemble_inputs=None</em>, <em class="sig-param">model_callbacks_ensemble_kwargs=None</em>, <em class="sig-param">model_train_ensemble_kwargs=None</em>, <em class="sig-param">gpus_id_list='all'</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/DNN_likelihood_ensemble.html#DNN_likelihood_ensemble.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DNN_likelihood_ensemble.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -256,7 +256,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="set_resources.html" class="btn btn-neutral float-right" title="Resources management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="resources.html" class="btn btn-neutral float-right" title="Resources management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="DNN_likelihood.html" class="btn btn-neutral float-left" title="The DNN_likelihood object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

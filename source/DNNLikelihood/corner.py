@@ -14,7 +14,7 @@ try:
 except ImportError:
     gaussian_filter = None
 
-__all__ = ["corner", "hist2d", "quantile"]
+__all__ = ["corner", "hist2d", "quantile", "get_1d_hist","extend_corner_range"]
 
 
 def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
@@ -696,3 +696,90 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
 
     ax.set_xlim(range[0])
     ax.set_ylim(range[1])
+
+def get_1d_hist(i_dim, xs, nbins=25, ranges=None, weights=None, intervals=None, normalize1d=False):
+    """Assumes smooth1d = True
+    """
+    # Deal with 1D sample lists.
+    xs = np.atleast_1d(xs)
+    if len(xs.shape) == 1:
+        xs = np.atleast_2d(xs)
+    else:
+        assert len(xs.shape) == 2, "The input sample array must be 1- or 2-D."
+        xs = xs.T
+    assert xs.shape[0] <= xs.shape[1], "I don't believe that you want more " \
+                                       "dimensions than samples!"
+    # Parse the weight array.
+    if weights is not None:
+        weights = np.asarray(weights)
+        if weights.ndim != 1:
+            raise ValueError("Weights must be 1-D")
+        if xs.shape[1] != weights.shape[0]:
+            raise ValueError("Lengths of weights must match number of samples")
+    # Parse the parameter ranges.
+    if ranges is None:
+        ranges = [[x.min(), x.max()] for x in xs]
+        # Check for parameters that never change.
+        m = np.array([e[0] == e[1] for e in ranges], dtype=bool)
+        if np.any(m):
+            raise ValueError(("It looks like the parameter(s) in "
+                              "column(s) {0} have no dynamic range. "
+                              "Please provide a `range` argument.")
+                             .format(", ".join(map(
+                                 "{0}".format, np.arange(len(m))[m]))))
+    else:
+        # If any of the extents are percentiles, convert them to ranges.
+        # Also make sure it's a normal list.
+        ranges = list(ranges)
+        for i, _ in enumerate(ranges):
+            try:
+                emin, emax = ranges[i]
+            except TypeError:
+                q = [0.5 - 0.5*ranges[i], 0.5 + 0.5*ranges[i]]
+                ranges[i] = quantile(xs[i], q, weights=weights)
+    if len(ranges) != xs.shape[0]:
+        raise ValueError("Dimension mismatch between samples and range")
+    # Parse the bin specifications.
+    try:
+        bins = [int(nbins) for _ in ranges]
+    except TypeError:
+        if len(nbins) != len(ranges):
+            raise ValueError("Dimension mismatch between bins and range")
+    x = xs[i_dim]
+    # Deal with masked arrays.
+    if hasattr(x, "compressed"):
+            x = x.compressed()
+    # Get 1D curve.
+    n, b = np.histogram(
+        x, bins=bins[i_dim], weights=weights, range=np.sort(ranges[i_dim]))
+    if normalize1d:
+        n = n/n.sum()
+    n = gaussian_filter(n, True)
+    x0 = np.array(list(zip(b[:-1], b[1:]))).flatten()
+    y0 = np.array(list(zip(n, n))).flatten()
+    # Generate 1D curves in intervals.
+    result = []
+    if intervals is None:
+        result.append([x0, y0])
+    else:
+        for interval in intervals:
+            tmp = np.transpose(np.append(x0, y0).reshape([2, len(x0)]))
+            tmp = tmp[(tmp[:, 0] >= interval[0])*(tmp[:, 0] <= interval[1])]
+            result.append([tmp[:, 0], tmp[:, 1]])
+    return result
+
+def extend_corner_range(S1,S2,ilist,percent):
+    res = []
+    for i in ilist:
+        minn = np.min([np.min(S1[:,i]),np.min(S2[:,i])])
+        maxx = np.max([np.max(S1[:,i]),np.max(S2[:,i])])
+        if minn<0:
+            minn = minn*(1+percent/100)
+        else:
+            minn = minn*(1-percent/100)
+        if maxx>0:
+            maxx = maxx*(1+percent/100)
+        else:
+            maxx = maxx*(1-percent/100)
+        res.append([minn,maxx])
+    return res

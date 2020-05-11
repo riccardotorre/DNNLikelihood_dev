@@ -3,7 +3,7 @@ sys.dont_write_bytecode = True
 
 from .show_prints import Verbosity
 from .show_prints import print
-from . import set_resources
+from .resources import Resources
 from . import utils
 from . import inference
 from . import corner

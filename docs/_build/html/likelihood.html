@@ -112,7 +112,7 @@
 <li class="toctree-l2"><a class="reference internal" href="data.html">The Data object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
@@ -315,7 +315,7 @@ and initialize the <a class="reference internal" href="#DNNLikelihood.Likelihood
 with a <a class="reference internal" href="#DNNLikelihood.Likelihood.save_json" title="DNNLikelihood.Likelihood.save_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_json</span></code></a>,
 <a class="reference internal" href="#DNNLikelihood.Likelihood.save_log" title="DNNLikelihood.Likelihood.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_log</span></code></a>,
 and <a class="reference internal" href="#DNNLikelihood.Likelihood.save_pickle" title="DNNLikelihood.Likelihood.save_pickle"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_pickle</span></code></a> suffix.</p>
-<p>The object can also be initialized importing it from saved files. In this case only the <a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> argument needs to be specified,
+<p>The object can also be initialized importing it from saved files. In this case only the <a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> argument needs to be specified,
 while all other arguments are ignored. One could also optionally specify a new <a class="reference internal" href="#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a>. In case this is not specified, the
 <a class="reference internal" href="#DNNLikelihood.Likelihood.output_folder" title="DNNLikelihood.Likelihood.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.output_folder</span></code></a> attribute from the imported object is used and the object is
 saved overwriting existing files. If a new <a class="reference internal" href="#cmdoption-arg-output-folder"><code class="xref std std-option docutils literal notranslate"><span class="pre">output_folder</span></code></a> is specified, then the updated object is saved to the new location.
@@ -557,7 +557,7 @@ It is used to build the <a class="reference internal" href="#DNNLikelihood.Likel
 <dt id="cmdoption-arg-pars-bounds">
 <code class="sig-name descname">pars_bounds</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-arg-pars-bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing containing bounds for the parameters.
-It is used to build the <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> attribute.</p>
+It is used to build the <a class="reference internal" href="sampler.html#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> attribute.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
@@ -663,7 +663,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 <dl class="attribute">
 <dt id="DNNLikelihood.Likelihood.input_file">
 <code class="sig-prename descclassname">DNNLikelihood.Likelihood.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Likelihood.input_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a>.
+<dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a>.
 Whenever this parameter is not <code class="docutils literal notranslate"><span class="pre">None</span></code> the <a class="reference internal" href="#DNNLikelihood.Likelihood" title="DNNLikelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object
 is reconstructed from input files (see the <a class="reference internal" href="#DNNLikelihood.Likelihood.__init__" title="DNNLikelihood.Likelihood.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Likelihood.__init__</span></code></a>
 method for details).</p>
@@ -854,7 +854,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 <dt id="DNNLikelihood.Likelihood.logpdf">
 <code class="sig-prename descclassname">DNNLikelihood.Likelihood.</code><code class="sig-name descname">logpdf</code><a class="headerlink" href="#DNNLikelihood.Likelihood.logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="#cmdoption-arg-logpdf"><code class="xref std std-option docutils literal notranslate"><span class="pre">logpdf</span></code></a>. When this input is <code class="docutils literal notranslate"><span class="pre">None</span></code> the argument
-<a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> should be given to import the attribute from files.
+<a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> should be given to import the attribute from files.
 This function is used to construct the <a class="reference internal" href="#DNNLikelihood.Likelihood.logpdf_fn" title="DNNLikelihood.Likelihood.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Likelihood.logpdf_fn</span></code></a> method.</p>
 <blockquote>
 <div><ul class="simple">
@@ -1040,7 +1040,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 <dl class="attribute">
 <dt id="DNNLikelihood.Likelihood.verbose">
 <code class="sig-prename descclassname">DNNLikelihood.Likelihood.</code><code class="sig-name descname">verbose</code><a class="headerlink" href="#DNNLikelihood.Likelihood.verbose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="#cmdoption-arg-verbose"><code class="xref std std-option docutils literal notranslate"><span class="pre">verbose</span></code></a>.
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="sampler.html#cmdoption-arg-verbose"><code class="xref std std-option docutils literal notranslate"><span class="pre">verbose</span></code></a>.
 It represents the verbosity mode of the
 <a class="reference internal" href="#DNNLikelihood.Likelihood.__init__" title="DNNLikelihood.Likelihood.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Likelihood.__init__</span></code></a>
 method and the default verbosity mode of all class methods that accept a
@@ -1162,16 +1162,16 @@ This is a temporary attribute and it is not saved by the
 <dt id="DNNLikelihood.Likelihood.__init__">
 <code class="sig-prename descclassname">Likelihood.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">logpdf=None</em>, <em class="sig-param">logpdf_args=None</em>, <em class="sig-param">pars_pos_poi=None</em>, <em class="sig-param">pars_pos_nuis=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_labels=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">input_file=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/likelihood.html#Likelihood.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Likelihood.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="#DNNLikelihood.Likelihood" title="DNNLikelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object can be initialized in two different ways, depending on the value of
-the <a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> argument.</p>
+the <a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> argument.</p>
 <ul>
-<li><p><a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
+<li><p><a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
 <blockquote>
 <div><p>All other arguments are parsed and saved in corresponding attributes. If no <a class="reference internal" href="#cmdoption-arg-name"><code class="xref std std-option docutils literal notranslate"><span class="pre">name</span></code></a> is given,
 then one is created.
 The object is saved upon creation through the <a class="reference internal" href="#DNNLikelihood.Likelihood.save" title="DNNLikelihood.Likelihood.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Likelihood.save</span></code></a> method.</p>
 </div></blockquote>
 </li>
-<li><p><a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<li><p><a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 <blockquote>
 <div><p>The object is reconstructed from the input files through the private method
 <a class="reference internal" href="#DNNLikelihood.Likelihood._Likelihood__load" title="DNNLikelihood.Likelihood._Likelihood__load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Likelihood.__load</span></code></a>
@@ -1190,7 +1190,7 @@ is set from the input file, otherwise it is set to the input argument.</p>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="#DNNLikelihood.Likelihood.output_log_file" title="DNNLikelihood.Likelihood.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.output_log_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="#DNNLikelihood.Likelihood.output_json_file" title="DNNLikelihood.Likelihood.output_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.output_json_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="#DNNLikelihood.Likelihood.output_pickle_file" title="DNNLikelihood.Likelihood.output_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.output_pickle_file</span></code></a> (only if <a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Likelihood.output_pickle_file" title="DNNLikelihood.Likelihood.output_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.output_pickle_file</span></code></a> (only if <a class="reference internal" href="sampler.html#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -1238,10 +1238,10 @@ otherwise it appends the suffix “_likelihood” (preventing duplication if it 
 <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_pos_nuis" title="DNNLikelihood.Likelihood.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_pos_nuis</span></code></a>,
 <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_pos_poi" title="DNNLikelihood.Likelihood.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_pos_poi</span></code></a>,
 <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_labels" title="DNNLikelihood.Likelihood.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_labels</span></code></a>,
-and <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a>
+and <a class="reference internal" href="sampler.html#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a>
 attributes and converts <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_pos_nuis" title="DNNLikelihood.Likelihood.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_pos_nuis</span></code></a>,
 <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_pos_poi" title="DNNLikelihood.Likelihood.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_pos_poi</span></code></a>, and
-and <a class="reference internal" href="#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> to <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> arrays.
+and <a class="reference internal" href="sampler.html#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> to <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> arrays.
 If no parameters positions are specified, all parameters are assumed to be parameters of interest.
 If only the position of the parameters of interest or of the nuisance parameters is specified,
 the other is automatically generated by matching dimensions.
@@ -1533,7 +1533,7 @@ See the <a class="reference internal" href="show_prints.html#verbosity-mode"><sp
 <p><a class="reference internal" href="#DNNLikelihood.Likelihood.logpdf_args" title="DNNLikelihood.Likelihood.logpdf_args"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.logpdf_args</span></code></a></p>
 <p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.ndims</span></code></p>
 <p><a class="reference internal" href="#DNNLikelihood.Likelihood.output_folder" title="DNNLikelihood.Likelihood.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.output_folder</span></code></a></p>
-<p><a class="reference internal" href="#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a></p>
+<p><a class="reference internal" href="sampler.html#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a></p>
 <p><a class="reference internal" href="#DNNLikelihood.Likelihood.pars_init" title="DNNLikelihood.Likelihood.pars_init"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_init</span></code></a></p>
 <p><a class="reference internal" href="#DNNLikelihood.Likelihood.pars_labels" title="DNNLikelihood.Likelihood.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_labels</span></code></a></p>
 <p><a class="reference internal" href="#DNNLikelihood.Likelihood.pars_pos_nuis" title="DNNLikelihood.Likelihood.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_pos_nuis</span></code></a></p>
@@ -1619,7 +1619,7 @@ while if <a class="reference internal" href="#DNNLikelihood.Likelihood.logpdf" t
 i.e. accepts an array of <code class="docutils literal notranslate"><span class="pre">x_pars</span></code> arrays and returns an array of logpdf values, then the function returns an array.
 Moreover, the <a class="reference internal" href="#DNNLikelihood.Likelihood.logpdf_fn" title="DNNLikelihood.Likelihood.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Likelihood.logpdf_fn</span></code></a> method is constructed to return the
 logpdf value <code class="docutils literal notranslate"><span class="pre">-np.inf</span></code> if any of the parameters lies outside
-<a class="reference internal" href="#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> or the
+<a class="reference internal" href="sampler.html#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> or the
 <a class="reference internal" href="#DNNLikelihood.Likelihood.logpdf" title="DNNLikelihood.Likelihood.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.logpdf</span></code></a> function returns <code class="docutils literal notranslate"><span class="pre">nan</span></code>.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -1716,7 +1716,7 @@ See the <a class="reference internal" href="show_prints.html#verbosity-mode"><sp
 For the list of prameters <code class="docutils literal notranslate"><span class="pre">pars</span></code>, ranges are passed as <code class="docutils literal notranslate"><span class="pre">pars_ranges</span></code> in the form <code class="docutils literal notranslate"><span class="pre">(par_min,par_max,n_points)</span></code>
 and an array of points is generated according to the argument <code class="docutils literal notranslate"><span class="pre">spacing</span></code> (either a grid or a random
 flat distribution) in the interval. The points in the grid falling outside
-<a class="reference internal" href="#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> are automatically removed.
+<a class="reference internal" href="sampler.html#DNNLikelihood.Likelihood.pars_bounds" title="DNNLikelihood.Likelihood.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.pars_bounds</span></code></a> are automatically removed.
 The values of the parameters and of logpdf at the local maxima are stored in the attributes
 <a class="reference internal" href="#DNNLikelihood.Likelihood.X_prof_logpdf_max" title="DNNLikelihood.Likelihood.X_prof_logpdf_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.X_prof_logpdf_max</span></code></a> and
 <a class="reference internal" href="#DNNLikelihood.Likelihood.Y_prof_logpdf_max" title="DNNLikelihood.Likelihood.Y_prof_logpdf_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Likelihood.Y_prof_logpdf_max</span></code></a>, respectively.
@@ -1922,36 +1922,9 @@ The plots are shown in the interactive console calling <code class="docutils lit
 
 <dl class="method">
 <dt id="DNNLikelihood.Likelihood.set_verbosity">
-<code class="sig-prename descclassname">Likelihood.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><em class="sig-param">verbose</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Likelihood.set_verbosity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method inherited by all classes (from the <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> class)
-used to set the verbosity mode. If the input argument <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is
-set to the default class verbosity <code class="docutils literal notranslate"><span class="pre">self.verbose</span></code>. If the input argument <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is negative
-then <code class="docutils literal notranslate"><span class="pre">verbose_sub</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code> (<code class="docutils literal notranslate"><span class="pre">False</span></code>), otherwise it is set to <code class="docutils literal notranslate"><span class="pre">verbose</span></code>.</p>
-<ul>
-<li><p><strong>Arguments</strong></p>
-<blockquote>
-<div><ul>
-<li><p><strong>verbose</strong></p>
-<blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for more details.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><strong>Returns</strong></p>
-<blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">[verbose,verbose_sub]</span></code>.</p>
-</div></blockquote>
-</li>
-</ul>
+<code class="sig-prename descclassname">DNNLikelihood.Likelihood.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Likelihood.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method inherited from the <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> object.
+See the documentation of <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a>.</p>
 </dd></dl>
 
 </div></blockquote>

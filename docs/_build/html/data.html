@@ -112,7 +112,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
@@ -601,7 +601,7 @@ It is used to set the <a class="reference internal" href="#DNNLikelihood.Data.ou
 <dd><p>File name (either relative to the code execution folder or absolute, with or without any of the
 .json or .h5 extensions) of a saved <a class="reference internal" href="#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.
 It is used to set the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_file</span></code> attribute.</p>
+<a class="reference internal" href="#DNNLikelihood.Data.input_file" title="DNNLikelihood.Data.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_file</span></code></a> attribute.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
@@ -774,7 +774,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 <dl class="attribute">
 <dt id="DNNLikelihood.Data.input_file">
 <code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Data.input_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a>.
+<dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="#cmdoption-arg-input-file"><code class="xref std std-option docutils literal notranslate"><span class="pre">input_file</span></code></a>.
 Whenever this attribute is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is used to reconstructed the object from input files
 (see the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a>
 method for details).</p>
@@ -1082,7 +1082,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array corresponding to the input argument <a class="reference internal" href="#cmdoption-arg-pars-pos-nuis"><code class="xref std std-option docutils literal notranslate"><span class="pre">pars_pos_nuis</span></code></a>.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
 <li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_nuis,)</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -1094,7 +1094,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array corresponding to the input argument <a class="reference internal" href="#cmdoption-arg-pars-pos-poi"><code class="xref std std-option docutils literal notranslate"><span class="pre">pars_pos_poi</span></code></a>.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
 <li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_poi,)</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -1270,6 +1270,24 @@ See the <a class="reference internal" href="show_prints.html#verbosity-mode"><sp
 </div></blockquote>
 </li>
 </ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_sync_data_dictionary">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_sync_data_dictionary</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_sync_data_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method that checks that indices and data are synced in the
+<a class="reference internal" href="#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a>
+dictionary. It is called by all methods generating or updating data.
+This is needed when the <a class="reference internal" href="#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object is used by the
+<a class="reference internal" href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood" title="DNNLikelihood.DNN_likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNN_likelihood</span></code></a> one. In particular, when the latter is imported from files
+only indices are loaded and properly put in the corresponding
+<a class="reference internal" href="#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a>, while, to gain speed, data are not.
+Whenever the <a class="reference internal" href="DNN_likelihood.html#DNNLikelihood.DNN_likelihood" title="DNNLikelihood.DNN_likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNN_likelihood</span></code></a> needs data, and calls any of its method that
+generate them, the method <a class="reference internal" href="#DNNLikelihood.Data._Data__check_sync_data_dictionary" title="DNNLikelihood.Data._Data__check_sync_data_dictionary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__check_sync_data_dictionary</span></code></a>
+automatically loads the data corresponding to the existing indices in the
+<a class="reference internal" href="#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> of the corresponding
+<a class="reference internal" href="#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object. See the documentation of
+<a class="reference internal" href="DNN_likelihood.html#dnn-likelihood-object"><span class="std std-ref">the DNN_likelihood object</span></a> for more details.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2132,6 +2150,13 @@ the <code class="docutils literal notranslate"><span class="pre">X</span></code>
 </li>
 </ul>
 </div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.set_verbosity">
+<code class="sig-prename descclassname">DNNLikelihood.Data.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method inherited from the <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> object.
+See the documentation of <a class="reference internal" href="show_prints.html#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a>.</p>
 </dd></dl>
 
 </div></blockquote>
