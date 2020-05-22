@@ -5,14 +5,15 @@ from .show_prints import Verbosity
 from .show_prints import print
 from .resources import Resources
 from . import utils
+from .utils import _FunctionWrapper
 from . import inference
 from . import corner
 from .histfactory import Histfactory
-from .likelihood import Likelihood
+from .likelihood import Lik
 from .sampler import Sampler
 from .data import Data
-from .DNN_likelihood_ensemble import DNN_likelihood_ensemble
-from .DNN_likelihood import DNN_likelihood
+from .dnn_likelihood_ensemble import DnnLikEnsemble
+from .dnn_likelihood import DnnLik
 
 #from .DNNLik import DNNLik
 #from . import files

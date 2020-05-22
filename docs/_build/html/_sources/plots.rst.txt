@@ -8,4 +8,6 @@ Remember that
 
 text.latex.preamble : \usepackage{underscore} \usepackage[T1]{fontenc}
 
-is used to avoid issues with underscore characters.s
+is used to avoid issues with underscore characters.
+
+.. include:: external_links.rst

@@ -10,3 +10,4 @@ Therefore, experimental analyses usually deliver only a small fraction of the fu
 
 The DNNLikelihood project aims at encoding the full experimental likelihood function in a trained Deep Neural Network, which is able to reproduce the original likelihood function as a function of physical and nuisance parameters with the required accuracy.
 
+.. include:: external_links.rst

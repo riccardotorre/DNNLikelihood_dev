@@ -1,0 +1,1298 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Methods &mdash; DNNLikelihood</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The DNNLikelihood object" href="../dnn_likelihood/index.html" />
+    <link rel="prev" title="Attributes" href="attributes.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">The Likelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Data object</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="class.html">Class</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="arguments.html">Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="attributes.html">Attributes</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../code.html">Python module</a> &raquo;</li>
+        
+          <li><a href="index.html">The Data object</a> &raquo;</li>
+        
+          <li><a href="class.html">Class</a> &raquo;</li>
+        
+      <li>Methods</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/data/methods.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="methods">
+<h1>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h1>
+<dl class="method">
+<dt id="DNNLikelihood.Data.__init__">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">data_X=None</em>, <em class="sig-param">data_Y=None</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">pars_central=None</em>, <em class="sig-param">pars_pos_poi=None</em>, <em class="sig-param">pars_pos_nuis=None</em>, <em class="sig-param">pars_labels=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">test_fraction=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">input_file=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object can be initialized in two different ways, depending on the value of
+the <a class="reference internal" href="arguments.html#Data.input_file" title="Data.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> argument.</p>
+<ul>
+<li><p><a class="reference internal" href="arguments.html#Data.input_file" title="Data.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
+<blockquote>
+<div><p>All other arguments are parsed and saved in corresponding attributes. If no <a class="reference internal" href="arguments.html#Data.name" title="Data.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> is given,
+then one is created.
+The object is saved upon creation through the <a class="reference internal" href="#DNNLikelihood.Data.save" title="DNNLikelihood.Data.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save</span></code></a> method.</p>
+</div></blockquote>
+</li>
+<li><p><a class="reference internal" href="arguments.html#Data.input_file" title="Data.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<blockquote>
+<div><p>The object is reconstructed from the input files through the private method
+<a class="reference internal" href="#DNNLikelihood.Data._Data__load" title="DNNLikelihood.Data._Data__load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__load</span></code></a>.
+If the <a class="reference internal" href="arguments.html#Data.load_on_RAM" title="Data.load_on_RAM"><code class="xref py py-argument docutils literal notranslate"><span class="pre">load_on_RAM</span></code></a> argument is <code class="docutils literal notranslate"><span class="pre">True</span></code>, then all samples are loaded into RAM, otherwise the dataset is
+kept open and data are retrieved on demand.
+If the input argument <a class="reference internal" href="arguments.html#Data.output_folder" title="Data.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), the attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_folder" title="DNNLikelihood.Data.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_folder</span></code></a>
+is set from the input file, otherwise it is set to the input argument.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><p>See class <a class="reference internal" href="arguments.html#data-arguments"><span class="std std-ref">Arguments documentation</span></a>.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Creates files</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a> (only the first time the object is created, i.e. if <a class="reference internal" href="arguments.html#Data.input_file" title="Data.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a> (only the first time the object is created, i.e. if <a class="reference internal" href="arguments.html#Data.input_file" title="Data.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_input_files">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_input_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_input_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
+to set the attributes corresponding to input files:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_log_file" title="DNNLikelihood.Data.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_object_h5_file" title="DNNLikelihood.Data.input_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_object_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_samples_h5_file" title="DNNLikelihood.Data.input_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_samples_h5_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>depending on the value of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_file" title="DNNLikelihood.Data.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_file</span></code></a> attribute.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_output_files">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_output_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
+to set the attributes corresponding to output files</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>depending on the values of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_folder" title="DNNLikelihood.Data.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_folder</span></code></a> attribute.
+It also creates the folder
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_folder" title="DNNLikelihood.Data.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_folder</span></code></a> if
+it does not exist.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_name">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
+to define the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.name" title="DNNLikelihood.Data.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.name</span></code></a> attribute.
+If it is <code class="docutils literal notranslate"><span class="pre">None</span></code> it replaces it with
+<code class="docutils literal notranslate"><span class="pre">&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_data&quot;</span></code>,
+otherwise it appends the suffix “_data” (preventing duplication if it is already present).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
+to check that data_X and data_Y have the same length, to set the data type attributes
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.dtype_required" title="DNNLikelihood.Data.dtype_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.dtype_required</span></code></a> and
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.dtype_stored" title="DNNLikelihood.Data.dtype_stored"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.dtype_stored</span></code></a> (defaults “float64”), and to convert
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a> and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a>
+into the dtype corresponding to <a class="reference internal" href="attributes.html#DNNLikelihood.Data.dtype_stored" title="DNNLikelihood.Data.dtype_stored"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.dtype_stored</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_define_pars">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_pars</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_pars" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
+to check the consistency of the attributes</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_pos_nuis" title="DNNLikelihood.Data.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_pos_nuis</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_pos_poi" title="DNNLikelihood.Data.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_pos_poi</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_pos_poi" title="DNNLikelihood.Data.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_central</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_labels" title="DNNLikelihood.Data.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_labels</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_bounds" title="DNNLikelihood.Data.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_bounds</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>and to convert the attributes</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_pos_nuis" title="DNNLikelihood.Data.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_pos_nuis</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_pos_poi" title="DNNLikelihood.Data.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_pos_poi</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_pos_poi" title="DNNLikelihood.Data.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_central</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_bounds" title="DNNLikelihood.Data.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_bounds</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>to <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> arrays.
+If no parameters positions are specified, all parameters are assumed to be parameters of interest.
+If only the position of the parameters of interest or of the nuisance parameters is specified,
+the other is automatically generated by matching dimensions.
+If labels are not provided then <a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_labels" title="DNNLikelihood.Data.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_labels</span></code></a>
+is set to the value of <a class="reference internal" href="attributes.html#DNNLikelihood.Data.pars_labels_auto" title="DNNLikelihood.Data.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.pars_labels_auto</span></code></a>.
+If parameters bounds are not provided, they are set to <code class="docutils literal notranslate"><span class="pre">(-np.inf,np.inf)</span></code>.
+A check is performed on the length of the four attributes and an Exception is raised if the length
+does not match <a class="reference internal" href="attributes.html#DNNLikelihood.Data.ndims" title="DNNLikelihood.Data.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.ndims</span></code></a>.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__check_sync_data_dictionary">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_sync_data_dictionary</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_sync_data_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used to check that indices and data are synced in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a>
+dictionary. It is called by all methods generating or updating data.
+This is needed when the <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object is used by the
+<a class="reference internal" href="../dnn_likelihood/class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> one. In particular, when the latter is imported from files
+only indices are loaded and properly put in the corresponding
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a>, while, to gain speed, data are not.
+Whenever the <a class="reference internal" href="../dnn_likelihood/class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> needs data, and calls any of its method that
+generate them, the method <a class="reference internal" href="#DNNLikelihood.Data._Data__check_sync_data_dictionary" title="DNNLikelihood.Data._Data__check_sync_data_dictionary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__check_sync_data_dictionary</span></code></a>
+automatically loads the data corresponding to the existing indices in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> of the corresponding
+<a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object. See the documentation of
+<a class="reference internal" href="../dnn_likelihood/index.html#dnnlik-object"><span class="std std-ref">the DNNLikelihood object</span></a> for more details.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__load">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__load</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
+to load a previously saved
+<a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object from the files</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_samples_h5_file" title="DNNLikelihood.Data.input_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_samples_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_object_h5_file" title="DNNLikelihood.Data.input_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_object_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_log_file" title="DNNLikelihood.Data.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_log_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>If <a class="reference internal" href="attributes.html#DNNLikelihood.Data.load_on_RAM" title="DNNLikelihood.Data.load_on_RAM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.load_on_RAM</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, then all samples are loaded into RAM,
+otherwise the dataset is kept open and data are retrieved on demand.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data._Data__define_test_fraction">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__define_test_fraction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__define_test_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
+to set the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.test_fraction" title="DNNLikelihood.Data.test_fraction"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.test_fraction</span></code></a> attribute and, from this, the
+two attributes <a class="reference internal" href="attributes.html#DNNLikelihood.Data.train_range" title="DNNLikelihood.Data.train_range"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.train_range</span></code></a> and
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.test_range" title="DNNLikelihood.Data.test_range"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.test_range</span></code></a> containing the range of indices of
+the train (and validation) and test sets given by
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a> and
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.define_test_fraction">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">define_test_fraction</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.define_test_fraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.define_test_fraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method analog to the private method <a class="reference internal" href="#DNNLikelihood.Data._Data__define_test_fraction" title="DNNLikelihood.Data._Data__define_test_fraction"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__define_test_fraction</span></code></a>
+useful to change the available fraction of train/valifation vs test data.
+Differently from the analog private method, this one updates the files corresponding to the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a> and
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a> attributes.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Updates files</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.close_opened_dataset">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">close_opened_dataset</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.close_opened_dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.close_opened_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the opened h5py datasets
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.opened_dataset" title="DNNLikelihood.Data.opened_dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.opened_dataset</span></code></a>.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.save_log">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">save_log</code><span class="sig-paren">(</span><em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.save_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the content of the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.log" title="DNNLikelihood.Data.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.log</span></code></a> attribute in the file
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p>
+<p>This method is called by the methods</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code>  with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code> if <a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_file" title="DNNLikelihood.Data.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_file</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, and with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code> otherwise</p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.save" title="DNNLikelihood.Data.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=overwrite</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.generate_train_indices" title="DNNLikelihood.Data.generate_train_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_train_indices</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.generate_train_data" title="DNNLikelihood.Data.generate_train_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_train_data</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.update_train_indices" title="DNNLikelihood.Data.update_train_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.update_train_indices</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.update_train_data" title="DNNLikelihood.Data.update_train_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.update_train_data</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.generate_test_indices" title="DNNLikelihood.Data.generate_test_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_test_indices</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.generate_test_data" title="DNNLikelihood.Data.generate_test_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_test_data</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.compute_sample_weights" title="DNNLikelihood.Data.compute_sample_weights"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.compute_sample_weights</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.define_scalers" title="DNNLikelihood.Data.define_scalers"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.define_scalers</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+</ul>
+<p>This method is called by the
+<a class="reference internal" href="#DNNLikelihood.Data.save" title="DNNLikelihood.Data.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save</span></code></a> method to save the entire object.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>overwrite</strong></p>
+<blockquote>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> if a file with the same name already exists, then it gets overwritten. If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name
+already exists, then the old file gets renamed with the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a>
+function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Creates/updates file</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.save_object_h5">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">save_object_h5</code><span class="sig-paren">(</span><em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.save_object_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.save_object_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is saved to the HDF5 file
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a>, the datasets corresponding to the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a> and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> attributes
+are saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a>, and the object
+log is saved to the json file <a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>.</p>
+<p>This method saves the content of the :attr:<code class="docutils literal notranslate"><span class="pre">Lik.__dict__</span> <span class="pre">&lt;DNNLikelihood.Lik.__dict__&gt;</span></code>
+attribute in the h5 file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a>
+using the <a href="https://deepdish.readthedocs.io/en/latest/index.html"  target="_blank"> deepdish</a> package. The following attributes are excluded from the saved
+dictionary:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a>)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a>)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.dtype_required" title="DNNLikelihood.Data.dtype_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.dtype_required</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_file" title="DNNLikelihood.Data.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_samples_h5_file" title="DNNLikelihood.Data.input_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_samples_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_object_h5_file" title="DNNLikelihood.Data.input_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_object_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.input_log_file" title="DNNLikelihood.Data.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.load_on_RAM" title="DNNLikelihood.Data.load_on_RAM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.load_on_RAM</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.log" title="DNNLikelihood.Data.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.log</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a>)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.opened_dataset" title="DNNLikelihood.Data.opened_dataset"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.opened_dataset</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.test_range" title="DNNLikelihood.Data.test_range"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.test_range</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.train_range" title="DNNLikelihood.Data.train_range"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.train_range</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.verbose" title="DNNLikelihood.Data.verbose"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.verbose</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>This method is called by the
+<a class="reference internal" href="#DNNLikelihood.Data.save" title="DNNLikelihood.Data.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save</span></code></a> method to save the entire object.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>overwrite</strong></p>
+<blockquote>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> if a file with the same name already exists, then it gets overwritten. If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name
+already exists, then the old file gets renamed with the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a>
+function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Produces file</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.save_samples_h5">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">save_samples_h5</code><span class="sig-paren">(</span><em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.save_samples_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.save_samples_h5" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is saved to the HDF5 file
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a>, the datasets corresponding to the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a> and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> attributes
+are saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a>, and the object
+log is saved to the json file <a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>.</p>
+<p>This method saves the content of the attributes <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a> and
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a>, and an additional entry with the shape of the former
+in the h5 file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a>
+using the <a href="http://docs.h5py.org/en/stable/"  target="_blank"> h5py</a> package.</p>
+<p>This method is called by the <a class="reference internal" href="#DNNLikelihood.Data.save" title="DNNLikelihood.Data.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save</span></code></a> method to save the entire object.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>overwrite</strong></p>
+<blockquote>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> if a file with the same name already exists, then it gets overwritten. If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name
+already exists, then the old file gets renamed with the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a>
+function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Produces file</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.save">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is saved to the HDF5 file
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a>, the datasets corresponding to the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a> and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> attributes
+are saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a>, and the object
+log is saved to the json file <a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>.</p>
+<p>This method calls in order the three methods</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save_log</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.save_object_h5" title="DNNLikelihood.Data.save_object_h5"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save_object_h5</span></code></a></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Data.save_samples_h5" title="DNNLikelihood.Data.save_samples_h5"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save_samples_h5</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>to save the full object.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><p>Same arguments as the called methods.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Produces files</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_train_indices">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_train_indices</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.generate_train_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_train_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used to generate <code class="docutils literal notranslate"><span class="pre">npoints_train</span></code> train and <code class="docutils literal notranslate"><span class="pre">npoints_val</span></code> validation data indices
+(integer positions in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> arrays). It updates the
+<code class="docutils literal notranslate"><span class="pre">&quot;idx_train&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;idx_val&quot;</span></code> items of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>npoints_train</strong></p>
+<blockquote>
+<div><p>Required number of
+training points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>npoints_val</strong></p>
+<blockquote>
+<div><p>Required number of
+validation points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>seed</strong></p>
+<blockquote>
+<div><p>Seed of the random number generator. It is used to initialize
+the <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> random state.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_train_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_train_data</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.generate_train_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_train_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used to generate <code class="docutils literal notranslate"><span class="pre">npoints_train</span></code> train and <code class="docutils literal notranslate"><span class="pre">npoints_val</span></code> validation data.
+In order to extract the required number of points from the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> arrays (which may not be available on RAM),
+it first generates indices with the <a class="reference internal" href="#DNNLikelihood.Data.generate_train_indices" title="DNNLikelihood.Data.generate_train_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_train_indices</span></code></a>
+method and then slices the data with the generated indices.
+It updates the <code class="docutils literal notranslate"><span class="pre">&quot;X_train&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Y_train&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;X_val&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;Y_val&quot;</span></code> items of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>npoints_train</strong></p>
+<blockquote>
+<div><p>Required number of
+training points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>npoints_val</strong></p>
+<blockquote>
+<div><p>Required number of
+validation points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>seed</strong></p>
+<blockquote>
+<div><p>Seed of the random number generator. It is used to initialize
+the <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> random state.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.update_train_indices">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">update_train_indices</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.update_train_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.update_train_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analog of <a class="reference internal" href="#DNNLikelihood.Data.generate_train_indices" title="DNNLikelihood.Data.generate_train_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_train_indices</span></code></a>, but it only updates
+indices adding more points if any are already available in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.
+It updates the  <code class="docutils literal notranslate"><span class="pre">&quot;idx_train&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;idx_val&quot;</span></code> items of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>npoints_train</strong></p>
+<blockquote>
+<div><p>Required number of
+training points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>npoints_val</strong></p>
+<blockquote>
+<div><p>Required number of
+validation points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>seed</strong></p>
+<blockquote>
+<div><p>Seed of the random number generator. It is used to initialize
+the <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> random state.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.update_train_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">update_train_data</code><span class="sig-paren">(</span><em class="sig-param">npoints_train</em>, <em class="sig-param">npoints_val</em>, <em class="sig-param">seed</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.update_train_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.update_train_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analog of <a class="reference internal" href="#DNNLikelihood.Data.generate_train_data" title="DNNLikelihood.Data.generate_train_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_train_indices</span></code></a>, but it only updates
+data adding more points if any are already available in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.
+It updates the  <code class="docutils literal notranslate"><span class="pre">&quot;X_train&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;Y_train&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;X_val&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;Y_val&quot;</span></code> items of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>npoints_train</strong></p>
+<blockquote>
+<div><p>Required number of
+training points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>npoints_val</strong></p>
+<blockquote>
+<div><p>Required number of
+validation points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>seed</strong></p>
+<blockquote>
+<div><p>Seed of the random number generator. It is used to initialize
+the <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> random state.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_test_indices">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_test_indices</code><span class="sig-paren">(</span><em class="sig-param">npoints_test</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.generate_test_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_test_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used to generate <code class="docutils literal notranslate"><span class="pre">npoints_test</span></code> test data indices
+(integer positions in the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> arrays). Test indices are always generated
+deterministically and always represent
+the first <code class="docutils literal notranslate"><span class="pre">npoints_test</span></code> in the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.test_range" title="DNNLikelihood.Data.test_range"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Dara.test_range</span></code></a> range.
+It updates the <code class="docutils literal notranslate"><span class="pre">&quot;idx_test&quot;</span></code> item of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>npoints_test</strong></p>
+<blockquote>
+<div><p>Required number of
+test points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.generate_test_data">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">generate_test_data</code><span class="sig-paren">(</span><em class="sig-param">npoints_test</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.generate_test_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.generate_test_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used to generate <code class="docutils literal notranslate"><span class="pre">npoints_test</span></code> test data indices
+(integer positions in the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> arrays). In order to extract the required
+number of points from the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a> arrays (which may not be available on RAM),
+it first generates indices with the <a class="reference internal" href="#DNNLikelihood.Data.generate_test_indices" title="DNNLikelihood.Data.generate_test_indices"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_test_indices</span></code></a>
+method and then slices the data with the generated indices.
+Test data are always generated deterministically and always correspond to the first <code class="docutils literal notranslate"><span class="pre">npoints_test</span></code>
+in the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.test_range" title="DNNLikelihood.Data.test_range"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Dara.test_range</span></code></a> range of <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_X" title="DNNLikelihood.Data.data_X"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_X</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_Y" title="DNNLikelihood.Data.data_Y"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_Y</span></code></a>.
+It updates the <code class="docutils literal notranslate"><span class="pre">&quot;X_test&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;Y_test&quot;</span></code> items of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>npoints_test</strong></p>
+<blockquote>
+<div><p>Required number of
+test points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.compute_sample_weights">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">compute_sample_weights</code><span class="sig-paren">(</span><em class="sig-param">sample</em>, <em class="sig-param">nbins=100</em>, <em class="sig-param">power=1</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.compute_sample_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.compute_sample_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that computes weights of points given their distribution. Sample weights are used to weigth data as a function of
+their frequency, obtained by binning the data in <code class="docutils literal notranslate"><span class="pre">nbins</span></code> and assigning weight equal to the inverse of the bin count
+to the power <code class="docutils literal notranslate"><span class="pre">power</span></code>. In order to avoid too large weights for bins with very few counts, all bins with less than 5 counts
+are assigned frequency equal to 1/5 to the power <code class="docutils literal notranslate"><span class="pre">power</span></code>.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>sample</strong></p>
+<blockquote>
+<div><p>Distribution of points that
+need to be weighted.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(len(sample),)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>nbins</strong></p>
+<blockquote>
+<div><p>Number of bins to histogram the
+sample data</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>power</strong></p>
+<blockquote>
+<div><p>Exponent of the inverse of the bin count used
+to assign weights.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">float</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Returns</strong></p>
+<blockquote>
+<div><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array of the same length of <code class="docutils literal notranslate"><span class="pre">sample</span></code> containing
+the required weights.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(len(sample),)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.define_scalers">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">define_scalers</code><span class="sig-paren">(</span><em class="sig-param">data_X</em>, <em class="sig-param">data_Y</em>, <em class="sig-param">scalerX_bool</em>, <em class="sig-param">scalerY_bool</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.define_scalers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.define_scalers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that defines <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScalers</a> fit to the <code class="docutils literal notranslate"><span class="pre">data_X</span></code> and <code class="docutils literal notranslate"><span class="pre">data_Y</span></code> data.
+Scalers are defined based in the boolean flags <code class="docutils literal notranslate"><span class="pre">scalerX_bool</span></code> and <code class="docutils literal notranslate"><span class="pre">scalerY_bool</span></code>. When the flags are false
+the scalers are defined with the arguemtns <code class="docutils literal notranslate"><span class="pre">with_mean=False</span></code> and <code class="docutils literal notranslate"><span class="pre">with_std=False</span></code> which correspond to identity
+transformations.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>data_X</strong></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">X</span></code> data to fit
+the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScaler</a> <code class="docutils literal notranslate"><span class="pre">scalerX</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(npoints,ndim)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>data_Y</strong></p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">Y</span></code> data to fit
+the <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScaler</a> <code class="docutils literal notranslate"><span class="pre">scalerY</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(npoints,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>scalerX_bool</strong></p>
+<blockquote>
+<div><p>If true the <code class="docutils literal notranslate"><span class="pre">X</span></code> scaler is fit to the <code class="docutils literal notranslate"><span class="pre">data_X</span></code> data, otherwise it is set
+to the identity transformation.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>scalerY_bool</strong></p>
+<blockquote>
+<div><p>If true the <code class="docutils literal notranslate"><span class="pre">Y</span></code> scaler is fit to the <code class="docutils literal notranslate"><span class="pre">data_Y</span></code> data, otherwise it is set
+to the identity transformation.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Returns</strong></p>
+<blockquote>
+<div><p>List of the form <code class="docutils literal notranslate"><span class="pre">[scalerX,scalerY]</span></code> containing
+the <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code> scalers.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">[scalerX,scalerY]</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.set_verbosity">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method inherited from the <a class="reference internal" href="../show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> object.
+See the documentation of <a class="reference internal" href="../show_prints.html#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a>.</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../dnn_likelihood/index.html" class="btn btn-neutral float-right" title="The DNNLikelihood object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="attributes.html" class="btn btn-neutral float-left" title="Attributes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

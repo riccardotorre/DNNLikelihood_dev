@@ -38,8 +38,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -102,8 +102,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#the-likelihood-object">The Likelihood object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-sampler-object">The Sampler object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-data-object">The Data object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-dnn-likelihood-object">The DNN_likelihood object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-dnn-likelihood-ensemble-object">The DNN_likelihood_ensemble object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-dnnlikelihood-object">The DNNLikelihood object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-dnnlikensemble-object">The DnnLikEnsemble object</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a></li>
@@ -266,7 +266,7 @@ specific requirements.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="utils.html#module-utils_module" title="utils_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNNLikelihood.utils</span></code></a></p></li>
-<li><p><a class="reference internal" href="likelihood.html#DNNLikelihood.Likelihood" title="DNNLikelihood.Likelihood"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Lik</span></code></a></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -281,7 +281,7 @@ specific requirements.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a href="https://pypi.org/project/cloudpickle/1.3.0/"  target="_blank"> cloudpickle</a></p></li>
-<li><p>(optional) <a href="https://ipywidgets.readthedocs.io/en/latest/"  target="_blank"> ipywidgets</a></p></li>
+<li><p><a href="https://ipywidgets.readthedocs.io/en/latest/"  target="_blank"> ipywidgets</a> (optional)</p></li>
 <li><p><a href="https://python-json-patch.readthedocs.io/en/stable/"  target="_blank"> json_patch</a></p></li>
 <li><p><a href="https://python-jsonschema.readthedocs.io/en/stable/"  target="_blank"> json_schema</a></p></li>
 <li><p><a href="https://scikit-hep.org/pyhf/"  target="_blank"> pyhf</a></p></li>
@@ -326,7 +326,7 @@ specific requirements.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="utils.html#module-utils_module" title="utils_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNNLikelihood.utils</span></code></a></p></li>
-<li><p><a class="reference internal" href="data.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -355,8 +355,8 @@ specific requirements.</p>
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="the-dnn-likelihood-object">
-<h3>The DNN_likelihood object<a class="headerlink" href="#the-dnn-likelihood-object" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="the-dnnlikelihood-object">
+<h3>The DNNLikelihood object<a class="headerlink" href="#the-dnnlikelihood-object" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul>
 <li><p>Default modules</p>
@@ -377,18 +377,18 @@ specific requirements.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="inference.html#module-inference_module" title="inference_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNNLikelihood.inference</span></code></a></p></li>
-<li><p><a class="reference internal" href="set_resources.html#module-set_resources_module" title="set_resources_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNNLikelihood.set_resources</span></code></a></p></li>
+<li><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNNLikelihood.set_resources</span></code></p></li>
 <li><p><a class="reference internal" href="utils.html#module-utils_module" title="utils_module"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DNNLikelihood.utils</span></code></a></p></li>
-<li><p><a class="reference internal" href="data.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a></p></li>
-<li><p><a class="reference internal" href="data.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a></p></li>
 </ul>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="the-dnn-likelihood-ensemble-object">
-<h3>The DNN_likelihood_ensemble object<a class="headerlink" href="#the-dnn-likelihood-ensemble-object" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="the-dnnlikensemble-object">
+<h3>The DnnLikEnsemble object<a class="headerlink" href="#the-dnnlikensemble-object" title="Permalink to this headline">¶</a></h3>
 </div>
 </div>
 <div class="section" id="environment">

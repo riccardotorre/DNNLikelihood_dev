@@ -1,4 +1,4 @@
-__all__ = ["DNN_likelihood_ensemble"]
+__all__ = ["DnnLikEnsemble"]
 
 import json
 #import ndjson as json
@@ -24,11 +24,11 @@ from concurrent.futures import ThreadPoolExecutor
 
 from . import utils
 from .data import Data
-from .DNN_likelihood import DNN_likelihood
+from .dnn_likelihood import DnnLik
 from .show_prints import print
 from .resources import Resources
 
-class DNN_likelihood_ensemble(Resources): #show_prints.Verbosity inherited from resources.Resources
+class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources.Resources
     def __init__(self,
                  DNNLik_ensemble_input_folder=None,
                  ensemble_name=None,
@@ -414,7 +414,7 @@ class DNN_likelihood_ensemble(Resources): #show_prints.Verbosity inherited from 
         for n in range(self.n_members):
             DNNLik_input_folder = self.ensemble_folder+"/member_"+str(n)
             if self.__check_member_existence(DNNLik_input_folder):
-                self.members[n] = DNN_likelihood(DNNLik_input_folder=DNNLik_input_folder,
+                self.members[n] = DnnLik(DNNLik_input_folder=DNNLik_input_folder,
                                          data=self.data,
                                          resources_inputs=self.get_resources_inputs(),
                                          verbose=False
@@ -453,7 +453,7 @@ class DNN_likelihood_ensemble(Resources): #show_prints.Verbosity inherited from 
         ShowPrints = verbose
         start = timer()
         #gpus_id_list = [eval(s.split(":")[-1]) for s in np.array(self.active_gpus)[:, 0]]
-        self.members[n] = DNN_likelihood(DNNLik_input_folder=None,
+        self.members[n] = DnnLik(DNNLik_input_folder=None,
                                  ensemble_name=self.ensemble_name,
                                  member_number=n,
                                  data=self.data,
@@ -474,7 +474,7 @@ class DNN_likelihood_ensemble(Resources): #show_prints.Verbosity inherited from 
                                  )
         end = timer()
         ShowPrints = verbose
-        print("DNN Likelihood member",str(n),"created in",str(end-start),"s.")
+        print("DNN Lik member",str(n),"created in",str(end-start),"s.")
 
     def generate_members(self,n="all",verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)

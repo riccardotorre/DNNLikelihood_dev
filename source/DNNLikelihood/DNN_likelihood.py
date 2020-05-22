@@ -1,4 +1,4 @@
-__all__ = ["DNN_likelihood"]
+__all__ = ["DnnLik"]
 
 import builtins
 import codecs
@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import onnx
 import tensorflow as tf
-from scipy import optimize
+import scipy
 from tensorflow.keras import Input
 from tensorflow.keras import backend as K
 from tensorflow.keras import callbacks, losses, metrics, optimizers
@@ -49,7 +49,13 @@ from .resources import Resources
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 
-class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources.Resources
+class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resources
+    """
+    This class contains the ``DnnLik`` object, that is the core object of the DNNLikelihood package.
+    It represents the DNNLikelihood through a |tf_keras_model_link| object. The class allows one to train and evaluate the performance 
+    of the DNNLikelihood, to produce several plots, make inference with the DNNLikelihood from both a Bayesian and a frequentist
+    perspective, and to export the trained model in the standard |onnx_link| format.
+    """
     def __init__(self,
                  name=None,
                  data=None,
@@ -70,6 +76,58 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                  input_summary_json_file=None,
                  verbose=True
                  ):
+        """
+        The :class:`DnnLik <DNNLikelihood.DnnLik>` object can be initialized in two different ways, 
+        depending on the value of the :argument:`input_summary_json_file` argument.
+
+        - :argument:`input_summary_json_file` is ``None`` (default)
+
+            All other arguments are parsed and saved in corresponding attributes. If no :argument:`name` is given, 
+            then one is created. If the input argument :argument:`ensemble_name` is not ``None`` the object is assumed to be
+            part of a :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object and the corresponding 
+            attribute :attr:`DnnLik.ensemble_folder <DNNLikelihood.DnnLik.ensemble_folder>` is set to the
+            partent directory of :argument:`output_folder`.
+            The full object is saved through the 
+            :meth:`DnnLik.save <DNNLikelihood.DnnLik.save>` method. 
+        
+        - :argument:`input_summary_json_file` is not ``None``
+
+            The object is reconstructed from the input files. First the log and summary_json files are loaded through 
+            the private method
+            :meth:`DnnLik.__load_summary_json_and_log <DNNLikelihood.DnnLik._Lik__load_summary_json_and_log>`,
+            then, if the input arguments :argument:`dtype`, :argument:`seed`, and :argument:`output_folder` are provided,
+            the corresponding attributes are set to their values (overwriting the values imported from files), and finally 
+            all other attributes are loaded through the private methods:
+
+                - :meth:`DnnLik.__load_data_indices <DNNLikelihood.DnnLik._Lik__load_data_indices>`
+                - :meth:`DnnLik.__load_history_and_log <DNNLikelihood.DnnLik._Lik__load_history>`
+                - :meth:`DnnLik.__load_model <DNNLikelihood.DnnLik._Lik__load_model>`
+                - :meth:`DnnLik.__load_predictions <DNNLikelihood.DnnLik._Lik__load_predictions>`
+                - :meth:`DnnLik.__load_scalers_and_log <DNNLikelihood.DnnLik._Lik__load_scalers>`
+
+            Only the json summary and log files are saved (overwriting the old ones) through the methods:
+                
+                - :meth:`DnnLik.save_summary_json <DNNLikelihood.DnnLik.save_summary_json>` 
+                - :meth:`DnnLik.save_log <DNNLikelihood.DnnLik.save_log>` 
+    
+        Resources, data, seed, dtype and |tf_link| objects are set in the same way, independently of the value of
+        :argument:`input_summary_json_file`, through the private methods:
+            
+            - :meth:`DnnLik.__set_data <DNNLikelihood.DnnLik._Lik__set_data>`
+            - :meth:`DnnLik.__set_dtype <DNNLikelihood.DnnLik._Lik__set_dtype>`
+            - :meth:`DnnLik.__set_resources <DNNLikelihood.DnnLik._Lik__set_resources>`
+            - :meth:`DnnLik.__set_seed <DNNLikelihood.DnnLik._Lik__set_seed>`            
+            - :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._Lik__set_tf_objects>`
+
+        - **Arguments**
+
+            See class :ref:`Arguments documentation <DnnLik_arguments>`.
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
+            - :attr:`DnnLik.output_summary_json_file <DNNLikelihood.DnnLik.output_summary_json_file>`
+        """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -105,7 +163,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             self.__check_define_output_files()
             #### Set ensemble attributes if the DNNLikelihood is part of an ensemble
             self.ensemble_name = ensemble_name
-            self.__check_define_ensemble_name_folder(verbose=verbose_sub)
+            self.__check_define_ensemble_folder(verbose=verbose_sub)
             ### Set model hyperparameters parameters
             self.__set_model_hyperparameters()
         else:
@@ -135,16 +193,18 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.__set_tf_objects(verbose=verbose_sub) # optimizer, loss, metrics, callbacks
         ### Initialize model, history,scalers, data indices, and predictions
         if self.input_files_base_name is not None:
-            self.__load_model(verbose=verbose_sub)
-            self.__load_history(verbose=verbose_sub)
-            self.__load_scalers(verbose=verbose_sub)
             self.__load_data_indices(verbose=verbose_sub)
+            self.__load_history(verbose=verbose_sub)
+            self.__load_model(verbose=verbose_sub)
             self.__load_predictions(verbose=verbose_sub)
+            self.__load_scalers(verbose=verbose_sub)
         else:
             self.epochs_available = 0
             self.idx_train, self.idx_val, self.idx_test = [np.array([], dtype="int"),np.array([], dtype="int"),np.array([], dtype="int")]
             self.scalerX, self.scalerY = [None,None]
             self.model = None
+            self.model_max = {}
+            self.model_profiled_max = {}
             self.history = {}
             self.predictions = {}
             self.figures_list = []
@@ -155,13 +215,32 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         if self.input_files_base_name is None:
             self.save_summary_json(overwrite=False, verbose=verbose_sub)
             self.save_log(overwrite=False, verbose=verbose_sub)
+            #self.save(overwrite=False, verbose=verbose_sub)
+            #self.save_log(overwrite=False, verbose=verbose_sub)
         else:
             self.save_summary_json(overwrite=True, verbose=verbose_sub)
             self.save_log(overwrite=True, verbose=verbose_sub)
 
     def __set_resources(self,verbose=None):
         """
-        Bla bla bla
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one to set resources.
+        If :attr:`DnnLik.__resources_inputs <DNNLikelihood.DnnLik.__resources_inputs` is ``None``, it 
+        calls the methods 
+        :meth:`DnnLik.get_available_cpu <DNNLikelihood.DnnLik.get_available_cpu` and
+        :meth:`DnnLik.set_gpus <DNNLikelihood.DnnLik.set_gpus` inherited from the
+        :class:`Verbosity <DNNLikelihood.Verbosity>` class, otherwise it sets resources from input arguments.
+        The latter method is needed, when the object is a member of an esemble, to pass available resources from the parent
+        :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object.
+        
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if self.__resources_inputs is None:
@@ -176,80 +255,148 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
 
     def __check_define_input_files(self):
         """
-        Sets the attributes corresponding to input files
-        :attr:`Likelihood.input_json_file <DNNLikelihood.Likelihood.input_json_file>`,
-        :attr:`Likelihood.input_log_file <DNNLikelihood.Likelihood.input_log_file>`, and
-        :attr:`Likelihood.input_pickle_file <DNNLikelihood.Likelihood.input_pickle_file>`
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set the attributes corresponding to input files:
+
+            - :attr:`DnnLik.input_files_base_name <DNNLikelihood.DnnLik.input_files_base_name>`
+            - :attr:`DnnLik.input_history_json_file <DNNLikelihood.DnnLik.input_history_json_file>`
+            - :attr:`DnnLik.input_idx_h5_file <DNNLikelihood.DnnLik.input_idx_h5_file>`
+            - :attr:`DnnLik.input_log_file <DNNLikelihood.DnnLik.input_log_file>`
+            - :attr:`DnnLik.input_predictions_json_file <DNNLikelihood.DnnLik.input_predictions_json_file>`
+            - :attr:`DnnLik.input_scalers_pickle_file <DNNLikelihood.DnnLik.input_scalers_pickle_file>`
+            - :attr:`DnnLik.input_tf_model_h5_file <DNNLikelihood.DnnLik.input_tf_model_h5_file>`
+
         depending on the value of the 
-        :attr:`Likelihood.input_file <DNNLikelihood.Likelihood.input_file>` attribute.
+        :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+        It also sets the attribute
+        :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>` if the object has
+        been initialized directly from a :class:`Data <DNNLikelihood.Data>` object.
         """
         if self.input_summary_json_file is None:
-            self.input_log_file = self.input_summary_json_file
             self.input_files_base_name = self.input_summary_json_file
             self.input_history_json_file = self.input_files_base_name
-            self.input_predictions_json_file = self.input_files_base_name
             self.input_idx_h5_file = self.input_files_base_name
-            self.input_tf_model_h5_file = self.input_files_base_name
+            self.input_log_file = self.input_summary_json_file
+            self.input_predictions_json_file = self.input_files_base_name
             self.input_scalers_pickle_file = self.input_files_base_name
+            self.input_tf_model_h5_file = self.input_files_base_name
         else:
             self.input_files_base_name = path.abspath(path.splitext(self.input_summary_json_file)[0].replace("_summary",""))
-            self.input_log_file = self.input_files_base_name+".log"
             self.input_history_json_file = self.input_files_base_name+"_history.json"
-            self.input_predictions_json_file = self.input_files_base_name+"_predictions.json"
             self.input_idx_h5_file = self.input_files_base_name+"_idx.h5"
+            self.input_log_file = self.input_files_base_name+".log"
+            self.input_predictions_json_file = self.input_files_base_name+"_predictions.json"
+            self.input_scalers_pickle_file = self.input_files_base_name+"_scalers.pickle"
             self.input_tf_model_h5_file = self.input_files_base_name+"_model.h5"
-            self.input_scalers_pickle_file = self.input_files_base_name+"_scalerX.pickle"
         if self.input_data_file is not None:
             self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
 
     def __check_define_output_files(self):
         """
-        Sets attributes for output files
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set the attributes corresponding to output folders
+
+            - :attr:`DnnLik.output_figures_folder <DNNLikelihood.DnnLik.output_figures_folder>`
+            - :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>`
+
+        and output files
+
+            - :attr:`DnnLik.output_figures_base_file <DNNLikelihood.DnnLik.output_figures_base_file>`
+            - :attr:`DnnLik.output_files_base_name <DNNLikelihood.DnnLik.output_files_base_name>`
+            - :attr:`DnnLik.output_history_json_file <DNNLikelihood.DnnLik.output_history_json_file>`
+            - :attr:`DnnLik.output_idx_h5_file <DNNLikelihood.DnnLik.output_idx_h5_file>`
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
+            - :attr:`DnnLik.output_predictions_json_file <DNNLikelihood.DnnLik.output_predictions_json_file>`
+            - :attr:`DnnLik.output_scalers_pickle_file <DNNLikelihood.DnnLik.output_scalers_pickle_file>`
+            - :attr:`DnnLik.output_summary_json_file <DNNLikelihood.DnnLik.output_summary_json_file>`
+            - :attr:`DnnLik.output_tf_model_graph_pdf_file <DNNLikelihood.DnnLik.output_tf_model_graph_pdf_file>`
+            - :attr:`DnnLik.output_tf_model_h5_file <DNNLikelihood.DnnLik.output_tf_model_h5_file>`
+            - :attr:`DnnLik.output_tf_model_json_file <DNNLikelihood.DnnLik.output_tf_model_json_file>`
+            - :attr:`DnnLik.output_tf_model_onnx_file <DNNLikelihood.DnnLik.output_tf_model_onnx_file>`
+        
+        depending on the value of the 
+        :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_files_base_name>` and
+        :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` attributes.
+        It also initializes (to ``None``) the attributes:
+
+            - :attr:`DnnLik.output_checkpoints_files <DNNLikelihood.DnnLik.output_checkpoints_files>`
+            - :attr:`DnnLik.output_checkpoints_folder <DNNLikelihood.DnnLik.output_checkpoints_folder>`
+            - :attr:`DnnLik.output_figure_plot_losses_keras_file <DNNLikelihood.DnnLik.output_figure_plot_losses_keras_file>`
+            - :attr:`DnnLik.output_tensorboard_log_dir <DNNLikelihood.DnnLik.output_tensorboard_log_dir>`
+        
+        and creates the folders
+        :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>`
+        and 
+        :attr:`DnnLik.output_figures_folder <DNNLikelihood.DnnLik.output_figures_folder>`
+        if they do not exist.
         """
-        if self.input_files_base_name is None:
-            if self.output_folder is None:
-                self.output_folder = ""
-            self.output_folder = path.abspath(self.output_folder)
-        self.output_figures_folder = path.join(self.output_folder,"figures")
+        if self.output_folder is None:
+            self.output_folder = ""
+        self.output_folder = path.abspath(self.output_folder)
+        self.output_figures_folder = path.join(self.output_folder, "figures")
+        self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
         self.output_files_base_name = path.join(self.output_folder, self.name)
-        self.output_log_file = self.output_files_base_name+".log"
-        self.output_summary_json_file = self.output_files_base_name+"_summary.json"
         self.output_history_json_file = self.output_files_base_name+"_history.json"
-        self.output_predictions_json_file = self.output_files_base_name+"_predictions.json"
         self.output_idx_h5_file = self.output_files_base_name+"_idx.h5"
-        self.output_tf_model_json_file = self.output_files_base_name+"_model.json"
+        self.output_log_file = self.output_files_base_name+".log"
+        self.output_predictions_json_file = self.output_files_base_name+"_predictions.json"
+        self.output_scalers_pickle_file = self.output_files_base_name+"_scalers.pickle"
+        self.output_summary_json_file = self.output_files_base_name+"_summary.json"
+        self.output_tf_model_graph_pdf_file = self.output_files_base_name+"_model_graph.pdf"
         self.output_tf_model_h5_file = self.output_files_base_name+"_model.h5"
+        self.output_tf_model_json_file = self.output_files_base_name+"_model.json"
         self.output_tf_model_onnx_file = self.output_files_base_name+"_model.onnx"
-        self.output_scalers_pickle_file = self.output_files_base_name+"_scalerX.pickle"
-        self.output_model_graph_pdf_file = self.output_files_base_name+"_model_graph.pdf"
-        self.output_figures_base_file = self.output_files_base_name+"_figure"
-        utils.check_create_folder(self.output_folder)
-        utils.check_create_folder(self.output_figures_folder)
-        self.output_checkpoints_folder = None
         self.output_checkpoints_files = None
+        self.output_checkpoints_folder = None
         self.output_figure_plot_losses_keras_file = None
         self.output_tensorboard_log_dir = None
-
+        utils.check_create_folder(self.output_folder)
+        utils.check_create_folder(self.output_figures_folder)
+        
     def __check_define_name(self):
         """
-        Bla bla
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to define the :attr:`DnnLik.name <DNNLikelihood.DnnLik.name>` attribute.
+        If it is ``None`` it replaces it with 
+        ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_DNNLikelihood"``.
         """
         if self.name is None:
             timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-            self.name = "model_"+timestamp+"_DNNlikelihood"
+            self.name = "model_"+timestamp+"_DNNLikelihood"
 
     def __check_npoints(self):
-        available_points_tot = self.data.npoints
-        available_points_train = (1-self.data.test_fraction)*available_points_tot
-        available_points_test = self.data.test_fraction*available_points_tot
-        if self.npoints_train + self.npoints_val > available_points_train:
+        """
+        Private method used by the :meth:`DnnLik.__set_data <DNNLikelihood.DnnLik._DnnLik__set_data>` one
+        to check that the required number of points for train/val/test is less than the total number
+        of available points in the :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` object.
+        """
+        self.npoints_available = self.data.npoints
+        self.npoints_train_val_available = int(
+            (1-self.data.test_fraction)*self.npoints_available)
+        self.npoints_test_available = int(
+            self.data.test_fraction*self.npoints_available)
+        required_points_train_val = self.npoints_train+self.npoints_val
+        required_points_test = self.npoints_test
+        if required_points_train_val > self.npoints_train_val_available:
+            self.data.opened_dataset.close()
             raise Exception("npoints_train+npoints_val larger than the available number of points in data.\
                 Please reduce npoints_train+npoints_val or change test_fraction in the Data object.")
-        if self.npoints_test > available_points_test:
+        if required_points_test > self.npoints_test_available:
+            self.data.opened_dataset.close()
             raise Exception("npoints_test larger than the available number of points in data.\
                 Please reduce npoints_test or change test_fraction in the Data object.")
 
     def __check_define_model_data_inputs(self):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to check the private dictionary 
+        :attr:`DnnLik.__model_data_inputs <DNNLikelihood.DnnLik._DnnLik__model_data_inputs>`.
+        It checks if the item ``"npoints"`` is correctly specified and if it is not it raises an exception. If valitadion 
+        and test number of points are input
+        as fractions of the training one, then it converts them to absolute number of points.
+        It checks if the items ``"scalerX"``, ``"scalerY"``, and ``"weighted"`` are defined and, if they are not, it sets
+        them to their default value ``False``.
+        """
         try:
             self.__model_data_inputs["npoints"]
         except:
@@ -272,6 +419,13 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             self.__model_data_inputs["weighted"] = False
 
     def __check_define_model_define_inputs(self):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to check the private dictionary 
+        :attr:`DnnLik.__model_define_inputs <DNNLikelihood.DnnLik._DnnLik__model_define_inputs>`.
+        It checks if the items ``"act_func_out_layer"``, ``"dropout_rate"``, and ``"batch_norm"`` are defined and, if they are not, 
+        it sets them to their default values ``"linear"``, ``0``, and ``False``, respectively.
+        """
         try:
             self.__model_define_inputs["hidden_layers"]
         except:
@@ -290,6 +444,24 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             self.__model_define_inputs["batch_norm"] = False
 
     def __check_define_model_compile_inputs(self,verbose=None):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to check the private dictionary 
+        :attr:`DnnLik.__model_compile_inputs <DNNLikelihood.DnnLik._DnnLik__model_compile_inputs>`.
+        It checks if the attribure exists and, if it does not, it defines it as an empty dictionary.
+        It checks if the items ``"loss"`` and ``"metrics"`` are defined and, if they are not, 
+        it sets them to their default values ``"mse"`` and ``["mse","mae","mape","msle"]``, respectively.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+        """
         verbose, _ = self.set_verbosity(verbose)
         if self.__model_compile_inputs is None:
             self.__model_compile_inputs = {}
@@ -304,6 +476,13 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             self.__model_compile_inputs["metrics"] = ["mse","mae","mape","msle"]
 
     def __check_define_model_train_inputs(self):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to check the private dictionary 
+        :attr:`DnnLik.__model_train_inputs <DNNLikelihood.DnnLik._DnnLik__model_train_inputs>`.
+        It checks if the items ``"epochs"`` and ``"batch_size"`` are defined and, if they are not, 
+        it raises an exception.
+        """
         try:
             self.__model_train_inputs["epochs"]
         except:
@@ -313,9 +492,27 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         except:
             raise Exception("model_train_inputs dictionary should contain at least a keys 'epochs' and 'batch_size'.")
 
-    def __check_define_ensemble_name_folder(self,verbose=None):
+    def __check_define_ensemble_folder(self,verbose=None):
         """
-        Set ensemble attributes if an ensemble name is passed.
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set the
+        :attr:`DnnLik.ensemble_folder <DNNLikelihood.DnnLik.ensemble_folder>` and 
+        :attr:`DnnLik.standalone <DNNLikelihood.DnnLik.standalone>` attributes. If the object is a member
+        of a :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object, i.e. of the
+        :attr:`DnnLik.ensemble_name <DNNLikelihood.DnnLik.ensemble_name>` attribute is not ``None``,
+        then the two attributes are set to the parent directory of
+        :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` and to ``False``, respectively, otherwise
+        they are set to ``None`` and ``False``, respectively.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, _ = self.set_verbosity(verbose)
         if self.ensemble_name is None:
@@ -327,28 +524,75 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             self.standalone = False
 
     def __set_seed(self):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to initialize the random state of |numpy_link| and |tf_link| to the value of 
+        :attr:`DnnLik.seed <DNNLikelihood.DnnLik.seed>`.
+        """
+        if self.seed is None:
+            self.seed = 1
         np.random.seed(self.seed)
         tf.random.set_seed(self.seed)
 
     def __set_dtype(self):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set the dtype of the train/val/test data and of the internal |tf_keras_link| calculations.
+        If the :attr:`DnnLik.dtype <DNNLikelihood.DnnLik.dtype>` attribute is ``None``, then it is
+        set to the default value ``"float64"``.
+        """
         if self.dtype is None:
             self.dtype = "float64"
         K.set_floatx(self.dtype)
 
     def __set_data(self,verbose=None):
-        _, verbose_sub = self.set_verbosity(verbose)
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to initialize the :class:`Data <DNNLikelihood.Data>` object saved in the
+        :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` attribute and used to provide data to the 
+        :class:`DnnLik <DNNLikelihood.DnnLik>` object.
+        Data are set differently depending on the value of the attributes
+        :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` and 
+        :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>`, corresponding to the two
+        input class arguments: :argument:`data` and :argument:`input_data_file`, respectively. If both
+        are not ``None``, then the former is ignored. If only :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
+        is not ``None``, then :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>`
+        is set to the :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute of the :class:`Data <DNNLikelihood.Data>` object.
+        If :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>` is not ``None`` the 
+        :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` attribute is set by importing the :class:`Data <DNNLikelihood.Data>` 
+        object from file.
+        Once the :class:`Data <DNNLikelihood.Data>` object has been set, the 
+        :attr:`DnnLik.ndims <DNNLikelihood.DnnLik.ndims>` attribute is set from the same attribute of the 
+        :class:`Data <DNNLikelihood.Data>` object, and the two private methods
+        :meth:`DnnLik.__check_npoints <DNNLikelihood.DnnLik._DnnLik__check_npoints>` and
+        :meth:`DnnLik.__set_pars_info <DNNLikelihood.DnnLik._DnnLik__set_pars_info>`
+        are called.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
         if self.data is None and self.input_data_file is None:
             raise Exception(
                 "At least one of the arguments 'data' and 'input_data_file' should be specified.\nPlease specify one and retry.")
         elif self.data is not None and self.input_data_file is None:
             self.input_data_file = self.data.input_file
+            self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
         else:
             if self.data is not None:
-                print("Both the arguments 'data' and 'input_data_file' have been specified. 'data' will be ignored and the Data object will be set from 'input_data_file'.")
+                print("Both the arguments 'data' and 'input_data_file' have been specified. 'data' will be ignored and the Data object will be set from 'input_data_file'.", show=verbose)
             self.data = Data(name=None,
                              data_X=None,
                              data_Y=None,
                              dtype=self.dtype,
+                             pars_central=None,
                              pars_pos_poi=None,
                              pars_pos_nuis=None,
                              pars_labels=None,
@@ -360,29 +604,52 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                              verbose=verbose_sub
                              )
         self.ndims = self.data.ndims
-        self.__check_npoints(verbose=verbose_sub)
+        self.__check_npoints()
         self.__set_pars_info()
 
-    def __check_npoints(self,verbose=None):
-        verbose, _ = self.set_verbosity(verbose)
-        self.npoints_available = self.data.npoints
-        self.npoints_train_val_available = int((1-self.data.test_fraction)*self.npoints_available)
-        self.npoints_test_available = int(self.data.test_fraction*self.npoints_available)
-        required_points_train_val = self.npoints_train+self.npoints_val
-        required_points_test = self.npoints_test
-        if required_points_train_val > self.npoints_train_val_available:
-            print("Requiring more training points than available in data. Either reduce npoints_train+npoints_val or change test_fraction in Data (and call Data._Data__define_test_fraction()).",show=verbose)
-        if required_points_test > self.npoints_test_available:
-            print("Requiring more test points than available in data. Either reduce npoints_test or change test_fraction in Data (and call Data._Data__define_test_fraction()).",show=verbose)
-
     def __set_pars_info(self):
+        """
+        Private method used by the :meth:`DnnLik.__set_data <DNNLikelihood.DnnLik._DnnLik__set_data>` one
+        to set parameters info. It sets the attributes:
+
+            - :attr:`DnnLik.pars_central <DNNLikelihood.DnnLik.pars_central>`
+            - :attr:`DnnLik.pars_pos_poi <DNNLikelihood.DnnLik.pars_pos_poi>`
+            - :attr:`DnnLik.pars_pos_nuis <DNNLikelihood.DnnLik.pars_pos_nuis>`
+            - :attr:`DnnLik.pars_labels <DNNLikelihood.DnnLik.pars_labels>`
+            - :attr:`DnnLik.pars_labels_auto <DNNLikelihood.DnnLik.pars_labels_auto>`
+            - :attr:`DnnLik.pars_bounds <DNNLikelihood.DnnLik.pars_bounds>`
+        
+        by copying the corresponding attributes of the :class:`Data <DNNLikelihood.Data>` object 
+        :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        """
+        self.pars_central = self.data.pars_central
         self.pars_pos_poi = self.data.pars_pos_poi
         self.pars_pos_nuis = self.data.pars_pos_nuis
         self.pars_labels = self.data.pars_labels
-        self.generic_pars_labels = self.data.generic_pars_labels
+        self.pars_labels_auto = self.data.pars_labels_auto
         self.pars_bounds = self.data.pars_bounds
 
     def __set_model_hyperparameters(self):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set attributes corresponding to model hyperparameters from the private dictionaries
+
+            - :attr:`DnnLik.__model_data_inputs <DNNLikelihood.DnnLik._DnnLik__model_data_inputs>`
+            - :attr:`DnnLik.__model_define_inputs <DNNLikelihood.DnnLik._DnnLik__model_define_inputs>`
+            - :attr:`DnnLik.__model_train_inputs <DNNLikelihood.DnnLik._DnnLik__model_train_inputs>`
+        
+        The following attributes are set:
+            
+            - :attr:`DnnLik.scalerX_bool <DNNLikelihood.DnnLik.scalerX_bool>`
+            - :attr:`DnnLik.scalerY_bool <DNNLikelihood.DnnLik.scalerY_bool>`
+            - :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>`
+            - :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>`
+            - :attr:`DnnLik.act_func_out_layer <DNNLikelihood.DnnLik.act_func_out_layer>`
+            - :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>`
+            - :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>`
+            - :attr:`DnnLik.epochs_required <DNNLikelihood.DnnLik.epochs_required>`
+            - :attr:`DnnLik.batch_size <DNNLikelihood.DnnLik.batch_size>`
+        """
         self.scalerX_bool = self.__model_data_inputs["scalerX"]
         self.scalerY_bool = self.__model_data_inputs["scalerY"]
         self.weighted = self.__model_data_inputs["weighted"]
@@ -395,6 +662,25 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.batch_size = self.__model_train_inputs["batch_size"]
 
     def __set_tf_objects(self,verbose=None):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set attributes corresponding to |tf_keras_link| objects by calling the private methods:
+
+            - :meth:`DnnLik.__set_optimizer <DNNLikelihood.DnnLik._DnnLik__set_optimizer>`
+            - :meth:`DnnLik.__set_loss <DNNLikelihood.DnnLik._DnnLik__set_loss>`
+            - :meth:`DnnLik.__set_metrics <DNNLikelihood.DnnLik._DnnLik__set_metrics>`
+            - :meth:`DnnLik.__set_callbacks <DNNLikelihood.DnnLik._DnnLik__set_callbacks>`
+        
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+        """
         _, verbose_sub = self.set_verbosity(verbose)
         self.__set_optimizer(verbose=verbose_sub)  # this defines the string optimizer_string and object optimizer
         self.__set_loss(verbose=verbose_sub)  # this defines the string loss_string and the object loss
@@ -402,6 +688,23 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.__set_callbacks(verbose=verbose_sub)  # this defines the lists callbacks_strings and callbacks
 
     def __load_summary_json_and_log(self,verbose=None):
+        """
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one 
+        to import part of a previously saved
+        :class:`DnnLik <DNNLikelihood.DnnLik>` object from the files 
+        :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` and
+        :attr:`DnnLik.input_log_file <DNNLikelihood.DnnLik.input_log_file>`.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         with open(self.input_summary_json_file) as json_file:
@@ -409,6 +712,8 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.__dict__.update(dictionary)
         with open(self.input_log_file) as json_file:
             dictionary = json.load(json_file)
+        if self.model_max is not {}:
+            self.model_max["x"] = np.array(self.model_max["x"])
         self.log = dictionary
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -418,51 +723,103 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                "files paths": [self.input_summary_json_file,
                                                self.input_log_file]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print("DNN_likelihood summary json and log files loaded in", str(end-start), ".", show=verbose)
+        print("DnnLik summary json and log files loaded in", str(end-start), ".", show=verbose)
 
     def __load_history(self,verbose=None):
         """
-        Bla bla
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one 
+        to set the :attr:`DnnLik.history <DNNLikelihood.DnnLik.history>` attribute
+        from the file
+        :attr:`DnnLik.input_history_json_file <DNNLikelihood.DnnLik.input_history_json_file>`.
+        Once the attribute is set, it is used to set the 
+        :attr:`DnnLik.epochs_available <DNNLikelihood.DnnLik.epochs_available>` one, determined from the 
+        length of the ``"loss"`` item of the :attr:`DnnLik.history <DNNLikelihood.DnnLik.history>` dictionary.
+        If the file is not found the :attr:`DnnLik.history <DNNLikelihood.DnnLik.history>` and
+        :attr:`DnnLik.epochs_available <DNNLikelihood.DnnLik.epochs_available>` attributes are set to
+        an empty dictionary ``{}`` and ``0``, respectively. 
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         try:
             with open(self.input_history_json_file) as json_file:
                 self.history = json.load(json_file)
+            self.epochs_available = len(self.history['loss'])
         except:
+            print("No history file available. The history attribute will be initialized to {}.")
             self.history = {}
+            self.epochs_available = 0
+            return
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded history json",
                                "file name": path.split(self.input_history_json_file)[-1],
                                "file path": self.input_history_json_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print("DNN_likelihood history json file loaded in", str(end-start), ".", show=verbose)
+        print("DnnLik history json file loaded in", str(end-start), ".", show=verbose)
 
     def __load_model(self,verbose=None):
         """
-        Bla bla
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one 
+        to set the :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>` attribute, 
+        corresponding to the |tf_keras_model_link|, from the file
+        :attr:`DnnLik.input_tf_model_h5_file <DNNLikelihood.DnnLik.input_tf_model_h5_file>`.
+        If the file is not found the attribute is set to ``None``.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         try:
             self.model = load_model(self.input_tf_model_h5_file, custom_objects={"mean_error": self.mean_error,
                                                                                  "mean_percentage_error": self.mean_percentage_error,
-                                                                                 "R2_metric": self.R2_metric, 
-                                                                                 "Rt_metric": self.Rt_metric})
+                                                                                 "R2_metric": self.R2_metric})
         except:
+            print("No model file available. The model and epochs_available attributes will be initialized to None and 0, respectively.")
             self.model = None
+            return
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded tf model h5",
                                "file name": path.split(self.input_tf_model_h5_file)[-1],
                                "file path": self.input_tf_model_h5_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print("DNN_likelihood tf model h5 file loaded in", str(end-start), ".", show=verbose)
+        print("DnnLik tf model h5 file loaded in", str(end-start), ".", show=verbose)
 
     def __load_scalers(self,verbose=None):
         """
-        Bla bla
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set the :attr:`DnnLik.scalerX <DNNLikelihood.DnnLik.scalerX>` and 
+        :attr:`DnnLik.scalerY <DNNLikelihood.DnnLik.scalerY>` attributes from the file
+        :attr:`DnnLik.input_scalers_pickle_file <DNNLikelihood.DnnLik.input_scalers_pickle_file>`.
+        If the file is not found the attributes are set to ``None``.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -472,36 +829,60 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             self.scalerY = pickle.load(pickle_in)
             pickle_in.close()
         except:
+            print("No scalers file available. The scalerX and scalerY attributes will be initialized to None.")
             self.scalerX = None
             self.scalerY = None
+            return
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded scalers h5",
                                "file name": path.split(self.input_scalers_pickle_file)[-1],
                                "file path": self.input_scalers_pickle_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print("DNN_likelihood scalers h5 file loaded in", str(end-start), ".", show=verbose)
+        print("DnnLik scalers h5 file loaded in", str(end-start), ".", show=verbose)
 
     def __load_data_indices(self,verbose=None):
         """
-        Bla bla
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one 
+        to set the attributes:
+        
+            - :attr:`DnnLik.idx_train <DNNLikelihood.DnnLik.idx_train>`
+            - :attr:`DnnLik.idx_val <DNNLikelihood.DnnLik.idx_val>`
+            - :attr:`DnnLik.idx_test <DNNLikelihood.DnnLik.idx_test>`
+
+        from the file :attr:`DnnLik.input_idx_h5_file <DNNLikelihood.DnnLik.input_idx_h5_file>`.
+        Once the attributes are set, the items ``"idx_train"``, ``"idx_val"``, and ``"idx_test"``
+        of the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary attribute
+        of the :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
+        is updated to match the three index attributes
+        If the file is not found the attributes are set to ``None`` and the :class:`Data <DNNLikelihood.Data>` object is
+        not touched.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        h5_in = h5py.File(self.input_idx_h5_file, "r")
+        try:
+            h5_in = h5py.File(self.input_idx_h5_file, "r")
+        except:
+            print("No data indices file available. The idx_train, idx_val, and idx_test attributes will be initialized to empty arrays.")
+            self.idx_train, self.idx_val, self.idx_test = [np.array([], dtype="int"),np.array([], dtype="int"),np.array([], dtype="int")]
+            return
         data = h5_in.require_group("idx")
         self.idx_train = data["idx_train"][:]
         self.idx_val = data["idx_val"][:]
         self.idx_test = data["idx_test"][:]
         self.data.data_dictionary["idx_train"] = self.idx_train
-        #self.data.data_dictionary["X_train"] = self.data.data_X[self.idx_train].astype(self.dtype)
-        #self.data.data_dictionary["Y_train"] = self.data.data_Y[self.idx_train].astype(self.dtype)
         self.data.data_dictionary["idx_val"] = self.idx_val
-        #self.data.data_dictionary["X_val"] = self.data.data_X[self.idx_val].astype(self.dtype)
-        #self.data.data_dictionary["Y_val"] = self.data.data_Y[self.idx_val].astype(self.dtype)
         self.data.data_dictionary["idx_test"] = self.idx_test
-        #self.data.data_dictionary["X_test"] = self.data.data_X[self.idx_test].astype(self.dtype)
-        #self.data.data_dictionary["Y_test"] = self.data.data_Y[self.idx_test].astype(self.dtype)
         h5_in.close()
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -509,11 +890,25 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                "file name": path.split(self.input_idx_h5_file)[-1],
                                "file path": self.input_idx_h5_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print("DNN_likelihood data indices h5 file loaded in", str(end-start), ".", show=verbose)
+        print("DnnLik data indices h5 file loaded in", str(end-start), ".", show=verbose)
 
     def __load_predictions(self,verbose=None):
         """
-        Bla bla
+        Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
+        to set the :attr:`DnnLik.predictions <DNNLikelihood.DnnLik.predictions>` attribute 
+        from the file
+        :attr:`DnnLik.input_predictions_json_file <DNNLikelihood.DnnLik.input_predictions_json_file>`.
+        If the file is not found the attributes is set to an empty dictionary ``{}``.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -521,24 +916,53 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             with open(self.input_predictions_json_file) as json_file: 
                 self.predictions = json.load(json_file)
         except:
+            print("No predictions file available. The predictions attribute will be initialized to {}.")
             self.predictions = {}
+            return
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded predictions json",
                                "file name": path.split(self.input_predictions_json_file)[-1],
                                "file path": self.input_predictions_json_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print("DNN_likelihood predictions json file loaded in",str(end-start), ".", show=verbose)
+        print("DnnLik predictions json file loaded in",str(end-start), ".", show=verbose)
+
+    #def __load(self,verbose=None):
+    #    """
+    #    Bla bla
+    #    """
+    #    verbose, verbose_sub = self.set_verbosity(verbose)
+    #    self.__load_summary_json_and_log(verbose=verbose)
+    #    self.__load_model(verbose=verbose)
+    #    self.__load_history(verbose=verbose)
+    #    self.__load_scalers(verbose=verbose)
+    #    self.__load_data_indices(verbose=verbose)
+    #    self.__load_predictions(verbose=verbose)
 
     def __set_optimizer(self,verbose=None):
         """
-        Set Keras Model optimizer. Uses parameters from the dictionary "self.__model_optimizer_inputs".
+        Private method used by the 
+        :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._DnnLik__set_tf_objects>` one
+        to set the |tf_keras_optimizers_link| object. It sets the
+        :attr:`DnnLik.optimizer_string <DNNLikelihood.DnnLik.optimizer_string>`
+        and :attr:`DnnLik.optimizer <DNNLikelihood.DnnLik.optimizer>` attributes. The former is set from the
+        :attr:`DnnLik.__model_optimizer_inputs <DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs>` 
+        dictionary, while the latter is set by evaluating the former.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if type(self.__model_optimizer_inputs) is str:
             self.optimizer_string = self.__model_optimizer_inputs
-            self.optimizer = self.optimizer_string
-        if type(self.__model_optimizer_inputs) is dict:
+        elif type(self.__model_optimizer_inputs) is dict:
             name = self.__model_optimizer_inputs["name"]
             string = name+"("
             for key, value in utils.dic_minus_keys(self.__model_optimizer_inputs,["name"]).items():
@@ -547,7 +971,9 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                 string = string+str(key)+"="+str(value)+", "
             optimizer_string = str("optimizers."+string+")").replace(", )", ")")
             self.optimizer_string = optimizer_string
-            self.optimizer = eval(optimizer_string)
+        else:
+            raise Exception("Could not set optimizer. The model_optimizer_inputs argument does not have a valid format (str or dict).")
+        self.optimizer = eval(optimizer_string)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "optimizer set",
                                "optimizer": self.optimizer_string}
@@ -555,6 +981,25 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         print("Optimizer set to:", self.optimizer_string, show=verbose)
 
     def __set_loss(self, verbose=None):
+        """
+        Private method used by the 
+        :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._DnnLik__set_tf_objects>` one
+        to set the |tf_keras_losses_link| object. It sets the
+        :attr:`DnnLik.loss_string <DNNLikelihood.DnnLik.loss_string>`
+        and :attr:`DnnLik.loss <DNNLikelihood.DnnLik.loss>` attributes. The former is set from the
+        :attr:`DnnLik.__model_compile_inputs <DNNLikelihood.DnnLik._DnnLik__model_compile_inputs>` 
+        dictionary, while the latter is set by evaluating the former.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
         loss_string = self.__model_compile_inputs["loss"]
         try:
@@ -574,6 +1019,25 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
 
     def __set_metrics(self, verbose=None):
+        """
+        Private method used by the 
+        :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._DnnLik__set_tf_objects>` one
+        to set the |tf_keras_metrics_link| objects. It sets the
+        :attr:`DnnLik.metrics_string <DNNLikelihood.DnnLik.metrics_string>`
+        and :attr:`DnnLik.metrics <DNNLikelihood.DnnLik.metrics>` attributes. The former is set from the
+        :attr:`DnnLik.__model_compile_inputs <DNNLikelihood.DnnLik._DnnLik__model_compile_inputs>` 
+        dictionary, while the latter is set by evaluating each item in the the former.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
         metrics_string = self.__model_compile_inputs["metrics"]
         metrics_obj = list(range(len(metrics_string)))
@@ -601,7 +1065,23 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
 
     def __set_callbacks(self, verbose=None):
         """
-        Set Keras Model callbacks. Uses parameters from the dictionary "self.__model_callbacks_inputs".
+        Private method used by the 
+        :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._DnnLik__set_tf_objects>` one
+        to set the |tf_keras_callbacks_link| objects. It sets the
+        :attr:`DnnLik.callbacks_strings <DNNLikelihood.DnnLik.callbacks_strings>`
+        and :attr:`DnnLik.callbacks <DNNLikelihood.DnnLik.callbacks>` attributes. The former is set from the
+        :attr:`DnnLik.__model_callbacks_inputs <DNNLikelihood.DnnLik._DnnLik__model_callbacks_inputs>` 
+        dictionary, while the latter is set by evaluating each item in the the former.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         callbacks_strings = []
@@ -610,7 +1090,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         print("Setting callbacks")
         for cb in callbacks_string:
             if cb == "PlotLossesKeras":
-                self.output_figure_plot_losses_keras_file = self.output_files_base_name+"_figure_plot_losses_keras.pdf"
+                self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
                 string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
             elif cb == "ModelCheckpoint":
                 self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
@@ -629,7 +1109,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         for cb in callbacks_dict:
             name = cb["name"]
             if name == "PlotLossesKeras":
-                self.output_figure_plot_losses_keras_file = self.output_files_base_name+"_figure_plot_losses_keras.pdf"
+                self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
                 string = "fig_path = '"+self.output_figure_plot_losses_keras_file + "', "
                 name = "callbacks."+name
             elif name == "ModelCheckpoint":
@@ -680,25 +1160,14 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                "callbacks": self.callbacks_strings}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
 
-    def __set_epochs_to_run(self, verbose=None):
+    def __set_epochs_to_run(self):
         """
-        Private method that returns the number of steps to run computed as the difference between the value of
-        :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>` and the number of steps available in 
-        :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`.
-        If this difference is negative, a warning message asking to increase the value of 
-        :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>` is printed.
-
-        - **Arguments**
-
-            - **verbose**
-            
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+        Private method that returns the number of epochs to run computed as the difference between the value of
+        :attr:`DnnLik.epochs_required <DNNLikelihood.DnnLik.epochs_required>` and the value of
+        :attr:`DnnLik.epochs_available <DNNLikelihood.DnnLik.epochs_available>`, i.e. the 
+        number of epochs available in 
+        :attr:`DnnLik.history <DNNLikelihood.DnnLik.history>`.
         """
-        verbose, _ = self.set_verbosity(verbose)
         if self.epochs_required <= self.epochs_available and self.epochs_available > 0:
             epochs_to_run = 0
         else:
@@ -716,7 +1185,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                 Could be either one of the keyword strings ``"original"`` and ``"generic"`` or a list of labels
                 strings with the length of the parameters array. If ``pars_labels="original"`` or ``pars_labels="generic"``
                 the function returns the value of :attr:`Sampler.pars_labels <DNNLikelihood.Sampler.pars_labels>`
-                or :attr:`Sampler.generic_pars_labels <DNNLikelihood.Sampler.generic_pars_labels>`, respectively,
+                or :attr:`Sampler.pars_labels_auto <DNNLikelihood.Sampler.pars_labels_auto>`, respectively,
                 while if ``pars_labels`` is a list, the function just returns the input.
 
                     - **type**: ``list`` or ``str``
@@ -726,18 +1195,82 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         if pars_labels is "original":
             return self.pars_labels
         elif pars_labels is "generic":
-            return self.generic_pars_labels
+            return self.pars_labels_auto
         else:
             return pars_labels
 
-    def compute_sample_weights(self, bins=100, power=1, verbose=None):
+    def compute_sample_weights(self, nbins=100, power=1, verbose=None):
+        """
+        Method that computes weights of :attr:`DnnLik.Y_train <DNNLikelihood.DnnLik.Y_train>`
+        points given their distribution by calling the
+        :meth:`Data.compute_sample_weights <DNNLikelihood.Data.compute_sample_weights>` method of the 
+        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        When the :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>` is ``True``, the method is called
+        with default arguments when data are generated. Manually call the method after data generation to compute weights with
+        custom arguments.
+        
+        - **Arguments**
+
+            - **nbins**
+
+                Number of bins to histogram the 
+                sample data
+
+                    - **type**: ``int``
+                    - **default**: ``100``
+
+            - **power**
+
+                Exponent of the inverse of the bin count used
+                to assign weights.
+
+                    - **type**: ``float``
+                    - **default**: ``1``
+
+            - **verbose**
+
+                Verbosity mode.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Returns**
+
+            |Numpy_link| array of the same length of ``sample`` containing
+            the required weights.
+            
+                - **type**: ``numpy.ndarray``
+                - **shape**: ``(len(sample),)``
+        """
         _, verbose_sub = self.set_verbosity(verbose)
-        self.W_train = self.data.compute_sample_weights(self.Y_train, bins=bins, power=power,verbose=verbose_sub).astype(self.dtype)
+        self.W_train = self.data.compute_sample_weights(
+            self.Y_train, nbins=nbins, power=power, verbose=verbose_sub).astype(self.dtype)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "computed sample weights"}
-        self.save_log(overwrite=True, verbose=verbose_sub)
+        #self.save_log(overwrite=True, verbose=verbose_sub)
 
     def define_scalers(self, verbose=None):
+        """
+        Method that defines |standard_scalers_link| based on the values of the
+        :attr:`DnnLik.scalerX_bool <DNNLikelihood.DnnLik.scalerX_bool>` and 
+        :attr:`DnnLik.scalerY_bool <DNNLikelihood.DnnLik.scalerY_bool>` attributes.
+        When the boolean attribute is ``True`` the scaler is fit to the corresponding training data, otherwise it is set
+        equal to the identity.
+        The method computes the scalers by calling the corresponding method 
+        :meth:`Data.define_scalers <DNNLikelihood.Data.define_scalers>` method of the 
+        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+
+        - **Arguments**
+
+           - **verbose**
+
+                Verbosity mode.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+
+                    - **type**: ``bool``
+                    - **default**: ``None``
+        """
         _, verbose_sub = self.set_verbosity(verbose)
         self.scalerX, self.scalerY = self.data.define_scalers(self.X_train, self.Y_train, self.scalerX_bool, self.scalerY_bool, verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -747,6 +1280,58 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved by generate_train_data
 
     def generate_train_data(self, verbose=None):
+        """
+        Method that generates training and validation data corresponding to the attributes
+
+            - :attr:`DnnLik.idx_train <DNNLikelihood.DnnLik.idx_train>`
+            - :attr:`DnnLik.X_train <DNNLikelihood.DnnLik.X_train>`
+            - :attr:`DnnLik.Y_train <DNNLikelihood.DnnLik.Y_train>`
+            - :attr:`DnnLik.idx_val <DNNLikelihood.DnnLik.idx_val>`
+            - :attr:`DnnLik.X_val <DNNLikelihood.DnnLik.X_val>`
+            - :attr:`DnnLik.Y_val <DNNLikelihood.DnnLik.Y_val>`
+
+        Data are generated by calling the methods
+        :meth:`Data.update_train_data <DNNLikelihood.Data.update_train_data>` or
+        :meth:`Data.generate_train_data <DNNLikelihood.Data.generate_train_data>` of the 
+        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
+        depending on the value of :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>`.
+
+        When the :class:`DnnLik <DNNLikelihood.DnnLik>` object is not part of a
+        :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object, that is when the
+        :attr:`DnnLik.standalone <DNNLikelihood.DnnLik.standalone>` attribute is ``True``, 
+        or when the :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>`
+        attribute is ``True``, that means that all members of the ensemble will share the same data (or a
+        subset of the same data if they have different number of points), then data are kept up-to-date in the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute of the 
+        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        This means that data are not generated again if they are already available from another member and that
+        if the number of points is increased, data are added to the existing ones and are not re-generated from scratch.
+
+        When instead the :class:`DnnLik <DNNLikelihood.DnnLik>` object is part of a
+        :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object and the
+        :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>` attribute is ``False``,
+        data are re-generated from scratch at each call of the method.
+
+        If the :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>` attribute is ``True`` the
+        :meth:`DnnLik.compute_sample_weights <DNNLikelihood.DnnLik.compute_sample_weights>` is called
+        with default arguments. In order to compute sample weights with different arguments, the user should call again the
+        :meth:`DnnLik.compute_sample_weights <DNNLikelihood.DnnLik.compute_sample_weights>` method after 
+        data generation.
+
+        - **Arguments**
+
+           - **verbose**
+
+                Verbosity mode.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
         # Generate data
         if self.same_data:
@@ -759,6 +1344,8 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.idx_val = self.data.data_dictionary["idx_val"][:self.npoints_train]
         self.X_val = self.data.data_dictionary["X_val"][:self.npoints_val].astype(self.dtype)
         self.Y_val = self.data.data_dictionary["Y_val"][:self.npoints_val].astype(self.dtype)
+        self.pars_bounds_train = np.vstack([np.min(self.X_train,axis=0),np.max(self.X_train,axis=0)]).T
+        self.pred_bounds_train = np.array([np.min(self.Y_train), np.max(self.Y_train)])
         # Define scalers
         self.define_scalers(verbose=verbose_sub)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -766,9 +1353,45 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                "data": ["idx_train", "X_train", "Y_train", "idx_val", "X_val", "Y_val"],
                                "npoints train": self.npoints_train,
                                "npoints val": self.npoints_val}
+        if self.weighted:
+            print("In order to compute sample weights with the desired parameters please run the function\
+                   self.compute_sample_weights(bins=100, power=1) before training.\n Proceding with sample weights\
+                   computed with default parameters (bins=100 and power=1).", show=verbose)
+            self.compute_sample_weights()
         self.save_log(overwrite=True, verbose=verbose_sub)
 
     def generate_test_data(self, verbose=None):
+        """
+        Method that generates test data corresponding to the attributes
+
+            - :attr:`DnnLik.idx_train <DNNLikelihood.DnnLik.idx_test>`
+            - :attr:`DnnLik.X_train <DNNLikelihood.DnnLik.X_test>`
+            - :attr:`DnnLik.Y_train <DNNLikelihood.DnnLik.Y_test>`
+
+        Differently from the training and validation data, the test data are always shared by different 
+        :class:`DnnLik <DNNLikelihood.DnnLik>` objects within an
+        :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object.
+        Therefore test data are always kept up-to-date in the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute of the 
+        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
+        and are always generated by calling the :meth:`Data.generate_test_data <DNNLikelihood.Data.generate_test_data>` of the 
+        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        In this way test data are never re-generated if they are (even partially) available.
+
+        - **Arguments**
+
+           - **verbose**
+
+                Verbosity mode.
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
         # Generate data
         self.data.generate_test_data(self.npoints_test, verbose=verbose)
@@ -783,8 +1406,39 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
 
     def model_define(self,verbose=None):
         """
-        Define the Keras Model "self.model" and the attributes "self.model_params", "self.model_trainable_params", and
-        "self.model_non_trainable_params". Uses parameters from the dictionary "self.__model_define_inputs".
+        Method that defines the |tf_keras_model_link| stored in the 
+        :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>` attribute.
+        The model is defined from the attributes
+
+            - :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>`
+            - :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>`
+            - :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>`
+
+        All hidden layers in the module are |tf_keras_layers_dense_link| layers.
+        If :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>` is ``True``, then a 
+        |tf_keras_batch_normalization_link| layer is added after the input layer and after each hidden layer.
+        If :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>` is larger than ``0``, then
+        a |tf_keras_dropout_link| layer is added after each hidden layer with the given dropout rate.
+        
+        The method also sets the three attributes:
+
+            - :attr:`DnnLik.model_params <DNNLikelihood.DnnLik.model_params>`
+            - :attr:`DnnLik.model_trainable_params <DNNLikelihood.DnnLik.model_trainable_params>`
+            - :attr:`DnnLik.model_non_trainable_params <DNNLikelihood.DnnLik.model_non_trainable_params>`
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
+        
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         # Define model
@@ -837,7 +1491,27 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
 
     def model_compile(self,verbose=None):
         """
-        Compile the Keras Model "self.model". Uses parameters from the dictionary "self.__model_compile_inputs".
+        Method that compiles the |tf_keras_model_link| stored in the 
+        :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>` attribute.
+        The model is compiled by calling the |tf_keras_model_compile_link| method and passing it the attributes
+
+            - :attr:`DnnLik.loss <DNNLikelihood.DnnLik.loss>`
+            - :attr:`DnnLik.optimizer <DNNLikelihood.DnnLik.optimizer>`
+            - :attr:`DnnLik.metrics <DNNLikelihood.DnnLik.metrics>`
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         # Compile model
@@ -849,7 +1523,52 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Model for DNNLikelihood",self.name,"compiled in",str(end-start),"s.",show=verbose)
 
-    def model_build(self, gpu="auto", verbose=None):
+    def model_build(self, gpu="auto", force=False, verbose=None):
+        """
+        Method that calls the methods
+
+            - :meth:`DnnLik.model_define <DNNLikelihood.DnnLik.model_define>`
+            - :meth:`DnnLik.model_compile <DNNLikelihood.DnnLik.model_compile>`
+
+        on a specific GPU by using the |tf_distribute_onedevicestrategy_link| class.
+        Using this method different :class:`DNNLik <DNNLikelihood.DNNLik>` members of a
+        :class:`DNNLikEnsemble <DNNLikelihood.DNNLikEnsemble>` object can be compiled and run in parallel 
+        on different GPUs (when available).
+        Notice that, in case the model has already been created and compiled, the method does not re-builds the
+        model on a different GPU unless the ``force`` flag is set to ``True`` (default is ``False``).
+
+        - **Arguments**
+
+            - **gpu**
+            
+                GPU number (e.g. 0,1,etc..) of the GPU where the model should be built.
+                The available GPUs are listed in the 
+                :attr:`DnnLik.active_gpus <DNNLikelihood.DnnLik.active_gpus>`.
+                If ``gpu="auto"`` the first GPU, corresponding to number ``0`` is automatically set.
+                    
+                    - **type**: ``int`` or ``str``
+                    - **default**: ``auto`` (``0``)
+            
+            - **force**
+            
+                If set to ``True`` the model is re-built even if it was already 
+                available.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``False``
+            
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
         try:
             self.model
@@ -859,6 +1578,9 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             else:
                 compile = True
         except:
+            create = True
+            compile = True
+        if force:
             create = True
             compile = True
         if not create and not compile:
@@ -893,77 +1615,203 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
 
     def model_train(self,verbose=None):
         """
-        Train the Keras Model "self.model". Uses parameters from the dictionary "self.__model_train_inputs".
+        Method that trains the |tf_keras_model_link| stored in the 
+        :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>` attribute.
+        The model is trained by calling the |tf_keras_model_fit_link| method and passing it the inputs 
+
+            - X_train (attribute :attr:`DnnLik.X_train <DNNLikelihood.DnnLik.X_train>` scaled with :attr:`DnnLik.scalerX <DNNLikelihood.DnnLik.scalerX>`)
+            - X_val (attribute :attr:`DnnLik.X_val <DNNLikelihood.DnnLik.X_val>` scaled with :attr:`DnnLik.scalerX <DNNLikelihood.DnnLik.scalerX>`)
+            - Y_train (attribute :attr:`DnnLik.Y_train <DNNLikelihood.DnnLik.Y_train>` scaled with :attr:`DnnLik.scalerY <DNNLikelihood.DnnLik.scalerY>`)
+            - Y_val (attribute :attr:`DnnLik.Y_val <DNNLikelihood.DnnLik.Y_val>` scaled with :attr:`DnnLik.Y_val <DNNLikelihood.DnnLik.Y_val>`)
+            - :attr:`DnnLik.W_train <DNNLikelihood.DnnLik.W_train>` (if :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>` is ``True``)
+            - epochs_to_run (difference between :attr:`DnnLik.epochs_required <DNNLikelihood.DnnLik.epochs_required>` and :attr:`DnnLik.epochs_available <DNNLikelihood.DnnLik.epochs_available>`)
+            - :attr:`DnnLik.batch_size <DNNLikelihood.DnnLik.batch_size>`
+            - :attr:`DnnLik.callbacks <DNNLikelihood.DnnLik.callbacks>`
+
+        After training the method updates the attributes
+
+            - :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>`
+            - :attr:`DnnLik.history <DNNLikelihood.DnnLik.history>`
+            - :attr:`DnnLik.epochs_available <DNNLikelihood.DnnLik.epochs_available>`
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. The second value returned by the
+                :meth:`DNNLik.set_verbosity <DNNLikelihood.DNNLik.set_verbosity>` method is the verbosity mode passed to the
+                |tf_keras_model_fit_link|. See the documentation of |tf_keras_model_fit_link| for the available verbosity modes.
+                Also see the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         # Scale data
         start = timer()
-        epochs_to_run = self.__set_epochs_to_run(verbose=verbose_sub)
-        #print("Checking data",show=verbose)
-        if len(self.X_train) <= 1:
-            print("Generating train data",show=verbose)
-            self.generate_train_data()
-        print("Scaling training data.", show=verbose)
-        X_train = self.scalerX.transform(self.X_train)
-        X_val = self.scalerX.transform(self.X_val)
-        Y_train = self.scalerY.transform(self.Y_train.reshape(-1, 1)).reshape(len(self.Y_train))
-        Y_val = self.scalerY.transform(self.Y_val.reshape(-1, 1)).reshape(len(self.Y_val))
-        print([type(X_train),type(X_val),type(Y_train),type(Y_train)],show=verbose)
-        # If PlotLossesKeras is in callbacks set plot style
-        if "PlotLossesKeras" in str(self.callbacks_strings):
-            plt.style.use(mplstyle_path)
-        # Train model
-        print("Start training of model for DNNLikelihood",self.name, ".",show=verbose)
-        if self.weighted:
-            # Compute weights
-            if len(self.W_train) <= 1:
-                print("In order to compute sample weights with the desired parameters please run the function\
-                       self.compute_sample_weights(bins=100, power=1) before training.\n Proceding with sample weights\
-                       computed with default parameters (bins=100 and power=1).", show=verbose)
-                self.compute_sample_weights()
-            # Train
-            history = self.model.fit(X_train, Y_train, sample_weight=self.W_train, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_tf,
-                    validation_data=(X_val, Y_val), callbacks=self.callbacks)
+        epochs_to_run = self.__set_epochs_to_run()
+        if epochs_to_run == 0:
+            print("Please increase epochs_required to train for more epochs.", show=verbose)
         else:
-            history = self.model.fit(X_train, Y_train, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_sub,
-                    validation_data=(X_val, Y_val), callbacks=self.callbacks)
-        end = timer()
-        self.training_time = (end - start)/epochs_to_run
-        history = history.history
-        for k, v in history.items():
-            history[k] = list(np.array(v, dtype=self.dtype))
-        if self.history == {}:
-            print("no existing history",show=verbose)
-            self.history = history
-        else:
-            print("existing history", show=verbose)
-            for k, v in self.history.items():
-                self.history[k] = v + history[k]
-        self.epochs_available = len(self.history["loss"])
-        if "PlotLossesKeras" in str(self.callbacks_strings):
-            plt.close()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "trained tf model",
-                               "epochs run": epochs_to_run,
-                               "epochs total": self.epochs_available,
-                               "batch size": self.batch_size,
-                               "training time": self.training_time}
-        self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Model for DNNLikelihood", self.name, "successfully trained for",
-              epochs_to_run, "epochs in", self.training_time, "s.", show=verbose)
+            if len(self.X_train) <= 1:
+                print("Generating train data",show=verbose)
+                self.generate_train_data()
+            print("Scaling training data.", show=verbose)
+            X_train = self.scalerX.transform(self.X_train)
+            X_val = self.scalerX.transform(self.X_val)
+            Y_train = self.scalerY.transform(self.Y_train.reshape(-1, 1)).reshape(len(self.Y_train))
+            Y_val = self.scalerY.transform(self.Y_val.reshape(-1, 1)).reshape(len(self.Y_val))
+            print([type(X_train),type(X_val),type(Y_train),type(Y_train)],show=verbose)
+            # If PlotLossesKeras is in callbacks set plot style
+            if "PlotLossesKeras" in str(self.callbacks_strings):
+                plt.style.use(mplstyle_path)
+            # Train model
+            print("Start training of model for DNNLikelihood",self.name, ".",show=verbose)
+            if self.weighted:
+                # Train
+                history = self.model.fit(X_train, Y_train, sample_weight=self.W_train, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_sub,
+                        validation_data=(X_val, Y_val), callbacks=self.callbacks)
+            else:
+                history = self.model.fit(X_train, Y_train, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_sub,
+                        validation_data=(X_val, Y_val), callbacks=self.callbacks)
+            end = timer()
+            self.training_time = (end - start)/epochs_to_run
+            history = history.history
+            for k, v in history.items():
+                history[k] = list(np.array(v, dtype=self.dtype))
+            if self.history == {}:
+                print("no existing history",show=verbose)
+                self.history = history
+            else:
+                print("existing history", show=verbose)
+                for k, v in self.history.items():
+                    self.history[k] = v + history[k]
+            self.epochs_available = len(self.history["loss"])
+            if "PlotLossesKeras" in str(self.callbacks_strings):
+                plt.close()
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+            self.log[timestamp] = {"action": "trained tf model",
+                                   "epochs run": epochs_to_run,
+                                   "epochs total": self.epochs_available,
+                                   "batch size": self.batch_size,
+                                   "training time": self.training_time}
+            self.save_log(overwrite=True, verbose=verbose_sub)
+            print("Model for DNNLikelihood", self.name, "successfully trained for",
+                  epochs_to_run, "epochs in", self.training_time, "s.", show=verbose)
 
-    def model_predict(self, X, batch_size=None, steps=None, save_log=True, verbose=None):
+    def model_predict(self, X, batch_size=None, steps=None, x_boundaries="original", y_boundaries=False, save_log=True, verbose=None):
         """
-        Predict with the Keras Model "self.model".
+        Method that predicts in batches by calling the |tf_keras_model_predict_link| method of
+        :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>`.
+        To predict, the method first scales the vector ``X`` with the scaler 
+        :attr:`DnnLik.scalerX <DNNLikelihood.DnnLik.scalerX>`, then computed the prediction, and finally returns
+        the predicted vercor ``Y`` inversely scaled with :attr:`DnnLik.scalerY <DNNLikelihood.DnnLik.scalerY>` and the
+        prediction time normalized to a signle point (i.e. divided by ``batch_size``).
+        The method takes into account original boundaries for the likelihood function by setting the value of the prediction
+        for all points outside boundaries to ``-np.inf``.
+
+        - **Arguments**
+
+            - **X**
+            
+                Input vector ``X`` for which the predictions ``Y``
+                are computed
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndim)``
+
+            - **batch_size**
+            
+                Batch size to be used for predictions.
+                If ``None`` (default), then the value stored in the :attr:`DnnLik.batch_size <DNNLikelihood.DnnLik.batch_size>`
+                attribute is used.
+                    
+                    - **type**: ``int``
+                    - **default**: ``None``
+
+            - **steps**
+            
+                Total number of batches on which the prediction is made. If ``None`` (default), predictions are computed
+                for all ``X``. See the documentation of |tf_keras_model_predict_link| for more details.
+                    
+                    - **type**: ``int``
+                    - **default**: ``None``
+
+            - **x_boundaries**
+            
+                Implements boundaries on the input vector. If an ``x`` point has a parameter that falls outside
+                ``pars_bounds``, the corresponding prediction is set to ``-np.inf``. It could have the following values:
+
+                    - ``"original"``: the parameters bounds of the original likelihood function stored in the 
+                        :attr:`DnnLik.pars_bounds <DNNLikelihood.DnnLik.pars_bounds>` are used.
+                    - ``"train"``: the parameters bounds computed from the maximum and minimum values of the training points
+                        stored in the :attr:`DnnLik.pars_bounds_train <DNNLikelihood.DnnLik.pars_bounds_train>` are used.
+                    - ``"none"``: the parameters bounds are sent to infinity, i.e. no bounds are imposed and all
+                        predictions are accepted.
+                    
+                    - **type**: ``str``
+                    - **default**: ``"original"``
+
+            - **y_boundaries**
+
+                Implements boundaries on the output vector. If ``True``, then if a ``y`` point is bigger(smaller) than the
+                largest(smallest) ``y`` training point stored in the 
+                :attr:`DNNLik.pred_bounds_train <DNNLikelihood.DNNLik.pred_bounds_train>` attribute, 
+                the corresponding prediction is set to ``-np.inf``. If ``False`` then 
+                no constraint is imposed.
+
+                    - **type**: ``bool``
+                    - **default**: ``"False"``
+
+            - **save_log**
+            
+                If ``True`` the :attr:`DnnLik.log <DNNLikelihood.DnnLik.log>` attribute is updated and the corresponding file is
+                saved. This option is used to switch off log updated when the method is called by the method
+                :meth:`DNNLik.model_predict_scalar <DNNLikelihood.DNNLik.model_predict_scalar>`, which predicts one point at a time.
+
+                    - **type**: ``bool``
+                    - **default**: ``True``
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>` (only if ``save_log=True``)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if x_boundaries is "original":
+            pars_bounds = self.pars_bounds
+        elif x_boundaries is "train":
+            pars_bounds = self.pars_bounds_train
+        else:
+            pars_bounds = np.vstack(
+                [np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         # Scale data
         if batch_size is None:
             batch_size = self.batch_size
-        start = timer()
         print("Scaling data.", show=verbose)
         X = self.scalerX.transform(X)
         pred = self.scalerY.inverse_transform(self.model.predict(X, batch_size=batch_size, steps=steps, verbose=verbose_sub)).reshape(len(X))
+        for i in range(len(X)):
+            x = X[i]
+            if not (np.all(x >= pars_bounds[:, 0]) and np.all(x <= pars_bounds[:, 1])):
+                pred[i] = -np.inf
+                #np.put(pred, i, -np.inf)
+            if y_boundaries:
+                if pred[i] < self.pred_bounds_train[0] or pred[i] > self.pred_bounds_train[1]:
+                    pred[i] = -np.inf
+        #pred = np.where(np.isnan(pred), -np.inf, pred)
         end = timer()
         prediction_time = (end - start)/len(X)
         if save_log:
@@ -975,77 +1823,220 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             self.save_log(overwrite=True, verbose=verbose_sub)
         return [pred, prediction_time]
 
-    def model_predict_scalar(self, x, steps=None, verbose=None):
+    def model_predict_scalar(self, x, x_boundaries="original", y_boundaries=False, verbose=None):
         """
-        Predict with the Keras Model "self.model".
+        Method that returns a prediction on a single input point.
+        It calls the method :meth:`DNNLik.model_predict <DNNLikelihood.DNNLik.model_predict>`
+        with ``batch_size=1`` and converts the output to a scalar.
+
+        - **Arguments**
+
+            - **x**
+            
+                One dimensional input vector ``x`` for which a scalar predictions ``y``
+                is computed
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **shape**: ``(ndim,)``
+
+            - **x_boundaries**
+            
+                Argument passed to the 
+                :meth:`DNNLik.model_predict <DNNLikelihood.DNNLik.model_predict>` method.
+                    
+                    - **type**: ``str``
+                    - **default**: ``"original"``
+
+            - **y_boundaries**
+
+                Argument passed to the 
+                :meth:`DNNLik.model_predict <DNNLikelihood.DNNLik.model_predict>` method.
+
+                    - **type**: ``bool``
+                    - **default**: ``"False"``
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if len(x.shape) == 1:
             x = x.reshape(1,-1)
-        pred = self.model_predict(x, batch_size=1, steps=None, save_log=False, verbose=False)[0][0]
+        pred = self.model_predict(x, batch_size=1, steps=None, x_boundaries=x_boundaries, y_boundaries=y_boundaries, save_log=False, verbose=False)[0][0]
         return pred
 
-    def model_compute_max_logpdf(self,pars_init=None,pars_bounds=None,nsteps=10000,tolerance=0.0001,optimizer=None,verbose=None):
+    def model_compute_max(self,
+                          pars_init=None,
+                          maxiter=None,
+                          tolerance=0.0001,
+                          optimizer=None,
+                          scipy_kwargs = {},
+                          x_boundaries="original", 
+                          y_boundaries=False,
+                          verbose=None):
+        """
+        Method that computes the maximum of the DNNLikelihood predictor with an optimizer given by the user.
+        The two optimizer that are supported are |scipy_link| and |tf_keras_link|. They work as follows.
+
+        - |scipy_link|
+
+            If the argument ``optimizer`` is ``"scipy"``, then the method uses the |scipy_optimize_minimize_link| method to minimize
+            minus times the :meth:``DNNLik.model_predict_scalar <DNNLikelihood.DNNLik.model_predict_scalar> function. Optimization is unconstrained
+            since constraints determined by the ``x_boundaries`` and ``y_boundaries`` inputs are already applied on the predictor function.
+            By default the method uses the |scipy_optimize_minimize_powell_link| method and passes the ``maxiter`` and ``tolerance`` inputs 
+            to the analog ``ftol`` and ``maxiter`` input of the |scipy_optimize_minimize_powell_link| method, respectively. 
+            Additional (or different) arguments can be passed to the 
+            |scipy_optimize_minimize_link| method through the input dictionary ``scipy_kwargs``.
+
+        - |tf_keras_link|
+
+            If the argument ``optimizer`` is not ``scipy``, then |tf_keras_link| is used for the optimization. When ``optimizer``
+            is ``None`` the |tf_keras_optimizers_link_2| is set to |tf_keras_optimizer_SGD| with ``learning_rate=0.1``.
+            On the other hand, the user can pass a custom ``optimizer`` in the same way as optimizers are passed to the 
+            :class:``DNNLik <DNNLikelihood.DNNLik>` object, see the documentation of :argument:`model_optimizer_inputs`.
+            The optimization is done for a maximum of ``maxiter`` iterations, 500 iterations per time. 
+            Every 500 iterations the prediction is compared with the previous one
+            and, when the difference is smaller than ``tolerance`` the optimization is stopped. If ``tolerance`` is not reached
+            within ``maxiter`` iterations, then the result is returned and a warning message is printed.
+            If the optimization starts to deteriorate (worse result after the next 500 iterations), then the ``learning_rate`` of the
+            |tf_keras_optimizers_link_2| is reduces by a factor of two.
+
+        The method saves the result of the optimization in the :attr:`DNNLik.model_max <DNNLikelihood.DNNLik.model_max>` dictionary,
+        containing the ``X`` (type: ``numpy.ndarray``) and ``Y`` (type: ``float``) items.
+
+        - **Arguments**
+
+            - **pars_init**
+            
+                Starting point for the optimization. If not specified (``None``), then
+                it is set to the parameters central value :attr:`DNNLik.pars_central <DNNLikelihood.DNNLik.pars_central>`.
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **shape**: ``(ndim,)``
+                    - **default**: ``None`` (automatically modified to :attr:`DNNLik.pars_central <DNNLikelihood.DNNLik.pars_central>`)
+
+            - **maxiter**
+            
+                Maximum number of iteration for the optimization. When using the |tf_keras_link| for optimization this is quantized
+                in groups of 500 iterations. Even if ``tolerance`` is not reached, otpimization ends after ``maxiter`` iterations.
+                    
+                    - **type**: ``int``
+                    - **default**: - **default**: ``None`` (automatically modified to ``1000`` times :attr:`DNNLik.ndims <DNNLikelihood.DNNLik.ndims>`)
+
+            - **tolerance**
+
+                Relative difference between the prediction at iteration i and prediction at iteration i+niter, where niter is
+                one for |scipy_link| and 500 for |tf_keras_link| optimization.
+
+                    - **type**: ``float``
+                    - **default**: ``0.0001``
+
+            - **optimizer**
+
+                It coule be either the string ``"scipy"`` for |scipy_link| optimization, or a string or a dictionary for |tf_keras_link| optimization.
+                In the latter case it can be input in the same way as :argument:`model_optimizer_inputs` class argument.
+
+                    - **type**: ``str`` or ``dict``
+                    - **default**: ``None`` (automatically modified to ``"tf.keras.optimizers.SGD(learning_rate=0.1)``)
+
+            - **scipy_kwargs**
+
+                Arguments passed directly to the 
+                |scipy_optimize_link| method.
+
+                    - **type**: ``dict``
+                    - **default**: ``{}``
+
+            - **x_boundaries**
+
+                Argument passed to the 
+                :meth:`DNNLik.model_predict_scalar <DNNLikelihood.DNNLik.model_predict_scalar>` method.
+
+                    - **type**: ``str``
+                    - **default**: ``"original"``
+
+            - **y_boundaries**
+
+                Argument passed to the 
+                :meth:`DNNLik.model_predict_scalar <DNNLikelihood.DNNLik.model_predict_scalar>` method.
+
+                    - **type**: ``bool``
+                    - **default**: ``"False"``
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        optimizer_log = optimizer
         start = timer()
-        ## Parameters initialization
+        optimizer_log = optimizer
         if pars_init is None:
-            pars_init = np.zeros(self.ndims)
+            pars_init = self.pars_central
         else:
-            pars_init = np.array(pars_init).flatten()
+            pars_init = np.array(pars_init)
+        if maxiter is None:
+            maxiter=1000*self.ndims
+        if x_boundaries is "original":
+            pars_bounds = self.pars_bounds
+        elif x_boundaries is "train":
+            pars_bounds = self.pars_bounds_train
+        else:
+            pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         if optimizer is "scipy":
+            optimizer = scipy.optimize
             print("Optimizing with scipy.optimize.", show=verbose)
             def minus_loglik(x):
-                return -self.model_predict_scalar(x)
-            if pars_bounds is None:
-                ml = optimize.minimize(minus_loglik, pars_init, method="Powell")
-            else:
-                pars_bounds = np.array(pars_bounds)
-                bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
-                ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds,method="SLSQP")
-            x_final, y_final = [ml["x"], ml["fun"]]
-            self.X_max_logpdf = x_final
-            self.Y_max_logpdf = y_final
+                return -self.model_predict_scalar(x, x_boundaries=x_boundaries, y_boundaries=y_boundaries)
+            ml = optimizer.minimize(minus_loglik, pars_init, maxiter=maxiter, method="Powell", ftol=tolerance,**scipy_kwargs)
+            self.model_max["X"], self.model_max["Y"] = [ml["x"], -ml["fun"]]
             end = timer()
             print("Optimized in", str(end-start), "s.", show=verbose)
         else:
             ## Set optimizer
             def __set_optimizer(optimizer):
                 if optimizer is None:
-                    lr = 0.1
-                    opt = tf.keras.optimizers.SGD(lr)
-                    return opt
+                    opt_string = "optimizers.SGD(learning_rate=0.1)"
                 elif type(optimizer) is dict:
-                    name = list(optimizer.keys())[0]
+                    name = optimizer["name"]
                     string = name+"("
-                    for key, value in optimizer[name].items():
+                    for key, value in utils.dic_minus_keys(optimizer,["name"]).items():
                         if type(value) is str:
                             value = "'"+value+"'"
                         string = string+str(key)+"="+str(value)+", "
                     opt_string = str("optimizers."+string+")").replace(", )", ")")
-                    opt = eval(opt_string)
-                    return opt
                 elif type(optimizer) is str:
-                    opt = eval(optimizer)
-                    return opt
+                    opt_string = optimizer
                 else:
-                    opt = optimizer
-                    return opt
+                    raise Exception("Could not set optimizer. The optimizer argument does not have a valid format (None or str or dict).")
+                return eval(opt_string)
             optimizer = __set_optimizer(optimizer)
             print("Optimizing with tensorflow.", show=verbose)
             ## Scalers
             sX = self.scalerX
             sY = self.scalerY        
-            x_var = tf.Variable(sX.transform(pars_init.reshape(1,-1)), dtype=tf.float32)
-            f = lambda: tf.reshape(-1*(self.model(x_var)),[])
-            ##### Should add the possibility to parse optimizer in different ways #####
-            if optimizer is None:
-                lr = 0.1
-                optimizer = tf.keras.optimizers.SGD(lr)
+            x_var = tf.Variable(sX.transform(np.array(self.pars_central).reshape(1,-1)), dtype=self.dtype)
+            x_bounds=tf.reshape(tf.Variable(self.pars_bounds, dtype=self.dtype),(self.ndims,2))
+            def f():
+                if tf.reduce_all(tf.logical_and(tf.reshape(x_var, (self.ndims,)) > x_bounds[:, 0], tf.reshape(x_var, (self.ndims,)) < x_bounds[:, 1])):
+                    return tf.reshape(-1*(self.model(x_var)),[])
+                else:
+                    return tf.reshape(tf.Variable(np.inf, dtype=self.dtype),())
+            #f = lambda: tf.reshape(-1*(self.model(x_var)),[])
             run_lenght = 500
-            nruns = int(nsteps/run_lenght)
-            last_run_length = nsteps-run_lenght*nruns
+            nruns = int(maxiter/run_lenght)
+            last_run_length = maxiter-run_lenght*nruns
             if last_run_length != 0:
                 nruns = nruns+1
             for i in range(nruns):
@@ -1060,50 +2051,86 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                         optimizer.minimize(f,var_list=[x_var])
                     step_after = i*run_lenght+last_run_length
                 value_after = sY.inverse_transform([-f().numpy()])[0]
-                variation = np.abs(value_before-value_after)/np.abs(value_before)
+                variation = value_before-value_after/value_before
                 if value_after<value_before:
-                    lr = optimizer._hyper["learning_rate"]
-                    optimizer = tf.keras.optimizers.SGD(lr/2)
-                    print("Optimizer learning rate reduced.", show=verbose)
+                    lr = optimizer._hyper['learning_rate']
+                    optimizer._hyper['learning_rate'] = lr/2
+                    print("Optimizer learning rate reduced from",lr,"to",lr/2,".", show=verbose)
                 print("Step:",step_before,"Value:",value_before,"-- Step:",step_after,"Value:",value_after,r"-- % Variation",variation, show=verbose)
-                if variation < tolerance:
+                if variation > 0 and variation < tolerance:
                     end = timer()
                     print("Converged to tolerance",tolerance,"in",str(end-start),"s.", show=verbose)
                     x_final = sX.inverse_transform(x_var.numpy())[0]
                     y_final = sY.inverse_transform([-f().numpy()])[0]
-                    self.X_max_logpdf = x_final
-                    self.Y_max_logpdf = y_final
+                    self.model_max["X"], self.model_max["Y"] = [x_final, y_final]
                     break
             end = timer()
-            print("Did not converge to tolerance",tolerance,"using",nsteps,"steps.", show=verbose)
+            print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.", show=verbose)
             print("Best tolerance",variation,"reached in",str(end-start),"s.", show=verbose)
-            self.X_max_logpdf = x_final
-            self.Y_max_logpdf = y_final
+            self.model_max["X"], self.model_max["Y"] = [x_final, y_final]
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "computed maximum logpdf",
                                "optimizer": optimizer_log,
                                "optimization time": end-start}
         self.save_log(overwrite=True, verbose=verbose_sub)
 
-    #def maximum_loglik(self, loglik, npars=None, pars_init=None, pars_bounds=None,verbose=None):
-    #    verbose, verbose_sub = self.set_verbosity(verbose)
-    #    def minus_loglik(x): return -loglik(x)
-    #    if pars_bounds is None:
-    #        print("Optimizing", show=verbose)
-    #        ml = optimize.minimize(minus_loglik, pars_init, method="Powell")
-    #    else:
-    #        pars_bounds = np.array(pars_bounds)
-    #        bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
-    #        ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds)
-    #    return [ml["x"], ml["fun"]]
-
-    def model_evaluate(self, X, Y, batch_size=1, steps=None, verbose=None):
+    def model_evaluate(self, X, Y, batch_size=None, steps=None, verbose=None):
         """
-        Predict with the Keras Model "self.model".
+        Method that evaluates the :attr:`DNNLik.model <DNNLikelihood.DNNLik.model>` model on the 
+        :attr:`DNNLik.metrics <DNNLikelihood.DNNLik.metrics>` by calling the 
+        |tf_keras_model_evaluate_link| method.
+
+        - **Arguments**
+
+            - **X**
+            
+                |Numpy_link| array of X points for 
+                model evaluation.
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndims)``
+
+            - **Y**
+            
+                |Numpy_link| array of corresponding Y points sfor 
+                model evaluation.
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **default**: ``(ndims,)``
+
+            - **batch_size**
+
+                Batch size used for evaluation. If ``None`` (default), then it is set to the value of
+                :attr:`DNNLik.batch_size <DNNLikelihood.DNNLik.batch_size>`.
+
+                    - **type**: ``int``
+                    - **default**: ``None`` (automatically modified to :attr:`DNNLik.batch_size <DNNLikelihood.DNNLik.batch_size>`)
+
+            - **steps**
+            
+                Total number of batches on which the evaluation is made. If ``None`` (default), predictions are computed
+                for all ``X``. See the documentation of |tf_keras_model_evaluate_link| for more details.
+                    
+                    - **type**: ``int``
+                    - **default**: ``None``
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None``
+
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         # Scale data
         start = timer()
+        if batch_size is None:
+            batch_size = self.batch_size
         print("Scaling data.", show=verbose)
         X = self.scalerX.transform(X)
         Y = self.scalerY.transform(Y.reshape(-1, 1)).reshape(len(Y))
@@ -1118,6 +2145,10 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         return [pred, prediction_time]
 
     def generate_fig_base_title(self):
+        """
+        Generates a common title for figures including information on the model and saved in the 
+        :attr:`DNNLik.fig_base_title <DNNLikelihood.DNNLik.fig_base_title>` attribute.
+        """
         title = "Ndim: " + str(self.ndims) + " - "
         title = title + "Nevt: " + "%.E" % Decimal(str(self.npoints_train)) + " - "
         title = title + "Layers: " + str(len(self.hidden_layers)) + " - "
@@ -1196,6 +2227,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             plt.plot(curve_train[:,0], curve_train[:,1], color="green", marker="o", linestyle="dashed", linewidth=2, markersize=3, label=r"train")
             plt.plot(curve_test[:,0], curve_test[:,1], color="blue", marker="o", linestyle="dashed", linewidth=2, markersize=3, label=r"test")
             plt.plot(curve_test_pred[:,0], curve_test_pred[:,1], color="red", marker="o", linestyle="dashed", linewidth=2, markersize=3, label=r"pred")
+            plt.title(r"%s" % self.fig_base_title, fontsize=10)
             plt.xlabel(r"%s"%(self.pars_labels[par]))
             if loglik:
                 plt.ylabel(r"logprob ($\log\mathcal{L}+\log\mathcal{P}$)")
@@ -1252,6 +2284,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             counts, _ = np.histogram(np.exp(Y_pred_test), bins)
             integral = 1  # counts.sum()
         plt.step(bins[:-1], counts/integral,where="post", color="red", label=r"pred")
+        plt.title(r"%s" % self.fig_base_title, fontsize=10)
         if loglik:
             plt.xlabel(r"logprob ($\log\mathcal{L}+\log\mathcal{P}$)")
         else:
@@ -1289,7 +2322,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             ranges = extend_corner_range(X1, X2, pars, 0)
         else:
             ranges = extend_corner_range(X1, X2, pars, ranges_extend)
-        pars_labels = self._DNN_likelihood__set_pars_labels(pars_labels)
+        pars_labels = self._DnnLik__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
         if not overwrite:
             utils.check_rename_file(figure_filename)
@@ -1397,7 +2430,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                 ax.grid(True, linestyle="--", linewidth=1)
                 ax.tick_params(axis="both", which="major", labelsize=16)
         fig.subplots_adjust(top=0.85,wspace=0.25, hspace=0.25)
-        fig.suptitle(r"%s" % plot_title, fontsize=26)
+        fig.suptitle(r"%s" % (plot_title+"\n"+self.fig_base_title), fontsize=26)
         #fig.text(0.5 ,1, r"%s" % plot_title, fontsize=26)
         colors = [color1, color2, "black", "black", "black"]
         red_patch = matplotlib.patches.Patch(color=colors[0])  # , label="The red data")
@@ -1429,6 +2462,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                   batch_size=None,
                                   overwrite=False,
                                   verbose=None,
+                                  model_predict_kwargs={}, # batch_size=None, steps=None, x_boundaries="original", y_boundaries=False, save_log=True, verbose=None
                                   HPDI_kwargs={}, # intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True
                                   plot_training_history_kwargs = {}, # metrics=["loss"], yscale="log", show_plot=False, overwrite=False, verbose=None
                                   plot_pars_coverage_kwargs = {}, # pars=None, loglik=True, show_plot=False, overwrite=False, verbose=None
@@ -1440,6 +2474,10 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                                                   # plot_title="Params contours", legend_labels=None, 
                                                                   # figure_filename=None, show_plot=False, overwrite=False, verbose=None
         verbose, verbose_sub = self.set_verbosity(verbose)
+        def model_predict_sub(X):
+            return self.model_predict(X, batch_size=self.batch_size, verbose=verbose_sub,**model_predict_kwargs)
+        def HPDI_sub(X,CI,weights=None):
+            return inference.HPDI(X, CI, weights=weights, **HPDI_kwargs)
         start_global = timer()
         start = timer()
         if pars is None:
@@ -1467,9 +2505,9 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         metrics_true = {**dict(zip(metrics_names_train, metrics_train)), **dict(zip(metrics_names_val, metrics_val)), **dict(zip(metrics_names_test, metrics_test))}
         self.predictions = {**self.predictions, **{"Metrics on scaled data": metrics_true}}
         print("Predict Y for train/val/test samples", show=verbose)
-        Y_pred_train, prediction_time1 = self.model_predict(self.X_train, batch_size=self.batch_size,verbose=verbose_sub)
-        Y_pred_val, prediction_time2 = self.model_predict(self.X_val, batch_size=self.batch_size,verbose=verbose_sub)
-        Y_pred_test, prediction_time3 = self.model_predict(self.X_test, batch_size=self.batch_size,verbose=verbose_sub)
+        Y_pred_train, prediction_time1 = model_predict_sub(self.X_train)
+        Y_pred_val, prediction_time2 = model_predict_sub(self.X_val)
+        Y_pred_test, prediction_time3 = model_predict_sub(self.X_test)
         self.predictions = {**self.predictions, **{"Prediction time": (prediction_time1+prediction_time2+prediction_time3)/3}}
         print("Evaluate all metrics on (un-scaled) train/val/test using best models", show=verbose)
         metrics_names_train = [i+"_best_unscaled" for i in self.model.metrics_names]
@@ -1492,8 +2530,8 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         #(data, intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True)
         HPDI_result = {}
         for par in pars:
-            [HPDI_train, HPDI_val, HPDI_test] = [inference.HPDI(X, CI, **HPDI_kwargs) for X in [self.X_train[:, par], self.X_val[:, par], self.X_test[:, par]]]
-            [HPDI_pred_train, HPDI_pred_val, HPDI_pred_test] = [inference.HPDI(self.X_train[:, par], CI, W_train, **HPDI_kwargs), inference.HPDI(self.X_val[:, par], CI, W_val, **HPDI_kwargs), inference.HPDI(self.X_test[:, par], CI, W_test, **HPDI_kwargs)]
+            [HPDI_train, HPDI_val, HPDI_test] = [HPDI_sub(X, CI) for X in [self.X_train[:, par], self.X_val[:, par], self.X_test[:, par]]]
+            [HPDI_pred_train, HPDI_pred_val, HPDI_pred_test] = [HPDI_sub(self.X_train[:, par], CI, W_train), HPDI_sub(self.X_val[:, par], CI, W_val), HPDI_sub(self.X_test[:, par], CI, W_test)]
             HPDI_result[str(par)] = {"true": {"train": HPDI_train, "val": HPDI_val, "test": HPDI_test}, "pred":{"train": HPDI_pred_train, "val": HPDI_pred_val, "test": HPDI_pred_test}}
         HDPI_error = inference.HPDI_error(HPDI_result)
         if "HPDI" not in self.predictions:
@@ -1550,14 +2588,14 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                 overwrite=overwrite, verbose=verbose_sub, **plot_corners_2samp_kwargs)
         #### TEST CORNER
         ## **corners_kwargs should include ranges_extend, max_points, nbins, show_plot, overwrite
-        self.plot_corners_2samp(self.X_train, self.X_train, W1=None, W2=W_train,
+        self.plot_corners_2samp(self.X_test, self.X_test, W1=None, W2=W_test,
                                 HPDI1_dic={"sample": "test", "type": "true"}, HPDI2_dic={"sample": "test", "type": "pred"},
                                 pars = pars, pars_labels = "original",
                                 title1 = "$68\%$ HPDI test", title2 = "$68\%$ HPDI DNN test",
                                 color1 = "green", color2 = "red",
                                 plot_title = "DNN reweighting train",
-                                legend_labels = [r"Test set ($%s$ points)" % utils.latex_float(len(self.X_train)),
-                                                 r"DNN reweight test ($%s$ points)" % utils.latex_float(len(self.X_train)),
+                                legend_labels = [r"Test set ($%s$ points)" % utils.latex_float(len(self.X_test)),
+                                                 r"DNN reweight test ($%s$ points)" % utils.latex_float(len(self.X_test)),
                                                  r"$68.27\%$ HPDI", 
                                                  r"$95.45\%$ HPDI", 
                                                  r"$99.73\%$ HPDI"],
@@ -1572,7 +2610,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
                                 color1 = "green", color2 = "red",
                                 plot_title = "Train vs test samples",
                                 legend_labels = [r"Train set ($%s$ points)" % utils.latex_float(len(self.X_train)),
-                                                 r"Test set ($%s$ points)" % utils.latex_float(len(self.X_train)),
+                                                 r"Test set ($%s$ points)" % utils.latex_float(len(self.X_test)),
                                                  r"$68.27\%$ HPDI", 
                                                  r"$95.45\%$ HPDI", 
                                                  r"$99.73\%$ HPDI"],
@@ -1626,9 +2664,9 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         if overwrite:
-            print("DNN_likelihood log file", self.output_log_file, "updated in", str(end-start), "s.", show=verbose)
+            print("DnnLik log file", self.output_log_file, "updated in", str(end-start), "s.", show=verbose)
         else:
-            print("DNN_likelihood log file", self.output_log_file, "saved in", str(end-start), "s.", show=verbose)
+            print("DnnLik log file", self.output_log_file, "saved in", str(end-start), "s.", show=verbose)
 
     def save_data_indices(self, overwrite=False, verbose=None):
         """ Save indices to member_n_idx.h5 as h5 file
@@ -1639,7 +2677,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
             utils.check_rename_file(self.output_idx_h5_file, verbose=verbose_sub)
         #self.close_opened_dataset(verbose=verbose_sub)
         utils.check_delete_file(self.output_idx_h5_file)
-        h5_out = h5py.File(self.output_idx_h5_file)
+        h5_out = h5py.File(self.output_idx_h5_file, "w")
         h5_out.require_group(self.name)
         data = h5_out.require_group("idx")
         data["idx_train"] = self.idx_train
@@ -1651,7 +2689,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.log[timestamp] = {"action": "saved indices",
                                "file name": path.split(self.output_idx_h5_file)[-1],
                                "file path": self.output_idx_h5_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         print(self.output_idx_h5_file, "created and saved in", str(end-start), "s.", show=verbose)
 
     def save_model_json(self, overwrite=False, verbose=None):
@@ -1661,7 +2699,11 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_tf_model_json_file, verbose=verbose_sub)
-        model_json = self.model.to_json()
+        try:
+            model_json = self.model.to_json()
+        except:
+            print("Model not defined. No file is saved.")
+            return
         with open(self.output_tf_model_json_file, "w") as json_file:
             json_file.write(model_json)
         end = timer()
@@ -1669,8 +2711,9 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.log[timestamp] = {"action": "saved tf model json",
                                "file name": path.split(self.output_tf_model_json_file)[-1],
                                "file path": self.output_tf_model_json_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         print(self.output_tf_model_json_file, "created and saved.", str(end-start), "s.", show=verbose)
+
 
     def save_model_h5(self, overwrite=False, verbose=None):
         """ Save model to h5
@@ -1679,13 +2722,17 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_tf_model_h5_file, verbose=verbose_sub)
-        self.model.save(self.output_tf_model_h5_file)
+        try:
+            self.model.save(self.output_tf_model_h5_file)
+        except:
+            print("Model not defined. No file is saved.")
+            return
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved tf model h5",
                                "file name": path.split(self.output_tf_model_h5_file)[-1],
                                "file path": self.output_tf_model_h5_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         print(self.output_tf_model_h5_file, "created and saved.",str(end-start), "s.", show=verbose)
 
     def save_model_onnx(self, overwrite=False, verbose=None):
@@ -1695,14 +2742,18 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_tf_model_onnx_file, verbose=verbose_sub)
-        onnx_model = keras2onnx.convert_keras(self.model, self.name)
+        try:
+            onnx_model = keras2onnx.convert_keras(self.model, self.name)
+        except:
+            print("Model not defined. No file is saved.")
+            return
         onnx.save_model(onnx_model, self.output_tf_model_onnx_file)
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved tf model onnx",
                                "file name": path.split(self.output_tf_model_onnx_file)[-1],
                                "file path": self.output_tf_model_onnx_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         print(self.output_tf_model_onnx_file,"created and saved.", str(end-start), "s.", show=verbose)
 
     def save_history_json(self,overwrite=False,verbose=None):
@@ -1723,7 +2774,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.log[timestamp] = {"action": "saved history json",
                                "file name": path.split(self.output_history_json_file)[-1],
                                "file path": self.output_history_json_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         print(self.output_history_json_file, "created and saved.", str(end-start), "s.", show=verbose)
 
     def save_summary_json(self, overwrite=False, verbose=None):
@@ -1733,7 +2784,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_summary_json_file, verbose=verbose_sub)
-        dictionary = utils.dic_minus_keys(self.__dict__,["_DNN_likelihood__resources_inputs",
+        dictionary = utils.dic_minus_keys(self.__dict__,["_DnnLik__resources_inputs",
                                                          "callbacks","data","history",
                                                          "idx_test","idx_train","idx_val",
                                                          "input_files_base_name","input_history_json_file",
@@ -1752,11 +2803,11 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.log[timestamp] = {"action": "saved summary json",
                                "file name": path.split(self.output_summary_json_file)[-1],
                                "file path": self.output_summary_json_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if overwrite:
-            print("DNN_likelihood json file", self.output_summary_json_file, "updated in", str(end-start), "s.", show=verbose)
+            print("DnnLik json file", self.output_summary_json_file, "updated in", str(end-start), "s.", show=verbose)
         else:
-            print("DNN_likelihood json file", self.output_summary_json_file, "saved in", str(end-start), "s.", show=verbose)
+            print("DnnLik json file", self.output_summary_json_file, "saved in", str(end-start), "s.", show=verbose)
 
     def generate_summary_text(self):
         summary_text = "Sample file: " + str(path.split(self.input_data_file)[1].replace("_", r"$\_$")) + "\n"
@@ -1805,7 +2856,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.log[timestamp] = {"action": "saved predictions json",
                                "file name": path.split(self.output_predictions_json_file)[-1],
                                "file path": self.output_predictions_json_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         print(self.output_predictions_json_file, "created and saved.", str(end-start), "s.", show=verbose)
 
     def save_scalers(self, overwrite=False,verbose=None):
@@ -1825,8 +2876,8 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.log[timestamp] = {"action": "saved scalers h5",
                                "file name": path.split(self.output_scalers_pickle_file)[-1],
                                "file path": self.output_scalers_pickle_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
-        print("DNN_likelihood scalers pickle file", self.output_scalers_pickle_file,"saved in", str(end-start), "s.",show=verbose)
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
+        print("DnnLik scalers pickle file", self.output_scalers_pickle_file,"saved in", str(end-start), "s.",show=verbose)
 
     def save_model_graph_pdf(self, overwrite=False, verbose=None):
         """ Save model graph to pdf
@@ -1834,9 +2885,13 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.output_model_graph_pdf_file, verbose=verbose_sub)
-        png_file = path.splitext(self.output_model_graph_pdf_file)[0]+".png"
-        plot_model(self.model, show_shapes=True, show_layer_names=True, to_file=png_file)
+            utils.check_rename_file(self.output_tf_model_graph_pdf_file, verbose=verbose_sub)
+        png_file = path.splitext(self.output_tf_model_graph_pdf_file)[0]+".png"
+        try:
+            plot_model(self.model, show_shapes=True, show_layer_names=True, to_file=png_file)
+        except:
+            print("Model not defined. No file is saved.")
+            return
         utils.make_pdf_from_img(png_file)
         try:
             remove(png_file)
@@ -1849,12 +2904,12 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved model graph pdf",
-                               "file name": path.split(self.output_model_graph_pdf_file)[-1],
-                               "file path": self.output_model_graph_pdf_file}
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by model_store
-        print(self.output_model_graph_pdf_file," created and saved in", str(end-start), "s.", show=verbose)
+                               "file name": path.split(self.output_tf_model_graph_pdf_file)[-1],
+                               "file path": self.output_tf_model_graph_pdf_file}
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
+        print(self.output_tf_model_graph_pdf_file," created and saved in", str(end-start), "s.", show=verbose)
 
-    def model_store(self, overwrite=False, verbose=None):
+    def save(self, overwrite=False, verbose=None):
         """ Save all model information
         - data indices as hdf5 dataset
         - model in json format
@@ -1870,6 +2925,7 @@ class DNN_likelihood(Resources): #show_prints.Verbosity inherited from resources
         self.save_model_h5(overwrite=overwrite,verbose=verbose)
         self.save_model_onnx(overwrite=overwrite,verbose=verbose)
         self.save_history_json(overwrite=overwrite,verbose=verbose)
+        self.save_predictions_json(overwrite=overwrite, verbose=verbose)
         self.save_summary_json(overwrite=overwrite,verbose=verbose)
         self.save_scalers(overwrite=overwrite,verbose=verbose)
         self.save_model_graph_pdf(overwrite=overwrite,verbose=verbose)

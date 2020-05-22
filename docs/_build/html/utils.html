@@ -38,8 +38,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -96,13 +96,14 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="histfactory.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sampler.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Likelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DNNLikelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Useful functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
@@ -220,140 +221,140 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="DNNLikelihood.utils.flatten_list">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">flatten_list</code><span class="sig-paren">(</span><em class="sig-param">lst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#flatten_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.flatten_list" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">flatten_list</code><span class="sig-paren">(</span><em class="sig-param">lst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#flatten_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.flatten_list" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.make_pdf_from_img">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">make_pdf_from_img</code><span class="sig-paren">(</span><em class="sig-param">img</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#make_pdf_from_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.make_pdf_from_img" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">make_pdf_from_img</code><span class="sig-paren">(</span><em class="sig-param">img</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#make_pdf_from_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.make_pdf_from_img" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make pdf from image
 Used to circumvent bud in plot_model which does not allow to export pdf</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.chunks">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">chunks</code><span class="sig-paren">(</span><em class="sig-param">lst</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.chunks" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">chunks</code><span class="sig-paren">(</span><em class="sig-param">lst</em>, <em class="sig-param">n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.chunks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return list of chunks from lst.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.check_create_folder">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">check_create_folder</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_create_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_create_folder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_create_folder</code><span class="sig-paren">(</span><em class="sig-param">path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_create_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_create_folder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.check_rename_file">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">check_rename_file</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">timestamp=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_rename_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_rename_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_rename_file</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">timestamp=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_rename_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_rename_file" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.check_rename_folder">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">check_rename_folder</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">timestamp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_rename_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_rename_folder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_rename_folder</code><span class="sig-paren">(</span><em class="sig-param">path</em>, <em class="sig-param">timestamp=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_rename_folder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_rename_folder" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.save_samples">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">save_samples</code><span class="sig-paren">(</span><em class="sig-param">allsamples</em>, <em class="sig-param">logpdf_values</em>, <em class="sig-param">data_sample_filename</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#save_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.save_samples" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save_samples</code><span class="sig-paren">(</span><em class="sig-param">allsamples</em>, <em class="sig-param">logpdf_values</em>, <em class="sig-param">data_sample_filename</em>, <em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#save_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.save_samples" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.check_repeated_elements_at_start">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">check_repeated_elements_at_start</code><span class="sig-paren">(</span><em class="sig-param">lst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_repeated_elements_at_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_repeated_elements_at_start" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_repeated_elements_at_start</code><span class="sig-paren">(</span><em class="sig-param">lst</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_repeated_elements_at_start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_repeated_elements_at_start" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.show_figures">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">show_figures</code><span class="sig-paren">(</span><em class="sig-param">fig_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#show_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.show_figures" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">show_figures</code><span class="sig-paren">(</span><em class="sig-param">fig_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#show_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.show_figures" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.get_spaced_elements">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">get_spaced_elements</code><span class="sig-paren">(</span><em class="sig-param">array</em>, <em class="sig-param">numElems=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#get_spaced_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.get_spaced_elements" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_spaced_elements</code><span class="sig-paren">(</span><em class="sig-param">array</em>, <em class="sig-param">numElems=5</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#get_spaced_elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.get_spaced_elements" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.next_power_of_two">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">next_power_of_two</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#next_power_of_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.next_power_of_two" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">next_power_of_two</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#next_power_of_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.next_power_of_two" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.closest_power_of_two">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">closest_power_of_two</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#closest_power_of_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.closest_power_of_two" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">closest_power_of_two</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#closest_power_of_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.closest_power_of_two" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.convert_types_dict">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">convert_types_dict</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#convert_types_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.convert_types_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">convert_types_dict</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#convert_types_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.convert_types_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.sort_dict">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">sort_dict</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#sort_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.sort_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sort_dict</code><span class="sig-paren">(</span><em class="sig-param">d</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#sort_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.sort_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.normalize_weights">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">normalize_weights</code><span class="sig-paren">(</span><em class="sig-param">w</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#normalize_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.normalize_weights" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">normalize_weights</code><span class="sig-paren">(</span><em class="sig-param">w</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#normalize_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.normalize_weights" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.product_dict">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">product_dict</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#product_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.product_dict" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">product_dict</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#product_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.product_dict" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.dic_minus_keys">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">dic_minus_keys</code><span class="sig-paren">(</span><em class="sig-param">dictionary</em>, <em class="sig-param">keys</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#dic_minus_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.dic_minus_keys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dic_minus_keys</code><span class="sig-paren">(</span><em class="sig-param">dictionary</em>, <em class="sig-param">keys</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#dic_minus_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.dic_minus_keys" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.string_split_at_char">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">string_split_at_char</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#string_split_at_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.string_split_at_char" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">string_split_at_char</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#string_split_at_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.string_split_at_char" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.string_add_newline_at_char">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">string_add_newline_at_char</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#string_add_newline_at_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.string_add_newline_at_char" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">string_add_newline_at_char</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#string_add_newline_at_char"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.string_add_newline_at_char" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.metric_name_abbreviate">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">metric_name_abbreviate</code><span class="sig-paren">(</span><em class="sig-param">metric_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#metric_name_abbreviate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.metric_name_abbreviate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">metric_name_abbreviate</code><span class="sig-paren">(</span><em class="sig-param">metric_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#metric_name_abbreviate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.metric_name_abbreviate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.metric_name_unabbreviate">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">metric_name_unabbreviate</code><span class="sig-paren">(</span><em class="sig-param">metric_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#metric_name_unabbreviate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.metric_name_unabbreviate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">metric_name_unabbreviate</code><span class="sig-paren">(</span><em class="sig-param">metric_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#metric_name_unabbreviate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.metric_name_unabbreviate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.strip_suffix">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">strip_suffix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">suff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#strip_suffix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.strip_suffix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">strip_suffix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">suff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#strip_suffix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.strip_suffix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.check_add_suffix">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">check_add_suffix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">suff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_add_suffix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_add_suffix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_add_suffix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">suff</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_add_suffix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_add_suffix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.strip_prefix">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">strip_prefix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">pref</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#strip_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.strip_prefix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">strip_prefix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">pref</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#strip_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.strip_prefix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.check_add_prefix">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">check_add_prefix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">pref</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_add_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_add_prefix" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_add_prefix</code><span class="sig-paren">(</span><em class="sig-param">s</em>, <em class="sig-param">pref</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#check_add_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.check_add_prefix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.utils.get_sorted_grid">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">get_sorted_grid</code><span class="sig-paren">(</span><em class="sig-param">pars_ranges</em>, <em class="sig-param">spacing='grid'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#get_sorted_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.get_sorted_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_sorted_grid</code><span class="sig-paren">(</span><em class="sig-param">pars_ranges</em>, <em class="sig-param">spacing='grid'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#get_sorted_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.get_sorted_grid" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="DNNLikelihood.utils.define_generic_pars_labels">
-<code class="sig-prename descclassname">DNNLikelihood.utils.</code><code class="sig-name descname">define_generic_pars_labels</code><span class="sig-paren">(</span><em class="sig-param">pars_pos_poi</em>, <em class="sig-param">pars_pos_nuis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#define_generic_pars_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.define_generic_pars_labels" title="Permalink to this definition">¶</a></dt>
+<dt id="DNNLikelihood.utils.define_pars_labels_auto">
+<code class="sig-name descname">define_pars_labels_auto</code><span class="sig-paren">(</span><em class="sig-param">pars_pos_poi</em>, <em class="sig-param">pars_pos_nuis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#define_pars_labels_auto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.define_pars_labels_auto" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

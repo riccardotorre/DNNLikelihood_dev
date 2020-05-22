@@ -1,0 +1,772 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Attributes &mdash; DNNLikelihood</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Methods" href="methods.html" />
+    <link rel="prev" title="Arguments" href="arguments.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Likelihood object</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="class.html">Class</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="arguments.html">Arguments</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="methods.html">Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../code.html">Python module</a> &raquo;</li>
+        
+          <li><a href="index.html">The Likelihood object</a> &raquo;</li>
+        
+          <li><a href="class.html">Class</a> &raquo;</li>
+        
+      <li>Attributes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/likelihood/attributes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="attributes">
+<h1>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h1>
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.figures_list">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">figures_list</code><a class="headerlink" href="#DNNLikelihood.Lik.figures_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of absolute paths to the generated figures.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.pars_labels_auto">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">pars_labels_auto</code><a class="headerlink" href="#DNNLikelihood.Lik.pars_labels_auto" title="Permalink to this definition">¶</a></dt>
+<dd><p>List containing parameters names automatically generated by the function
+<a class="reference internal" href="../utils.html#DNNLikelihood.utils.define_pars_labels_auto" title="DNNLikelihood.utils.define_pars_labels_auto"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.define_pars_labels_auto</span></code></a>.
+All parameters of interest are named <code class="docutils literal notranslate"><span class="pre">r&quot;$\theta_{i}$&quot;</span></code> with <code class="docutils literal notranslate"><span class="pre">i</span></code> ranging between
+one to the number of parameters of interest and all nuisance parameters are named
+<code class="docutils literal notranslate"><span class="pre">r&quot;$\nu_{j}$&quot;</span></code> with <code class="docutils literal notranslate"><span class="pre">j</span></code> ranging between one to the number of nuisance parameters.
+Parameters labels are always parsed as “raw” strings (like, for instance, <code class="docutils literal notranslate"><span class="pre">r&quot;%s&quot;%pars_labels_auto[0]</span></code>)
+and can contain latex expressions that are properly compiled when making plots.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.input_file">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Lik.input_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.input_file" title="Lik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>.
+Whenever this parameter is not <code class="docutils literal notranslate"><span class="pre">None</span></code> the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object
+is reconstructed from input files (see the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a>
+method for details).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.input_h5_file">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">input_h5_file</code><a class="headerlink" href="#DNNLikelihood.Lik.input_h5_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .h5 file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object (see
+the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a> method for details).
+It is automatically generated from the attribute
+<a class="reference internal" href="#DNNLikelihood.Lik.input_file" title="DNNLikelihood.Lik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_file</span></code></a>.
+When the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the attribute is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.input_log_file">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">input_log_file</code><a class="headerlink" href="#DNNLikelihood.Lik.input_log_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .log file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object log (see
+the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_log" title="DNNLikelihood.Lik.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_log</span></code></a> method for details).
+It is automatically generated from the attribute
+<a class="reference internal" href="#DNNLikelihood.Lik.input_file" title="DNNLikelihood.Lik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_file</span></code></a>.
+When the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the attribute is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.log">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">log</code><a class="headerlink" href="#DNNLikelihood.Lik.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing a log of the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object calls. The dictionary has datetime
+strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>keys</strong>: <code class="docutils literal notranslate"><span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]</span></code></p></li>
+<li><p><strong>values</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.
+<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">maximum</span> <span class="pre">logpdf&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">profiled</span> <span class="pre">maxima&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">figure&quot;</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Input argument of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_ranges”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">list</span></code>)</dt><dd><p>Input argument of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“number of maxima”</em> (value type: <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Number of maxima computed by the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“file name”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>File name of file involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“file path”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Path of file involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“files names”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of file names of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.logpdf">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a>. When this input is <code class="docutils literal notranslate"><span class="pre">None</span></code> the argument
+<a class="reference internal" href="arguments.html#Lik.input_file" title="Lik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> should be given to import the attribute from files.
+This function is used to construct the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> method.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">callable</span></code></p></li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><strong>Could accept</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>x_pars</strong></p>
+<blockquote>
+<div><p>Values of the parameters for which logpdf is computed.
+It could be a single point in parameter space corresponding to an array with shape <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>
+or a list of points corresponding to an array with shape <code class="docutils literal notranslate"><span class="pre">(n_points,ndims)</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>possible shapes</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n_points,ndims)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>args</strong></p>
+<blockquote>
+<div><p>List of additional arguments required
+by the <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a> function and passed through the <a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> input argument.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or None</p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(nargs,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Could return</strong></p>
+<blockquote>
+<div><p>Value or array of values
+of the logpdf.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">float</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape for numpy.ndarray</strong>: <code class="docutils literal notranslate"><span class="pre">(n_points,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.logpdf_args">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_args</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(nargs,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.logpdf_max">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_max</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing the maximum of the DNNLikelihood computed with the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> method.
+It contains x and y values at
+the maximum of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
+function.
+It is initialized to an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code> when the
+<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“X”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the model maximum.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“Y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>Value of the model at its maximum</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.logpdf_profiled_max">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_profiled_max</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_profiled_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing profiled maxima of the logpdf computed with the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.
+It contains x and y values of points at
+the profiled maxima of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
+function.
+It is initialized to an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code> when the
+<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“X”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,ndims)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the profiled maxima.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“Y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,)</span></code>)</dt><dd><p>Value of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
+the profiled maxima.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.logpdf_profiled_max_tmp">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_profiled_max_tmp</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_profiled_max_tmp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#DNNLikelihood.Lik.logpdf_profiled_max" title="DNNLikelihood.Lik.logpdf_profiled_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf_profiled_max</span></code></a>.
+It is assigned only when attempting to append newly
+generated profiled maxima to an incompatible existing
+<a class="reference internal" href="#DNNLikelihood.Lik.logpdf_profiled_max" title="DNNLikelihood.Lik.logpdf_profiled_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf_profiled_max</span></code></a>.
+This is a temporary attribute and it is not saved by the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a> method.
+It is initialized to an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code> when the
+<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<ul>
+<li><dl class="simple">
+<dt><em>“X”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,ndims)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the profiled maxima.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“Y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,)</span></code>)</dt><dd><p>Value of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
+the profiled maxima.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.name">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">name</code><a class="headerlink" href="#DNNLikelihood.Lik.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object generated from
+the <a class="reference internal" href="arguments.html#Lik.name" title="Lik.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> input argument. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is passed, then <code class="docutils literal notranslate"><span class="pre">name</span></code> is assigned the value
+<code class="docutils literal notranslate"><span class="pre">model_&quot;</span> <span class="pre">+</span> <span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_likelihood&quot;</span></code>,
+while if a string is passed, the <code class="docutils literal notranslate"><span class="pre">&quot;_likelihood&quot;</span></code> suffix is appended
+(preventing duplication if it is already present).
+It is used to generate output files names.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.ndims">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">ndims</code><a class="headerlink" href="#DNNLikelihood.Lik.ndims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of dimensions of the likelihood, corresponding to the number of parameters.
+It is set equal to the lenght of the array
+<a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.output_figures_base_file">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">output_figures_base_file</code><a class="headerlink" href="#DNNLikelihood.Lik.output_figures_base_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the saved figures. It includes the base figure name and is
+automatically generated from the
+<a class="reference internal" href="#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> and
+<a class="reference internal" href="#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attributes.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.output_folder">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">output_folder</code><a class="headerlink" href="#DNNLikelihood.Lik.output_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path corresponding to the input argument
+<a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>. If the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then
+<a class="reference internal" href="#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">output_folder</span></code></a>
+is set to the code execution folder. If the folder does not exist it is created
+by the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_create_folder" title="DNNLikelihood.utils.check_create_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_create_folder</span></code></a>
+function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.output_h5_file">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">output_h5_file</code><a class="headerlink" href="#DNNLikelihood.Lik.output_h5_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .h5 file where the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a>
+object is saved (see the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a>
+method for details).
+It is automatically generated from the attribute
+<a class="reference internal" href="#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.output_log_file">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">output_log_file</code><a class="headerlink" href="#DNNLikelihood.Lik.output_log_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .log file where the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a>
+object log is saved (see the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_log" title="DNNLikelihood.Lik.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_log</span></code></a>
+method for details).
+It is automatically generated from the
+<a class="reference internal" href="#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> and
+<a class="reference internal" href="#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attributes.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.pars_bounds">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">pars_bounds</code><a class="headerlink" href="#DNNLikelihood.Lik.pars_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.pars_bounds" title="Lik.pars_bounds"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_bounds</span></code></a>. If the input argument is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+then bounds for all parameters are set to <code class="docutils literal notranslate"><span class="pre">[-np.inf,np.inf]</span></code>.
+It is used to build the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> so that
+the logpdf evaluates to <code class="docutils literal notranslate"><span class="pre">-np.inf</span></code> if any of the parameter has a value outside these bounds.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,2)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.pars_central">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">pars_central</code><a class="headerlink" href="#DNNLikelihood.Lik.pars_central" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.pars_central" title="Lik.pars_central"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_central</span></code></a> and
+containing a <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array with the central values of the parameters.
+If the input argument is <code class="docutils literal notranslate"><span class="pre">None</span></code>
+then central values for all parameters are set to <code class="docutils literal notranslate"><span class="pre">0</span></code>.
+This attribute is used as initial value for optimizing
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> with the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> and the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> methods.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.pars_labels">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">pars_labels</code><a class="headerlink" href="#DNNLikelihood.Lik.pars_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>List corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.pars_labels" title="Lik.pars_labels"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_labels</span></code></a>. If the input argument is <code class="docutils literal notranslate"><span class="pre">None</span></code> then
+<a class="reference internal" href="#DNNLikelihood.Lik.pars_labels" title="DNNLikelihood.Lik.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels</span></code></a> is set equal to the automatically
+generated <a class="reference internal" href="#DNNLikelihood.Lik.pars_labels_auto" title="DNNLikelihood.Lik.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels_auto</span></code></a>.
+Parameters labels are always parsed as “raw” strings (like, for instance, <code class="docutils literal notranslate"><span class="pre">r&quot;%s&quot;%pars_labels[0]</span></code>)
+and can contain latex expressions that are properly compiled when making plots.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.pars_pos_nuis">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">pars_pos_nuis</code><a class="headerlink" href="#DNNLikelihood.Lik.pars_pos_nuis" title="Permalink to this definition">¶</a></dt>
+<dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.pars_pos_nuis" title="Lik.pars_pos_nuis"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_nuis</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_nuis,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.pars_pos_poi">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">pars_pos_poi</code><a class="headerlink" href="#DNNLikelihood.Lik.pars_pos_poi" title="Permalink to this definition">¶</a></dt>
+<dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.pars_pos_poi" title="Lik.pars_pos_poi"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_poi</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_poi,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.script_file">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">script_file</code><a class="headerlink" href="#DNNLikelihood.Lik.script_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .py script containing the code necessary to intantiate a
+<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object and define the corresponing parameters.
+This file can be generated using the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_script" title="DNNLikelihood.Lik.save_script"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_script</span></code></a> method
+and is used to initialize a <a class="reference internal" href="../sampler/class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object
+(see <a class="reference internal" href="../sampler/index.html#sampler-object"><span class="std std-ref">the Sampler object</span></a>). This is to ensure that that Markov Chain Monte Carlo properly
+runs in parallel (using the <a href="https://docs.python.org/3/library/multiprocessing.html"  target="_blank"> multiprocessing</a> package) inside Jupyter notebooks also on the Windows OS.
+It is automatically generated from the
+<a class="reference internal" href="#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> and
+<a class="reference internal" href="#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attributes.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Lik.verbose">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">verbose</code><a class="headerlink" href="#DNNLikelihood.Lik.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Lik.verbose" title="Lik.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.
+It represents the verbosity mode of the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a>
+method and the default verbosity mode of all class methods that accept a
+<code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
+See <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">`int</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="methods.html" class="btn btn-neutral float-right" title="Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="arguments.html" class="btn btn-neutral float-left" title="Arguments" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

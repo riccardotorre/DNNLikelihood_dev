@@ -1,4 +1,5 @@
 .. module:: corner_module
+
 Notes on corner.py
 ------------------
 
@@ -9,10 +10,6 @@ Differences implemented up to now are:
 
     - added ``normalize1d`` argument to the function :func:`DNNLikelihood.corner.corner`
 
-.. |corner_link| raw:: html
-    
-    <a href="https://corner.readthedocs.io/en/latest/"  target="_blank"> corner</a>
-
 The documentation below corresponds to the one from |corner_link| with the aforementioned changes.
 
 .. autofunction:: DNNLikelihood.corner.corner
@@ -20,3 +17,5 @@ The documentation below corresponds to the one from |corner_link| with the afore
 .. autofunction:: DNNLikelihood.corner.quantile
 
 .. autofunction:: DNNLikelihood.corner.hist2d
+
+.. include:: external_links.rst

@@ -1,0 +1,784 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Arguments &mdash; DNNLikelihood</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Attributes" href="attributes.html" />
+    <link rel="prev" title="Class" href="class.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">The Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">The DnnLik object</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="class.html">Class</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="attributes.html">Attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="methods.html">Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../code.html">Python module</a> &raquo;</li>
+        
+          <li><a href="index.html">The DnnLik object</a> &raquo;</li>
+        
+          <li><a href="class.html">Class</a> &raquo;</li>
+        
+      <li>Arguments</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/dnn_likelihood/arguments.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="arguments">
+<span id="dnnlik-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
+<dl class="argument">
+<dt id="DnnLik.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#DnnLik.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object.
+It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.name" title="DNNLikelihood.DnnLik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.name</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.data">
+<code class="sig-name descname">data</code><a class="headerlink" href="#DnnLik.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Input <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.
+Either this or the <a class="reference internal" href="#DnnLik.input_data_file" title="DnnLik.input_data_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_data_file</span></code></a> input argument should be provided to initialize a
+<a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object and to set the
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.input_data_file">
+<code class="sig-name descname">input_data_file</code><a class="headerlink" href="#DnnLik.input_data_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>File name (either relative to the code execution folder or absolute, with or without any of the
+.json or .h5 extensions) of a saved <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.
+Either this or the <a class="reference internal" href="#DnnLik.data" title="DnnLik.data"><code class="xref py py-argument docutils literal notranslate"><span class="pre">data</span></code></a> input argument should be provided to initialize a
+<a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> objectand to set the
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.load_on_RAM">
+<code class="sig-name descname">load_on_RAM</code><a class="headerlink" href="#DnnLik.load_on_RAM" title="Permalink to this definition">¶</a></dt>
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> all data available in the dataset corresponding to the <a class="reference internal" href="#DnnLik.input_data_file" title="DnnLik.input_data_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_data_file</span></code></a> input
+are loaded into the RAM for faster generation of train/validation/test data. If <code class="docutils literal notranslate"><span class="pre">False</span></code> the HDF5
+dataset file is open in read mode and train/validation/test data are generated on demand.
+It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.load_on_RAM" title="DNNLikelihood.DnnLik.load_on_RAM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.load_on_RAM</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.seed">
+<code class="sig-name descname">seed</code><a class="headerlink" href="#DnnLik.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seed of the random number generator. It is used to initialize the <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> and <a href="https://www.tensorflow.org/"  target="_blank"> TensorFlow</a> random state.
+It is used to ste the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.seed" title="DNNLikelihood.DnnLik.seed"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.seed</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.dtype">
+<code class="sig-name descname">dtype</code><a class="headerlink" href="#DnnLik.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>It represents the data type into which train/val/test data are converted.
+It is used to ste the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.dtype" title="DNNLikelihood.DnnLik.dtype"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.dtype</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.same_data">
+<code class="sig-name descname">same_data</code><a class="headerlink" href="#DnnLik.same_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>This option is passed to the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object by the
+<a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object to specify if the same
+train/val data are used for the different <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLiks</span></code></a> in the
+ensemble or not. In this way <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object knows how to
+deal with the corresponding <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object to generate train/val data.
+It is used to ste the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.same_data" title="DNNLikelihood.DnnLik.same_data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.same_data</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.model_data_inputs">
+<code class="sig-name descname">model_data_inputs</code><a class="headerlink" href="#DnnLik.model_data_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary specifying inputs related to data.
+It is used to set the private attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_data_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_data_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_data_inputs</span></code></a>.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“npoints”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">[n_train,</span> <span class="pre">n_val,</span> <span class="pre">n_test]</span></code>)</dt><dd><p>List with number of train, validation, and test points.
+The validation and test entries could also be passed in the form of fractions (&lt;=1) of n_train.
+These will be automatically converted in absolute numbers.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“scalerX”</em> (value type: <code class="docutils literal notranslate"><span class="pre">bool</span></code>)</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> X input points are scaled with a <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScaler</a> fit to the train data.
+If not given it is automatically set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“scalerY”</em> (value type: <code class="docutils literal notranslate"><span class="pre">bool</span></code>)</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> Y input points are scaled with a <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScaler</a> fit to the train data.
+If not given it is automatically set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“weighted”</em> (value type: <code class="docutils literal notranslate"><span class="pre">bool</span></code>)</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> X input points are weighted (see the
+<a class="reference internal" href="methods.html#DNNLikelihood.DnnLik.compute_sample_weights" title="DNNLikelihood.DnnLik.compute_sample_weights"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.compute_sample_weights</span></code></a>
+method). If not given it is automatically set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_data_inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;npoints&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">n_train</span><span class="p">,</span> <span class="n">n_val</span><span class="p">,</span> <span class="n">n_test</span><span class="p">],</span>
+                     <span class="s2">&quot;scalerX&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;scalerY&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="s2">&quot;weighted&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.model_define_inputs">
+<code class="sig-name descname">model_define_inputs</code><a class="headerlink" href="#DnnLik.model_define_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model"  target="_blank"> tf.keras.Model</a> specifications, including the structure of hidden
+<a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers"  target="_blank"> layers</a> with their <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a> and <a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers"  target="_blank"> kerner initializers</a>,
+<a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a> in the output layer, <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout"  target="_blank"> Dropout</a> rate, and <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization"  target="_blank"> batch normalization</a>.
+It is used to set the private attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_define_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_define_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_define_inputs</span></code></a>.
+The <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a> and the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers"  target="_blank"> kerner initializers</a> in each layer are specified together with the number
+of nodes in the layer (see the example below). All <a href="https://www.tensorflow.org/api_docs/python/tf/keras"  target="_blank"> tf.keras</a> specifications for the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a>
+and <a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers"  target="_blank"> kerner initializers</a> are supported. In the case of <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations/selu"  target="_blank"> selu</a> activation the
+<a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers/lecun_normal"  target="_blank"> lecun_normal</a> initializer is automatically used and possible <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout"  target="_blank"> Dropout</a> layers are replaced
+by <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/AlphaDropout"  target="_blank"> AlphaDropout</a> ones. In case of <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a> other than <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations/selu"  target="_blank"> selu</a>,
+if no <a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers"  target="_blank"> kerner initializers</a> is specified, then the default one is used.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“hidden_layers”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">[[int,str,str],...,[int,str,str]]</span></code>)</dt><dd><p>List with hidden layers specifications. All hidden layers in the module are <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense"  target="_blank"> Dense</a> layers.
+Each hidden layer is represented by a list with number of nodes (<code class="docutils literal notranslate"><span class="pre">int</span></code>),
+activation function (<code class="docutils literal notranslate"><span class="pre">str</span></code>), and (optionally) initializer (<code class="docutils literal notranslate"><span class="pre">str</span></code>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“act_func_out_layer”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Activation function for the output layer. If not specified it is automatically set to <code class="docutils literal notranslate"><span class="pre">&quot;linear&quot;</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“dropout_rate”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>If different than <code class="docutils literal notranslate"><span class="pre">0</span></code>, then <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout"  target="_blank"> Dropout</a> layers with the given dropout_rate are added
+between each pair of hidden layers. If not specified it is automatically set to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“batch_norm”</em> (value type: <code class="docutils literal notranslate"><span class="pre">bool</span></code>)</dt><dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, then <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization"  target="_blank"> batch normalization</a> layers are added after the input layer and between
+each pair of hidden layers. If not specified it is automatically set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_define_inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hidden_layers&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="mi">300</span><span class="p">,</span> <span class="s2">&quot;selu&quot;</span><span class="p">],</span>
+                                         <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="s2">&quot;relu&quot;</span><span class="p">],</span>
+                                         <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="s2">&quot;selu&quot;</span><span class="p">,</span> <span class="s2">&quot;lecun_normal&quot;</span><span class="p">],</span>
+                                         <span class="p">[</span><span class="mi">300</span><span class="p">,</span> <span class="s2">&quot;relu&quot;</span><span class="p">,</span> <span class="s2">&quot;glorot_uniform&quot;</span><span class="p">]],</span>
+                       <span class="s2">&quot;act_func_out_layer&quot;</span><span class="p">:</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+                       <span class="s2">&quot;dropout_rate&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                       <span class="s2">&quot;batch_norm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.model_optimizer_inputs">
+<code class="sig-name descname">model_optimizer_inputs</code><a class="headerlink" href="#DnnLik.model_optimizer_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>String or dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> tf.keras.optimizers</a> specifications.
+It is used to set the private attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_optimizer_inputs</span></code></a>.
+It could be specified either as a string with the name of the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> optimizer</a> (all default parameters will
+be used in this case) or as a dictionary with one item of the form <code class="docutils literal notranslate"><span class="pre">&quot;name&quot;:</span> <span class="pre">&quot;optimizer_name&quot;</span></code> and all other items
+specifying parameters related to that <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> optimizer</a> in the form <code class="docutils literal notranslate"><span class="pre">&quot;parameter&quot;:</span> <span class="pre">value</span></code> (see the example below).
+All unspecified parameters are set to their default value.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“name”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Name of the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> optimizer</a>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>others</dt><dd><p>All input arguments accepted by the corresponding <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> tf.keras.optimizers</a>.
+For all unspecified inputs default values will be used.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_optimizer_inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span>
+                          <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+                          <span class="s2">&quot;beta_1&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span>
+                          <span class="s2">&quot;beta_2&quot;</span><span class="p">:</span> <span class="mf">0.999</span><span class="p">,</span>
+                          <span class="s2">&quot;amsgrad&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.model_compile_inputs">
+<code class="sig-name descname">model_compile_inputs</code><a class="headerlink" href="#DnnLik.model_compile_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#compile"  target="_blank"> tf.keras.Model.compile</a> specifications, including <a href="https://www.tensorflow.org/api_docs/python/tf/keras/losses"  target="_blank"> loss</a>
+and <a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics"  target="_blank"> metrics</a>.
+It is used to set the private attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_compile_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_compile_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_compile_inputs</span></code></a>.
+Both the short name and the true name of a metrix are allowed (for instance, both <code class="docutils literal notranslate"><span class="pre">&quot;mse&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;mean_squared_error&quot;</span></code>
+are allowed).</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“loss”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Name of the loss (either abbreviated or extended).
+If not specified the user is warned that it will be automatically set to <code class="docutils literal notranslate"><span class="pre">&quot;mse&quot;</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“metrics”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>)</dt><dd><p>List with the name (either abbreviated or extended) of the metrics to be monitored.
+If not specified it will be automatically set to <code class="docutils literal notranslate"><span class="pre">[&quot;mse&quot;,&quot;mae&quot;,&quot;mape&quot;,&quot;msle&quot;]</span></code></p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_compile_inputs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;mse&quot;</span><span class="p">,</span>
+                        <span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;mean_squared_error&quot;</span><span class="p">,</span> <span class="s2">&quot;mae&quot;</span><span class="p">,</span> <span class="s2">&quot;msle&quot;</span><span class="p">]}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.model_callbacks_inputs">
+<code class="sig-name descname">model_callbacks_inputs</code><a class="headerlink" href="#DnnLik.model_callbacks_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of strings and/or dictionaries specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> tf.keras.callbacks</a> specifications.
+It is used to set the private attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_callbacks_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_callbacks_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_callbacks_inputs</span></code></a>.
+Each item in the list could be specified either as a string with the name of the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> callback</a>
+(all default parameters will be used in this case) or as a dictionary with one item of the form
+<code class="docutils literal notranslate"><span class="pre">&quot;name&quot;:</span> <span class="pre">&quot;callback_name&quot;</span></code> and all other items specifying parameters related to that <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> callback</a>
+in the form <code class="docutils literal notranslate"><span class="pre">&quot;parameter&quot;:</span> <span class="pre">value</span></code> (see the example below). All unspecified parameters are set to their default value.
+All <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> tf.keras.callbacks</a> are available, together with the <code class="docutils literal notranslate"><span class="pre">&quot;PlotLossesKeras&quot;</span></code> callback from the <a href="https://github.com/stared/livelossplot/"  target="_blank"> livelossplot</a>
+package.
+Arguments specifying output files/folders for callbacks writing to files, that are <code class="docutils literal notranslate"><span class="pre">&quot;PlotLossesKeras&quot;</span></code>,
+<a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint"  target="_blank"> tf.keras.callbacks.ModelCheckpoint</a>, and <a href="https://www.tensorflow.org/tensorboard"  target="_blank"> TensorBoard</a>, are automatically set and the related inputs are ignored.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>list items type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> and/or <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“name”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Name of the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> callback</a>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>others</em></dt><dd><p>All input arguments accepted by the corresponding <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> tf.keras.callbacks</a>.
+For all unspecified inputs default values will be used.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_callbacks_inputs</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;EarlyStopping&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;loss&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;patience&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+                           <span class="s2">&quot;min_delta&quot;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">,</span>
+                           <span class="s2">&quot;restore_best_weights&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+                          <span class="s2">&quot;TerminateOnNaN&quot;</span><span class="p">,</span>
+                          <span class="s2">&quot;PlotLossesKeras&quot;</span><span class="p">,</span>
+                          <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ReduceLROnPlateau&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;loss&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;factor&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+                           <span class="s2">&quot;min_lr&quot;</span><span class="p">:</span> <span class="mf">0.00008</span><span class="p">,</span>
+                           <span class="s2">&quot;patience&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+                           <span class="s2">&quot;min_delta&quot;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">},</span>
+                          <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;ModelCheckpoint&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;filepath&quot;</span><span class="p">:</span> <span class="s2">&quot;this is ignored and automatically set&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;monitor&quot;</span><span class="p">:</span> <span class="s2">&quot;loss&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;mode&quot;</span><span class="p">:</span> <span class="s2">&quot;min&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;save_best_only&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                           <span class="s2">&quot;save_freq&quot;</span><span class="p">:</span> <span class="s2">&quot;epoch&quot;</span><span class="p">}]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.model_train_inputs">
+<code class="sig-name descname">model_train_inputs</code><a class="headerlink" href="#DnnLik.model_train_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit"  target="_blank"> tf.keras.Model.fit</a> specifications, including number of epochs
+and batch size.
+It is used to set the private attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_train_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_train_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_train_inputs</span></code></a>.
+Both the short name and the true name of a metrix are allowed (for instance, both <code class="docutils literal notranslate"><span class="pre">&quot;mse&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;mean_squared_error&quot;</span></code>
+are allowed).</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“epochs”</em> (value type: <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Number of epochs to run.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“batch_size”</em> (value type: <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Batch size to use in training, evaluation, and prediction.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model_train_inputs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;epochs&quot;</span><span class="p">:</span> <span class="mi">300</span><span class="p">,</span>
+                    <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="mi">512</span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.resources_inputs">
+<code class="sig-name descname">resources_inputs</code><a class="headerlink" href="#DnnLik.resources_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary specifying available resources. This input argument is assumed to be specified automatically when the
+<a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object is created from within the
+<a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> one in order to sync resources between the
+different <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLiks</span></code></a>
+(see <a class="reference internal" href="../dnn_likelihood_ensemble/index.html#dnnlikensemble-object"><span class="std std-ref">the DnnLikEnsemble object</span></a>).</p>
+<ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code> or <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“available_gpus”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(n_gpus,2)</span></code>)</dt><dd><p>List of lists with device ID and information of the available GPUs.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“available_cpu”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(3,)</span></code>)</dt><dd><p>List with device ID, specifications, number of cores of the available CPU.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“active_gpus”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(n_active_gpus,2)</span></code>)</dt><dd><p>List of lists with device ID and information of the subset of available GPUs that are active in the current environment.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“gpu_mode”</em> (value type: <code class="docutils literal notranslate"><span class="pre">bool</span></code>)</dt><dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the current machine has available GPUs, <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.output_folder">
+<code class="sig-name descname">output_folder</code><a class="headerlink" href="#DnnLik.output_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
+It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.ensemble_name">
+<code class="sig-name descname">ensemble_name</code><a class="headerlink" href="#DnnLik.ensemble_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object
+of which the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object is a member. This input argument
+is automatically passed by the generating <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object.
+If the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object is not a member of an ensemble, this input should be
+<code class="docutils literal notranslate"><span class="pre">None</span></code> (default).
+It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.ensemble_name" title="DNNLikelihood.DnnLik.ensemble_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.ensemble_name</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.ensemble_folder" title="DNNLikelihood.DnnLik.ensemble_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.ensemble_folder</span></code></a> attributes.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.input_summary_json_file">
+<code class="sig-name descname">input_summary_json_file</code><a class="headerlink" href="#DnnLik.input_summary_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>File name (either relative to the code execution folder or absolute, with or without the
+.json extensions) of a saved <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object.
+It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_summary_json_file" title="DNNLikelihood.DnnLik.input_summary_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_summary_json_file</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="argument">
+<dt id="DnnLik.verbose">
+<code class="sig-name descname">verbose</code><a class="headerlink" href="#DnnLik.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Argument used to set the verbosity mode of the <a class="reference internal" href="methods.html#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a>
+method and the default verbosity mode of all class methods that accept a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
+See <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="attributes.html" class="btn btn-neutral float-right" title="Attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="class.html" class="btn btn-neutral float-left" title="Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

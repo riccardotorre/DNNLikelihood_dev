@@ -24,7 +24,7 @@ to the following general behavior:
         All prints from the current function, as well as from the functions called in it are active. Whenever a 
         called function has more verbosity modes, corresponding to ``verbose>1``, the value of the ``verbose`` 
         argument is passed directly to the function (for instance, see the guide to the verbosity mode of the
-        |keras_model_fit_link| function).
+        |tf_keras_model_fit_link| function).
 
     - ``ShowPrints<0``
 
@@ -80,10 +80,6 @@ Code documentation
 
     .. automethod:: DNNLikelihood.Verbosity.set_verbosity
 
-
 .. autofunction:: DNNLikelihood.print
 
-.. |keras_model_fit_link| raw:: html
-    
-    <a href="https://docs.python.org/3.8/library/builtins.html"  target="_blank"> tensorflow.keras.model.fit</a>
-
+.. include:: external_links.rst

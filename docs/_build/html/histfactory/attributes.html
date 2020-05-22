@@ -1,0 +1,616 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Attributess &mdash; DNNLikelihood</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/clipboard.min.js"></script>
+        <script src="../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Methods" href="methods.html" />
+    <link rel="prev" title="Arguments" href="arguments.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Histfactory object</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="class.html">Class</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="arguments.html">Arguments</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Attributess</a></li>
+<li class="toctree-l4"><a class="reference internal" href="methods.html">Methods</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">The Likelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../code.html">Python module</a> &raquo;</li>
+        
+          <li><a href="index.html">The Histfactory object</a> &raquo;</li>
+        
+          <li><a href="class.html">Class</a> &raquo;</li>
+        
+      <li>Attributess</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/histfactory/attributes.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="attributess">
+<h1>Attributess<a class="headerlink" href="#attributess" title="Permalink to this headline">¶</a></h1>
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.bkg_files_base_name">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">bkg_files_base_name</code><a class="headerlink" href="#DNNLikelihood.Histfactory.bkg_files_base_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.bkg_files_base_name" title="Histfactory.bkg_files_base_name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">bkg_files_base_name</span></code></a>.
+Background files are extracted taking all files in the region subfolders
+including the string <code class="docutils literal notranslate"><span class="pre">bkg_files_base_name</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.input_file">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Histfactory.input_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>.
+Whenever this parameter is not <code class="docutils literal notranslate"><span class="pre">None</span></code> the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object
+is reconstructed from input files (see the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a>
+method for details).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.input_h5_file">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">input_h5_file</code><a class="headerlink" href="#DNNLikelihood.Histfactory.input_h5_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .h5 file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object (see
+the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a> method for details).
+It is automatically generated from the attribute
+<a class="reference internal" href="#DNNLikelihood.Histfactory.input_file" title="DNNLikelihood.Histfactory.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_file</span></code></a>.
+When the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the attribute is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.input_log_file">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">input_log_file</code><a class="headerlink" href="#DNNLikelihood.Histfactory.input_log_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .log file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object log (see
+the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a> method for details).
+It is automatically generated from the attribute
+<a class="reference internal" href="#DNNLikelihood.Histfactory.input_file" title="DNNLikelihood.Histfactory.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_file</span></code></a>.
+When the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, the attribute is set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.likelihoods_dict">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">likelihoods_dict</code><a class="headerlink" href="#DNNLikelihood.Histfactory.likelihoods_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing likelihoods parameters and properties for all regions/signal
+hypotheses. All available likelihoods from the workspace are enumerated. Dictionary keys are integers running from <code class="docutils literal notranslate"><span class="pre">0</span></code>
+to the number of likelihoods in the workspace (minus one), while values are dictionaries containing likelihood information.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>keys</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><strong>values</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“signal_region”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Name of the signal region to which the member belongs</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“bg_only_file”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Absolute path to the background file corresponding to the “signal_region”.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“patch_file”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Absolute path to the patch file for the given likelihood.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“name”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Name of the given likelihood. It is set to “<em>hf_name</em>_region_<em>rn</em>_patch_<em>pn</em>_<em>lik_n</em>_likelihood”
+where <em>hf_name</em> is the <a class="reference internal" href="#DNNLikelihood.Histfactory.name" title="DNNLikelihood.Histfactory.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.name</span></code></a> attribute, <em>rn</em> is the region name determined from
+the region folder name excluded the string contained in the
+<a class="reference internal" href="#DNNLikelihood.Histfactory.regions_folders_base_name" title="DNNLikelihood.Histfactory.regions_folders_base_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.regions_folders_base_name</span></code></a> attribute, <em>pn</em> is the patch name
+determined from the patch file name excluded the string contained in the
+<a class="reference internal" href="#DNNLikelihood.Histfactory.patch_files_base_name" title="DNNLikelihood.Histfactory.patch_files_base_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.patch_files_base_name</span></code></a> attribute (and a dot), and <em>lik_n</em> is
+the likelihood number (the corresponding key in the <a class="reference internal" href="#DNNLikelihood.Histfactory.likelihoods_dict" title="DNNLikelihood.Histfactory.likelihoods_dict"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.likelihoods_dict</span></code></a> dictionary).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“model_loaded”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Flag that returns <code class="docutils literal notranslate"><span class="pre">False</span></code> is the model is not loaded, i.e. only the items <em>“signal_region”</em>, <em>“bg_only_file”</em>,
+<em>“patch_file”</em>, <em>“name”</em>, and <em>“model_loaded”</em> are available in the dictionary, and <code class="docutils literal notranslate"><span class="pre">True</span></code> if all dictionary items,
+i.e. full model information and <a href="https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf"  target="_blank"> pyhf.Model.logpdf</a> object, are available in the dictionary.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“model”</em> (value type: <a href="https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf"  target="_blank"> pyhf.Model.logpdf</a> object)</dt><dd><p>Object containing the given likelihood parameters and logpdf.
+See the <a href="https://scikit-hep.org/pyhf/"  target="_blank"> pyhf</a> documentation.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“obs_data”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, value shape: <code class="docutils literal notranslate"><span class="pre">(n_bins,)</span></code>)</dt><dd><p>Numpy array containing the number of observed events in each of the <code class="docutils literal notranslate"><span class="pre">n_bins</span></code> bins for the given signal
+region.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_central”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, value shape <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p>Numpy array with a length equal to the number of parameters <code class="docutils literal notranslate"><span class="pre">ndims</span></code>
+entering in the likelihood (logpdf) function and containing their initial values.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_bounds”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, value shape <code class="docutils literal notranslate"><span class="pre">(ndims,2)</span></code>)</dt><dd><p>Numpy array with lower and upper limit on each of the <code class="docutils literal notranslate"><span class="pre">ndims</span></code> parameters.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_labels”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>)</dt><dd><p>List of strings containing the name of each parameter. Parameters labels are always parsed as “raw” strings (like, for instance,
+<code class="docutils literal notranslate"><span class="pre">r&quot;%s&quot;%pars_labels[0]</span></code>) and can contain latex expressions that are properly compiled when making plots.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_pos_poi”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, value shape: <code class="docutils literal notranslate"><span class="pre">(n_poi)</span></code>)</dt><dd><p>Numpy array with the list of positions, in the array of parameters, of the <code class="docutils literal notranslate"><span class="pre">n_poi</span></code> parameters of interest.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_pos_nuis”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, value shape: <code class="docutils literal notranslate"><span class="pre">(n_nuis)</span></code>)</dt><dd><p>Numpy array with the list of positions, in the array of parameters, of the <code class="docutils literal notranslate"><span class="pre">n_nuis</span></code> nuisance parameters.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>Available items in the dictionary depend on whether the corresponding likelihood has been imported (<code class="docutils literal notranslate"><span class="pre">dic[&quot;model_loaded&quot;]=True</span></code>)
+or not (<code class="docutils literal notranslate"><span class="pre">dic[&quot;model_loaded&quot;]=False</span></code>). If <code class="docutils literal notranslate"><span class="pre">dic[&quot;model_loaded&quot;]=False</span></code> only the items corresponding to the keys
+<em>“signal_region”</em>, <em>“bg_only_file”</em>, <em>“patch_file”</em>, <em>“name”</em>, and <em>“model_loaded”</em> are availanble.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.log">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">log</code><a class="headerlink" href="#DNNLikelihood.Histfactory.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing a log of the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object calls. The dictionary has datetime
+strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.</p>
+<blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>
+<li><p><strong>keys</strong>: <code class="docutils literal notranslate"><span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]</span></code></p></li>
+<li><p><strong>values</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul>
+<li><dl>
+<dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.</p>
+<p><strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">histfactory&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">likelihoods&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“likelihoods numbers”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>When an operation involving several likelihoods has been performed this value is the list of involved likelihoods .</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“likelihood number”</em> (value type: <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>When an operation involving a single likelihood has been performed this value is the likelihood number.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“file name”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>File name of file involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“file path”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Path of file involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“files names”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of file names of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.name">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">name</code><a class="headerlink" href="#DNNLikelihood.Histfactory.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.name" title="Histfactory.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> and containing the
+name of the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> is passed, then <code class="docutils literal notranslate"><span class="pre">name</span></code> is assigned the value
+<code class="docutils literal notranslate"><span class="pre">model_&quot;</span> <span class="pre">+</span> <span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_histfactory&quot;</span></code>,
+while if a string is passed, the <code class="docutils literal notranslate"><span class="pre">&quot;_histfactory&quot;</span></code> suffix is appended
+(preventing duplication if it is already present).
+It is used to generate output files names and is passed to the generated
+<a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> objects.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.output_folder">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">output_folder</code><a class="headerlink" href="#DNNLikelihood.Histfactory.output_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path corresponding to the input argument
+<a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>. If the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then
+<a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>
+is set to the corresponding attribute of the
+<a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object.
+If the folder does not exist it is created
+by the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_create_folder" title="DNNLikelihood.utils.check_create_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_create_folder</span></code></a>
+function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.output_h5_file">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">output_h5_file</code><a class="headerlink" href="#DNNLikelihood.Histfactory.output_h5_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .h5 file where the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a>
+object is saved (see the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a>
+method for details).
+It is automatically generated from the attribute
+<a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.output_log_file">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">output_log_file</code><a class="headerlink" href="#DNNLikelihood.Histfactory.output_log_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the .log file where the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a>
+object log is saved (see the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a>
+method for details).
+It is automatically generated from the attribute
+<a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.patch_files_base_name">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">patch_files_base_name</code><a class="headerlink" href="#DNNLikelihood.Histfactory.patch_files_base_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.patch_files_base_name" title="Histfactory.patch_files_base_name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">patch_files_base_name</span></code></a>.
+Patch files are extracted taking all files in the region subfolders including
+the string <a class="reference internal" href="#DNNLikelihood.Histfactory.patch_files_base_name" title="DNNLikelihood.Histfactory.patch_files_base_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.patch_files_base_name</span></code></a>
+attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.regions">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">regions</code><a class="headerlink" href="#DNNLikelihood.Histfactory.regions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing “Region” names (str) as keys
+and “Region” folders full path (str) as values.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.regions_folders_base_name">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">regions_folders_base_name</code><a class="headerlink" href="#DNNLikelihood.Histfactory.regions_folders_base_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.regions_folders_base_name" title="Histfactory.regions_folders_base_name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">regions_folders_base_name</span></code></a>.
+When determining the regions, the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__import" title="DNNLikelihood.Histfactory._Histfactory__import"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__import</span></code></a>
+method looks at all subfolders of <a class="reference internal" href="#DNNLikelihood.Histfactory.workspace_folder" title="DNNLikelihood.Histfactory.workspace_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.workspace_folder</span></code></a>
+containing the string <a class="reference internal" href="#DNNLikelihood.Histfactory.regions_folders_base_name" title="DNNLikelihood.Histfactory.regions_folders_base_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.regions_folders_base_name</span></code></a>,
+then deletes this latter string (and a dot) to obtain the region names and build the <a class="reference internal" href="#DNNLikelihood.Histfactory.regions" title="DNNLikelihood.Histfactory.regions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.regions</span></code></a>
+dictionary.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.verbose">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">verbose</code><a class="headerlink" href="#DNNLikelihood.Histfactory.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.verbose" title="Histfactory.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.
+It represents the verbosity mode of the
+<a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a>
+method and the default verbosity mode of all class methods that accept a
+<code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
+See <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="DNNLikelihood.Histfactory.workspace_folder">
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">workspace_folder</code><a class="headerlink" href="#DNNLikelihood.Histfactory.workspace_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path of the ATLAS histfactory workspace folder
+corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.workspace_folder" title="Histfactory.workspace_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="methods.html" class="btn btn-neutral float-right" title="Methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="arguments.html" class="btn btn-neutral float-left" title="Arguments" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

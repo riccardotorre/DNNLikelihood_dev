@@ -14,10 +14,10 @@ Total : 824 files,  1225062 codes, 6055 comments, 10579 blanks, all 1241696 line
 | [.gitattributes](/.gitattributes) | Properties | 1 | 1 | 1 | 3 |
 | [README.md](/README.md) | Markdown | 3 | 0 | 4 | 7 |
 | [docs/Makefile](/docs/Makefile) | Makefile | 10 | 6 | 5 | 21 |
-| [docs/_build/html/DNN_likelihood.html](/docs/_build/html/DNN_likelihood.html) | Django HTML | 1,482 | 0 | 293 | 1,775 |
-| [docs/_build/html/DNN_likelihood_ensemble.html](/docs/_build/html/DNN_likelihood_ensemble.html) | Django HTML | 180 | 0 | 120 | 300 |
-| [docs/_build/html/_modules/DNNLikelihood/DNN_likelihood.html](/docs/_build/html/_modules/DNNLikelihood/DNN_likelihood.html) | Django HTML | 1,915 | 0 | 182 | 2,097 |
-| [docs/_build/html/_modules/DNNLikelihood/DNN_likelihood_ensemble.html](/docs/_build/html/_modules/DNNLikelihood/DNN_likelihood_ensemble.html) | Django HTML | 795 | 0 | 147 | 942 |
+| [docs/_build/html/DnnLik.html](/docs/_build/html/DnnLik.html) | Django HTML | 1,482 | 0 | 293 | 1,775 |
+| [docs/_build/html/DnnLikEnsemble.html](/docs/_build/html/DnnLikEnsemble.html) | Django HTML | 180 | 0 | 120 | 300 |
+| [docs/_build/html/_modules/DNNLikelihood/DnnLik.html](/docs/_build/html/_modules/DNNLikelihood/DnnLik.html) | Django HTML | 1,915 | 0 | 182 | 2,097 |
+| [docs/_build/html/_modules/DNNLikelihood/DnnLikEnsemble.html](/docs/_build/html/_modules/DNNLikelihood/DnnLikEnsemble.html) | Django HTML | 795 | 0 | 147 | 942 |
 | [docs/_build/html/_modules/DNNLikelihood/corner.html](/docs/_build/html/_modules/DNNLikelihood/corner.html) | Django HTML | 768 | 0 | 220 | 988 |
 | [docs/_build/html/_modules/DNNLikelihood/data.html](/docs/_build/html/_modules/DNNLikelihood/data.html) | Django HTML | 1,070 | 0 | 258 | 1,328 |
 | [docs/_build/html/_modules/DNNLikelihood/histfactory.html](/docs/_build/html/_modules/DNNLikelihood/histfactory.html) | Django HTML | 703 | 0 | 166 | 869 |
@@ -29,8 +29,8 @@ Total : 824 files,  1225062 codes, 6055 comments, 10579 blanks, all 1241696 line
 | [docs/_build/html/_modules/DNNLikelihood/show_prints.html](/docs/_build/html/_modules/DNNLikelihood/show_prints.html) | Django HTML | 152 | 0 | 111 | 263 |
 | [docs/_build/html/_modules/DNNLikelihood/utils.html](/docs/_build/html/_modules/DNNLikelihood/utils.html) | Django HTML | 398 | 0 | 142 | 540 |
 | [docs/_build/html/_modules/index.html](/docs/_build/html/_modules/index.html) | Django HTML | 110 | 0 | 103 | 213 |
-| [docs/_build/html/_sources/DNN_likelihood.rst.txt](/docs/_build/html/_sources/DNN_likelihood.rst.txt) | Django txt | 539 | 0 | 323 | 862 |
-| [docs/_build/html/_sources/DNN_likelihood_ensemble.rst.txt](/docs/_build/html/_sources/DNN_likelihood_ensemble.rst.txt) | Django txt | 19 | 0 | 12 | 31 |
+| [docs/_build/html/_sources/DnnLik.rst.txt](/docs/_build/html/_sources/DnnLik.rst.txt) | Django txt | 539 | 0 | 323 | 862 |
+| [docs/_build/html/_sources/DnnLikEnsemble.rst.txt](/docs/_build/html/_sources/DnnLikEnsemble.rst.txt) | Django txt | 19 | 0 | 12 | 31 |
 | [docs/_build/html/_sources/api/DNNLikelihood.DNNLik.DNNLik.rst.txt](/docs/_build/html/_sources/api/DNNLikelihood.DNNLik.DNNLik.rst.txt) | Django txt | 74 | 0 | 8 | 82 |
 | [docs/_build/html/_sources/api/DNNLikelihood.DNNLik_ensemble.DNNLik_ensemble.rst.txt](/docs/_build/html/_sources/api/DNNLikelihood.DNNLik_ensemble.DNNLik_ensemble.rst.txt) | Django txt | 32 | 0 | 8 | 40 |
 | [docs/_build/html/_sources/api/DNNLikelihood.data_sample.Data_sample.rst.txt](/docs/_build/html/_sources/api/DNNLikelihood.data_sample.Data_sample.rst.txt) | Django txt | 30 | 0 | 8 | 38 |
@@ -108,8 +108,8 @@ Total : 824 files,  1225062 codes, 6055 comments, 10579 blanks, all 1241696 line
 | [environment.yml](/environment.yml) | YAML | 218 | 0 | 2 | 220 |
 | [requirements-GPU.txt](/requirements-GPU.txt) | Django txt | 186 | 0 | 1 | 187 |
 | [requirements.txt](/requirements.txt) | Django txt | 185 | 0 | 1 | 186 |
-| [source/DNNLikelihood/DNN_likelihood.py](/source/DNNLikelihood/DNN_likelihood.py) | Python | 1,563 | 258 | 74 | 1,895 |
-| [source/DNNLikelihood/DNN_likelihood_ensemble.py](/source/DNNLikelihood/DNN_likelihood_ensemble.py) | Python | 593 | 103 | 44 | 740 |
+| [source/DNNLikelihood/DnnLik.py](/source/DNNLikelihood/DnnLik.py) | Python | 1,563 | 258 | 74 | 1,895 |
+| [source/DNNLikelihood/DnnLikEnsemble.py](/source/DNNLikelihood/DnnLikEnsemble.py) | Python | 593 | 103 | 44 | 740 |
 | [source/DNNLikelihood/__init__.py](/source/DNNLikelihood/__init__.py) | Python | 14 | 9 | 4 | 27 |
 | [source/DNNLikelihood/corner.py](/source/DNNLikelihood/corner.py) | Python | 468 | 251 | 66 | 785 |
 | [source/DNNLikelihood/corner_original.py](/source/DNNLikelihood/corner_original.py) | Python | 380 | 233 | 65 | 678 |

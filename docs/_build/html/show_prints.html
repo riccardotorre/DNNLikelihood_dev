@@ -38,8 +38,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -96,13 +96,14 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="histfactory.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sampler.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DnnLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
@@ -229,7 +230,7 @@ to the following general behavior:</p>
 <div><p>All prints from the current function, as well as from the functions called in it are active. Whenever a
 called function has more verbosity modes, corresponding to <code class="docutils literal notranslate"><span class="pre">verbose&gt;1</span></code>, the value of the <code class="docutils literal notranslate"><span class="pre">verbose</span></code>
 argument is passed directly to the function (for instance, see the guide to the verbosity mode of the
-<a href="https://docs.python.org/3.8/library/builtins.html"  target="_blank"> tensorflow.keras.model.fit</a> function).</p>
+<a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit"  target="_blank"> tf.keras.Model.fit</a> function).</p>
 </div></blockquote>
 </li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ShowPrints&lt;0</span></code></p>
@@ -283,7 +284,7 @@ in that class that accept a <code class="docutils literal notranslate"><span cla
 <h2>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="DNNLikelihood.Verbosity">
-<em class="property">class </em><code class="sig-prename descclassname">DNNLikelihood.</code><code class="sig-name descname">Verbosity</code><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#Verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Verbosity" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Verbosity</code><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#Verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Verbosity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class inherited by all other classes to provide the
 <a class="reference internal" href="#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a> method.</p>
 <dl class="method">
@@ -324,7 +325,7 @@ See the <a class="reference internal" href="#verbosity-mode"><span class="std st
 
 <dl class="function">
 <dt id="DNNLikelihood.print">
-<code class="sig-prename descclassname">DNNLikelihood.</code><code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redefinition of the built-in print function.
 It accepts an additional argument <code class="docutils literal notranslate"><span class="pre">show</span></code> allowing to switch print on and off.</p>
 </dd></dl>

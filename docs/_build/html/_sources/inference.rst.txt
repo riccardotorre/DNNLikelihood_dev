@@ -14,6 +14,8 @@ Usage
 Functions
 ^^^^^^^^^
 
+.. .. currentmodule:: 
+
 .. autofunction:: DNNLikelihood.inference.CI_from_sigma
 
 .. autofunction:: DNNLikelihood.inference.sigma_from_CI
@@ -37,5 +39,7 @@ Functions
 .. autofunction:: DNNLikelihood.inference.find_maximum
 
 .. autofunction:: DNNLikelihood.inference.find_prof_maximum
+
+.. include:: external_links.rst
 
 

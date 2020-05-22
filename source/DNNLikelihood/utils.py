@@ -16,6 +16,31 @@ from timeit import default_timer as timer
 from . import show_prints
 from .show_prints import print
 
+class _FunctionWrapper(object):
+    """
+    This is a hack to make the likelihood function pickleable when ``args``
+    or ``kwargs`` are also included.
+    Copied from emcee.
+    """
+    def __init__(self, f, args, kwargs):
+        self.f = f
+        self.args = [] if args is None else args
+        self.kwargs = {} if kwargs is None else kwargs
+
+    def __call__(self, x):
+        try:
+            return self.f(x, *self.args, **self.kwargs)
+        except:  # pragma: no cover
+            import traceback
+
+            print("emcee: Exception while calling your likelihood function:")
+            print("  params:", x)
+            print("  args:", self.args)
+            print("  kwargs:", self.kwargs)
+            print("  exception:")
+            traceback.print_exc()
+            raise
+
 #class InputError(Exception):
 #    """Base class for data error exceptions"""
 #    pass#
@@ -65,8 +90,9 @@ def chunks(lst, n):
     return res
 
 def check_create_folder(path):
-    if not os.path.exists(path):
-        os.mkdir(path)
+    os.makedirs(path, exist_ok=True)
+    #if not os.path.exists(path):
+    #    os.mkdir(path)
         #print("Folder",path,"has been created.")
     return path
 
@@ -312,18 +338,18 @@ def get_sorted_grid(pars_ranges, spacing="grid"):
     q = q-1
     return pars_vals
 
-def define_generic_pars_labels(pars_pos_poi, pars_pos_nuis):
-    generic_pars_labels = []
+def define_pars_labels_auto(pars_pos_poi, pars_pos_nuis):
+    pars_labels_auto = []
     i_poi = 1
     i_nuis = 1
     for i in range(len(pars_pos_poi)+len(pars_pos_nuis)):
         if i in pars_pos_poi:
-            generic_pars_labels.append(r"$\theta_{%d}$" % i_poi)
+            pars_labels_auto.append(r"$\theta_{%d}$" % i_poi)
             i_poi = i_poi+1
         else:
-            generic_pars_labels.append(r"$\nu_{%d}$" % i_nuis)
+            pars_labels_auto.append(r"$\nu_{%d}$" % i_nuis)
             i_nuis = i_nuis+1
-    return generic_pars_labels
+    return pars_labels_auto
 
 def latex_float(f):
     float_str = "{0:.2g}".format(f)
@@ -383,3 +409,118 @@ def dict_structure(dic):
                         if res[i] == {}:
                             res[i] = "..."
     return res
+
+def compare_objects(obj1,obj2,string="",verbose=False):
+    print("Comparing obejects", string,".", show=verbose)
+    dict1=obj1.__dict__
+    dict2=obj2.__dict__
+    diffs = compare_dictionaries(dict1,dict2,string,verbose=verbose)
+    return diffs
+    
+def compare_dictionaries(dict1,dict2,string="",verbose=False):
+    verbose_sub = verbose
+    if verbose < 0:
+        verbose_sub = 0
+    print("Comparing dictionaries", string, ".", show=verbose_sub)
+    diffs = []
+    def intersection(lst1, lst2): 
+        lst3 = [value for value in lst1 if value in lst2] 
+        return lst3
+    keys1 = sorted(dict1.keys())#,key=str.lower)
+    keys2 = sorted(dict2.keys())#,key=str.lower)
+    diff1 = list(set(keys1) - set(keys2))
+    diff2 = list(set(keys2) - set(keys2))
+    keys = intersection(keys1, keys2)
+    if diff1 != []:
+        print("DIFFERENCE: ",string,": Keys",diff1,"are in dict1 but not in dict2.\n",show=verbose)
+        diffs.append([string,keys1,keys2])
+    if diff2 != []:
+        print("DIFFERENCE: ",string,": Keys",diff2,"are in dict2 but not in dict1.\n",show=verbose)
+        diffs.append([string,keys1,keys2])
+    #if diff1 == [] and diff2 == []:
+    #    print(tabstr,"OK: Keys in the two dictionaries are equal.")
+    for k in keys:
+        prestring = string + " - " + str(k)
+        print("Comparing keys", prestring, ".", show=verbose_sub)
+        #print(tabstr,"Checking key",k,".")
+        areobjects=False
+        try:
+            dict1[k].__dict__
+            dict2[k].__dict__
+            areobjects=True
+        except:
+            pass
+        if areobjects:
+            print("Keys", prestring, "are objects.", show=verbose_sub)
+            diffs=diffs + compare_objects(dict1[k],dict2[k],prestring,verbose=verbose_sub)
+        elif isinstance(dict1[k],dict) and isinstance(dict2[k],dict):
+            print("Keys", prestring, "are dictionaries.", show=verbose_sub)
+            diffs=diffs +compare_dictionaries(dict1[k],dict2[k],prestring,verbose=verbose_sub)
+        elif isinstance(dict1[k],(np.ndarray,list,tuple)) and isinstance(dict2[k],(np.ndarray,list,tuple)):
+            print("Keys", prestring, "are lists, numpy arrays, or tuple.", show=verbose_sub)
+            diffs=diffs +compare_lists_arrays_tuple(dict1[k], dict2[k], prestring,verbose=verbose_sub)
+        else:
+            try:
+                if not dict1[k] == dict2[k]:
+                    print("DIFFERENCE: ",prestring,": Values are",dict1[k],"and",dict2[k],".\n",show=verbose)
+                    diffs.append([prestring,dict1[k],dict2[k]])
+                else:
+                    print("OK: ",prestring,": Values are equal.\n",show=verbose_sub)
+            except:
+                print("FAILED: ",prestring,": Values could not be compared. Values are",dict1[k],"and",dict2[k],".\n",show=verbose)
+                diffs.append([prestring+" - FAILED TO COMPARE",dict1[k],dict2[k]])
+    return diffs
+
+def compare_lists_arrays_tuple(list1,list2,string="",verbose=False):
+    verbose_sub = verbose
+    if verbose < 0:
+        verbose_sub = 0
+    print("Comparing list or arrays", string, ".", show=verbose)
+    diffs = []
+    arequal = False
+    try:
+        arr1 = np.array(list1)
+        arr2 = np.array(list2)
+        min_dtype = np.min([arr1.dtype,arr2.dtype])
+        arequal = np.all(np.equal(list1,list2, dtype=min_dtype))
+    except:
+        pass
+    if arequal:
+        print("OK: ", string, ": Lists are equal.\n", show=verbose_sub)
+    if not arequal:
+        if len(list1)!=len(list2):
+            print("DIFFERENCE: ",string,": Lists have different length.\n",show=verbose)
+            diffs.append([string, list1, list2])
+        else:
+            for i in range(len(list1)):
+                prestring = string + " - list entry " + str(i)
+                print("Comparing", prestring, ".", show=verbose_sub)
+                areobjects=False
+                try:
+                    list1[i].__dict__
+                    list2[i].__dict__
+                    areobjects=True
+                except:
+                    pass
+                if areobjects:
+                    print("Items", prestring, "are objects.", show=verbose_sub)
+                    diffs = diffs + compare_objects(list1[i],list2[i],prestring)
+                elif isinstance(list1[i],dict) and isinstance(list2[i],dict):
+                    print("Items", prestring, "are dictionaries.", show=verbose_sub)
+                    diffs = diffs + compare_dictionaries(list1[i],list2[i],prestring)
+                elif isinstance(list1[i],(np.ndarray,list,tuple)) and isinstance(list2[i],(np.ndarray,list,tuple)):
+                    print("Items", prestring,
+                          "are lists, numpy arrays, or tuple.", show=verbose_sub)
+                    diffs = diffs + compare_lists_arrays_tuple(list1[i], list2[i], prestring)
+                else:
+                    try:
+                        if not list1[i] == list2[i]:
+                            print("DIFFERENCE: ",prestring,": Values are",list1[i],"and",list2[i],".\n",show=verbose)
+                            diffs.append([prestring,list1[i],list2[i]])
+                        else:
+                            print("OK: ", prestring, " Items are equal.\n", show=verbose_sub)
+                    except:
+                        print("FAILED: ", prestring, ": Values could not be compared. Values are",
+                              list1[i], "and", list2[i], ".\n", show=verbose)
+                        diffs.append([prestring,list1[i],list2[i]])
+    return diffs

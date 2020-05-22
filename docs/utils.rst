@@ -1,4 +1,5 @@
 .. module:: utils_module
+
 Useful functions
 ----------------
 
@@ -12,6 +13,8 @@ Usage
 
 Functions
 ^^^^^^^^^
+
+.. .. currentmodule:: DNNLikelihood
 
 .. autofunction:: DNNLikelihood.utils.flatten_list
 
@@ -65,4 +68,6 @@ Functions
 
 .. autofunction:: DNNLikelihood.utils.get_sorted_grid
 
-.. autofunction:: DNNLikelihood.utils.define_generic_pars_labels
+.. autofunction:: DNNLikelihood.utils.define_pars_labels_auto
+
+.. include:: external_links.rst

@@ -38,8 +38,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -161,14 +161,15 @@
   <h1>Source code for DNNLikelihood.data</h1><div class="highlight"><pre>
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Data&quot;</span><span class="p">]</span>
 
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
+<span class="kn">import</span> <span class="nn">builtins</span>
 <span class="kn">import</span> <span class="nn">codecs</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">builtins</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span>
 <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 
+<span class="kn">import</span> <span class="nn">deepdish</span> <span class="k">as</span> <span class="nn">dd</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
@@ -178,16 +179,17 @@
 <span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="n">Verbosity</span><span class="p">,</span> <span class="nb">print</span>
 
 
-<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">Verbosity</span><span class="p">):</span>
+<div class="viewcode-block" id="Data"><a class="viewcode-back" href="../../data/class.html#DNNLikelihood.Data">[docs]</a><span class="k">class</span> <span class="nc">Data</span><span class="p">(</span><span class="n">Verbosity</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class contains the ``Data`` object representing the dataset used for training, validating and testing</span>
-<span class="sd">    the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an existing ``Data`` obkect.</span>
+<span class="sd">    the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an existing ``Data`` object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="Data.__init__"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="Data.__init__"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">data_X</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">data_Y</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                  <span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pars_central</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">pars_pos_poi</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">pars_pos_nuis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">pars_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -200,21 +202,21 @@
                  <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The :class:`Data &lt;DNNLikelihood.Data&gt;` object can be initialized in two different ways, depending on the value of</span>
-<span class="sd">        the :option:`input_file` argument.</span>
+<span class="sd">        the :argument:`input_file` argument.</span>
 
-<span class="sd">        - :option:`input_file` is ``None`` (default)</span>
+<span class="sd">        - :argument:`input_file` is ``None`` (default)</span>
 
-<span class="sd">            All other arguments are parsed and saved in corresponding attributes. If no :option:`name` is given,</span>
+<span class="sd">            All other arguments are parsed and saved in corresponding attributes. If no :argument:`name` is given,</span>
 <span class="sd">            then one is created.</span>
 <span class="sd">            The object is saved upon creation through the :meth:`Data.save &lt;DNNLikelihood.Data.save&gt;` method.</span>
 
-<span class="sd">        - :option:`input_file` is not ``None``</span>
+<span class="sd">        - :argument:`input_file` is not ``None``</span>
 
 <span class="sd">            The object is reconstructed from the input files through the private method</span>
 <span class="sd">            :meth:`Data.__load &lt;DNNLikelihood.Data._Data__load&gt;`.</span>
-<span class="sd">            If the :option:`load_on_RAM` argument is ``True``, then all samples are loaded into RAM, otherwise the dataset is</span>
+<span class="sd">            If the :argument:`load_on_RAM` argument is ``True``, then all samples are loaded into RAM, otherwise the dataset is</span>
 <span class="sd">            kept open and data are retrieved on demand.</span>
-<span class="sd">            If the input argument :option:`output_folder` is ``None`` (default), the attribute</span>
+<span class="sd">            If the input argument :argument:`output_folder` is ``None`` (default), the attribute</span>
 <span class="sd">            :attr:`Data.output_folder &lt;DNNLikelihood.Data.output_folder&gt;`</span>
 <span class="sd">            is set from the input file, otherwise it is set to the input argument.</span>
 
@@ -222,11 +224,11 @@
 
 <span class="sd">            See class :ref:`Arguments documentation &lt;data_arguments&gt;`.</span>
 
-<span class="sd">        - **Produces file**</span>
+<span class="sd">        - **Creates files**</span>
 
 <span class="sd">            - :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`</span>
-<span class="sd">            - :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`</span>
-<span class="sd">            - :attr:`Data.output_h5_file &lt;DNNLikelihood.Data.output_h5_file&gt;` (only if :option:`input_file` is ``None``)</span>
+<span class="sd">            - :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)</span>
+<span class="sd">            - :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
@@ -243,6 +245,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_data</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="n">pars_pos_poi</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">pars_pos_nuis</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span> <span class="o">=</span> <span class="n">pars_central</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">npoints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span> <span class="o">=</span> <span class="n">pars_labels</span>
@@ -268,10 +271,7 @@
             <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;X_train&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[]],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_required</span><span class="p">),</span> <span class="s2">&quot;Y_train&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_required</span><span class="p">),</span>
                                 <span class="s2">&quot;X_val&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[]],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_required</span><span class="p">),</span> <span class="s2">&quot;Y_val&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_required</span><span class="p">),</span>
@@ -280,45 +280,55 @@
 
     <span class="k">def</span> <span class="nf">__check_define_input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the attributes corresponding to input files</span>
-<span class="sd">        :attr:`Data.input_h5_file &lt;DNNLikelihood.Data.input_h5_file&gt;`,</span>
-<span class="sd">        :attr:`Data.input_json_file &lt;DNNLikelihood.Data.input_json_file&gt;`, and</span>
-<span class="sd">        :attr:`Data.input_log_file &lt;DNNLikelihood.Data.input_log_file&gt;`</span>
+<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one</span>
+<span class="sd">        to set the attributes corresponding to input files:</span>
+
+<span class="sd">            - :attr:`Data.input_log_file &lt;DNNLikelihood.Data.input_log_file&gt;`</span>
+<span class="sd">            - :attr:`Data.input_object_h5_file &lt;DNNLikelihood.Data.input_object_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Data.input_samples_h5_file &lt;DNNLikelihood.Data.input_samples_h5_file&gt;`</span>
+
 <span class="sd">        depending on the value of the </span>
 <span class="sd">        :attr:`Data.input_file &lt;DNNLikelihood.Data.input_file&gt;` attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_object_h5_file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_samples_h5_file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_object&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">input_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;.json&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_object_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;_object.h5&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_samples_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;_samples.h5&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span>
 
     <span class="k">def</span> <span class="nf">__check_define_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Sets the attributes corresponding to output files</span>
-<span class="sd">        :attr:`Data.output_h5_file &lt;DNNLikelihood.Data.output_h5_file&gt;`,</span>
-<span class="sd">        :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`,</span>
-<span class="sd">        :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`</span>
-<span class="sd">        depending on the value of the </span>
-<span class="sd">        :attr:`Data.input_file &lt;DNNLikelihood.Data.input_file&gt;` and</span>
-<span class="sd">        :attr:`Data.output_folder &lt;DNNLikelihood.Data.output_folder&gt;` attributes.</span>
+<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one</span>
+<span class="sd">        to set the attributes corresponding to output files</span>
+
+<span class="sd">            - :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`</span>
+
+<span class="sd">        depending on the values of the </span>
+<span class="sd">        :attr:`Data.output_folder &lt;DNNLikelihood.Data.output_folder&gt;` attribute.</span>
+<span class="sd">        It also creates the folder </span>
+<span class="sd">        :attr:`Data.output_folder &lt;DNNLikelihood.Data.output_folder&gt;` if </span>
+<span class="sd">        it does not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_object_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_object.h5&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_samples_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_samples.h5&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
         
     <span class="k">def</span> <span class="nf">__check_define_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Private method that defines the :attr:`Data.name &lt;DNNLikelihood.Data.name&gt;` attribute.</span>
-<span class="sd">        If :attr:`Data.name &lt;DNNLikelihood.Data.name&gt;` is ``None`` it replaces it with</span>
+<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one</span>
+<span class="sd">        to define the :attr:`Data.name &lt;DNNLikelihood.Data.name&gt;` attribute.</span>
+<span class="sd">        If it is ``None`` it replaces it with</span>
 <span class="sd">        ``&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_data&quot;``,</span>
 <span class="sd">        otherwise it appends the suffix &quot;_data&quot; (preventing duplication if it is already present).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -328,15 +338,15 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_add_suffix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;_data&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__check_define_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__check_define_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">        Checks that data_X and data_Y have the same length, sets the data type attributes</span>
+<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one</span>
+<span class="sd">        to check that data_X and data_Y have the same length, to set the data type attributes</span>
 <span class="sd">        :attr:`Data.dtype_required &lt;DNNLikelihood.Data.dtype_required&gt;` and</span>
-<span class="sd">        :attr:`Data.dtype_stored &lt;DNNLikelihood.Data.dtype_stored&gt;` (defaults &quot;float64&quot;), and converts</span>
+<span class="sd">        :attr:`Data.dtype_stored &lt;DNNLikelihood.Data.dtype_stored&gt;` (defaults &quot;float64&quot;), and to convert</span>
 <span class="sd">        :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` and :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;`</span>
 <span class="sd">        into the dtype corresponding to :attr:`Data.dtype_stored &lt;DNNLikelihood.Data.dtype_stored&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dtype_stored</span> <span class="o">=</span> <span class="s2">&quot;float64&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dtype_required</span> <span class="o">=</span> <span class="s2">&quot;float64&quot;</span>
@@ -355,19 +365,28 @@
 
     <span class="k">def</span> <span class="nf">__check_define_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Private method that checks the consistency of the </span>
-<span class="sd">        :attr:`Data.pars_pos_nuis &lt;DNNLikelihood.Data.pars_pos_nuis&gt;`,</span>
-<span class="sd">        :attr:`Data.pars_pos_poi &lt;DNNLikelihood.Data.pars_pos_poi&gt;`,</span>
-<span class="sd">        :attr:`Data.pars_labels &lt;DNNLikelihood.Data.pars_labels&gt;`,</span>
-<span class="sd">        and :attr:`Data.pars_bounds &lt;DNNLikelihood.Data.pars_bounds&gt;` </span>
-<span class="sd">        attributes and converts :attr:`Data.pars_pos_nuis &lt;DNNLikelihood.Data.pars_pos_nuis&gt;`,</span>
-<span class="sd">        :attr:`Data.pars_pos_poi &lt;DNNLikelihood.Data.pars_pos_poi&gt;`, and</span>
-<span class="sd">        and :attr:`Data.pars_bounds &lt;DNNLikelihood.Data.pars_bounds&gt;` to |numpy_link| arrays.</span>
+<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one</span>
+<span class="sd">        to check the consistency of the attributes</span>
+
+<span class="sd">            - :attr:`Data.pars_pos_nuis &lt;DNNLikelihood.Data.pars_pos_nuis&gt;`</span>
+<span class="sd">            - :attr:`Data.pars_pos_poi &lt;DNNLikelihood.Data.pars_pos_poi&gt;`</span>
+<span class="sd">            - :attr:`Data.pars_central &lt;DNNLikelihood.Data.pars_pos_poi&gt;`</span>
+<span class="sd">            - :attr:`Data.pars_labels &lt;DNNLikelihood.Data.pars_labels&gt;`</span>
+<span class="sd">            - :attr:`Data.pars_bounds &lt;DNNLikelihood.Data.pars_bounds&gt;` </span>
+
+<span class="sd">        and to convert the attributes</span>
+
+<span class="sd">            - :attr:`Data.pars_pos_nuis &lt;DNNLikelihood.Data.pars_pos_nuis&gt;`</span>
+<span class="sd">            - :attr:`Data.pars_pos_poi &lt;DNNLikelihood.Data.pars_pos_poi&gt;`</span>
+<span class="sd">            - :attr:`Data.pars_central &lt;DNNLikelihood.Data.pars_pos_poi&gt;`</span>
+<span class="sd">            - :attr:`Data.pars_bounds &lt;DNNLikelihood.Data.pars_bounds&gt;` </span>
+<span class="sd">        </span>
+<span class="sd">        to |numpy_link| arrays.</span>
 <span class="sd">        If no parameters positions are specified, all parameters are assumed to be parameters of interest.</span>
 <span class="sd">        If only the position of the parameters of interest or of the nuisance parameters is specified,</span>
 <span class="sd">        the other is automatically generated by matching dimensions.</span>
 <span class="sd">        If labels are not provided then :attr:`Data.pars_labels &lt;DNNLikelihood.Data.pars_labels&gt;`</span>
-<span class="sd">        is set to the value of :attr:`Data.generic_pars_labels &lt;DNNLikelihood.Data.generic_pars_labels&gt;`.</span>
+<span class="sd">        is set to the value of :attr:`Data.pars_labels_auto &lt;DNNLikelihood.Data.pars_labels_auto&gt;`.</span>
 <span class="sd">        If parameters bounds are not provided, they are set to ``(-np.inf,np.inf)``.</span>
 <span class="sd">        A check is performed on the length of the four attributes and an Exception is raised if the length</span>
 <span class="sd">        does not match :attr:`Data.ndims &lt;DNNLikelihood.Data.ndims&gt;`.</span>
@@ -383,6 +402,14 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The lenght of the parameters central values array does not match the number of dimensions.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No central values for the parameters &#39;pars_central&#39; has been specified. They have been set to zero for all</span><span class="se">\</span>
+<span class="s2">                parameters. If they are known it is better to build the object providing parameters central values.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span><span class="p">)</span>
@@ -399,9 +426,9 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Only the positions of the parameters of interest have been specified. Assuming all other parameters are nuisance parameters.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">)),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">generic_pars_labels</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">define_generic_pars_labels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels_auto</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">define_pars_labels_auto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generic_pars_labels</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels_auto</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The number of parameters labels do not match the number of dimensions.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -413,11 +440,14 @@
 
     <span class="k">def</span> <span class="nf">__load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one to import a previously saved</span>
+<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one </span>
+<span class="sd">        to load a previously saved</span>
 <span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object from the files </span>
-<span class="sd">        :attr:`Data.input_json_file &lt;DNNLikelihood.Data.input_json_file&gt;`,</span>
-<span class="sd">        :attr:`Data.input_json_file &lt;DNNLikelihood.Data.input_log_file&gt;`</span>
-<span class="sd">        and :attr:`Data.input_h5_file &lt;DNNLikelihood.Data.input_h5_file&gt;`.</span>
+<span class="sd">        </span>
+<span class="sd">            - :attr:`Data.input_samples_h5_file &lt;DNNLikelihood.Data.input_samples_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Data.input_object_h5_file &lt;DNNLikelihood.Data.input_object_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Data.input_log_file &lt;DNNLikelihood.Data.input_log_file&gt;`</span>
+
 <span class="sd">        If :attr:`Data.load_on_RAM &lt;DNNLikelihood.Data.load_on_RAM&gt;` is ``True``, then all samples are loaded into RAM, </span>
 <span class="sd">        otherwise the dataset is kept open and data are retrieved on demand.</span>
 
@@ -433,16 +463,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_json_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
-            <span class="n">dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_object_h5_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
             <span class="n">dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">dictionary</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">opened_dataset</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_h5_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opened_dataset</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_samples_h5_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opened_dataset</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_X</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;X&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">data_Y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Y&quot;</span><span class="p">)</span>
@@ -453,24 +479,25 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;loaded&quot;</span><span class="p">,</span> 
-                               <span class="s2">&quot;files names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="s2">&quot;files names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_samples_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                               <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
-                               <span class="s2">&quot;files paths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_json_file</span><span class="p">,</span>
+                                               <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_object_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]],</span>
+                               <span class="s2">&quot;files paths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">input_samples_h5_file</span><span class="p">,</span>
                                                <span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span><span class="p">,</span>
-                                               <span class="bp">self</span><span class="o">.</span><span class="n">input_h5_file</span><span class="p">]}</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loaded data in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                                               <span class="bp">self</span><span class="o">.</span><span class="n">input_object_h5_file</span><span class="p">]}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data object loaded in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_on_RAM</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Samples loaded on RAM.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__define_test_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; </span>
-<span class="sd">        Private method that sets the :attr:`Data.test_fraction &lt;DNNLikelihood.Data.test_fraction&gt;` attribute and from this the</span>
+<span class="sd">        Private method used by the :meth:`Data.__init__ &lt;DNNLikelihood.Data.__init__&gt;` one</span>
+<span class="sd">        to set the :attr:`Data.test_fraction &lt;DNNLikelihood.Data.test_fraction&gt;` attribute and, from this, the</span>
 <span class="sd">        two attributes :attr:`Data.train_range &lt;DNNLikelihood.Data.train_range&gt;` and </span>
-<span class="sd">        :attr:`Data.test_range &lt;DNNLikelihood.Data.test_range&gt;`, containing the range of indices of</span>
+<span class="sd">        :attr:`Data.test_range &lt;DNNLikelihood.Data.test_range&gt;` containing the range of indices of</span>
+<span class="sd">        the train (and validation) and test sets given by</span>
 <span class="sd">        :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` and</span>
-<span class="sd">        :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;` corresponding</span>
-<span class="sd">        to the train (and validation) and test sets.</span>
+<span class="sd">        :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_fraction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">test_fraction</span> <span class="o">=</span> <span class="mi">0</span>
@@ -479,19 +506,19 @@
 
     <span class="k">def</span> <span class="nf">__check_sync_data_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Private method that checks that indices and data are synced in the </span>
+<span class="sd">        Private method used to check that indices and data are synced in the </span>
 <span class="sd">        :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;`</span>
 <span class="sd">        dictionary. It is called by all methods generating or updating data.</span>
 <span class="sd">        This is needed when the :class:`Data &lt;DNNLikelihood.Data&gt;` object is used by the </span>
-<span class="sd">        :class:`DNN_likelihood &lt;DNNLikelihood.DNN_likelihood&gt;` one. In particular, when the latter is imported from files</span>
+<span class="sd">        :class:`DnnLik &lt;DNNLikelihood.DnnLik&gt;` one. In particular, when the latter is imported from files</span>
 <span class="sd">        only indices are loaded and properly put in the corresponding </span>
 <span class="sd">        :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;`, while, to gain speed, data are not.</span>
-<span class="sd">        Whenever the :class:`DNN_likelihood &lt;DNNLikelihood.DNN_likelihood&gt;` needs data, and calls any of its method that</span>
+<span class="sd">        Whenever the :class:`DnnLik &lt;DNNLikelihood.DnnLik&gt;` needs data, and calls any of its method that</span>
 <span class="sd">        generate them, the method :meth:`Data.__check_sync_data_dictionary &lt;DNNLikelihood.Data._Data__check_sync_data_dictionary&gt;`</span>
 <span class="sd">        automatically loads the data corresponding to the existing indices in the </span>
 <span class="sd">        :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;` of the corresponding </span>
 <span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object. See the documentation of </span>
-<span class="sd">        :ref:`the DNN_likelihood object &lt;DNN_likelihood_object&gt;` for more details.</span>
+<span class="sd">        :ref:`the DNNLikelihood object &lt;DnnLik_object&gt;` for more details.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;idx_train&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;idx_train&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;X_train&quot;</span><span class="p">]):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;X_train&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_X</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;idx_train&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_required</span><span class="p">)</span>
@@ -506,12 +533,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;Y_test&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_Y</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dictionary</span><span class="p">[</span><span class="s2">&quot;idx_test&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_required</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Loaded test data corresponding to existing indices.&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Data.define_test_fraction"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.define_test_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">define_test_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.define_test_fraction"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.define_test_fraction">[docs]</a>    <span class="k">def</span> <span class="nf">define_test_fraction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Method analog to the private method :meth:`Data.__define_test_fraction &lt;DNNLikelihood.Data._Data__define_test_fraction&gt;`</span>
 <span class="sd">        useful to change the available fraction of train/valifation vs test data.</span>
 <span class="sd">        Differently from the analog private method, this one updates the files corresponding to the</span>
-<span class="sd">        :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;` and</span>
+<span class="sd">        :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;` and</span>
 <span class="sd">        :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;` attributes.</span>
 
 <span class="sd">        - **Arguments**</span>
@@ -524,20 +551,19 @@
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``None`` </span>
 
-<span class="sd">        - **Produces file**</span>
+<span class="sd">        - **Updates files**</span>
 
 <span class="sd">            - :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`</span>
-<span class="sd">            - :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_fraction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">test_fraction</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">train_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">test_fraction</span><span class="p">))))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">test_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">test_fraction</span><span class="p">))),</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.close_opened_dataset"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.close_opened_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">close_opened_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.close_opened_dataset"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.close_opened_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">close_opened_dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">        Closes the opened h5py datasets </span>
 <span class="sd">        :attr:`Data.opened_dataset &lt;DNNLikelihood.Data.opened_dataset&gt;`.</span>
@@ -560,7 +586,7 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No dataset to close.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.save_log"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.save_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.save_log"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.save_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Saves the content of the :attr:`Data.log &lt;DNNLikelihood.Data.log&gt;` attribute in the file</span>
 <span class="sd">        :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`</span>
@@ -600,7 +626,7 @@
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``None`` </span>
 
-<span class="sd">        - **Produces file**</span>
+<span class="sd">        - **Creates/updates file**</span>
 
 <span class="sd">            - :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -614,18 +640,37 @@
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data log file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data log file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span><span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data log file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.save_json"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.save_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.save_object_h5"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.save_object_h5">[docs]</a>    <span class="k">def</span> <span class="nf">save_object_h5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` objects are saved to three files: a .json, a .log, and an .h5, corresponding to the three attributes</span>
-<span class="sd">        :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`,</span>
-<span class="sd">        :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`,</span>
-<span class="sd">        and :attr:`Data.output_h5_file &lt;DNNLikelihood.Data.output_h5_file&gt;`.</span>
-<span class="sd">        See the :meth:`Data.save &lt;DNNLikelihood.Data.save&gt;` method documentation</span>
-<span class="sd">        for the list of saved attributes.</span>
+<span class="sd">        The :class:`Lik &lt;DNNLikelihood.Data&gt;` object is saved to the HDF5 file</span>
+<span class="sd">        :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`, the datasets corresponding to the </span>
+<span class="sd">        :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` and :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;` attributes</span>
+<span class="sd">        are saved to the file :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`, and the object </span>
+<span class="sd">        log is saved to the json file :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`.</span>
+<span class="sd">        </span>
+<span class="sd">        This method saves the content of the :attr:``Lik.__dict__ &lt;DNNLikelihood.Lik.__dict__&gt;`` </span>
+<span class="sd">        attribute in the h5 file :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`</span>
+<span class="sd">        using the |deepdish_link| package. The following attributes are excluded from the saved</span>
+<span class="sd">        dictionary:</span>
+
+<span class="sd">            - :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;`</span>
+<span class="sd">            - :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` (saved to the file :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`)</span>
+<span class="sd">            - :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;` (saved to the file :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`)</span>
+<span class="sd">            - :attr:`Data.dtype_required &lt;DNNLikelihood.Data.dtype_required&gt;`</span>
+<span class="sd">            - :attr:`Data.input_file &lt;DNNLikelihood.Data.input_file&gt;`</span>
+<span class="sd">            - :attr:`Data.input_samples_h5_file &lt;DNNLikelihood.Data.input_samples_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Data.input_object_h5_file &lt;DNNLikelihood.Data.input_object_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Data.input_log_file &lt;DNNLikelihood.Data.input_log_file&gt;`</span>
+<span class="sd">            - :attr:`Data.load_on_RAM &lt;DNNLikelihood.Data.load_on_RAM&gt;`</span>
+<span class="sd">            - :attr:`Data.log &lt;DNNLikelihood.Data.log&gt;` (saved to the file :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`)</span>
+<span class="sd">            - :attr:`Data.opened_dataset &lt;DNNLikelihood.Data.opened_dataset&gt;`</span>
+<span class="sd">            - :attr:`Data.test_range &lt;DNNLikelihood.Data.test_range&gt;`</span>
+<span class="sd">            - :attr:`Data.train_range &lt;DNNLikelihood.Data.train_range&gt;`</span>
+<span class="sd">            - :attr:`Data.verbose &lt;DNNLikelihood.Data.verbose&gt;`</span>
 
 <span class="sd">        This method is called by the</span>
 <span class="sd">        :meth:`Data.save &lt;DNNLikelihood.Data.save&gt;` method to save the entire object.</span>
@@ -651,44 +696,39 @@
 
 <span class="sd">        - **Produces file**</span>
 
-<span class="sd">            - :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_object_h5_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;data_dictionary&quot;</span><span class="p">,</span><span class="s2">&quot;data_X&quot;</span><span class="p">,</span><span class="s2">&quot;data_Y&quot;</span><span class="p">,</span>
-                                                          <span class="s2">&quot;dtype_required&quot;</span><span class="p">,</span><span class="s2">&quot;input_file&quot;</span><span class="p">,</span><span class="s2">&quot;input_h5_file&quot;</span><span class="p">,</span>
-                                                          <span class="s2">&quot;input_json_file&quot;</span><span class="p">,</span><span class="s2">&quot;input_log_file&quot;</span><span class="p">,</span><span class="s2">&quot;load_on_RAM&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;dtype_required&quot;</span><span class="p">,</span><span class="s2">&quot;input_file&quot;</span><span class="p">,</span><span class="s2">&quot;input_samples_h5_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;input_object_h5_file&quot;</span><span class="p">,</span><span class="s2">&quot;input_log_file&quot;</span><span class="p">,</span><span class="s2">&quot;load_on_RAM&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;log&quot;</span><span class="p">,</span><span class="s2">&quot;opened_dataset&quot;</span><span class="p">,</span><span class="s2">&quot;test_range&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;train_range&quot;</span><span class="p">,</span><span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
-        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">dd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_object_h5_file</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved&quot;</span><span class="p">,</span>
-                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span><span class="p">}</span>
-        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data json file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span><span class="p">,</span><span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data json file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span><span class="p">,</span><span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_object_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_object_h5_file</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data object saved to file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_object_h5_file</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.save_h5"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.save_h5">[docs]</a>    <span class="k">def</span> <span class="nf">save_h5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.save_samples_h5"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.save_samples_h5">[docs]</a>    <span class="k">def</span> <span class="nf">save_samples_h5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` objects are saved to three files: a .json, a .log, and an .h5, corresponding to the three attributes</span>
-<span class="sd">        :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`,</span>
-<span class="sd">        :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`,</span>
-<span class="sd">        and :attr:`Data.output_h5_file &lt;DNNLikelihood.Data.output_h5_file&gt;`.</span>
-<span class="sd">        See the :meth:`Data.save &lt;DNNLikelihood.Data.save&gt;` method documentation</span>
-<span class="sd">        for the list of saved attributes.</span>
+<span class="sd">        The :class:`Lik &lt;DNNLikelihood.Data&gt;` object is saved to the HDF5 file</span>
+<span class="sd">        :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`, the datasets corresponding to the </span>
+<span class="sd">        :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` and :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;` attributes</span>
+<span class="sd">        are saved to the file :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`, and the object </span>
+<span class="sd">        log is saved to the json file :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`.</span>
 <span class="sd">        </span>
-<span class="sd">        This method saves the .h5 file as an |h5py_link| dataset containing the attributes :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` and</span>
-<span class="sd">        :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;`, and an additional entry with the shape of the former.</span>
+<span class="sd">        This method saves the content of the attributes :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` and</span>
+<span class="sd">        :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;`, and an additional entry with the shape of the former</span>
+<span class="sd">        in the h5 file :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`</span>
+<span class="sd">        using the |h5py_link| package.</span>
 <span class="sd">        </span>
-<span class="sd">        This method is called by the</span>
-<span class="sd">        :meth:`Data.save &lt;DNNLikelihood.Data.save&gt;` method to save the entire object.</span>
+<span class="sd">        This method is called by the :meth:`Data.save &lt;DNNLikelihood.Data.save&gt;` method to save the entire object.</span>
 
 <span class="sd">        - **Arguments**</span>
 
@@ -711,18 +751,14 @@
 
 <span class="sd">        - **Produces file**</span>
 
-<span class="sd">            - :attr:`Data.output_h5_file &lt;DNNLikelihood.Data.output_h5_file&gt;`</span>
-
-<span class="sd">.. |h5py_link| raw:: html</span>
-<span class="sd">    </span>
-<span class="sd">    &lt;a href=&quot;http://docs.h5py.org/en/stable/&quot;  target=&quot;_blank&quot;&gt; h5py&lt;/a&gt;</span>
+<span class="sd">            - :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_samples_h5_file</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>     
-        <span class="n">h5_out</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">h5_out</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_samples_h5_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">h5_out</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;shape&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_X</span><span class="p">)</span>
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_X</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype_stored</span><span class="p">)</span>
@@ -731,77 +767,25 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved&quot;</span><span class="p">,</span>
-                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">}</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saved&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="p">),</span> <span class="s2">&quot;(data_X, data_Y) samples in data h5 file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_samples_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_samples_h5_file</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npoints</span><span class="p">),</span> <span class="s2">&quot;data samples (data_X, data_Y) saved to file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_samples_h5_file</span><span class="p">,</span><span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.save"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.save"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The :class:`Lik &lt;DNNLikelihood.Data&gt;` object is saved to the HDF5 file</span>
+<span class="sd">        :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`, the datasets corresponding to the </span>
+<span class="sd">        :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;` and :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;` attributes</span>
+<span class="sd">        are saved to the file :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;`, and the object </span>
+<span class="sd">        log is saved to the json file :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`.</span>
 
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` objects are saved according to the following table.</span>
+<span class="sd">        This method calls in order the three methods</span>
+<span class="sd">        </span>
+<span class="sd">            - :meth:`Data.save_log &lt;DNNLikelihood.Data.save_json&gt;`</span>
+<span class="sd">            - :meth:`Data.save_object_h5 &lt;DNNLikelihood.Data.save_object_h5&gt;`</span>
+<span class="sd">            - :meth:`Data.save_samples_h5 &lt;DNNLikelihood.Data.save_samples_h5&gt;`</span>
 
-<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        | Saved | Atrributes                                                                                                       | Method                                                                                           |</span>
-<span class="sd">        +=======+==================================================================================================================+==================================================================================================+</span>
-<span class="sd">        |   X   | :attr:`Data.input_file &lt;DNNLikelihood.Data.input_file&gt;`                                                          |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.input_h5_file &lt;DNNLikelihood.Data.input_h5_file&gt;`                                                    |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.input_json_file &lt;DNNLikelihood.Data.input_json_file&gt;`                                                |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.input_log_file &lt;DNNLikelihood.Data.input_log_file&gt;`                                                  |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.opened_dataset &lt;DNNLikelihood.Data.opened_dataset&gt;`                                                  |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.train_range &lt;DNNLikelihood.Data.train_range&gt;`                                                        |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.test_range &lt;DNNLikelihood.Data.test_range&gt;`                                                          |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;`                                                |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.dtype_required &lt;DNNLikelihood.Data.dtype_required&gt;`                                                  |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.load_on_RAM &lt;DNNLikelihood.Data.load_on_RAM&gt;`                                                        |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.verbose &lt;DNNLikelihood.Data.verbose&gt;`                                                                |                                                                                                  |</span>
-<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        |   ✔   | :attr:`Data.name &lt;DNNLikelihood.Data.name&gt;`                                                                      | :meth:`Data.save_json &lt;DNNLikelihood.Data.save_json&gt;`                                            |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.ndims &lt;DNNLikelihood.Data.ndims&gt;`                                                                    |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.npoints &lt;DNNLikelihood.Data.npoints&gt;`                                                                |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.dtype_stored &lt;DNNLikelihood.Data.dtype_stored&gt;`                                                      |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.generic_pars_labels &lt;DNNLikelihood.Data.generic_pars_labels&gt;`                                        |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.output_folder &lt;DNNLikelihood.Data.output_folder&gt;`                                                    |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.output_h5_file &lt;DNNLikelihood.Data.output_h5_file&gt;`                                                  |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`                                              |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`                                                |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.pars_pos_poi &lt;DNNLikelihood.Data.pars_pos_poi&gt;`                                                      |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.pars_pos_nuis &lt;DNNLikelihood.Data.pars_pos_nuis&gt;`                                                    |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.pars_labels &lt;DNNLikelihood.Data.pars_labels&gt;`                                                        |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.pars_bounds &lt;DNNLikelihood.Data.pars_bounds&gt;`                                                        |                                                                                                  |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.test_fraction &lt;DNNLikelihood.Data.test_fraction&gt;`                                                    |                                                                                                  |</span>
-<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        |   ✔   | :attr:`Data.log &lt;DNNLikelihood.Data.log&gt;`                                                                        | :meth:`Data.save_log &lt;DNNLikelihood.Data.save_log&gt;`                                              |</span>
-<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
-<span class="sd">        |   ✔   | :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;`                                                                  | :meth:`Data.save_h5 &lt;DNNLikelihood.Data.save_h5&gt;`                                                |</span>
-<span class="sd">        |       |                                                                                                                  |                                                                                                  |</span>
-<span class="sd">        |       | :attr:`Data.data_Y &lt;DNNLikelihood.Data.data_Y&gt;`                                                                  |                                                                                                  |</span>
-<span class="sd">        +-------+------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------+</span>
-
-<span class="sd">        This methos calls in order the :meth:`Data.save_json &lt;DNNLikelihood.Data.save_json&gt;`, :meth:`Data.save_h5 &lt;DNNLikelihood.Data.save_h5&gt;` and</span>
-<span class="sd">        :meth:`Data.save_log &lt;DNNLikelihood.Data.save_log&gt;` methods.</span>
+<span class="sd">        to save the full object.</span>
 
 <span class="sd">        - **Arguments**</span>
 <span class="sd">            </span>
@@ -809,16 +793,16 @@
 
 <span class="sd">        - **Produces files**</span>
 
-<span class="sd">            - :attr:`Data.output_json_file &lt;DNNLikelihood.Data.output_json_file&gt;`</span>
-<span class="sd">            - :attr:`Data.output_h5_file &lt;DNNLikelihood.Data.output_h5_file&gt;`</span>
 <span class="sd">            - :attr:`Data.output_log_file &lt;DNNLikelihood.Data.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Data.output_object_h5_file &lt;DNNLikelihood.Data.output_object_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Data.output_samples_h5_file &lt;DNNLikelihood.Data.output_samples_h5_file&gt;` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_h5</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_object_h5</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_samples_h5</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Data.generate_train_indices"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.generate_train_indices">[docs]</a>    <span class="k">def</span> <span class="nf">generate_train_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        
+<div class="viewcode-block" id="Data.generate_train_indices"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.generate_train_indices">[docs]</a>    <span class="k">def</span> <span class="nf">generate_train_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method used to generate ``npoints_train`` train and ``npoints_val`` validation data indices </span>
 <span class="sd">        (integer positions in the </span>
@@ -871,7 +855,7 @@
                                <span class="s2">&quot;npoints val&quot;</span><span class="p">:</span> <span class="n">npoints_val</span><span class="p">}</span></div>
         <span class="c1">#self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by generate_train_data</span>
 
-<div class="viewcode-block" id="Data.generate_train_data"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.generate_train_data">[docs]</a>    <span class="k">def</span> <span class="nf">generate_train_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.generate_train_data"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.generate_train_data">[docs]</a>    <span class="k">def</span> <span class="nf">generate_train_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method used to generate ``npoints_train`` train and ``npoints_val`` validation data.</span>
 <span class="sd">        In order to extract the required number of points from the :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;`</span>
@@ -929,7 +913,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generated&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">npoints_train</span><span class="p">),</span> <span class="s2">&quot;(X_train, Y_train) samples and &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">npoints_val</span><span class="p">),</span><span class="s2">&quot;(X_val, Y_val) samples in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span><span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.update_train_indices"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.update_train_indices">[docs]</a>    <span class="k">def</span> <span class="nf">update_train_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.update_train_indices"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.update_train_indices">[docs]</a>    <span class="k">def</span> <span class="nf">update_train_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analog of :meth:`Data.generate_train_indices &lt;DNNLikelihood.Data.generate_train_indices&gt;`, but it only updates</span>
 <span class="sd">        indices adding more points if any are already available in the </span>
@@ -986,7 +970,7 @@
         <span class="c1">#self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by update_train_data</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">idx_train</span><span class="p">,</span> <span class="n">idx_val</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="Data.update_train_data"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.update_train_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_train_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.update_train_data"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.update_train_data">[docs]</a>    <span class="k">def</span> <span class="nf">update_train_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_train</span><span class="p">,</span> <span class="n">npoints_val</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Analog of :meth:`Data.generate_train_indices &lt;DNNLikelihood.Data.generate_train_data&gt;`, but it only updates</span>
 <span class="sd">        data adding more points if any are already available in the </span>
@@ -1054,7 +1038,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">npoints_train</span><span class="p">),</span> <span class="s2">&quot;(X_train, Y_train) samples and&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">npoints_val</span><span class="p">),</span><span class="s2">&quot;(X_val, Y_val) samples in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span><span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.generate_test_indices"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.generate_test_indices">[docs]</a>    <span class="k">def</span> <span class="nf">generate_test_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_test</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.generate_test_indices"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.generate_test_indices">[docs]</a>    <span class="k">def</span> <span class="nf">generate_test_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_test</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method used to generate ``npoints_test`` test data indices </span>
 <span class="sd">        (integer positions in the :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;`</span>
@@ -1092,7 +1076,7 @@
         <span class="c1">#self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by generate_test_data</span>
         <span class="k">return</span> <span class="n">idx_test</span></div>
 
-<div class="viewcode-block" id="Data.generate_test_data"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.generate_test_data">[docs]</a>    <span class="k">def</span> <span class="nf">generate_test_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_test</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.generate_test_data"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.generate_test_data">[docs]</a>    <span class="k">def</span> <span class="nf">generate_test_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npoints_test</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method used to generate ``npoints_test`` test data indices</span>
 <span class="sd">        (integer positions in the :attr:`Data.data_X &lt;DNNLikelihood.Data.data_X&gt;`</span>
@@ -1144,7 +1128,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Added&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">npoints_test</span><span class="p">),</span> <span class="s2">&quot;(X_test, Y_test) samples in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Data.compute_sample_weights"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.compute_sample_weights">[docs]</a>    <span class="k">def</span> <span class="nf">compute_sample_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.compute_sample_weights"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.compute_sample_weights">[docs]</a>    <span class="k">def</span> <span class="nf">compute_sample_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">power</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method that computes weights of points given their distribution. Sample weights are used to weigth data as a function of </span>
 <span class="sd">        their frequency, obtained by binning the data in ``nbins`` and assigning weight equal to the inverse of the bin count</span>
@@ -1207,7 +1191,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sample weights computed in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">W</span></div>
 
-<div class="viewcode-block" id="Data.define_scalers"><a class="viewcode-back" href="../../data.html#DNNLikelihood.Data.define_scalers">[docs]</a>    <span class="k">def</span> <span class="nf">define_scalers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_X</span><span class="p">,</span> <span class="n">data_Y</span><span class="p">,</span> <span class="n">scalerX_bool</span><span class="p">,</span> <span class="n">scalerY_bool</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Data.define_scalers"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.define_scalers">[docs]</a>    <span class="k">def</span> <span class="nf">define_scalers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_X</span><span class="p">,</span> <span class="n">data_Y</span><span class="p">,</span> <span class="n">scalerX_bool</span><span class="p">,</span> <span class="n">scalerY_bool</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method that defines |standard_scalers_link| fit to the ``data_X`` and ``data_Y`` data.</span>
 <span class="sd">        Scalers are defined based in the boolean flags ``scalerX_bool`` and ``scalerY_bool``. When the flags are false</span>
@@ -1246,6 +1230,14 @@
 
 <span class="sd">                    - **type**: ``bool``</span>
 
+<span class="sd">            - **verbose**</span>
+
+<span class="sd">                Verbosity mode.</span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None``</span>
+
 <span class="sd">        - **Returns**</span>
 
 <span class="sd">            List of the form ``[scalerX,scalerY]`` containing </span>
@@ -1253,14 +1245,6 @@
 <span class="sd">            </span>
 <span class="sd">                - **type**: ``list``</span>
 <span class="sd">                - **shape**: ``[scalerX,scalerY]``</span>
-
-<span class="sd">.. |standard_scalers_link| raw:: html</span>
-<span class="sd">    </span>
-<span class="sd">    &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html&quot;  target=&quot;_blank&quot;&gt; StandardScalers&lt;/a&gt;</span>
-
-<span class="sd">.. |standard_scaler_link| raw:: html</span>
-<span class="sd">    </span>
-<span class="sd">    &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html&quot;  target=&quot;_blank&quot;&gt; StandardScaler&lt;/a&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>

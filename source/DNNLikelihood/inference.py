@@ -199,7 +199,7 @@ def find_maximum(loglik, npars=None, pars_init=None, pars_bounds=None):
         pars_bounds = np.array(pars_bounds)
         bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
         ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds)
-    return [ml['x'], ml['fun']]
+    return [ml['x'], -ml['fun']]
 
 def find_prof_maximum(loglik, npars=None, pars_init=None, pars_bounds=None, pars_fixed_pos=None, pars_fixed_val=None):
     """

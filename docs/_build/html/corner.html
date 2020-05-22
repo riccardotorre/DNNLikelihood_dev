@@ -38,8 +38,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -96,13 +96,14 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="histfactory.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sampler.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DnnLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Notes on corner.py</a></li>
@@ -215,7 +216,7 @@ Differences implemented up to now are:</p>
 <p>The documentation below corresponds to the one from <a href="https://corner.readthedocs.io/en/latest/"  target="_blank"> corner</a> with the aforementioned changes.</p>
 <dl class="function">
 <dt id="DNNLikelihood.corner.corner">
-<code class="sig-prename descclassname">DNNLikelihood.corner.</code><code class="sig-name descname">corner</code><span class="sig-paren">(</span><em class="sig-param">xs</em>, <em class="sig-param">bins=20</em>, <em class="sig-param">range=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">color='k'</em>, <em class="sig-param">hist_bin_factor=1</em>, <em class="sig-param">smooth=None</em>, <em class="sig-param">smooth1d=None</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">label_kwargs=None</em>, <em class="sig-param">show_titles=False</em>, <em class="sig-param">title_fmt='.2f'</em>, <em class="sig-param">title_kwargs=None</em>, <em class="sig-param">truths=None</em>, <em class="sig-param">truth_color='#4682b4'</em>, <em class="sig-param">scale_hist=False</em>, <em class="sig-param">quantiles=None</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">fig=None</em>, <em class="sig-param">max_n_ticks=5</em>, <em class="sig-param">top_ticks=False</em>, <em class="sig-param">use_math_text=False</em>, <em class="sig-param">reverse=False</em>, <em class="sig-param">levels_lists=None</em>, <em class="sig-param">normalize1d=False</em>, <em class="sig-param">hist_kwargs=None</em>, <em class="sig-param">**hist2d_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/corner.html#corner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.corner.corner" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">corner</code><span class="sig-paren">(</span><em class="sig-param">xs</em>, <em class="sig-param">bins=20</em>, <em class="sig-param">range=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">color='k'</em>, <em class="sig-param">hist_bin_factor=1</em>, <em class="sig-param">smooth=None</em>, <em class="sig-param">smooth1d=None</em>, <em class="sig-param">labels=None</em>, <em class="sig-param">label_kwargs=None</em>, <em class="sig-param">show_titles=False</em>, <em class="sig-param">title_fmt='.2f'</em>, <em class="sig-param">title_kwargs=None</em>, <em class="sig-param">truths=None</em>, <em class="sig-param">truth_color='#4682b4'</em>, <em class="sig-param">scale_hist=False</em>, <em class="sig-param">quantiles=None</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">fig=None</em>, <em class="sig-param">max_n_ticks=5</em>, <em class="sig-param">top_ticks=False</em>, <em class="sig-param">use_math_text=False</em>, <em class="sig-param">reverse=False</em>, <em class="sig-param">levels_lists=None</em>, <em class="sig-param">normalize1d=False</em>, <em class="sig-param">hist_kwargs=None</em>, <em class="sig-param">**hist2d_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/corner.html#corner"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.corner.corner" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a <em>sick</em> corner plot showing the projections of a data set in a
 multi-dimensional space. kwargs are passed to hist2d() or used for
 <cite>matplotlib</cite> styling.</p>
@@ -281,7 +282,7 @@ the 2-D histogram plots.</p></li>
 
 <dl class="function">
 <dt id="DNNLikelihood.corner.quantile">
-<code class="sig-prename descclassname">DNNLikelihood.corner.</code><code class="sig-name descname">quantile</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">q</em>, <em class="sig-param">weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/corner.html#quantile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.corner.quantile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">quantile</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">q</em>, <em class="sig-param">weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/corner.html#quantile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.corner.quantile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute sample quantiles with support for weighted samples.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -312,7 +313,7 @@ function with the values of <code class="docutils literal notranslate"><span cla
 
 <dl class="function">
 <dt id="DNNLikelihood.corner.hist2d">
-<code class="sig-prename descclassname">DNNLikelihood.corner.</code><code class="sig-name descname">hist2d</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">bins=20</em>, <em class="sig-param">range=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">levels=None</em>, <em class="sig-param">smooth=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color=None</em>, <em class="sig-param">quiet=False</em>, <em class="sig-param">plot_datapoints=True</em>, <em class="sig-param">plot_density=True</em>, <em class="sig-param">plot_contours=True</em>, <em class="sig-param">no_fill_contours=False</em>, <em class="sig-param">fill_contours=False</em>, <em class="sig-param">contour_kwargs=None</em>, <em class="sig-param">contourf_kwargs=None</em>, <em class="sig-param">data_kwargs=None</em>, <em class="sig-param">pcolor_kwargs=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/corner.html#hist2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.corner.hist2d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">hist2d</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">bins=20</em>, <em class="sig-param">range=None</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">levels=None</em>, <em class="sig-param">smooth=None</em>, <em class="sig-param">ax=None</em>, <em class="sig-param">color=None</em>, <em class="sig-param">quiet=False</em>, <em class="sig-param">plot_datapoints=True</em>, <em class="sig-param">plot_density=True</em>, <em class="sig-param">plot_contours=True</em>, <em class="sig-param">no_fill_contours=False</em>, <em class="sig-param">fill_contours=False</em>, <em class="sig-param">contour_kwargs=None</em>, <em class="sig-param">contourf_kwargs=None</em>, <em class="sig-param">data_kwargs=None</em>, <em class="sig-param">pcolor_kwargs=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/corner.html#hist2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.corner.hist2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a 2-D histogram of samples.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

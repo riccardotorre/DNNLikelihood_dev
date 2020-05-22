@@ -1,4 +1,4 @@
-# JSON Likelihoods for ATLAS SUSY sbottom multi-b analysis
+# JSON Liks for ATLAS SUSY sbottom multi-b analysis
 
 The JSON likelihoods are serialized for each signal region: [RegionA](RegionA), [RegionB](RegionB), and [RegionC](RegionC). This is done by providing a background-only workspace containing the signal/control/validation channels for each region at `$region/BkgOnly.json` as well as patch files for each mass point on the signal phase-space explored in the analysis.
 

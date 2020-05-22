@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>DNNLikelihood.DNN_likelihood_ensemble &mdash; DNNLikelihood</title>
+  <title>DNNLikelihood.dnn_likelihood_ensemble &mdash; DNNLikelihood</title>
   
 
   
@@ -38,8 +38,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -143,7 +143,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>DNNLikelihood.DNN_likelihood_ensemble</li>
+      <li>DNNLikelihood.dnn_likelihood_ensemble</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -158,8 +158,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for DNNLikelihood.DNN_likelihood_ensemble</h1><div class="highlight"><pre>
-<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DNN_likelihood_ensemble&quot;</span><span class="p">]</span>
+  <h1>Source code for DNNLikelihood.dnn_likelihood_ensemble</h1><div class="highlight"><pre>
+<span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;DnnLikEnsemble&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="c1">#import ndjson as json</span>
@@ -185,12 +185,12 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">Data</span>
-<span class="kn">from</span> <span class="nn">.DNN_likelihood</span> <span class="kn">import</span> <span class="n">DNN_likelihood</span>
+<span class="kn">from</span> <span class="nn">.dnn_likelihood</span> <span class="kn">import</span> <span class="n">DnnLik</span>
 <span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="nb">print</span>
 <span class="kn">from</span> <span class="nn">.resources</span> <span class="kn">import</span> <span class="n">Resources</span>
 
-<div class="viewcode-block" id="DNN_likelihood_ensemble"><a class="viewcode-back" href="../../DNN_likelihood_ensemble.html#DNNLikelihood.DNN_likelihood_ensemble">[docs]</a><span class="k">class</span> <span class="nc">DNN_likelihood_ensemble</span><span class="p">(</span><span class="n">Resources</span><span class="p">):</span> <span class="c1">#show_prints.Verbosity inherited from resources.Resources</span>
-<div class="viewcode-block" id="DNN_likelihood_ensemble.__init__"><a class="viewcode-back" href="../../DNN_likelihood_ensemble.html#DNNLikelihood.DNN_likelihood_ensemble.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="DnnLikEnsemble"><a class="viewcode-back" href="../../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble">[docs]</a><span class="k">class</span> <span class="nc">DnnLikEnsemble</span><span class="p">(</span><span class="n">Resources</span><span class="p">):</span> <span class="c1">#show_prints.Verbosity inherited from resources.Resources</span>
+<div class="viewcode-block" id="DnnLikEnsemble.__init__"><a class="viewcode-back" href="../../dnn_likelihood_ensemble/methods.html#DNNLikelihood.DnnLikEnsemble.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">DNNLik_ensemble_input_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">ensemble_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -575,7 +575,7 @@
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_members</span><span class="p">):</span>
             <span class="n">DNNLik_input_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_folder</span><span class="o">+</span><span class="s2">&quot;/member_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_member_existence</span><span class="p">(</span><span class="n">DNNLik_input_folder</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">DNN_likelihood</span><span class="p">(</span><span class="n">DNNLik_input_folder</span><span class="o">=</span><span class="n">DNNLik_input_folder</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">DnnLik</span><span class="p">(</span><span class="n">DNNLik_input_folder</span><span class="o">=</span><span class="n">DNNLik_input_folder</span><span class="p">,</span>
                                          <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
                                          <span class="n">resources_inputs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_resources_inputs</span><span class="p">(),</span>
                                          <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
@@ -614,7 +614,7 @@
         <span class="n">ShowPrints</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="c1">#gpus_id_list = [eval(s.split(&quot;:&quot;)[-1]) for s in np.array(self.active_gpus)[:, 0]]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">DNN_likelihood</span><span class="p">(</span><span class="n">DNNLik_input_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">members</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">DnnLik</span><span class="p">(</span><span class="n">DNNLik_input_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                  <span class="n">ensemble_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_name</span><span class="p">,</span>
                                  <span class="n">member_number</span><span class="o">=</span><span class="n">n</span><span class="p">,</span>
                                  <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
@@ -635,7 +635,7 @@
                                  <span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">ShowPrints</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DNN Likelihood member&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="s2">&quot;created in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;s.&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;DNN Lik member&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">),</span><span class="s2">&quot;created in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;s.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">generate_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>

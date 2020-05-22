@@ -54,6 +54,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
+    'sphinx.ext.inheritance_diagram',
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
@@ -72,6 +73,9 @@ extensions = [
 # Generate the API documentation when building
 autosummary_generate = True
 numpydoc_show_class_members = False
+
+# Remove module names
+add_module_names = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -190,7 +194,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'dnnlikelihood', 'DNNLikelihood Documentation',
+    (master_doc, 'DNNLikelihood', 'DNNLikelihood Documentation',
      [author], 1)
 ]
 

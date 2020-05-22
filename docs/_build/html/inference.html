@@ -38,13 +38,13 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Useful functions" href="utils.html" />
-    <link rel="prev" title="Resources management" href="set_resources.html" /> 
+    <link rel="prev" title="Methods" href="resources/methods.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,13 +96,14 @@
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="histfactory.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sampler.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood.html">The DNN_likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DNN_likelihood_ensemble.html">The DNN_likelihood_ensemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_resources.html">Resources management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DnnLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Inference functions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
@@ -220,48 +221,48 @@
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="DNNLikelihood.inference.CI_from_sigma">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">CI_from_sigma</code><span class="sig-paren">(</span><em class="sig-param">sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#CI_from_sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.CI_from_sigma" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">CI_from_sigma</code><span class="sig-paren">(</span><em class="sig-param">sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#CI_from_sigma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.CI_from_sigma" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.sigma_from_CI">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">sigma_from_CI</code><span class="sig-paren">(</span><em class="sig-param">CI</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#sigma_from_CI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.sigma_from_CI" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sigma_from_CI</code><span class="sig-paren">(</span><em class="sig-param">CI</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#sigma_from_CI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.sigma_from_CI" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.delta_chi2_from_CI">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">delta_chi2_from_CI</code><span class="sig-paren">(</span><em class="sig-param">CI</em>, <em class="sig-param">dof=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#delta_chi2_from_CI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.delta_chi2_from_CI" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delta_chi2_from_CI</code><span class="sig-paren">(</span><em class="sig-param">CI</em>, <em class="sig-param">dof=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#delta_chi2_from_CI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.delta_chi2_from_CI" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.ks_w">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">ks_w</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">data2</em>, <em class="sig-param">wei1=None</em>, <em class="sig-param">wei2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#ks_w"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.ks_w" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ks_w</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">data2</em>, <em class="sig-param">wei1=None</em>, <em class="sig-param">wei2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#ks_w"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.ks_w" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted Kolmogorov-Smirnov test. Returns the KS statistics and the p-value (in the limit of large samples).</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.sort_consecutive">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">sort_consecutive</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">stepsize=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#sort_consecutive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.sort_consecutive" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sort_consecutive</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">stepsize=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#sort_consecutive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.sort_consecutive" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.HPDI">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">HPDI</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">intervals=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">nbins=25</em>, <em class="sig-param">print_hist=False</em>, <em class="sig-param">optimize_binning=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#HPDI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.HPDI" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">HPDI</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">intervals=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">nbins=25</em>, <em class="sig-param">print_hist=False</em>, <em class="sig-param">optimize_binning=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#HPDI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.HPDI" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.HPDI_error">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">HPDI_error</code><span class="sig-paren">(</span><em class="sig-param">HPDI</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#HPDI_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.HPDI_error" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">HPDI_error</code><span class="sig-paren">(</span><em class="sig-param">HPDI</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#HPDI_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.HPDI_error" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.HPD_quotas">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">HPD_quotas</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">intervals=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">nbins=25</em>, <em class="sig-param">from_top=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#HPD_quotas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.HPD_quotas" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">HPD_quotas</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">intervals=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">nbins=25</em>, <em class="sig-param">from_top=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#HPD_quotas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.HPD_quotas" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.weighted_quantiles">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">weighted_quantiles</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">quantiles=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">data_sorted=False</em>, <em class="sig-param">onesided=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#weighted_quantiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.weighted_quantiles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">weighted_quantiles</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">quantiles=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">data_sorted=False</em>, <em class="sig-param">onesided=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#weighted_quantiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.weighted_quantiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Very close to numpy.percentile, but supports weights.
 NOTE: quantiles should be in [0, 1]!</p>
 <blockquote>
@@ -277,17 +278,17 @@ NOTE: quantiles should be in [0, 1]!</p>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.weighted_central_quantiles">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">weighted_central_quantiles</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">intervals=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">onesided=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#weighted_central_quantiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.weighted_central_quantiles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">weighted_central_quantiles</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">intervals=0.68</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">onesided=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#weighted_central_quantiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.weighted_central_quantiles" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.find_maximum">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">find_maximum</code><span class="sig-paren">(</span><em class="sig-param">loglik</em>, <em class="sig-param">npars=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#find_maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.find_maximum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">find_maximum</code><span class="sig-paren">(</span><em class="sig-param">loglik</em>, <em class="sig-param">npars=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#find_maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.find_maximum" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="DNNLikelihood.inference.find_prof_maximum">
-<code class="sig-prename descclassname">DNNLikelihood.inference.</code><code class="sig-name descname">find_prof_maximum</code><span class="sig-paren">(</span><em class="sig-param">loglik</em>, <em class="sig-param">npars=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">pars_fixed_pos=None</em>, <em class="sig-param">pars_fixed_val=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#find_prof_maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.find_prof_maximum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">find_prof_maximum</code><span class="sig-paren">(</span><em class="sig-param">loglik</em>, <em class="sig-param">npars=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">pars_fixed_pos=None</em>, <em class="sig-param">pars_fixed_val=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#find_prof_maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.find_prof_maximum" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -304,7 +305,7 @@ NOTE: quantiles should be in [0, 1]!</p>
         <a href="utils.html" class="btn btn-neutral float-right" title="Useful functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="set_resources.html" class="btn btn-neutral float-left" title="Resources management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="resources/methods.html" class="btn btn-neutral float-left" title="Methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
