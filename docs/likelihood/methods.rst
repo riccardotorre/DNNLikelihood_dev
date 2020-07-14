@@ -29,7 +29,7 @@ Methods
 
 .. automethod:: Lik.compute_maximum_logpdf
 
-.. automethod:: Lik.compute_profiled_maxima
+.. automethod:: Lik.compute_profiled_maxima_logpdf
 
 .. automethod:: Lik.plot_logpdf_par
 

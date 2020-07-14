@@ -3,23 +3,25 @@ __all__ = ["DnnLik"]
 import builtins
 import codecs
 import json
-import matplotlib
 import multiprocessing
 import pickle
 import re
 import time
 from datetime import datetime
 from decimal import Decimal
-from os import path, sep, stat, remove, startfile
+from os import path, remove, sep, startfile, stat
 from timeit import default_timer as timer
 
+import deepdish as dd
 import h5py
 import keras2onnx
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import onnx
-import tensorflow as tf
 import scipy
+import seaborn as sns
+import tensorflow as tf
 from tensorflow.keras import Input
 from tensorflow.keras import backend as K
 from tensorflow.keras import callbacks, losses, metrics, optimizers
@@ -28,23 +30,23 @@ from tensorflow.keras.layers import (AlphaDropout, BatchNormalization, Dense,
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.utils import plot_model
 
+from . import inference, utils
+from .corner import corner, extend_corner_range, get_1d_hist
+from .data import Data
+from .resources import Resources
+from .show_prints import print
+
 try:
     from livelossplot import PlotLossesTensorFlowKeras as PlotLossesKeras
 except:
     print("No module named 'livelossplot's. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
 
-import seaborn as sns
 sns.set()
 kubehelix = sns.color_palette("cubehelix", 30)
 reds = sns.color_palette("Reds", 30)
 greens = sns.color_palette("Greens", 30)
 blues = sns.color_palette("Blues", 30)
 
-from . import inference, utils
-from .corner import corner, get_1d_hist, extend_corner_range
-from .data import Data
-from .show_prints import print
-from .resources import Resources
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
@@ -169,7 +171,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         else:
             ############ Initialize input parameters from file
             #### Load summary_log dictionary
-            print("When providing DNNLik input folder all arguments but data, load_on_RAM and dtype are ignored and the object is constructed from saved data",show=verbose)
+            print("When providing DNNLik input folder all arguments but data, load_on_RAM and dtype are ignored and the object is constructed from saved data.",show=verbose)
             self.__load_summary_json_and_log(verbose=verbose_sub)
             self.data = None
             #### Set main inputs and DataSample
@@ -203,8 +205,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.idx_train, self.idx_val, self.idx_test = [np.array([], dtype="int"),np.array([], dtype="int"),np.array([], dtype="int")]
             self.scalerX, self.scalerY = [None,None]
             self.model = None
-            self.model_max = {}
-            self.model_profiled_max = {}
+            #self.logpdf_max_model = {}
+            #self.logpdf_profiled_max_model = {}
+            #self.logpdf_max_data = {}
+            #self.logpdf_profiled_max_data = {}
             self.history = {}
             self.predictions = {}
             self.figures_list = []
@@ -262,7 +266,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.input_history_json_file <DNNLikelihood.DnnLik.input_history_json_file>`
             - :attr:`DnnLik.input_idx_h5_file <DNNLikelihood.DnnLik.input_idx_h5_file>`
             - :attr:`DnnLik.input_log_file <DNNLikelihood.DnnLik.input_log_file>`
-            - :attr:`DnnLik.input_predictions_json_file <DNNLikelihood.DnnLik.input_predictions_json_file>`
+            - :attr:`DnnLik.input_predictions_h5_file <DNNLikelihood.DnnLik.input_predictions_h5_file>`
             - :attr:`DnnLik.input_scalers_pickle_file <DNNLikelihood.DnnLik.input_scalers_pickle_file>`
             - :attr:`DnnLik.input_tf_model_h5_file <DNNLikelihood.DnnLik.input_tf_model_h5_file>`
 
@@ -277,7 +281,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.input_history_json_file = self.input_files_base_name
             self.input_idx_h5_file = self.input_files_base_name
             self.input_log_file = self.input_summary_json_file
-            self.input_predictions_json_file = self.input_files_base_name
+            self.input_predictions_h5_file = self.input_files_base_name
             self.input_scalers_pickle_file = self.input_files_base_name
             self.input_tf_model_h5_file = self.input_files_base_name
         else:
@@ -285,7 +289,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.input_history_json_file = self.input_files_base_name+"_history.json"
             self.input_idx_h5_file = self.input_files_base_name+"_idx.h5"
             self.input_log_file = self.input_files_base_name+".log"
-            self.input_predictions_json_file = self.input_files_base_name+"_predictions.json"
+            self.input_predictions_h5_file = self.input_files_base_name+"_predictions.h5"
             self.input_scalers_pickle_file = self.input_files_base_name+"_scalers.pickle"
             self.input_tf_model_h5_file = self.input_files_base_name+"_model.h5"
         if self.input_data_file is not None:
@@ -306,7 +310,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.output_history_json_file <DNNLikelihood.DnnLik.output_history_json_file>`
             - :attr:`DnnLik.output_idx_h5_file <DNNLikelihood.DnnLik.output_idx_h5_file>`
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
-            - :attr:`DnnLik.output_predictions_json_file <DNNLikelihood.DnnLik.output_predictions_json_file>`
+            - :attr:`DnnLik.output_predictions_h5_file <DNNLikelihood.DnnLik.output_predictions_h5_file>`
             - :attr:`DnnLik.output_scalers_pickle_file <DNNLikelihood.DnnLik.output_scalers_pickle_file>`
             - :attr:`DnnLik.output_summary_json_file <DNNLikelihood.DnnLik.output_summary_json_file>`
             - :attr:`DnnLik.output_tf_model_graph_pdf_file <DNNLikelihood.DnnLik.output_tf_model_graph_pdf_file>`
@@ -339,13 +343,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.output_history_json_file = self.output_files_base_name+"_history.json"
         self.output_idx_h5_file = self.output_files_base_name+"_idx.h5"
         self.output_log_file = self.output_files_base_name+".log"
-        self.output_predictions_json_file = self.output_files_base_name+"_predictions.json"
+        self.output_predictions_h5_file = self.output_files_base_name+"_predictions.h5"
         self.output_scalers_pickle_file = self.output_files_base_name+"_scalers.pickle"
         self.output_summary_json_file = self.output_files_base_name+"_summary.json"
         self.output_tf_model_graph_pdf_file = self.output_files_base_name+"_model_graph.pdf"
         self.output_tf_model_h5_file = self.output_files_base_name+"_model.h5"
         self.output_tf_model_json_file = self.output_files_base_name+"_model.json"
         self.output_tf_model_onnx_file = self.output_files_base_name+"_model.onnx"
+        self.script_file = self.output_files_base_name++"_script.py"
         self.output_checkpoints_files = None
         self.output_checkpoints_folder = None
         self.output_figure_plot_losses_keras_file = None
@@ -712,8 +717,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.__dict__.update(dictionary)
         with open(self.input_log_file) as json_file:
             dictionary = json.load(json_file)
-        if self.model_max is not {}:
-            self.model_max["x"] = np.array(self.model_max["x"])
+        #if self.model_max is not {}:
+        #    self.model_max["x"] = np.array(self.model_max["x"])
         self.log = dictionary
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -897,7 +902,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
         to set the :attr:`DnnLik.predictions <DNNLikelihood.DnnLik.predictions>` attribute 
         from the file
-        :attr:`DnnLik.input_predictions_json_file <DNNLikelihood.DnnLik.input_predictions_json_file>`.
+        :attr:`DnnLik.input_predictions_h5_file <DNNLikelihood.DnnLik.input_predictions_h5_file>`.
         If the file is not found the attributes is set to an empty dictionary ``{}``.
 
         - **Arguments**
@@ -913,8 +918,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         try:
-            with open(self.input_predictions_json_file) as json_file: 
-                self.predictions = json.load(json_file)
+            dictionary = dd.io.load(self.input_h5_file)
+            self.predictions = dictionary
         except:
             print("No predictions file available. The predictions attribute will be initialized to {}.")
             self.predictions = {}
@@ -922,8 +927,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded predictions json",
-                               "file name": path.split(self.input_predictions_json_file)[-1],
-                               "file path": self.input_predictions_json_file}
+                               "file name": path.split(self.input_predictions_h5_file)[-1],
+                               "file path": self.input_predictions_h5_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print("DnnLik predictions json file loaded in",str(end-start), ".", show=verbose)
 
@@ -1703,7 +1708,31 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             print("Model for DNNLikelihood", self.name, "successfully trained for",
                   epochs_to_run, "epochs in", self.training_time, "s.", show=verbose)
 
-    def model_predict(self, X, batch_size=None, steps=None, x_boundaries="original", y_boundaries=False, save_log=True, verbose=None):
+    def check_x_bounds(self,pars_val,pars_bounds):
+        res = []
+        for i in range(len(pars_val)):
+            tmp = []
+            if pars_bounds[i][0] ==-np.inf:
+                tmp.append(True)
+            else:
+                if pars_val[i] >= pars_bounds[i][0]:
+                    tmp.append(True)
+                else:
+                    tmp.append(False)
+            if pars_bounds[i][1] ==np.inf:
+                tmp.append(True)
+            else:
+                if pars_val[i] <= pars_bounds[i][1]:
+                    tmp.append(True)
+                else:
+                    tmp.append(False)
+            res.append(tmp)
+        return np.all(res)
+
+    def check_y_bounds(self,pred_val, pred_bounds):
+        return pred_val >= pred_bounds[0] and pred_val <= pred_bounds[1]
+
+    def model_predict(self, X, batch_size=None, steps=None, x_boundaries=False, y_boundaries=False, save_log=True, verbose=None):
         """
         Method that predicts in batches by calling the |tf_keras_model_predict_link| method of
         :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>`.
@@ -1746,15 +1775,15 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 Implements boundaries on the input vector. If an ``x`` point has a parameter that falls outside
                 ``pars_bounds``, the corresponding prediction is set to ``-np.inf``. It could have the following values:
 
-                    - ``"original"``: the parameters bounds of the original likelihood function stored in the 
+                    - ``False``: no bounds are imposed and all predictions are accepted.
+                    - ``True``: the parameters bounds of the original likelihood function stored in the 
                         :attr:`DnnLik.pars_bounds <DNNLikelihood.DnnLik.pars_bounds>` are used.
+                    - ``"original"``: same as ``True``
                     - ``"train"``: the parameters bounds computed from the maximum and minimum values of the training points
                         stored in the :attr:`DnnLik.pars_bounds_train <DNNLikelihood.DnnLik.pars_bounds_train>` are used.
-                    - ``"none"``: the parameters bounds are sent to infinity, i.e. no bounds are imposed and all
-                        predictions are accepted.
                     
-                    - **type**: ``str``
-                    - **default**: ``"original"``
+                    - **type**: ``bool`` or ``str``
+                    - **default**: ``False``
 
             - **y_boundaries**
 
@@ -1790,28 +1819,33 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        if x_boundaries is "original":
-            pars_bounds = self.pars_bounds
+        if x_boundaries is "original": 
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is True:
+            pars_bounds = np.array(self.pars_bounds)
         elif x_boundaries is "train":
-            pars_bounds = self.pars_bounds_train
+            pars_bounds = np.array(self.pars_bounds_train)
+        elif x_boundaries is False:
+            pass
+            #pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         else:
-            pars_bounds = np.vstack(
-                [np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
+            print("Invalid input for 'x_boundaries'. Assuming False.")
+            x_boundaries = False
         # Scale data
         if batch_size is None:
             batch_size = self.batch_size
         print("Scaling data.", show=verbose)
         X = self.scalerX.transform(X)
         pred = self.scalerY.inverse_transform(self.model.predict(X, batch_size=batch_size, steps=steps, verbose=verbose_sub)).reshape(len(X))
-        for i in range(len(X)):
-            x = X[i]
-            if not (np.all(x >= pars_bounds[:, 0]) and np.all(x <= pars_bounds[:, 1])):
-                pred[i] = -np.inf
-                #np.put(pred, i, -np.inf)
-            if y_boundaries:
-                if pred[i] < self.pred_bounds_train[0] or pred[i] > self.pred_bounds_train[1]:
+        if x_boundaries:
+            for i in range(len(X)):
+                x = X[i]
+                if not self.check_x_bounds(x, pars_bounds):
                     pred[i] = -np.inf
-        #pred = np.where(np.isnan(pred), -np.inf, pred)
+        if y_boundaries:
+            for i in range(len(X)):
+                if not self.check_y_bounds(pred, self.pred_bounds_train):
+                    pred[i] = -np.inf
         end = timer()
         prediction_time = (end - start)/len(X)
         if save_log:
@@ -1823,7 +1857,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.save_log(overwrite=True, verbose=verbose_sub)
         return [pred, prediction_time]
 
-    def model_predict_scalar(self, x, x_boundaries="original", y_boundaries=False, verbose=None):
+    def model_predict_scalar(self, x, x_boundaries=False, y_boundaries=False, verbose=None):
         """
         Method that returns a prediction on a single input point.
         It calls the method :meth:`DNNLik.model_predict <DNNLikelihood.DNNLik.model_predict>`
@@ -1845,7 +1879,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 :meth:`DNNLik.model_predict <DNNLikelihood.DNNLik.model_predict>` method.
                     
                     - **type**: ``str``
-                    - **default**: ``"original"``
+                    - **default**: ``"none"``
 
             - **y_boundaries**
 
@@ -1869,15 +1903,36 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         pred = self.model_predict(x, batch_size=1, steps=None, x_boundaries=x_boundaries, y_boundaries=y_boundaries, save_log=False, verbose=False)[0][0]
         return pred
 
-    def model_compute_max(self,
-                          pars_init=None,
-                          maxiter=None,
-                          tolerance=0.0001,
-                          optimizer=None,
-                          scipy_kwargs = {},
-                          x_boundaries="original", 
-                          y_boundaries=False,
-                          verbose=None):
+    def __set_optimizer_minimization(self, optimizer):
+        """
+        Bla bla bla.
+        """
+        if type(optimizer) is not dict:
+            raise Exception("Could not set optimizer. The optimizer argument does not have a valid format.")
+        if optimizer is {}:
+            opt_string = "optimizers.SGD(learning_rate=1)"
+        else:
+            name = optimizer["name"]
+        if name is "scipy":
+            opt_string = "scipy.optimize"
+        else:
+            try:
+                string = name+"("
+                for key, value in utils.dic_minus_keys(optimizer,["name"]).items():
+                    if type(value) is str:
+                        value = "'"+value+"'"
+                    string = string+str(key)+"="+str(value)+", "
+                opt_string = str("optimizers."+string+")").replace(", )", ")")
+            except:
+                raise Exception("Could not set optimizer. The optimizer argument does not have a valid format.")
+        return [opt_string,eval(opt_string)]
+
+    def compute_maximum_model(self,
+                              pars_init=None,
+                              optimizer={},
+                              x_boundaries=False, 
+                              y_boundaries=False,
+                              verbose=None):
         """
         Method that computes the maximum of the DNNLikelihood predictor with an optimizer given by the user.
         The two optimizer that are supported are |scipy_link| and |tf_keras_link|. They work as follows.
@@ -1890,16 +1945,16 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             By default the method uses the |scipy_optimize_minimize_powell_link| method and passes the ``maxiter`` and ``tolerance`` inputs 
             to the analog ``ftol`` and ``maxiter`` input of the |scipy_optimize_minimize_powell_link| method, respectively. 
             Additional (or different) arguments can be passed to the 
-            |scipy_optimize_minimize_link| method through the input dictionary ``scipy_kwargs``.
+            |scipy_optimize_minimize_link| method through the input dictionary ``scipy_options``.
 
         - |tf_keras_link|
 
             If the argument ``optimizer`` is not ``scipy``, then |tf_keras_link| is used for the optimization. When ``optimizer``
-            is ``None`` the |tf_keras_optimizers_link_2| is set to |tf_keras_optimizer_SGD| with ``learning_rate=0.1``.
+            is ``None`` the |tf_keras_optimizers_link_2| is set to |tf_keras_optimizer_SGD| with ``learning_rate=1``.
             On the other hand, the user can pass a custom ``optimizer`` in the same way as optimizers are passed to the 
             :class:``DNNLik <DNNLikelihood.DNNLik>` object, see the documentation of :argument:`model_optimizer_inputs`.
             The optimization is done for a maximum of ``maxiter`` iterations, 500 iterations per time. 
-            Every 500 iterations the prediction is compared with the previous one
+            Every ``run_length`` iterations the prediction is compared with the previous one
             and, when the difference is smaller than ``tolerance`` the optimization is stopped. If ``tolerance`` is not reached
             within ``maxiter`` iterations, then the result is returned and a warning message is printed.
             If the optimization starts to deteriorate (worse result after the next 500 iterations), then the ``learning_rate`` of the
@@ -1941,23 +1996,47 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 In the latter case it can be input in the same way as :argument:`model_optimizer_inputs` class argument.
 
                     - **type**: ``str`` or ``dict``
-                    - **default**: ``None`` (automatically modified to ``"tf.keras.optimizers.SGD(learning_rate=0.1)``)
+                    - **default**: ``None`` (automatically modified to ``"tf.keras.optimizers.SGD(learning_rate=1)``)
 
-            - **scipy_kwargs**
+            - **scipy_options**
 
-                Arguments passed directly to the 
+                Arguments passed as additional ``"options"`` (dictionary) to the 
                 |scipy_optimize_link| method.
 
                     - **type**: ``dict``
                     - **default**: ``{}``
 
+            - **run_length**
+
+                In the case of optimization with |tf_keras_link|, it represents the 
+                number of iterations before evaluating the prediction and comparing it with 
+                the previous one to estimate the tolerance.
+
+                    - **type**: ``int``
+                    - **default**: ``500``
+
             - **x_boundaries**
 
-                Argument passed to the 
+                Implements boundaries on the input vector. If an ``x`` point has a parameter that falls outside
+                ``pars_bounds``, the corresponding prediction is set to ``-np.inf`` for |scipy_link| optimization
+                and to the prediction multiplied by ``1.1`` plus the squared modulus of the input vector for |tf_keras_link| 
+                optimization. It could have the following values:
+
+                    - ``False``: no bounds are imposed and all predictions are accepted.
+                    - ``True``: the parameters bounds of the original likelihood function stored in the 
+                        :attr:`DnnLik.pars_bounds <DNNLikelihood.DnnLik.pars_bounds>` are used.
+                    - ``"original"``: same as ``True``
+                    - ``"train"``: the parameters bounds computed from the maximum and minimum values of the training points
+                        stored in the :attr:`DnnLik.pars_bounds_train <DNNLikelihood.DnnLik.pars_bounds_train>` are used.
+                    
+                    - **type**: ``bool`` or ``str``
+                    - **default**: ``False``
+
+                For |scipy_link| optimization the argument is passed directly to the 
                 :meth:`DNNLik.model_predict_scalar <DNNLikelihood.DNNLik.model_predict_scalar>` method.
 
-                    - **type**: ``str``
-                    - **default**: ``"original"``
+                    - **type**: ``bool`` or ``str``
+                    - **default**: ``False``
 
             - **y_boundaries**
 
@@ -1981,98 +2060,559 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        optimizer_log = optimizer
         if pars_init is None:
-            pars_init = self.pars_central
+            pars_init = np.array(self.pars_central).astype(self.dtype)
         else:
-            pars_init = np.array(pars_init)
-        if maxiter is None:
-            maxiter=1000*self.ndims
+            pars_init = np.array(pars_init).astype(self.dtype)
         if x_boundaries is "original":
-            pars_bounds = self.pars_bounds
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is True:
+            pars_bounds = np.array(self.pars_bounds)
         elif x_boundaries is "train":
-            pars_bounds = self.pars_bounds_train
+            pars_bounds = np.array(self.pars_bounds_train)
+        elif x_boundaries is False:
+            pass
         else:
-            pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
-        if optimizer is "scipy":
-            optimizer = scipy.optimize
+            print("Invalid input for 'x_boundaries'. Assuming False.")
+            x_boundaries = False
+        if x_boundaries:
+            if not self.check_x_bounds(pars_init, pars_bounds):
+                raise Exception("pars_init out of bounds.")
+        opt_log, opt = self.__set_optimizer_minimization(optimizer)
+        if "scipy" in opt_log:
+            try: 
+                method = optimizer["method"]
+            except:
+                method = "Powell"
+            try:
+                options = optimizer["options"]
+            except:
+                options = {}
             print("Optimizing with scipy.optimize.", show=verbose)
             def minus_loglik(x):
                 return -self.model_predict_scalar(x, x_boundaries=x_boundaries, y_boundaries=y_boundaries)
-            ml = optimizer.minimize(minus_loglik, pars_init, maxiter=maxiter, method="Powell", ftol=tolerance,**scipy_kwargs)
-            self.model_max["X"], self.model_max["Y"] = [ml["x"], -ml["fun"]]
+            ml = opt.minimize(minus_loglik, pars_init, method=method, options=options)
+            self.predictions["logpdf_max_model"] = {"x": np.array(ml["x"]), "y": -ml["fun"]}
             end = timer()
             print("Optimized in", str(end-start), "s.", show=verbose)
         else:
-            ## Set optimizer
-            def __set_optimizer(optimizer):
-                if optimizer is None:
-                    opt_string = "optimizers.SGD(learning_rate=0.1)"
-                elif type(optimizer) is dict:
-                    name = optimizer["name"]
-                    string = name+"("
-                    for key, value in utils.dic_minus_keys(optimizer,["name"]).items():
-                        if type(value) is str:
-                            value = "'"+value+"'"
-                        string = string+str(key)+"="+str(value)+", "
-                    opt_string = str("optimizers."+string+")").replace(", )", ")")
-                elif type(optimizer) is str:
-                    opt_string = optimizer
-                else:
-                    raise Exception("Could not set optimizer. The optimizer argument does not have a valid format (None or str or dict).")
-                return eval(opt_string)
-            optimizer = __set_optimizer(optimizer)
             print("Optimizing with tensorflow.", show=verbose)
-            ## Scalers
-            sX = self.scalerX
-            sY = self.scalerY        
-            x_var = tf.Variable(sX.transform(np.array(self.pars_central).reshape(1,-1)), dtype=self.dtype)
-            x_bounds=tf.reshape(tf.Variable(self.pars_bounds, dtype=self.dtype),(self.ndims,2))
-            def f():
-                if tf.reduce_all(tf.logical_and(tf.reshape(x_var, (self.ndims,)) > x_bounds[:, 0], tf.reshape(x_var, (self.ndims,)) < x_bounds[:, 1])):
-                    return tf.reshape(-1*(self.model(x_var)),[])
-                else:
-                    return tf.reshape(tf.Variable(np.inf, dtype=self.dtype),())
-            #f = lambda: tf.reshape(-1*(self.model(x_var)),[])
-            run_lenght = 500
-            nruns = int(maxiter/run_lenght)
-            last_run_length = maxiter-run_lenght*nruns
+            try: 
+                maxiter = optimizer["maxiter"]
+            except:
+                maxiter = 1000*self.ndims
+            try:
+                run_length = optimizer["run_length"]
+            except:
+                run_length = np.min([500,maxiter])
+            pars_init_scaled = self.scalerX.transform(pars_init.reshape(1,-1))
+            x_var = tf.Variable(pars_init_scaled.reshape(1,-1), dtype=self.dtype)
+            if x_boundaries:
+                pars_bounds_scaled = np.vstack([self.scalerX.transform(np.nan_to_num(pars_bounds[:,0].reshape(1,-1))).reshape(-1,),
+                                                self.scalerX.transform(np.nan_to_num(pars_bounds[:,1].reshape(1,-1))).reshape(-1,)]).T
+                x_bounds = tf.reshape(tf.Variable(pars_bounds_scaled, dtype=self.dtype),(-1,2))
+                y_bounds = self.scalerY.transform(np.array(self.pred_bounds_train).reshape(-1,1)).reshape(-1,)
+            if y_boundaries:
+                y_bounds = self.scalerY.transform(np.array(self.pred_bounds_train).reshape(-1,1)).reshape(-1,)
+            if not x_boundaries and not y_boundaries:
+                @tf.function
+                def f():
+                    return tf.reshape(-1*(self.model(x_var)), [])
+            elif x_boundaries and not y_boundaries:
+                @tf.function
+                def f():
+                    res = tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(tf.reshape(x_var, (-1,)),x_bounds[:,0]),
+                                                               tf.math.greater(x_bounds[:,1],tf.reshape(x_var, (-1,))))),
+                                  lambda: tf.reshape(-1*(self.model(x_var)),[]),
+                                  lambda: -y_bounds[0]*(1 + tf.tensordot(x_var, x_var, axes=2)))
+                    return res
+            elif not x_boundaries and y_boundaries:
+                @tf.function
+                def f():
+                    res = tf.reshape(-1*(self.model(x_var)), [])
+                    res = tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(res, y_bounds[0]),
+                                                               tf.math.greater(y_bounds[1],res))),
+                                  lambda: res,
+                                  lambda: -y_bounds[0]*(1 + tf.tensordot(x_var, x_var, axes=2)))
+                    return res
+            elif x_boundaries and y_boundaries:
+                @tf.function
+                def f():
+                    res = tf.reshape(-1*(self.model(x_var)), [])
+                    res = tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(tf.reshape(x_var, (-1,)),x_bounds[:,0]),
+                                                               tf.math.greater(x_bounds[:,1],tf.reshape(x_var, (-1,))))),
+                                  lambda: tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(res, y_bounds[0]),
+                                                                               tf.math.greater(y_bounds[1], res))),
+                                                  lambda: res,
+                                                  lambda: -y_bounds[0]*(1 + tf.tensordot(x_var, x_var, axes=2))),
+                                  lambda: -y_bounds[0]*(1 + tf.tensordot(x_var, x_var, axes=2)))
+                    return res
+            nruns = int(maxiter/run_length)
+            run_steps = np.array([[i*run_length, (i+1)*run_length] for i in range(nruns)])
+            last_run_length = maxiter-run_length*nruns
             if last_run_length != 0:
                 nruns = nruns+1
+                run_steps = np.concatenate((run_steps, np.array([[run_steps[-1][1]+1,run_steps[-1][1]+last_run_length]])))
             for i in range(nruns):
-                step_before = i*run_lenght+1
-                value_before = sY.inverse_transform([-f().numpy()])[0]
-                if i+1<nruns:
-                    for _ in range(1,run_lenght):
-                        optimizer.minimize(f,var_list=[x_var])
-                    step_after = (i+1)*run_lenght
-                else:
-                    for _ in range(1,last_run_length):
-                        optimizer.minimize(f,var_list=[x_var])
-                    step_after = i*run_lenght+last_run_length
-                value_after = sY.inverse_transform([-f().numpy()])[0]
-                variation = value_before-value_after/value_before
-                if value_after<value_before:
-                    lr = optimizer._hyper['learning_rate']
-                    optimizer._hyper['learning_rate'] = lr/2
-                    print("Optimizer learning rate reduced from",lr,"to",lr/2,".", show=verbose)
+                step_before = run_steps[i][0]
+                value_before = self.scalerY.inverse_transform([-f().numpy()])[0]
+                for _ in range(run_steps[i][0], run_steps[i][1]):
+                    opt.minimize(f, var_list=[x_var])
+                step_after = run_steps[i][1]
+                value_after = self.scalerY.inverse_transform([-f().numpy()])[0]
+                variation = (value_before-value_after)/value_before
                 print("Step:",step_before,"Value:",value_before,"-- Step:",step_after,"Value:",value_after,r"-- % Variation",variation, show=verbose)
                 if variation > 0 and variation < tolerance:
                     end = timer()
                     print("Converged to tolerance",tolerance,"in",str(end-start),"s.", show=verbose)
-                    x_final = sX.inverse_transform(x_var.numpy())[0]
-                    y_final = sY.inverse_transform([-f().numpy()])[0]
-                    self.model_max["X"], self.model_max["Y"] = [x_final, y_final]
                     break
+                if value_after<value_before:
+                    lr = opt._hyper['learning_rate']#.numpy()
+                    opt._hyper['learning_rate'] = lr/2
+                    print("Optimizer learning rate reduced from",lr,"to",lr/2,".", show=verbose)
+            x_final = self.scalerX.inverse_transform(x_var.numpy())[0]
+            y_final = self.scalerY.inverse_transform([-f().numpy()])[0]
+            self.predictions["logpdf_max_model"] = {"x": np.array(x_final), "y": y_final}
             end = timer()
             print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.", show=verbose)
             print("Best tolerance",variation,"reached in",str(end-start),"s.", show=verbose)
-            self.model_max["X"], self.model_max["Y"] = [x_final, y_final]
+        if y_boundaries and self.predictions["logpdf_max_model"]["y"] < self.pred_bounds_train[0]: 
+            print("Warning: the model maximum (",self.predictions["logpdf_max_model"]["y"],") is smaller than the minimum y value in the training data (",self.pred_bounds_train[0],").")
+        if y_boundaries and self.predictions["logpdf_max_model"]["y"] > self.pred_bounds_train[1]: 
+            print("Warning: the model maximum (",self.predictions["logpdf_max_model"]["y"],") is larger than the maximum y value in the training data (",self.pred_bounds_train[1],").")
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "computed maximum logpdf",
-                               "optimizer": optimizer_log,
-                               "optimization time": end-start}
+        self.log[timestamp] = {"action": "computed maximum model",
+                               "optimizer": opt_log,
+                               "optimization time": end-start,
+                               "x": self.predictions["logpdf_max_model"]["x"],
+                               "y": self.predictions["logpdf_max_model"]["y"]}
+        self.save_predictions_h5(overwrite=True, verbose=verbose_sub)
         self.save_log(overwrite=True, verbose=verbose_sub)
+        print("Maximum of DNN computed in", str(end-start),"s.", show=verbose)
+
+    def compute_profiled_maximum_model(self,
+                                       pars_init=None,
+                                       pars_fixed_pos=None, 
+                                       pars_fixed_val=None,
+                                       optimizer={},
+                                       x_boundaries=False,
+                                       y_boundaries=False,
+                                       save=True,
+                                       verbose=None):
+        """
+        Bla bla bla
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        pars_fixed_pos = np.sort(pars_fixed_pos)
+        pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))
+        pars_fixed_val = np.array(pars_fixed_val)
+        if pars_init is None:
+            pars_init = np.array(self.pars_central).astype(self.dtype)
+        else:
+            pars_init = np.array(pars_init).astype(self.dtype)
+        for i in range(len(pars_fixed_pos)):
+            pars_init[pars_fixed_pos[i]] = pars_fixed_val[i]
+        if maxiter is None:
+            maxiter=1000*self.ndims
+        if x_boundaries is "original": 
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is True:
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is "train":
+            pars_bounds = np.array(self.pars_bounds_train)
+        elif x_boundaries is False:
+            pass
+        else:
+            print("Invalid input for 'x_boundaries'. Assuming False.")
+            x_boundaries = False
+        if x_boundaries:
+            if not self.check_x_bounds(pars_init, pars_bounds):
+                raise Exception("pars_init out of bounds.")
+        opt_log, opt = self.__set_optimizer_minimization(optimizer)
+        if "scipy" in opt_log:
+            try:
+                method = optimizer["method"]
+            except:
+                method = "Powell"
+            try:
+                options = optimizer["options"]
+            except:
+                options = {}
+            print("Optimizing with scipy.optimize.", show=verbose)
+            pars_init_reduced = np.delete(pars_init, pars_fixed_pos)
+            def minus_loglik(x):
+                return -self.model_predict_scalar(np.insert(x, pars_fixed_pos_insert, pars_fixed_val), x_boundaries=x_boundaries, y_boundaries=y_boundaries)
+            ml = opt.minimize(minus_loglik, pars_init_reduced, method=method, options=options)
+            try:
+                self.predictions["logpdf_profiled_max_model"]["X"] = np.concatenate((self.predictions["logpdf_profiled_max_model"]["X"], [np.insert(ml["x"], pars_fixed_pos_insert, pars_fixed_val)]))
+                self.predictions["logpdf_profiled_max_model"]["Y"] = np.concatenate((self.predictions["logpdf_profiled_max_model"]["Y"],[-ml["fun"]]))
+            except:
+                self.predictions["logpdf_profiled_max_model"] = {"X": np.array([np.insert(ml["x"], pars_fixed_pos_insert, pars_fixed_val)]), "Y": np.array([-ml["fun"]])}
+            end = timer()
+            print("Optimized in", str(end-start), "s.", show=verbose)
+        else:
+            print("Optimizing with tensorflow.", show=verbose)
+            try: 
+                maxiter = optimizer["maxiter"]
+            except:
+                maxiter = 1000*self.ndims
+            try:
+                run_length = optimizer["run_length"]
+            except:
+                run_length = np.min([500,maxiter])
+            pars_init_scaled = self.scalerX.transform(pars_init.reshape(1,-1))
+            x_var = tf.reshape(tf.Variable(pars_init_scaled.reshape(1,-1), dtype=self.dtype),(-1,))
+            idx_reduced = np.reshape(np.delete(np.array(list(range(self.ndims))),pars_fixed_pos),(-1,1))
+            x_var_reduced = tf.Variable(tf.gather_nd(x_var,idx_reduced))
+            idx_0 = np.reshape(pars_fixed_pos,(-1,1))
+            x_var_0 = tf.Variable(tf.gather_nd(x_var,idx_0))
+            idx_resort = np.reshape(np.argsort(np.reshape(np.concatenate((idx_0,idx_reduced)),(-1,))),(-1,1))
+            if x_boundaries:
+                pars_bounds_scaled = np.vstack([self.scalerX.transform(np.nan_to_num(pars_bounds[:, 0].reshape(1, -1))).reshape(-1,),
+                                                self.scalerX.transform(np.nan_to_num(pars_bounds[:, 1].reshape(1, -1))).reshape(-1,)]).T
+                x_bounds = tf.reshape(tf.Variable(
+                    pars_bounds_scaled, dtype=self.dtype), (-1, 2))
+                y_bounds = self.scalerY.transform(
+                    np.array(self.pred_bounds_train).reshape(-1, 1)).reshape(-1,)
+            if y_boundaries:
+                y_bounds = self.scalerY.transform(np.array(self.pred_bounds_train).reshape(-1,1)).reshape(-1,)
+            if not x_boundaries and not y_boundaries:
+                @tf.function
+                def f():
+                    var = tf.concat((x_var_0,x_var_reduced),axis=0)
+                    var = tf.reshape(tf.gather_nd(var,idx_resort),(1,-1))
+                    return tf.reshape(-1*(self.model(var)), [])
+            elif x_boundaries and not y_boundaries:
+                @tf.function
+                def f():
+                    var = tf.concat((x_var_0,x_var_reduced),axis=0)
+                    var = tf.reshape(tf.gather_nd(var,idx_resort),(1,-1))
+                    res = tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(tf.reshape(var, (-1,)),x_bounds[:,0]),
+                                                               tf.math.greater(x_bounds[:,1],tf.reshape(var, (-1,))))),
+                                  lambda: tf.reshape(-1*(self.model(var)),[]),
+                                  lambda: -y_bounds[0]*(1 + tf.tensordot(var, var, axes=2)))
+                    return res
+            elif not x_boundaries and y_boundaries:
+                @tf.function
+                def f():
+                    var = tf.concat((x_var_0,x_var_reduced),axis=0)
+                    var = tf.reshape(tf.gather_nd(var,idx_resort),(1,-1))
+                    res = tf.reshape(-1*(self.model(var)), [])
+                    res = tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(res, y_bounds[0]),
+                                                               tf.math.greater(y_bounds[1],res))),
+                                  lambda: res,
+                                  lambda: -y_bounds[0]*(1 + tf.tensordot(var, var, axes=2)))
+                    return res
+            elif x_boundaries and y_boundaries:
+                @tf.function
+                def f():
+                    var = tf.concat((x_var_0, x_var_reduced), axis=0)
+                    var = tf.reshape(tf.gather_nd(var,idx_resort),(1,-1))
+                    res = tf.reshape(-1*(self.model(var)), [])
+                    res = tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(tf.reshape(var, (-1,)),x_bounds[:,0]),
+                                                               tf.math.greater(x_bounds[:,1],tf.reshape(var, (-1,))))),
+                                  lambda: tf.cond(tf.reduce_all(tf.logical_and(tf.math.greater(res, y_bounds[0]),
+                                                                               tf.math.greater(y_bounds[1], res))),
+                                                  lambda: res,
+                                                  lambda: -y_bounds[0]*(1 + tf.tensordot(var, var, axes=2))),
+                                  lambda: -y_bounds[0]*(1 + tf.tensordot(var, var, axes=2)))
+                    return res
+            nruns = int(maxiter/run_length)
+            run_steps = np.array([[i*run_length, (i+1)*run_length] for i in range(nruns)])
+            last_run_length = maxiter-run_length*nruns
+            if last_run_length != 0:
+                nruns = nruns+1
+                run_steps = np.concatenate((run_steps, np.array([[run_steps[-1][1]+1,run_steps[-1][1]+last_run_length]])))
+            for i in range(nruns):
+                step_before = run_steps[i][0]
+                value_before = self.scalerY.inverse_transform([-f().numpy()])[0]
+                for _ in range(run_steps[i][0], run_steps[i][1]):
+                    opt.minimize(f, var_list=[x_var_reduced])
+                step_after = run_steps[i][1]
+                value_after = self.scalerY.inverse_transform([-f().numpy()])[0]
+                variation = (value_before-value_after)/value_before
+                print("Step:",step_before,"Value:",value_before,"-- Step:",step_after,"Value:",value_after,r"-- % Variation",variation, show=verbose)
+                if variation > 0 and variation < tolerance:
+                    end = timer()
+                    print("Converged to tolerance",tolerance,"in",str(end-start),"s.", show=verbose)
+                    break
+                if value_after<value_before:
+                    lr = opt._hyper['learning_rate']#.numpy()
+                    opt._hyper['learning_rate'] = lr/2
+                    print("Optimizer learning rate reduced from",lr,"to",lr/2,".", show=verbose)
+            var = tf.concat((x_var_0,x_var_reduced),axis=0)
+            var = tf.reshape(tf.gather_nd(var,idx_resort),(1,-1))
+            x_final = self.scalerX.inverse_transform(var.numpy())[0]
+            y_final = self.scalerY.inverse_transform([-f().numpy()])[0]
+            try:
+                self.predictions["logpdf_profiled_max_model"]["X"] = np.concatenate((self.predictions["logpdf_profiled_max_model"]["X"], [x_final]))
+                self.predictions["logpdf_profiled_max_model"]["Y"] = np.concatenate((self.predictions["logpdf_profiled_max_model"]["Y"], [y_final]))
+            except:
+                self.predictions["logpdf_profiled_max_model"] = {"X": np.array([x_final]), "Y": np.array([y_final])}
+            end = timer()
+            print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.", show=verbose)
+            print("Best tolerance",variation,"reached in",str(end-start),"s.", show=verbose)
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "computed profiled maximum model",
+                               "optimizer": opt_log,
+                               "optimization time": end-start,
+                               "x": self.predictions["logpdf_profiled_max_model"]["X"][-1],
+                               "y": self.predictions["logpdf_profiled_max_model"]["Y"][-1]}
+        if save:
+            self.save_predictions_h5(overwrite=True, verbose=verbose_sub)
+            self.save_log(overwrite=True, verbose=verbose_sub)
+
+    def compute_profiled_maxima_model(self,
+                                      pars_init=None,
+                                      pars_fixed_pos=None,
+                                      pars_ranges=None,
+                                      maxiter=None,
+                                      tolerance=0.0001,
+                                      optimizer=None,
+                                      scipy_options={},
+                                      run_length=500,
+                                      x_boundaries=False,
+                                      y_boundaries=False,
+                                      spacing="grid",
+                                      progressbar=True,
+                                      verbose=None):
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if progressbar:
+            try:
+                import ipywidgets as widgets
+            except:
+                progressbar = False
+                print("If you want to show a progress bar please install the ipywidgets package.",show=verbose)
+        start = timer()
+        if progressbar:
+            overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
+                "width": "500px", "height": "14px",
+                "padding": "0px", "margin": "-5px 0px -20px 0px"})
+            display(overall_progress)
+            iterator = 0
+        pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
+        print("Total number of points:", len(pars_vals),".",show=verbose)
+        pars_vals_bounded = []
+        if x_boundaries is "original": 
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is True:
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is "train":
+            pars_bounds = np.array(self.pars_bounds_train)
+        elif x_boundaries is False:
+            pass
+            #pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
+        else:
+            print("Invalid input for 'x_boundaries'. Assuming False.")
+            x_boundaries = False
+        if x_boundaries:
+            for i in range(len(pars_vals)):
+                if self.check_x_bounds(pars_vals, pars_bounds):
+                    pars_vals_bounded.append(pars_vals[i])
+        else:
+            pars_vals_bounded = pars_vals
+        if len(pars_vals) != len(pars_vals_bounded):
+            print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.",show=verbose)
+        res = []
+        for pars_fixed_val in pars_vals_bounded:
+            print("Optimizing for parameters:",pars_fixed_pos," - values:",pars_fixed_val.tolist(),".",show=verbose)
+            self.compute_profiled_maximum_model(pars_init=pars_init,
+                                                pars_fixed_pos=pars_fixed_pos,
+                                                pars_fixed_val=pars_fixed_val,
+                                                maxiter=maxiter,
+                                                tolerance=tolerance,
+                                                optimizer=optimizer,
+                                                scipy_options=scipy_options,
+                                                run_length=run_length,
+                                                x_boundaries=x_boundaries,
+                                                y_boundaries=y_boundaries,
+                                                save=False,
+                                                verbose=verbose_sub)
+            if progressbar:
+                iterator = iterator + 1
+                overall_progress.value = float(iterator)/(len(pars_vals_bounded))
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "computed profiled maxima model",
+                               "total time": end-start,
+                               "spacing": spacing,
+                               "npoints": len(pars_vals_bounded)}
+        self.save_predictions_h5(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
+        print("Profiled maxima of DNN for",len(pars_vals_bounded),"points computed in",str(end-start),"s.", show=verbose)
+        
+    def compute_maximum_sample(self,
+                               sample = "train",
+                               verbose=None):
+        """
+
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        try:
+            self.predictions["logpdf_max_sample"]
+        except:
+            self.predictions["logpdf_max_sample"] = {}
+        try:
+            self.predictions["logpdf_max_sample_abs_error"]
+        except:
+            self.predictions["logpdf_max_sample_abs_error"] = {}
+        if sample is "train":
+            if len(self.X_train) <= 1:
+                print("Generating train data", show=verbose)
+                self.generate_train_data()
+            X = self.X_train
+            Y = self.Y_train
+        elif sample is "val":
+            if len(self.X_val) <= 1:
+                print("Generating train data", show=verbose)
+                self.generate_train_data()
+            X = self.X_val
+            Y = self.Y_val
+        elif sample is "test":
+            if len(self.X_test) <= 1:
+                print("Generating test data", show=verbose)
+                self.generate_test_data()
+            X = self.X_test
+            Y = self.Y_test
+        else:
+            raise Exception("Invalid sample input. It should be one of: 'train', 'val', or 'test'.")
+        res = inference.compute_maximum_sample(X=X, Y=Y)
+        self.predictions["logpdf_max_sample"][sample] = {"x": np.array(res[0]), "y": res[1]}
+        self.predictions["logpdf_max_sample_abs_error"][sample] = {"x": np.array(res[2]), "y": res[3]}
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "computed maximum sample",
+                               "sample": sample,
+                               "total time": end-start,
+                               "x": self.predictions["logpdf_max_sample"][sample]["x"],
+                               "y": self.predictions["logpdf_max_sample"][sample]["y"]}
+        self.save_predictions_h5(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
+        print("Maximum of",sample,"sample computed in", str(end-start),"s.", show=verbose)
+
+    def compute_profiled_maxima_sample(self, 
+                                       sample = "train", 
+                                       pars_fixed_pos=None,
+                                       pars_ranges=None,
+                                       spacing="grid",
+                                       binwidths = "auto",
+                                       x_boundaries=False,
+                                       progressbar=True,
+                                       verbose=None):
+        """
+
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if progressbar:
+            try:
+                import ipywidgets as widgets
+            except:
+                progressbar = False
+                print(
+                    "If you want to show a progress bar please install the ipywidgets package.", show=verbose)
+        start = timer()
+        if progressbar:
+            overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
+                "width": "500px", "height": "14px",
+                "padding": "0px", "margin": "-5px 0px -20px 0px"})
+            display(overall_progress)
+            iterator = 0
+        try:
+            self.predictions["logpdf_profiled_max_sample"]
+        except:
+            self.predictions["logpdf_profiled_max_sample"] = {}
+        try:
+            self.predictions["logpdf_profiled_max_sample_abs_error"]
+        except:
+            self.predictions["logpdf_profiled_max_sample_abs_error"] = {}
+        if sample is "train":
+            if len(self.X_train) <= 1:
+                print("Generating train data", show=verbose_sub)
+                self.generate_train_data()
+            X = self.X_train
+            Y = self.Y_train
+        elif sample is "val":
+            if len(self.X_val) <= 1:
+                print("Generating train data", show=verbose_sub)
+                self.generate_train_data()
+            X = self.X_val
+            Y = self.Y_val
+        elif sample is "test":
+            if len(self.X_test) <= 1:
+                print("Generating test data", show=verbose_sub)
+                self.generate_test_data()
+            X = self.X_test
+            Y = self.Y_test
+        else:
+            raise Exception("Invalid sample input. It should be one of: 'train', 'val', or 'test'.")
+        self.predictions["logpdf_profiled_max_sample"][sample] = {}
+        self.predictions["logpdf_profiled_max_sample_abs_error"][sample] = {}
+        pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
+        print("Total number of points:", len(pars_vals),".",show=verbose)
+        pars_vals_bounded = []
+        if x_boundaries is "original": 
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is True:
+            pars_bounds = np.array(self.pars_bounds)
+        elif x_boundaries is "train":
+            pars_bounds = np.array(self.pars_bounds_train)
+        elif x_boundaries is False:
+            pass
+            #pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
+        else:
+            print("Invalid input for 'x_boundaries'. Assuming False.")
+            x_boundaries = False
+        if x_boundaries:
+            for i in range(len(pars_vals)):
+                if self.check_x_bounds(pars_vals, pars_bounds):
+                    pars_vals_bounded.append(pars_vals[i])
+        else:
+            pars_vals_bounded = pars_vals
+        if len(pars_vals) != len(pars_vals_bounded):
+            print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.",show=verbose)
+        for pars_fixed_val in pars_vals_bounded:
+            print("Optimizing for parameters:",pars_fixed_pos," - values:",pars_fixed_val.tolist(),".",show=verbose)
+            start_sub = timer()
+            tmp = inference.compute_profiled_maxima_sample(pars_fixed_pos=pars_fixed_pos,
+                                                           pars_fixed_val=pars_fixed_val,
+                                                           X=X,
+                                                           Y=Y,
+                                                           binwidths=binwidths)
+            try:
+                self.predictions["logpdf_profiled_max_sample"][sample]["X"] = np.concatenate((self.predictions["logpdf_profiled_max_sample"][sample]["X"], [tmp[0]]))
+                self.predictions["logpdf_profiled_max_sample"][sample]["Y"] = np.concatenate((self.predictions["logpdf_profiled_max_sample"][sample]["Y"], [tmp[1]]))
+                self.predictions["logpdf_profiled_max_sample"][sample]["npoints"] = np.concatenate((self.predictions["logpdf_profiled_max_sample"][sample]["npoints"], [tmp[4]]))
+                self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["X"] = np.concatenate((self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["X"], [tmp[2]]))
+                self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["Y"] = np.concatenate((self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["Y"], [tmp[3]]))
+                self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["npoints"] = np.concatenate((self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["npoints"], [tmp[4]]))
+            except:
+                self.predictions["logpdf_profiled_max_sample"][sample] = {"X": np.array([tmp[0]]), "Y": np.array([tmp[1]]), "npoints": np.array([tmp[4]])}
+                self.predictions["logpdf_profiled_max_sample_abs_error"][sample] = {"X": np.array([tmp[2]]), "Y": np.array([tmp[3]]), "npoints": np.array([tmp[4]])}
+            end_sub = timer()
+            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+            self.log[timestamp] = {"action": "computed profiled maximum model",
+                                   "optimization time": end_sub-start_sub,
+                                   "x": self.predictions["logpdf_profiled_max_sample"][sample]["X"][-1],
+                                   "y": self.predictions["logpdf_profiled_max_sample"][sample]["Y"][-1],
+                                   "x_err": self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["X"][-1],
+                                   "y_err": self.predictions["logpdf_profiled_max_sample_abs_error"][sample]["Y"][-1]}
+            if progressbar:
+                iterator = iterator + 1
+                overall_progress.value = float(iterator)/(len(pars_vals_bounded))
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "computed profiled maxima sample",
+                               "sample": sample,
+                               "total time": end-start,
+                               "spacing": spacing,
+                               "npoints": len(pars_vals_bounded)}
+        self.save_predictions_h5(overwrite=True, verbose=verbose_sub)
+        self.save_log(overwrite=True, verbose=verbose_sub)
+        print("Profiled maxima of",sample,"sample for",len(pars_vals_bounded),"points computed in",str(end-start),"s.", show=verbose)
 
     def model_evaluate(self, X, Y, batch_size=None, steps=None, verbose=None):
         """
@@ -2322,7 +2862,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ranges = extend_corner_range(X1, X2, pars, 0)
         else:
             ranges = extend_corner_range(X1, X2, pars, ranges_extend)
-        pars_labels = self._DnnLik__set_pars_labels(pars_labels)
+        pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
         if not overwrite:
             utils.check_rename_file(figure_filename)
@@ -2351,8 +2891,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             #print(np.shape(HPDI1),np.shape(HPDI2))
         except:
             print("HPDI not present in predictions. Computing them.")
-            HPDI1 = [inference.HPDI(samp1[:,i], intervals = intervals, weights=W1, nbins=nbins, print_hist=False, reduce_binning=True) for i in range(nndims)]
-            HPDI2 = [inference.HPDI(samp2[:,i], intervals = intervals, weights=W2, nbins=nbins, print_hist=False, reduce_binning=True) for i in range(nndims)]
+            HPDI1 = [inference.HPDI(samp1[:,i], intervals = intervals, weights=W1, nbins=nbins, print_hist=False, optimize_binning=True) for i in range(nndims)]
+            HPDI2 = [inference.HPDI(samp2[:, i], intervals=intervals, weights=W2, nbins=nbins,print_hist=False, optimize_binning=True) for i in range(nndims)]
         levels1 = np.array([[np.sort(inference.HPD_quotas(samp1[:,[i,j]], nbins=nbins, intervals = inference.CI_from_sigma([1, 2, 3]), weights=W1)).tolist() for j in range(nndims)] for i in range(nndims)])
         levels2 = np.array([[np.sort(inference.HPD_quotas(samp2[:, [i, j]], nbins=nbins, intervals=inference.CI_from_sigma(
             [1, 2, 3]), weights=W2)).tolist() for j in range(nndims)] for i in range(nndims)])
@@ -2462,17 +3002,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                   batch_size=None,
                                   overwrite=False,
                                   verbose=None,
-                                  model_predict_kwargs={}, # batch_size=None, steps=None, x_boundaries="original", y_boundaries=False, save_log=True, verbose=None
+                                  model_predict_kwargs={}, # batch_size=None, steps=None, x_boundaries=False, y_boundaries=False, save_log=True, verbose=None
                                   HPDI_kwargs={}, # intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True
                                   plot_training_history_kwargs = {}, # metrics=["loss"], yscale="log", show_plot=False, overwrite=False, verbose=None
                                   plot_pars_coverage_kwargs = {}, # pars=None, loglik=True, show_plot=False, overwrite=False, verbose=None
                                   plot_lik_distribution_kwargs = {}, # loglik=True, show_plot=False, overwrite=False, verbose=None
-                                  plot_corners_2samp_kwargs={}):  # W1=None, W2=None, pars=None, max_points=None, nbins=50, pars_labels=None,
+                                  plot_corners_2samp_kwargs={},   # W1=None, W2=None, pars=None, max_points=None, nbins=50, pars_labels=None,
                                                                   # HPDI1_dic={"sample": "train", "type": "true"}, HPDI2_dic={"sample": "test", "type": "true"},
                                                                   # ranges_extend=None, title1 = None, title2 = None,
                                                                   # color1="green", color2="red", 
                                                                   # plot_title="Params contours", legend_labels=None, 
                                                                   # figure_filename=None, show_plot=False, overwrite=False, verbose=None
+                                  frequentist_inference = {}):
         verbose, verbose_sub = self.set_verbosity(verbose)
         def model_predict_sub(X):
             return self.model_predict(X, batch_size=self.batch_size, verbose=verbose_sub,**model_predict_kwargs)
@@ -2558,12 +3099,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                   "Test vs pred on val": KS_test_pred_val_median,
                                                                   "Val vs pred on test": KS_val_pred_test_median,
                                                                   "Train vs pred on train": KS_train_pred_train_median}}}
-        self.predictions = utils.convert_types_dict(self.predictions)
+        print("Compute Frequentist inference benchmarks", show=verbose)
+        #self.predictions = utils.convert_types_dict(self.predictions)
         # Sort nested dictionary by keys
         self.predictions = utils.sort_dict(self.predictions)
         end = timer()
         print("Bayesian inference benchmarks computed in", str(end-start), "s.", show=verbose)
-        self.save_predictions_json(overwrite=overwrite,verbose=verbose_sub)
+        self.save_predictions_h5(overwrite=overwrite,verbose=verbose_sub)
         self.generate_summary_text()
         self.generate_fig_base_title()
         print("Making plots.", show=verbose)
@@ -2658,7 +3200,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
-        dictionary = self.log
+        dictionary = dict(self.log)
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
@@ -2763,12 +3305,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_history_json_file, verbose=verbose_sub)
-        history = self.history
+        dictionary = dict(self.history)
         #for key in list(history.keys()):
         #    self.history[utils.metric_name_abbreviate(key)] = self.history.pop(key)
-        new_hist = utils.convert_types_dict(history)
+        dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_history_json_file, "w", encoding="utf-8") as f:
-            json.dump(new_hist, f, separators=(",", ":"), sort_keys=True, indent=4)
+            json.dump(dictionary, f, separators=(",", ":"), sort_keys=True, indent=4)
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved history json",
@@ -2789,7 +3331,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                          "idx_test","idx_train","idx_val",
                                                          "input_files_base_name","input_history_json_file",
                                                          "input_idx_h5_file","input_log_file",
-                                                         "input_predictions_json_file",
+                                                         "input_predictions_h5_file",
                                                          "input_scalers_pickle_file","input_summary_json_file",
                                                          "input_tf_model_h5_file","load_on_RAM",
                                                          "log","loss","metrics","model","optimizer",
@@ -2839,25 +3381,22 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         summary_text = summary_text + "Pred time per point: " + str(round(self.predictions["Prediction time"],1)) + "s"
         self.summary_text = summary_text
 
-    def save_predictions_json(self, overwrite=False, verbose=None):
-        """ Save summary log (history plus model specifications) to json
+    def save_predictions_h5(self, overwrite=False, verbose=None):
+        """ Save predictions h5
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.output_predictions_json_file, verbose=verbose_sub)
-        #history = self.predictions
-        #new_hist = utils.convert_types_dict(history)
-        with codecs.open(self.output_predictions_json_file, "w", encoding="utf-8") as f:
-            json.dump(self.predictions, f, separators=(
-                ",", ":"), sort_keys=True, indent=4)
+            utils.check_rename_file(self.output_predictions_h5_file, verbose=verbose_sub)
+        dictionary = dict(self.predictions)
+        dd.io.save(self.output_predictions_h5_file, dictionary)
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.log[timestamp] = {"action": "saved predictions json",
-                               "file name": path.split(self.output_predictions_json_file)[-1],
-                               "file path": self.output_predictions_json_file}
+                               "file name": path.split(self.output_predictions_h5_file)[-1],
+                               "file path": self.output_predictions_h5_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
-        print(self.output_predictions_json_file, "created and saved.", str(end-start), "s.", show=verbose)
+        print(self.output_predictions_h5_file, "created and saved.", str(end-start), "s.", show=verbose)
 
     def save_scalers(self, overwrite=False,verbose=None):
         """ 
@@ -2925,7 +3464,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.save_model_h5(overwrite=overwrite,verbose=verbose)
         self.save_model_onnx(overwrite=overwrite,verbose=verbose)
         self.save_history_json(overwrite=overwrite,verbose=verbose)
-        self.save_predictions_json(overwrite=overwrite, verbose=verbose)
+        self.save_predictions_h5(overwrite=overwrite, verbose=verbose)
         self.save_summary_json(overwrite=overwrite,verbose=verbose)
         self.save_scalers(overwrite=overwrite,verbose=verbose)
         self.save_model_graph_pdf(overwrite=overwrite,verbose=verbose)
@@ -2961,4 +3500,53 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         MSE_model =  K.sum(K.square( y_true-y_pred )) 
         MSE_baseline = K.sum(K.square( y_true - K.mean(y_true) ) ) 
         return (1 - MSE_model/(MSE_baseline + K.epsilon()))
+
+    def save_script(self, 
+                    model_predict_kwargs = {},
+                    verbose=True):
+        """
+        Saves the file :attr:`DnnLik.script_file <DNNLikelihood.DnnLik.script_file>`. 
+
+        - **Arguments**
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+
+        - **Creates file**
+
+            - :attr:`DnnLik.script_file <DNNLikelihood.DnnLik.script_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if model_predict_args is {}:
+            model_predict_args = {"batch_size": self.batch_size, "steps": None, "x_boundaries": False, "y_boundaries": False, "save_log": False, "verbose": False}
+        with open(self.script_file, "w") as out_file:
+            out_file.write("import DNNLikelihood\n"+"\n" +
+                           "dnnlik = DNNLikelihood.DnnLik(name=None,\n" +
+                           "\tinput_file="+r"'" + r"%s" % ((self.output_summary_json_file).replace(sep, '/'))+"', \n" +
+                           "verbose = "+str(self.verbose)+")"+"\n"+"\n" +
+                           "name = dnnlik.name\n" +
+                           "def logpdf(x_pars,*args,**kwargs):\n" +
+                           "\treturn dnnlik.model_predict(x_pars,*args,**kwargs)\n" +
+                           "logpdf_args = None\n" +
+                           "logpdf_kwargs = %s\n"%str(model_predict_args) +
+                           "pars_pos_poi = dnnlik.pars_pos_poi\n" +
+                           "pars_pos_nuis = dnnlik.pars_pos_nuis\n" +
+                           "pars_central = dnnlik.pars_central\n" +
+                           "pars_init_vec = lik.logpdf_profiled_max['X']\n" +
+                           "pars_labels = dnnlik.pars_labels\n" +
+                           "pars_bounds = dnnlik.pars_bounds\n" +
+                           "ndims = dnnlik.ndims\n" +
+                           "output_folder = dnnlik.output_folder"
+                           )
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved",
+                               "file name": path.split(self.script_file)[-1],
+                               "file path": self.script_file}
+        self.save_log(overwrite=True, verbose=verbose_sub)
+        print("File", self.script_file, "correctly generated.", show=verbose)
 

@@ -96,7 +96,7 @@ def HPDI(data, intervals=0.68, weights=None, nbins=25, print_hist=False, optimiz
 
 def HPDI_error(HPDI):
     res = {}
-    different_lenghts = False
+    different_lengths = False
     for key_par, value_par in HPDI.items():
         dic = {}
         for sample in value_par['true'].keys():
@@ -111,11 +111,11 @@ def HPDI_error(HPDI):
                 else:
                     dic3["Absolute error"] = None
                     dic3["Relative error"] = None
-                    different_lenghts = True
+                    different_lengths = True
                 dic2 = {**dic2, **{CI: dic3}}
             dic = {**dic, **{sample: dic2}}
         res = {**res, **{key_par: dic}}
-        if different_lenghts:
+        if different_lengths:
             print("For some probability values there are different numbers of intervals. In this case error is not computed and is set to None.")
     return res
 
@@ -181,48 +181,146 @@ def weighted_central_quantiles(data, intervals=0.68, weights=None, onesided=Fals
         data = np.array(data)
     return [[i, [weighted_quantiles(data, (1-i)/2, weights), weighted_quantiles(data, 0.5, weights), weighted_quantiles(data, 1-(1-i)/2, weights)]] for i in intervals]
 
-def find_maximum(loglik, npars=None, pars_init=None, pars_bounds=None):
+def compute_maximum_logpdf(logpdf, 
+                           ndims=None, 
+                           pars_init=None, 
+                           pars_bounds=None,
+                           optimizer = {},
+                           verbose=True):
     """
     """
-    def minus_loglik(x): return -loglik(x)
-    if npars is None and pars_init is not None:
-        npars = len(pars_init)
-    elif npars is not None and pars_init is None:
-        pars_init = np.full(npars, 0)
-    elif npars is None and pars_init is None:
-        print("Please specify npars or pars_init or both")
+    def minus_logpdf(x): return -logpdf(x)
+    if ndims is None and pars_init is not None:
+        ndims = len(pars_init)
+    elif ndims is not None and pars_init is None:
+        pars_init = np.full(ndims, 0)
+    elif ndims is None and pars_init is None:
+        print("Please specify npars or pars_init or both", show = verbose)
+    if optimizer is {}:
+        method = "Powell"
+        options = {}
+    else:
+        try:
+            method = optimizer["method"]
+        except:
+            method = "Powell"
+        try:
+            options = optimizer["options"]
+        except:
+            options = {}
     if pars_bounds is None:
         #print("Optimizing")
-        ml = optimize.minimize(minus_loglik, pars_init, method='Powell')
+        ml = optimize.minimize(minus_logpdf, pars_init, method=method, options=options)
     else:
         #print("Optimizing")
         pars_bounds = np.array(pars_bounds)
         bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
-        ml = optimize.minimize(minus_loglik, pars_init, bounds=bounds)
+        ml = optimize.minimize(minus_logpdf, pars_init, bounds=bounds, method=method, options=options)
     return [ml['x'], -ml['fun']]
 
-def find_prof_maximum(loglik, npars=None, pars_init=None, pars_bounds=None, pars_fixed_pos=None, pars_fixed_val=None):
+def compute_profiled_maxima_logpdf(logpdf, 
+                                   ndims=None, 
+                                   pars_init=None, 
+                                   pars_bounds=None, 
+                                   pars_fixed_pos=None, 
+                                   pars_fixed_val=None,
+                                   optimizer={},
+                                   verbose=True):
     """
     """
     # Add check that fixed param is within bounds
     pars_fixed_pos = np.sort(pars_fixed_pos)
     pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))
-    if npars is None and pars_init is not None:
-        npars = len(pars_init)
-    elif npars is not None and pars_init is None:
-        pars_init = np.full(npars, 0)
-    elif npars is None and pars_init is None:
-        print("Please specify npars or pars_init or both")
+    if ndims is None and pars_init is not None:
+        ndims = len(pars_init)
+    elif ndims is not None and pars_init is None:
+        pars_init = np.full(ndims, 0)
+    elif ndims is None and pars_init is None:
+        print("Please specify ndims or pars_init or both",show=verbose())
     pars_init_reduced = np.delete(pars_init, pars_fixed_pos)
-    def minus_loglik(x):
-        return -loglik(np.insert(x, pars_fixed_pos_insert, pars_fixed_val))
+    if optimizer is {}:
+        method = "Powell"
+        options = {}
+    else:
+        try:
+            method = optimizer["method"]
+        except:
+            method = "Powell"
+        try:
+            options = optimizer["options"]
+        except:
+            options = {}
+    def minus_logpdf(x):
+        return -logpdf(np.insert(x, pars_fixed_pos_insert, pars_fixed_val))
     if pars_bounds is None:
         #print("Optimizing")
-        ml=optimize.minimize(minus_loglik, pars_init_reduced, method='Powell')
+        ml = optimize.minimize(minus_logpdf, pars_init_reduced, method=method, options=options)
     else:
         #print("Optimizing")
         pars_bounds_reduced = np.delete(pars_bounds, pars_fixed_pos,axis=0)
         pars_bounds_reduced = np.array(pars_bounds_reduced)
         bounds=optimize.Bounds(pars_bounds_reduced[:, 0], pars_bounds_reduced[:, 1])
-        ml=optimize.minimize(minus_loglik, pars_init_reduced, bounds=bounds)
-    return [np.insert(ml['x'], pars_fixed_pos_insert, pars_fixed_val, axis=0), ml['fun']]
+        ml = optimize.minimize(minus_logpdf, pars_init_reduced, bounds=bounds, method=method, options=options)
+    return [np.insert(ml['x'], pars_fixed_pos_insert, pars_fixed_val, axis=0), -ml['fun']]
+
+def compute_maximum_sample(X=None,
+                           Y=None):
+    """
+
+    """
+    X = np.array(X)
+    Y = np.array(Y)
+    y_max = np.amax(Y)
+    pos_max = np.where(Y == y_max)
+    Y[pos_max] = -np.inf
+    y_next_max = np.amax(Y)
+    pos_next_max = np.where(Y == y_next_max)
+    x_max = X[pos_max]
+    x_next_max = X[pos_next_max]
+    return [x_max, y_max, np.abs(x_next_max-x_max), np.abs(y_next_max-y_max)]
+
+def compute_profiled_maxima_sample(pars_fixed_pos=None,
+                                   pars_fixed_val=None,
+                                   X=None,
+                                   Y=None,
+                                   binwidths="auto"):
+    """
+
+    """
+    X = np.array(X)
+    Y = np.array(Y)
+    if type(binwidths) is float or type(binwidths) is int:
+        binwidths = np.full(len(pars_fixed_pos), binwidths)
+    if binwidths is not "auto":
+        slicings = []
+        for i in range(len(pars_fixed_pos)):
+            slicings.append([p > pars_fixed_val[i]-binwidths[i]/2 and p <
+                             pars_fixed_val[i]+binwidths[i]/2 for p in X[:, pars_fixed_pos[i]]])
+        slicing = np.prod(np.array(slicings), axis=0).astype(bool)
+        npoints = np.count_nonzero(slicing)
+        y_max = np.amax(Y[slicing])
+        pos_max = np.where(Y == y_max)
+        Y[pos_max] = -np.inf
+        y_next_max = np.amax(Y[slicing])
+        pos_next_max = np.where(Y == y_next_max)
+        x_max = X[pos_max]
+        x_next_max = X[pos_next_max]
+    elif binwidths is "auto":
+        binwidths = np.full(len(pars_fixed_pos), 0.001)
+        npoints = 0
+        while npoints < 2:
+            binwidths = binwidths+0.001
+            slicings = []
+            for i in range(len(pars_fixed_pos)):
+                slicings.append([p > pars_fixed_val[i]-binwidths[i]/2 and p <
+                                 pars_fixed_val[i]+binwidths[i]/2 for p in X[:, pars_fixed_pos[i]]])
+            slicing = np.prod(np.array(slicings), axis=0).astype(bool)
+            npoints = np.count_nonzero(slicing)
+        y_max = np.amax(Y[slicing])
+        pos_max = np.where(Y == y_max)
+        Y[pos_max] = -np.inf
+        y_next_max = np.amax(Y[slicing])
+        pos_next_max = np.where(Y == y_next_max)
+        x_max = X[pos_max]
+        x_next_max = X[pos_next_max]
+    return [x_max, y_max, np.abs(x_next_max-x_max), np.abs(y_next_max-y_max), npoints]

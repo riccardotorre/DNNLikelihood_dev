@@ -129,10 +129,10 @@ class Lik(Verbosity):
 
         and output files
 
+            - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>`
             - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>`
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
             - :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`
-            - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>`
 
         depending on the value of the
         :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute.
@@ -255,7 +255,7 @@ class Lik(Verbosity):
         else:
             self.pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         if len(self.pars_bounds) != self.ndims:
-            raise Exception("The lenght of the parameters bounds array does not match the number of dimensions.")
+            raise Exception("The length of the parameters bounds array does not match the number of dimensions.")
 
     def __load(self, verbose=None):
         """
@@ -342,7 +342,7 @@ class Lik(Verbosity):
         
         - :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` with ``overwrite=True`` and ``verbose=verbose_sub`` if :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>` is not ``None``, and with ``overwrite=True`` and ``verbose=verbose_sub`` otherwise.
         - :meth:`Lik.compute_maximum_logpdf <DNNLikelihood.Lik.compute_maximum_logpdf>` with ``overwrite=True`` and ``verbose=verbose_sub``
-        - :meth:`Lik.compute_profiled_maxima <DNNLikelihood.Lik.compute_profiled_maxima>` with ``overwrite=True`` and ``verbose=verbose_sub``
+        - :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` with ``overwrite=True`` and ``verbose=verbose_sub``
         - :meth:`Lik.plot_logpdf_par <DNNLikelihood.Lik.plot_logpdf_par>` with ``overwrite=True`` and ``verbose=verbose_sub``
         - :meth:`Lik.save <DNNLikelihood.Lik.save>` with ``overwrite=overwrite`` and ``verbose=verbose``
         - :meth:`Lik.save_script <DNNLikelihood.Lik.save_script>` with ``overwrite=True`` and ``verbose=verbose_sub``
@@ -377,7 +377,7 @@ class Lik(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
-        dictionary = self.log
+        dictionary = dict(self.log)
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
@@ -594,19 +594,23 @@ class Lik(Verbosity):
             tmp = np.where(np.isnan(tmp), -np.inf, tmp)
             return tmp
 
-    def compute_maximum_logpdf(self,verbose=None):
+    def compute_maximum_logpdf(self,
+                               pars_init=None,
+                               pars_bounds=None,
+                               optimizer={},
+                               force=False,verbose=None):
         """
         Computes the maximum of :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. 
         The values of the parameters and of logpdf at the 
         global maximum are stored in the :attr:`Lik.logpdf_max <DNNLikelihood.Lik.logpdf_max>` dictionary,
         storing maximum logpdf information.
-        The method uses the function :func:`inference.find_maximum <DNNLikelihood.inference.find_maximum>`
+        The method uses the function :func:`inference.compute_maximum_logpdf <DNNLikelihood.inference.compute_maximum_logpdf>`
         based on |scipy_optimize_minimize_link| to find the minimum of minus 
         :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. Since the latter
         method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the 
-        :func:`inference.find_maximum <DNNLikelihood.inference.find_maximum>`
+        :func:`inference.compute_maximum_logpdf <DNNLikelihood.inference.compute_maximum_logpdf>`
         function to optimize speed. See the documentation of the
-        :func:`inference.find_maximum <DNNLikelihood.inference.find_maximum>` 
+        :func:`inference.compute_maximum_logpdf <DNNLikelihood.inference.compute_maximum_logpdf>` 
         function for details.
 
         - **Arguments**
@@ -620,9 +624,17 @@ class Lik(Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if self.logpdf_max == {}:
+        if pars_init is None:
+            pars_init = np.array(self.pars_central)
+        else:
+            pars_init = np.array(pars_init)
+        if self.logpdf_max == {} or force:
             start = timer()
-            res = inference.find_maximum(lambda x: self.logpdf_fn(x,*self.logpdf.args, *self.logpdf.kwargs), pars_init=self.pars_central, pars_bounds=None)
+            res = inference.compute_maximum_logpdf(lambda x: self.logpdf_fn(x,*self.logpdf.args, *self.logpdf.kwargs), 
+                                                   pars_init=pars_init,
+                                                   pars_bounds=pars_bounds,
+                                                   optimizer=optimizer,
+                                                   verbose=verbose_sub)
             self.logpdf_max["x"], self.logpdf_max["y"] = res
             end = timer()
             print("Maximum logpdf computed in",end-start,"s.")
@@ -632,7 +644,16 @@ class Lik(Verbosity):
         else:
             print("Maximum logpdf already stored in self.logpdf_max.",show=verbose)
 
-    def compute_profiled_maxima(self,pars,pars_ranges,spacing="grid",append=False,verbose=None):
+    def compute_profiled_maxima_logpdf(self,
+                                       pars,
+                                       pars_ranges,
+                                       pars_init = None,
+                                       pars_bounds = None,
+                                       spacing="grid",
+                                       optimizer = {},
+                                       append=False,
+                                       progressbar=True,
+                                       verbose=None):
         """
         Computes logal maxima of the logpdf for different values of the parameter ``pars``.
         For the list of prameters ``pars``, ranges are passed as ``pars_ranges`` in the form ``(par_min,par_max,n_points)``
@@ -645,13 +666,13 @@ class Lik(Verbosity):
         They could be used both for frequentist profiled likelihood inference or as initial condition for
         Markov Chain Monte Carlo through the :class:`Sampler <DNNLikelihood.Sampler>` object
         (see :ref:`the Sampler object <sampler_object>`). 
-        The method uses the function :func:`inference.find_prof_maximum <DNNLikelihood.inference.find_prof_maximum>`
+        The method uses the function :func:`inference.compute_profiled_maxima_logpdf <DNNLikelihood.inference.compute_profiled_maxima_logpdf>`
         based on |scipy_optimize_minimize_link| to find the (local) minimum of minus
         :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. Since the latter
         method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the 
-        :func:`inference.find_prof_maximum <DNNLikelihood.inference.find_prof_maximum>`
+        :func:`inference.compute_profiled_maxima_logpdf <DNNLikelihood.inference.compute_profiled_maxima_logpdf>`
         function to optimize speed. See the documentation of the
-        :func:`inference.find_prof_maximum <DNNLikelihood.inference.find_prof_maximum>` 
+        :func:`inference.compute_profiled_maxima_logpdf <DNNLikelihood.inference.compute_profiled_maxima_logpdf>` 
         function for details.
 
         When using interactive python in Jupyter notebooks if ``verbose=2`` a progress bar is shown through 
@@ -703,6 +724,14 @@ class Lik(Verbosity):
                     - **accepted**: ``"grid"`` or ``"random"``
                     - **default**: ``grid``
 
+            - **progressbar**
+            
+                If ``True`` 
+                then  a progress bar is shown.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``True`` 
+
             - **verbose**
             
                 Verbosity mode. 
@@ -712,15 +741,12 @@ class Lik(Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if verbose == 2:
-            progressbar = True
+        if progressbar:
             try:
                 import ipywidgets as widgets
             except:
                 progressbar = False
                 print("If you want to show a progress bar please install the ipywidgets package.",show=verbose)
-        else:
-            progressbar = False
         start = timer()
         if progressbar:
             overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
@@ -728,21 +754,32 @@ class Lik(Verbosity):
                 "padding": "0px", "margin": "-5px 0px -20px 0px"})
             display(overall_progress)
             iterator = 0
+        if pars_init is None:
+            pars_init = np.array(self.pars_central)
+        else:
+            pars_init = np.array(pars_init)
         pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
         print("Total number of points:", len(pars_vals),".",show=verbose)
         pars_vals_bounded = []
-        for i in range(len(pars_vals)):
-            if (np.all(pars_vals[i] >= self.pars_bounds[pars, 0]) and np.all(pars_vals[i] <= self.pars_bounds[pars, 1])):
-                pars_vals_bounded.append(pars_vals[i])
+        if pars_bounds is None:
+            for i in range(len(pars_vals)):
+                if (np.all(pars_vals[i] >= self.pars_bounds[pars, 0]) and np.all(pars_vals[i] <= self.pars_bounds[pars, 1])):
+                    pars_vals_bounded.append(pars_vals[i])
+        else:
+            for i in range(len(pars_vals)):
+                if (np.all(pars_vals[i] >= pars_bounds[pars, 0]) and np.all(pars_vals[i] <= pars_bounds[pars, 1])):
+                    pars_vals_bounded.append(pars_vals[i])
         if len(pars_vals) != len(pars_vals_bounded):
             print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.",show=verbose)
         res = []
         for pars_val in pars_vals_bounded:
-            res.append(inference.find_prof_maximum(lambda x: self.logpdf_fn(x, *self.logpdf.args,*self.logpdf.kwargs),
-                                                   pars_init=self.pars_central,
-                                                   pars_bounds=None, 
-                                                   pars_fixed_pos=pars, 
-                                                   pars_fixed_val=pars_val))
+            res.append(inference.compute_profiled_maxima_logpdf(lambda x: self.logpdf_fn(x, *self.logpdf.args,*self.logpdf.kwargs),
+                                                                pars_init=self.pars_central,
+                                                                pars_bounds=pars_bounds,
+                                                                pars_fixed_pos=pars, 
+                                                                pars_fixed_val=pars_val,
+                                                                optimizer=optimizer,
+                                                                verbose=verbose_sub))
             if progressbar:
                 iterator = iterator + 1
                 overall_progress.value = float(iterator)/(len(pars_vals_bounded))

@@ -115,7 +115,7 @@ Methods
 
 .. automethod:: DnnLik.generate_summary_text
 
-.. automethod:: DnnLik.save_predictions_json
+.. automethod:: DnnLik.save_predictions_h5
 
 .. automethod:: DnnLik.save_scalers
 

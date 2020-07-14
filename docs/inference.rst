@@ -36,9 +36,9 @@ Functions
 
 .. autofunction:: DNNLikelihood.inference.weighted_central_quantiles
 
-.. autofunction:: DNNLikelihood.inference.find_maximum
+.. autofunction:: DNNLikelihood.inference.compute_maximum_logpdf
 
-.. autofunction:: DNNLikelihood.inference.find_prof_maximum
+.. autofunction:: DNNLikelihood.inference.compute_profiled_maxima_logpdf
 
 .. include:: external_links.rst
 

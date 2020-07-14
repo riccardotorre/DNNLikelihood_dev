@@ -378,7 +378,7 @@ class Histfactory(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file,verbose=verbose_sub)
-        dictionary = self.log
+        dictionary = dict(self.log)
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)

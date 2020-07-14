@@ -244,7 +244,7 @@ class Data(Verbosity):
         if self.pars_central is not None:
             self.pars_central = np.array(self.pars_central)
             if len(self.pars_central) != self.ndims:
-                raise Exception("The lenght of the parameters central values array does not match the number of dimensions.")
+                raise Exception("The length of the parameters central values array does not match the number of dimensions.")
         else:
             self.pars_central = np.zeros(self.ndims)
             print("No central values for the parameters 'pars_central' has been specified. They have been set to zero for all\
@@ -275,7 +275,7 @@ class Data(Verbosity):
         else:
             self.pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         if len(self.pars_bounds) != self.ndims:
-            raise Exception("The lenght of the parameters bounds array does not match the number of dimensions.")
+            raise Exception("The length of the parameters bounds array does not match the number of dimensions.")
 
     def __load(self,verbose=None):
         """
@@ -473,7 +473,7 @@ class Data(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
-        dictionary = self.log
+        dictionary = dict(self.log)
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)

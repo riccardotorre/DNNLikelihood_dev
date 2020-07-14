@@ -64,11 +64,11 @@ Attributes
                Short description of the action.
                **possible values**: ``"computed maximum logpdf"``, ``"computed profiled maxima"``, ``"created"``, ``"loaded"``, ``"saved"``, ``"saved figure"``
             - *"pars"* (value type: ``list`` of ``int``)
-               Input argument of the :meth:`Lik.compute_profiled_maxima <DNNLikelihood.Lik.compute_profiled_maxima>` method.
+               Input argument of the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method.
             - *"pars_ranges"* (value type: ``list`` of ``list``)
-               Input argument of the :meth:`Lik.compute_profiled_maxima <DNNLikelihood.Lik.compute_profiled_maxima>` method.
+               Input argument of the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method.
             - *"number of maxima"* (value type: ``int``)
-               Number of maxima computed by the :meth:`Lik.compute_profiled_maxima <DNNLikelihood.Lik.compute_profiled_maxima>` method.
+               Number of maxima computed by the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method.
             - *"file name"* (value type: ``str``)
                File name of file involved in the action.
             - *"file path"* (value type: ``str``)
@@ -122,7 +122,7 @@ Attributes
 
 .. py:attribute:: Lik.logpdf_max
         
-    Dictionary containing the maximum of the DNNLikelihood computed with the 
+    Dictionary containing the maximum of the logpdf function computed with the 
     :meth:`Lik.compute_maximum_logpdf <DNNLikelihood.Lik.compute_maximum_logpdf>` method.
     It contains x and y values at
     the maximum of the :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`
@@ -132,16 +132,16 @@ Attributes
 
        - **type**: ``dict`` with the following structure:
 
-          - *"X"* (value type: ``numpy.ndarray``, shape: ``(ndims,)``)
+          - *"x"* (value type: ``numpy.ndarray``, shape: ``(ndims,)``)
              |Numpy_link| array with the values of parameters at the model maximum.
-          - *"Y"* (value type: ``float``)
+          - *"y"* (value type: ``float``)
              Value of the model at its maximum
 
 .. py:attribute:: Lik.logpdf_profiled_max
         
-    Dictionary containing profiled maxima of the logpdf computed with the 
-    :meth:`Lik.compute_profiled_maxima <DNNLikelihood.Lik.compute_profiled_maxima>` method.
-    It contains x and y values of points at
+    Dictionary containing profiled maxima of the logpdf function computed with the 
+    :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method.
+    It contains the X and Y arrays of x and y values of points at
     the profiled maxima of the :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`
     function.
     It is initialized to an empty dictionary ``{}`` when the 
@@ -189,7 +189,7 @@ Attributes
 .. py:attribute:: Lik.ndims
 
     Number of dimensions of the likelihood, corresponding to the number of parameters.
-    It is set equal to the lenght of the array
+    It is set equal to the length of the array
     :attr:`Lik.pars_central <DNNLikelihood.Lik.pars_central>`.
         
         - **type**: ``int``  
@@ -254,7 +254,7 @@ Attributes
     This attribute is used as initial value for optimizing 
     :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>` with the
     :meth:`Lik.compute_maximum_logpdf <DNNLikelihood.Lik.compute_maximum_logpdf>` and the
-    :meth:`Lik.compute_profiled_maxima <DNNLikelihood.Lik.compute_profiled_maxima>` methods.
+    :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` methods.
         
         - **type**: ``numpy.ndarray``
         - **shape**: ``(ndims,)``

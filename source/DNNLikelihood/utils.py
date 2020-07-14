@@ -322,11 +322,14 @@ def check_add_prefix(s, pref):
         return pref+s
     
 def get_sorted_grid(pars_ranges, spacing="grid"):
-    totpoints = np.product(np.array(pars_ranges)[:, -1])
+    totpoints = int(np.product(np.array(pars_ranges)[:, -1]))
     npars = len(pars_ranges)
     if spacing == "random":
         grid = [np.random.uniform(*par) for par in pars_ranges]
+    elif spacing == "grid":
+        grid = [np.linspace(*par) for par in pars_ranges]
     else:
+        print("Invalid spacing argument. It should be one of: 'random' and 'grid'. Continuing with 'grid'.")
         grid = [np.linspace(*par) for par in pars_ranges]
     #np.meshgrid(*grid)
     #np.vstack(np.meshgrid(*grid)).reshape(npoints**len(pars),-1).T
