@@ -479,7 +479,8 @@ class Lik(Verbosity):
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         with open(self.script_file, "w") as out_file:
-            out_file.write("import DNNLikelihood\n"+"\n" +
+            out_file.write("import DNNLikelihood\n"+
+                           "import numpy as np\n" + "\n" +
                            "lik = DNNLikelihood.Lik(name=None,\n" +
                            "\tinput_file="+r"'" + r"%s" % ((self.output_h5_file).replace(sep, '/'))+"', \n"+
                            "verbose = "+str(self.verbose)+")"+"\n"+"\n" +
@@ -492,7 +493,10 @@ class Lik(Verbosity):
                            "pars_pos_poi = lik.pars_pos_poi\n" +
                            "pars_pos_nuis = lik.pars_pos_nuis\n" +
                            "pars_central = lik.pars_central\n" +
-                           "pars_init_vec = lik.logpdf_profiled_max['X']\n" +
+                           "try:\n" +
+                           "\tpars_init_vec = lik.logpdf_profiled_max['X']\n" +
+                           "except:\n" +
+                           "\tpars_init_vec = np.array([lik.pars_central for q in range(2*lik.ndims)])\n"
                            "pars_labels = lik.pars_labels\n" +
                            "pars_bounds = lik.pars_bounds\n" +
                            "ndims = lik.ndims\n" +
