@@ -227,11 +227,11 @@ class Sampler(Verbosity):
                     - **default**: ``None`` 
         """
         _, verbose_sub = self.set_verbosity(verbose)
+        if self.input_file is not None:
+            self.input_file = path.abspath(path.splitext(self.input_file)[0])
         if not self.new_sampler:
             ### Tries to determine self.input_file from input arguements
-            if self.input_file is not None:
-                self.input_file = path.abspath(path.splitext(self.input_file)[0])
-            else:
+            if self.input_file is None:
                 if self.likelihood_script_file is not None:
                     ### Try to detemine input_file from likelihood_script_file
                     self.__get_input_file_from_likelihood_script_file()
@@ -302,8 +302,7 @@ class Sampler(Verbosity):
         from the :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
         attribute.
         """
-        self.input_file = path.abspath(path.splitext(self.input_file)[0])
-        self.likelihood_script_file = self.input_file.replace("sampler","likelihood_script.py")
+        self.likelihood_script_file = path.join(path.split(self.input_file)[0],path.split(self.input_file)[1].replace("sampler","likelihood_script.py"))
 
     def __get_likelihood_script_file_from_likelihood(self,verbose=None):
         """

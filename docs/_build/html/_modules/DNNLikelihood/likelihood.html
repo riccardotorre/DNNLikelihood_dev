@@ -290,10 +290,10 @@
 
 <span class="sd">        and output files</span>
 
+<span class="sd">            - :attr:`Lik.output_figures_base_file &lt;DNNLikelihood.Lik.output_figures_base_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.script_file &lt;DNNLikelihood.Lik.script_file&gt;`</span>
-<span class="sd">            - :attr:`Lik.output_figures_base_file &lt;DNNLikelihood.Lik.output_figures_base_file&gt;`</span>
 
 <span class="sd">        depending on the value of the</span>
 <span class="sd">        :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` attribute.</span>
@@ -416,7 +416,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The lenght of the parameters bounds array does not match the number of dimensions.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The length of the parameters bounds array does not match the number of dimensions.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -503,7 +503,7 @@
 <span class="sd">        </span>
 <span class="sd">        - :meth:`Lik.__init__ &lt;DNNLikelihood.Lik.__init__&gt;` with ``overwrite=True`` and ``verbose=verbose_sub`` if :attr:`Lik.input_file &lt;DNNLikelihood.Lik.input_file&gt;` is not ``None``, and with ``overwrite=True`` and ``verbose=verbose_sub`` otherwise.</span>
 <span class="sd">        - :meth:`Lik.compute_maximum_logpdf &lt;DNNLikelihood.Lik.compute_maximum_logpdf&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
-<span class="sd">        - :meth:`Lik.compute_profiled_maxima &lt;DNNLikelihood.Lik.compute_profiled_maxima&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
+<span class="sd">        - :meth:`Lik.compute_profiled_maxima_logpdf &lt;DNNLikelihood.Lik.compute_profiled_maxima_logpdf&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
 <span class="sd">        - :meth:`Lik.plot_logpdf_par &lt;DNNLikelihood.Lik.plot_logpdf_par&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
 <span class="sd">        - :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` with ``overwrite=overwrite`` and ``verbose=verbose``</span>
 <span class="sd">        - :meth:`Lik.save_script &lt;DNNLikelihood.Lik.save_script&gt;` with ``overwrite=True`` and ``verbose=verbose_sub``</span>
@@ -538,7 +538,7 @@
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-        <span class="n">dictionary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">log</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -640,7 +640,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_file</span><span class="p">:</span>
-            <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;import DNNLikelihood</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+            <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;import DNNLikelihood</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>
+                           <span class="s2">&quot;import numpy as np</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;lik = DNNLikelihood.Lik(name=None,</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">input_file=&quot;</span><span class="o">+</span><span class="sa">r</span><span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sep</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;&#39;, </span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span>
                            <span class="s2">&quot;verbose = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
@@ -653,7 +654,10 @@
                            <span class="s2">&quot;pars_pos_poi = lik.pars_pos_poi</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;pars_pos_nuis = lik.pars_pos_nuis</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;pars_central = lik.pars_central</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-                           <span class="s2">&quot;pars_init_vec = lik.logpdf_profiled_max[&#39;X&#39;]</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+                           <span class="s2">&quot;try:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+                           <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">pars_init_vec = lik.logpdf_profiled_max[&#39;X&#39;]</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+                           <span class="s2">&quot;except:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
+                           <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">pars_init_vec = np.array([lik.pars_central for q in range(2*lik.ndims)])</span><span class="se">\n</span><span class="s2">&quot;</span>
                            <span class="s2">&quot;pars_labels = lik.pars_labels</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;pars_bounds = lik.pars_bounds</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;ndims = lik.ndims</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
@@ -755,19 +759,23 @@
             <span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">tmp</span><span class="p">),</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">tmp</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">tmp</span></div>
 
-<div class="viewcode-block" id="Lik.compute_maximum_logpdf"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.compute_maximum_logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_maximum_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Lik.compute_maximum_logpdf"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.compute_maximum_logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_maximum_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                               <span class="n">pars_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">optimizer</span><span class="o">=</span><span class="p">{},</span>
+                               <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the maximum of :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;`. </span>
 <span class="sd">        The values of the parameters and of logpdf at the </span>
 <span class="sd">        global maximum are stored in the :attr:`Lik.logpdf_max &lt;DNNLikelihood.Lik.logpdf_max&gt;` dictionary,</span>
 <span class="sd">        storing maximum logpdf information.</span>
-<span class="sd">        The method uses the function :func:`inference.find_maximum &lt;DNNLikelihood.inference.find_maximum&gt;`</span>
+<span class="sd">        The method uses the function :func:`inference.compute_maximum_logpdf &lt;DNNLikelihood.inference.compute_maximum_logpdf&gt;`</span>
 <span class="sd">        based on |scipy_optimize_minimize_link| to find the minimum of minus </span>
 <span class="sd">        :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;`. Since the latter</span>
 <span class="sd">        method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the </span>
-<span class="sd">        :func:`inference.find_maximum &lt;DNNLikelihood.inference.find_maximum&gt;`</span>
+<span class="sd">        :func:`inference.compute_maximum_logpdf &lt;DNNLikelihood.inference.compute_maximum_logpdf&gt;`</span>
 <span class="sd">        function to optimize speed. See the documentation of the</span>
-<span class="sd">        :func:`inference.find_maximum &lt;DNNLikelihood.inference.find_maximum&gt;` </span>
+<span class="sd">        :func:`inference.compute_maximum_logpdf &lt;DNNLikelihood.inference.compute_maximum_logpdf&gt;` </span>
 <span class="sd">        function for details.</span>
 
 <span class="sd">        - **Arguments**</span>
@@ -781,9 +789,17 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_max</span> <span class="o">==</span> <span class="p">{}:</span>
+        <span class="k">if</span> <span class="n">pars_init</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pars_init</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_max</span> <span class="o">==</span> <span class="p">{}</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">find_maximum</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span><span class="p">),</span> <span class="n">pars_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">,</span> <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">compute_maximum_logpdf</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span><span class="p">),</span> 
+                                                   <span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
+                                                   <span class="n">pars_bounds</span><span class="o">=</span><span class="n">pars_bounds</span><span class="p">,</span>
+                                                   <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                                                   <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_max</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_max</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum logpdf computed in&quot;</span><span class="p">,</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span><span class="s2">&quot;s.&quot;</span><span class="p">)</span>
@@ -793,7 +809,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum logpdf already stored in self.logpdf_max.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Lik.compute_profiled_maxima"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.compute_profiled_maxima">[docs]</a>    <span class="k">def</span> <span class="nf">compute_profiled_maxima</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="p">,</span><span class="n">pars_ranges</span><span class="p">,</span><span class="n">spacing</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span><span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Lik.compute_profiled_maxima_logpdf"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_profiled_maxima_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                                       <span class="n">pars</span><span class="p">,</span>
+                                       <span class="n">pars_ranges</span><span class="p">,</span>
+                                       <span class="n">pars_init</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                       <span class="n">pars_bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                       <span class="n">spacing</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span>
+                                       <span class="n">optimizer</span> <span class="o">=</span> <span class="p">{},</span>
+                                       <span class="n">append</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                       <span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes logal maxima of the logpdf for different values of the parameter ``pars``.</span>
 <span class="sd">        For the list of prameters ``pars``, ranges are passed as ``pars_ranges`` in the form ``(par_min,par_max,n_points)``</span>
@@ -806,13 +831,13 @@
 <span class="sd">        They could be used both for frequentist profiled likelihood inference or as initial condition for</span>
 <span class="sd">        Markov Chain Monte Carlo through the :class:`Sampler &lt;DNNLikelihood.Sampler&gt;` object</span>
 <span class="sd">        (see :ref:`the Sampler object &lt;sampler_object&gt;`). </span>
-<span class="sd">        The method uses the function :func:`inference.find_prof_maximum &lt;DNNLikelihood.inference.find_prof_maximum&gt;`</span>
+<span class="sd">        The method uses the function :func:`inference.compute_profiled_maxima_logpdf &lt;DNNLikelihood.inference.compute_profiled_maxima_logpdf&gt;`</span>
 <span class="sd">        based on |scipy_optimize_minimize_link| to find the (local) minimum of minus</span>
 <span class="sd">        :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;`. Since the latter</span>
 <span class="sd">        method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the </span>
-<span class="sd">        :func:`inference.find_prof_maximum &lt;DNNLikelihood.inference.find_prof_maximum&gt;`</span>
+<span class="sd">        :func:`inference.compute_profiled_maxima_logpdf &lt;DNNLikelihood.inference.compute_profiled_maxima_logpdf&gt;`</span>
 <span class="sd">        function to optimize speed. See the documentation of the</span>
-<span class="sd">        :func:`inference.find_prof_maximum &lt;DNNLikelihood.inference.find_prof_maximum&gt;` </span>
+<span class="sd">        :func:`inference.compute_profiled_maxima_logpdf &lt;DNNLikelihood.inference.compute_profiled_maxima_logpdf&gt;` </span>
 <span class="sd">        function for details.</span>
 
 <span class="sd">        When using interactive python in Jupyter notebooks if ``verbose=2`` a progress bar is shown through </span>
@@ -864,6 +889,14 @@
 <span class="sd">                    - **accepted**: ``&quot;grid&quot;`` or ``&quot;random&quot;``</span>
 <span class="sd">                    - **default**: ``grid``</span>
 
+<span class="sd">            - **progressbar**</span>
+<span class="sd">            </span>
+<span class="sd">                If ``True`` </span>
+<span class="sd">                then  a progress bar is shown.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``True`` </span>
+
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
 <span class="sd">                Verbosity mode. </span>
@@ -873,15 +906,12 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">progressbar</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">progressbar</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="kn">import</span> <span class="nn">ipywidgets</span> <span class="k">as</span> <span class="nn">widgets</span>
             <span class="k">except</span><span class="p">:</span>
                 <span class="n">progressbar</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;If you want to show a progress bar please install the ipywidgets package.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">progressbar</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">progressbar</span><span class="p">:</span>
             <span class="n">overall_progress</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FloatProgress</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">{</span>
@@ -889,21 +919,32 @@
                 <span class="s2">&quot;padding&quot;</span><span class="p">:</span> <span class="s2">&quot;0px&quot;</span><span class="p">,</span> <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;-5px 0px -20px 0px&quot;</span><span class="p">})</span>
             <span class="n">display</span><span class="p">(</span><span class="n">overall_progress</span><span class="p">)</span>
             <span class="n">iterator</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">pars_init</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pars_init</span><span class="p">)</span>
         <span class="n">pars_vals</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_sorted_grid</span><span class="p">(</span><span class="n">pars_ranges</span><span class="o">=</span><span class="n">pars_ranges</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of points:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">),</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">pars_vals_bounded</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">[</span><span class="n">pars</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">[</span><span class="n">pars</span><span class="p">,</span> <span class="mi">1</span><span class="p">])):</span>
-                <span class="n">pars_vals_bounded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">pars_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">[</span><span class="n">pars</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">[</span><span class="n">pars</span><span class="p">,</span> <span class="mi">1</span><span class="p">])):</span>
+                    <span class="n">pars_vals_bounded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">pars_bounds</span><span class="p">[</span><span class="n">pars</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">pars_bounds</span><span class="p">[</span><span class="n">pars</span><span class="p">,</span> <span class="mi">1</span><span class="p">])):</span>
+                    <span class="n">pars_vals_bounded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars_vals_bounded</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Deleted&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals_bounded</span><span class="p">)),</span><span class="s2">&quot;points outside the parameters allowed range.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">pars_val</span> <span class="ow">in</span> <span class="n">pars_vals_bounded</span><span class="p">:</span>
-            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inference</span><span class="o">.</span><span class="n">find_prof_maximum</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span><span class="p">,</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span><span class="p">),</span>
-                                                   <span class="n">pars_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">,</span>
-                                                   <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                                                   <span class="n">pars_fixed_pos</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span> 
-                                                   <span class="n">pars_fixed_val</span><span class="o">=</span><span class="n">pars_val</span><span class="p">))</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inference</span><span class="o">.</span><span class="n">compute_profiled_maxima_logpdf</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span><span class="p">,</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span><span class="p">),</span>
+                                                                <span class="n">pars_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">,</span>
+                                                                <span class="n">pars_bounds</span><span class="o">=</span><span class="n">pars_bounds</span><span class="p">,</span>
+                                                                <span class="n">pars_fixed_pos</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span> 
+                                                                <span class="n">pars_fixed_val</span><span class="o">=</span><span class="n">pars_val</span><span class="p">,</span>
+                                                                <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                                                                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">progressbar</span><span class="p">:</span>
                 <span class="n">iterator</span> <span class="o">=</span> <span class="n">iterator</span> <span class="o">+</span> <span class="mi">1</span>
                 <span class="n">overall_progress</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals_bounded</span><span class="p">))</span>

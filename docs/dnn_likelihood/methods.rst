@@ -95,6 +95,8 @@ Methods
 
 .. automethod:: DnnLik.plot_lik_distribution
 
+.. automethod:: DnnLik.plot_corners_1samp
+
 .. automethod:: DnnLik.plot_corners_2samp
 
 .. automethod:: DnnLik.model_compute_predictions

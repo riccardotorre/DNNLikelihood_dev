@@ -10,13 +10,24 @@ from timeit import default_timer as timer
 
 import deepdish as dd
 import h5py
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
-from . import utils
+from . import inference, utils
+from .corner import corner, extend_corner_range, get_1d_hist
 from .show_prints import Verbosity, print
 
+sns.set()
+kubehelix = sns.color_palette("cubehelix", 30)
+reds = sns.color_palette("Reds", 30)
+greens = sns.color_palette("Greens", 30)
+blues = sns.color_palette("Blues", 30)
+
+mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 class Data(Verbosity):
     """
@@ -95,6 +106,7 @@ class Data(Verbosity):
             self.output_folder = output_folder
             self.__check_define_output_files()
             self.load_on_RAM = load_on_RAM
+            self.figures_list = []
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.load_on_RAM = load_on_RAM
@@ -143,8 +155,14 @@ class Data(Verbosity):
     def __check_define_output_files(self):
         """
         Private method used by the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` one
-        to set the attributes corresponding to output files
+        to set the attributes corresponding to output folders
+        
+            - :attr:`DnnLik.output_figures_folder <DNNLikelihood.DnnLik.output_figures_folder>`
+            - :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>`
+        
+        and output files
 
+            - :attr:`DnnLik.output_figures_base_file <DNNLikelihood.DnnLik.output_figures_base_file>`
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
             - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
             - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`
@@ -158,10 +176,13 @@ class Data(Verbosity):
         if self.output_folder is None:
             self.output_folder = ""
         self.output_folder = path.abspath(self.output_folder)
+        self.output_figures_folder = path.join(self.output_folder, "figures")
+        self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
         self.output_object_h5_file = path.join(self.output_folder, self.name+"_object.h5")
         self.output_samples_h5_file = path.join(self.output_folder, self.name+"_samples.h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
         utils.check_create_folder(self.output_folder)
+        utils.check_create_folder(self.output_figures_folder)
         
     def __check_define_name(self):
         """
@@ -371,6 +392,31 @@ class Data(Verbosity):
             self.data_dictionary["X_test"] = self.data_X[self.data_dictionary["idx_test"]].astype(self.dtype_required)
             self.data_dictionary["Y_test"] = self.data_Y[self.data_dictionary["idx_test"]].astype(self.dtype_required)
             print("Loaded test data corresponding to existing indices.")
+
+    def __set_pars_labels(self, pars_labels):
+        """
+        Private method that returns the ``pars_labels`` choice based on the ``pars_labels`` input.
+
+        - **Arguments**
+
+            - **pars_labels**
+            
+                Could be either one of the keyword strings ``"original"`` and ``"generic"`` or a list of labels
+                strings with the length of the parameters array. If ``pars_labels="original"`` or ``pars_labels="generic"``
+                the function returns the value of :attr:`Sampler.pars_labels <DNNLikelihood.Data.pars_labels>`
+                or :attr:`Data.pars_labels_auto <DNNLikelihood.Data.pars_labels_auto>`, respectively,
+                while if ``pars_labels`` is a list, the function just returns the input.
+
+                    - **type**: ``list`` or ``str``
+                    - **shape of list**: ``[ ]``
+                    - **accepted strings**: ``"original"``, ``"generic"``
+        """
+        if pars_labels is "original":
+            return self.pars_labels
+        elif pars_labels is "generic":
+            return self.pars_labels_auto
+        else:
+            return pars_labels
 
     def define_test_fraction(self,verbose=None):
         """ 
@@ -1107,3 +1153,256 @@ class Data(Verbosity):
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Standard scalers defined in", end-start, "s.", show=verbose)
         return [scalerX, scalerY]
+
+    def plot_corners_1samp(self, X, intervals=inference.CI_from_sigma([1, 2, 3]), 
+                           weights=None, pars=None, max_points=None, nbins=50, pars_labels="original",
+                           ranges_extend=None, title = "", color="green",
+                           plot_title="Corner plot", legend_labels=None, 
+                           figure_filename=None, show_plot=False, overwrite=False, verbose=None):
+        """
+        Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters ``pars`` in the ``X`` array.
+
+        - **Arguments**
+
+            - **X**
+
+                List or |Numpy_link| array with the 
+                values of parameters
+
+                    - **type**: ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndims)``
+
+            - **intervals**
+
+                Probability intervals for which 
+                contours are drawn.
+
+                    - **type**: ``list`` or ``numpy.ndarray``
+                    - **shape**: ``(nintervals,)``
+                    - **default**: ``numpy.array([0.68268949, 0.95449974, 0.9973002])`` (corresponding to 1,2, and 3 sigmas for a 1D Gaussian distribution)
+
+            - **weights**
+
+                List or |Numpy_link| array with the 
+                Weights correspomnding to the ``X`` points
+
+                    - **type**: ``list`` or ``numpy.ndarray`` or ``None``
+                    - **shape**: ``(npoints,)``
+                    - **default**: ``None``
+
+            - **pars**
+
+                List of parameters 
+                for which the plots are produced.
+
+                    - **type**: ``list`` or ``None``
+                    - **shape of list**: ``[ ]``
+                    - **default**: ``None``
+
+            - **max_points**
+
+                Maximum number of points used to make
+                the plot. If the numnber is smaller than the total
+                number of available points, then a random subset is taken.
+                If ``None`` then all available points are used.
+
+                    - **type**: ``int`` or ``None``
+                    - **default**: ``None``
+
+            - **nbins**
+
+                Number of bins used to make 
+                the histograms.
+
+                    - **type**: ``int``
+                    - **default**: ``50``
+
+            - **pars_labels**
+
+                Argument that is passed to the :meth:`Data.__set_pars_labels < DNNLikelihood.Data._Lik__set_pars_labels>`
+                method to set the parameters labels to be used in the plots.
+
+                    - **type**: ``list`` or ``str``
+                    - **shape of list**: ``[]``
+                    - **accepted strings**: ``"original"``, ``"generic"``
+                    - **default**: ``original``
+
+            - **ranges_extend**
+
+                Percent increase or reduction of the range of the plots with respect
+                to the range automatically determined from the points values.
+
+                    - **type**: ``int`` or ``float`` or ``None``
+
+            - **title**
+
+                Subplot title to which the 
+                68% HPDI values are appended.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **color**
+
+                Plot 
+                color.
+
+                    - **type**: ``str``
+                    - **default**: ``"green"``
+
+            - **plot title**
+
+                Title of the corner 
+                plot.
+
+                    - **type**: ``str``
+                    - **default**: ``"Corner plot"``
+
+            - **legend labels**
+
+                List of strings. Labels for the contours corresponding to the 
+                ``intervals`` to show in the legend.
+                If ``None`` the legend automatically reports the intervals.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **figure_filename**
+
+                File name for the saved figure.
+                If ``None`` file name is automatically generated.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **show_plot**
+
+                If ``True`` the plot is shown on the
+                interactive console.
+
+                    - **type**: ``bool``
+                    - **default**: ``False``
+
+            - **overwrite**
+
+                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
+                already exists, then the old file gets renamed with the :func:`utils.check_rename_file < DNNLikelihood.utils.check_rename_file>` 
+                function.
+
+                    - **type**: ``bool``
+                    - **default**: ``False``
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+
+        - **Updates file**
+
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if legend_labels is not None:
+            if len(legend_labels) != len(intervals):
+                raise Exception("Legend labels should either be None or a list of strings with the same length as intervals.")
+        plt.style.use(mplstyle_path)
+        start = timer()
+        X = np.array(X)
+        weigths = np.array(weights)
+        if title is None:
+            title = ""
+        linewidth = 1.3
+        if ranges_extend is None:
+            ranges = extend_corner_range(X, X, pars, 0)
+        else:
+            ranges = extend_corner_range(X, X, pars, ranges_extend)
+        pars_labels = self.__set_pars_labels(pars_labels)
+        labels = np.array(pars_labels)[pars].tolist()
+        if figure_filename is None:
+            figure_filename = self.output_figures_base_file+"_corner_posterior_pars_" + "_".join([str(i) for i in pars]) +".pdf"
+        else:
+            figpath, figname, figext = [path.split(figure_filename)[0]]+list(path.splitext(path.split(figure_filename)[1]))
+            figure_filename = self.output_figures_base_file +"_"+ figname + ".pdf"
+        if not overwrite:
+            utils.check_rename_file(figure_filename)
+        nndims = len(pars)
+        if max_points is not None:
+            if type(max_points) is list:
+                nnn = np.min([len(X), max_points[0]])
+            else:
+                nnn = np.min([len(X), max_points])
+        else:
+            nnn = len(X)
+        rnd_idx = np.random.choice(np.arange(len(X)), nnn, replace=False)
+        samp = X[rnd_idx][:,pars]
+        if weights is not None:
+            weights = weights[rnd_idx]
+        print("Computing HPDIs.", show=verbose)
+        HPDI = [inference.HPDI(samp[:,i], intervals = intervals, weights=weights, nbins=nbins, print_hist=False, optimize_binning=False) for i in range(nndims)]
+        levels = np.array([[np.sort(inference.HPD_quotas(samp[:,[i,j]], nbins=nbins, intervals = intervals, weights=weights)).tolist() for j in range(nndims)] for i in range(nndims)])
+        fig, axes = plt.subplots(nndims, nndims, figsize=(3*nndims, 3*nndims))
+        figure = corner(samp, bins=nbins, weights=weights, labels=[r"%s" % s for s in labels],
+                        fig=fig, max_n_ticks=6, color=color, plot_contours=True, smooth=True, 
+                        smooth1d=True, range=ranges, plot_datapoints=True, plot_density=False, 
+                        fill_contours=False, normalize1d=True, hist_kwargs={"color": color, "linewidth": "1.5"}, 
+                        label_kwargs={"fontsize": 16}, show_titles=False, title_kwargs={"fontsize": 18}, 
+                        levels_lists=levels, data_kwargs={"alpha": 1}, 
+                        contour_kwargs={"linestyles": ["dotted", "dashdot", "dashed"][:len(HPDI[0])], "linewidths": [linewidth, linewidth, linewidth][:len(HPDI[0])]},
+                        no_fill_contours=False, contourf_kwargs={"colors": ["white", "lightgreen", color], "alpha": 1})  
+                        # , levels=(0.393,0.68,)) ,levels=[300],levels_lists=levels1)#,levels=[120])
+        axes = np.array(figure.axes).reshape((nndims, nndims))
+        lines_array = list(matplotlib.lines.lineStyles.keys())
+        linestyles = (lines_array[0:4]+lines_array[0:4]+lines_array[0:4])[0:len(intervals)]
+        intervals_str = [r"${:.2f}".format(i*100)+"\%$ HPDI" for i in intervals]
+        for i in range(nndims):
+            title_i = ""
+            ax = axes[i, i]
+            #ax.axvline(value1[i], color="green",alpha=1)
+            #ax.axvline(value2[i], color="red",alpha=1)
+            ax.grid(True, linestyle="--", linewidth=1, alpha=0.3)
+            ax.tick_params(axis="both", which="major", labelsize=16)
+            hists_1d = get_1d_hist(i, samp, nbins=nbins, ranges=ranges, weights=weights, normalize1d=True)[0]  # ,intervals=HPDI681)
+            for q in range(len(intervals)):
+                for j in HPDI[i][intervals[q]]["Intervals"]:
+                    ax.axvline(hists_1d[0][hists_1d[0] >= j[0]][0], color=color, alpha=1, linestyle=linestyles[q], linewidth=linewidth)
+                    ax.axvline(hists_1d[0][hists_1d[0] <= j[1]][-1], color=color, alpha=1, linestyle=linestyles[q], linewidth=linewidth)
+                title_i = r"%s"%title + ": ["+"{0:1.2e}".format(HPDI[i][intervals[0]]["Intervals"][0][0])+","+"{0:1.2e}".format(HPDI[i][intervals[0]]["Intervals"][0][1])+"]"
+            if i == 0:
+                x1, x2, _, _ = ax.axis()
+                ax.set_xlim(x1*1.3, x2)
+            ax.set_title(title_i, fontsize=10)
+        for yi in range(nndims):
+            for xi in range(yi):
+                ax = axes[yi, xi]
+                if xi == 0:
+                    x1, x2, _, _ = ax.axis()
+                    ax.set_xlim(x1*1.3, x2)
+                ax.grid(True, linestyle="--", linewidth=1)
+                ax.tick_params(axis="both", which="major", labelsize=16)
+        fig.subplots_adjust(top=0.85,wspace=0.25, hspace=0.25)
+        fig.suptitle(r"%s" % (plot_title), fontsize=26)
+        #fig.text(0.5 ,1, r"%s" % plot_title, fontsize=26)
+        colors = [color, "black", "black", "black"]
+        red_patch = matplotlib.patches.Patch(color=colors[0])  # , label="The red data")
+        #blue_patch = matplotlib.patches.Patch(color=colors[1])  # , label="The blue data")
+        lines = [matplotlib.lines.Line2D([0], [0], color=colors[1], linewidth=3, linestyle=l) for l in linestyles]
+        if legend_labels is None:
+            legend_labels = [intervals_str[i] for i in range(len(intervals))]
+        fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc="upper right")#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
+        #plt.tight_layout()
+        plt.savefig(figure_filename)#, dpi=200)  # ,dpi=200)
+        utils.append_without_duplicate(self.figures_list, figure_filename)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved figure",
+                               "file name": path.split(figure_filename)[-1],
+                               "file path": figure_filename}
+        print(r"%s" % figure_filename, "created and saved in", str(end-start), "s.", show=verbose)
+        print("Plot done and saved in", end-start, "s.", show=verbose)

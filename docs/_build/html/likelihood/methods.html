@@ -285,10 +285,10 @@ to set the attributes corresponding to output folders</p>
 <p>and output files</p>
 <blockquote>
 <div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_base_file" title="DNNLikelihood.Lik.output_figures_base_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_h5_file" title="DNNLikelihood.Lik.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.script_file" title="DNNLikelihood.Lik.script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.script_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_base_file" title="DNNLikelihood.Lik.output_figures_base_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file</span></code></a></p></li>
 </ul>
 </div></blockquote>
 <p>depending on the value of the
@@ -328,17 +328,17 @@ to check the consistency and set the attributes</p>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.ndims" title="DNNLikelihood.Lik.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.ndims</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_bounds" title="DNNLikelihood.Lik.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_bounds</span></code></a> (converted into <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</p></li>
-<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code> (converted into <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a> (converted into <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_labels" title="DNNLikelihood.Lik.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_labels_auto" title="DNNLikelihood.Lik.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels_auto</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_nuis" title="DNNLikelihood.Lik.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_nuis</span></code></a> (converted into <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_poi" title="DNNLikelihood.Lik.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_poi</span></code></a> (converted into <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>)</p></li>
 </ul>
 </div></blockquote>
-<p>If the attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+<p>If the attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
 the method calls the <a class="reference internal" href="#DNNLikelihood.Lik._Lik__check_define_ndims" title="DNNLikelihood.Lik._Lik__check_define_ndims"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__check_define_ndims</span></code></a>
 method to determine the number of dimensions <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.ndims" title="DNNLikelihood.Lik.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.ndims</span></code></a>
-and sets <code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code>
+and sets <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>
 to a vector of zeros with length <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.ndims" title="DNNLikelihood.Lik.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.ndims</span></code></a>, warning the user that
 dimensiona and parameters central values have been automatically determined.
 If no parameters positions are specified, all parameters are assumed to be parameters of interest.
@@ -434,7 +434,7 @@ while if <code class="docutils literal notranslate"><span class="pre">pars_label
 <ul class="simple">
 <li><p><a class="reference internal" href="#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code> if <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_file" title="DNNLikelihood.Lik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_file</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>, and with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code> otherwise.</p></li>
 <li><p><a class="reference internal" href="#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
-<li><p><a class="reference internal" href="#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
 <li><p><a class="reference internal" href="#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
 <li><p><a class="reference internal" href="#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=overwrite</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose</span></code></p></li>
 <li><p><a class="reference internal" href="#DNNLikelihood.Lik.save_script" title="DNNLikelihood.Lik.save_script"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_script</span></code></a> with <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> and <code class="docutils literal notranslate"><span class="pre">verbose=verbose_sub</span></code></p></li>
@@ -670,18 +670,18 @@ of the logpdf.</p>
 
 <dl class="method">
 <dt id="DNNLikelihood.Lik.compute_maximum_logpdf">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">compute_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">compute_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">optimizer={}</em>, <em class="sig-param">force=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the maximum of <a class="reference internal" href="#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>.
 The values of the parameters and of logpdf at the
 global maximum are stored in the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.logpdf_max" title="DNNLikelihood.Lik.logpdf_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf_max</span></code></a> dictionary,
 storing maximum logpdf information.
-The method uses the function <a class="reference internal" href="../inference.html#DNNLikelihood.inference.find_maximum" title="DNNLikelihood.inference.find_maximum"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.find_maximum</span></code></a>
+The method uses the function <a class="reference internal" href="../inference.html#DNNLikelihood.inference.compute_maximum_logpdf" title="DNNLikelihood.inference.compute_maximum_logpdf"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.compute_maximum_logpdf</span></code></a>
 based on <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html"  target="_blank"> scipy.optimize.minimize</a> to find the minimum of minus
 <a class="reference internal" href="#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>. Since the latter
 method already contains a bounded logpdf, <code class="docutils literal notranslate"><span class="pre">pars_bounds</span></code> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code> in the
-<a class="reference internal" href="../inference.html#DNNLikelihood.inference.find_maximum" title="DNNLikelihood.inference.find_maximum"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.find_maximum</span></code></a>
+<a class="reference internal" href="../inference.html#DNNLikelihood.inference.compute_maximum_logpdf" title="DNNLikelihood.inference.compute_maximum_logpdf"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.compute_maximum_logpdf</span></code></a>
 function to optimize speed. See the documentation of the
-<a class="reference internal" href="../inference.html#DNNLikelihood.inference.find_maximum" title="DNNLikelihood.inference.find_maximum"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.find_maximum</span></code></a>
+<a class="reference internal" href="../inference.html#DNNLikelihood.inference.compute_maximum_logpdf" title="DNNLikelihood.inference.compute_maximum_logpdf"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.compute_maximum_logpdf</span></code></a>
 function for details.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -706,8 +706,8 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </dd></dl>
 
 <dl class="method">
-<dt id="DNNLikelihood.Lik.compute_profiled_maxima">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">compute_profiled_maxima</code><span class="sig-paren">(</span><em class="sig-param">pars</em>, <em class="sig-param">pars_ranges</em>, <em class="sig-param">spacing='grid'</em>, <em class="sig-param">append=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_profiled_maxima"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_profiled_maxima" title="Permalink to this definition">¶</a></dt>
+<dt id="DNNLikelihood.Lik.compute_profiled_maxima_logpdf">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">compute_profiled_maxima_logpdf</code><span class="sig-paren">(</span><em class="sig-param">pars</em>, <em class="sig-param">pars_ranges</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">spacing='grid'</em>, <em class="sig-param">optimizer={}</em>, <em class="sig-param">append=False</em>, <em class="sig-param">progressbar=True</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_profiled_maxima_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes logal maxima of the logpdf for different values of the parameter <code class="docutils literal notranslate"><span class="pre">pars</span></code>.
 For the list of prameters <code class="docutils literal notranslate"><span class="pre">pars</span></code>, ranges are passed as <code class="docutils literal notranslate"><span class="pre">pars_ranges</span></code> in the form <code class="docutils literal notranslate"><span class="pre">(par_min,par_max,n_points)</span></code>
 and an array of points is generated according to the argument <code class="docutils literal notranslate"><span class="pre">spacing</span></code> (either a grid or a random
@@ -719,13 +719,13 @@ storing maximum profiled logpdf information.
 They could be used both for frequentist profiled likelihood inference or as initial condition for
 Markov Chain Monte Carlo through the <a class="reference internal" href="../sampler/class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object
 (see <a class="reference internal" href="../sampler/index.html#sampler-object"><span class="std std-ref">the Sampler object</span></a>).
-The method uses the function <a class="reference internal" href="../inference.html#DNNLikelihood.inference.find_prof_maximum" title="DNNLikelihood.inference.find_prof_maximum"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.find_prof_maximum</span></code></a>
+The method uses the function <a class="reference internal" href="../inference.html#DNNLikelihood.inference.compute_profiled_maxima_logpdf" title="DNNLikelihood.inference.compute_profiled_maxima_logpdf"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.compute_profiled_maxima_logpdf</span></code></a>
 based on <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html"  target="_blank"> scipy.optimize.minimize</a> to find the (local) minimum of minus
 <a class="reference internal" href="#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>. Since the latter
 method already contains a bounded logpdf, <code class="docutils literal notranslate"><span class="pre">pars_bounds</span></code> is set to <code class="docutils literal notranslate"><span class="pre">None</span></code> in the
-<a class="reference internal" href="../inference.html#DNNLikelihood.inference.find_prof_maximum" title="DNNLikelihood.inference.find_prof_maximum"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.find_prof_maximum</span></code></a>
+<a class="reference internal" href="../inference.html#DNNLikelihood.inference.compute_profiled_maxima_logpdf" title="DNNLikelihood.inference.compute_profiled_maxima_logpdf"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.compute_profiled_maxima_logpdf</span></code></a>
 function to optimize speed. See the documentation of the
-<a class="reference internal" href="../inference.html#DNNLikelihood.inference.find_prof_maximum" title="DNNLikelihood.inference.find_prof_maximum"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.find_prof_maximum</span></code></a>
+<a class="reference internal" href="../inference.html#DNNLikelihood.inference.compute_profiled_maxima_logpdf" title="DNNLikelihood.inference.compute_profiled_maxima_logpdf"><code class="xref py py-func docutils literal notranslate"><span class="pre">inference.compute_profiled_maxima_logpdf</span></code></a>
 function for details.</p>
 <p>When using interactive python in Jupyter notebooks if <code class="docutils literal notranslate"><span class="pre">verbose=2</span></code> a progress bar is shown through
 the <a href="https://ipywidgets.readthedocs.io/en/latest/"  target="_blank"> ipywidgets</a> package.</p>
@@ -789,6 +789,18 @@ is created.</p>
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
 <li><p><strong>accepted</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;grid&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">grid</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>progressbar</strong></p>
+<blockquote>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>
+then  a progress bar is shown.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
 </ul>
 </div></blockquote>
 </div></blockquote>

@@ -98,10 +98,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Likelihood object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DnnLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DNNLikelihood object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Inference functions</a><ul>
@@ -282,13 +282,13 @@ NOTE: quantiles should be in [0, 1]!</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="DNNLikelihood.inference.find_maximum">
-<code class="sig-name descname">find_maximum</code><span class="sig-paren">(</span><em class="sig-param">loglik</em>, <em class="sig-param">npars=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#find_maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.find_maximum" title="Permalink to this definition">¶</a></dt>
+<dt id="DNNLikelihood.inference.compute_maximum_logpdf">
+<code class="sig-name descname">compute_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param">logpdf</em>, <em class="sig-param">ndims=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">optimizer={}</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#compute_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.compute_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="DNNLikelihood.inference.find_prof_maximum">
-<code class="sig-name descname">find_prof_maximum</code><span class="sig-paren">(</span><em class="sig-param">loglik</em>, <em class="sig-param">npars=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">pars_fixed_pos=None</em>, <em class="sig-param">pars_fixed_val=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#find_prof_maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.find_prof_maximum" title="Permalink to this definition">¶</a></dt>
+<dt id="DNNLikelihood.inference.compute_profiled_maxima_logpdf">
+<code class="sig-name descname">compute_profiled_maxima_logpdf</code><span class="sig-paren">(</span><em class="sig-param">logpdf</em>, <em class="sig-param">ndims=None</em>, <em class="sig-param">pars_init=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">pars_fixed_pos=None</em>, <em class="sig-param">pars_fixed_val=None</em>, <em class="sig-param">optimizer={}</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#compute_profiled_maxima_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.compute_profiled_maxima_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

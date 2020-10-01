@@ -310,17 +310,17 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>“pars”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Input argument of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.</p>
+<dt><em>“pars”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Input argument of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>“pars_ranges”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">list</span></code>)</dt><dd><p>Input argument of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.</p>
+<dt><em>“pars_ranges”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">list</span></code>)</dt><dd><p>Input argument of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>“number of maxima”</em> (value type: <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Number of maxima computed by the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.</p>
+<dt><em>“number of maxima”</em> (value type: <code class="docutils literal notranslate"><span class="pre">int</span></code>)</dt><dd><p>Number of maxima computed by the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method.</p>
 </dd>
 </dl>
 </li>
@@ -424,7 +424,7 @@ of the logpdf.</p>
 <dl class="attribute">
 <dt id="DNNLikelihood.Lik.logpdf_max">
 <code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_max</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_max" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary containing the maximum of the DNNLikelihood computed with the
+<dd><p>Dictionary containing the maximum of the logpdf function computed with the
 <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> method.
 It contains x and y values at
 the maximum of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
@@ -437,12 +437,12 @@ It is initialized to an empty dictionary <code class="docutils literal notransla
 <blockquote>
 <div><ul class="simple">
 <li><dl class="simple">
-<dt><em>“X”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the model maximum.</p>
+<dt><em>“x”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the model maximum.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>“Y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>Value of the model at its maximum</p>
+<dt><em>“y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>Value of the model at its maximum</p>
 </dd>
 </dl>
 </li>
@@ -456,9 +456,9 @@ It is initialized to an empty dictionary <code class="docutils literal notransla
 <dl class="attribute">
 <dt id="DNNLikelihood.Lik.logpdf_profiled_max">
 <code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_profiled_max</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_profiled_max" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary containing profiled maxima of the logpdf computed with the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method.
-It contains x and y values of points at
+<dd><p>Dictionary containing profiled maxima of the logpdf function computed with the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method.
+It contains the X and Y arrays of x and y values of points at
 the profiled maxima of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
 function.
 It is initialized to an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code> when the
@@ -538,8 +538,8 @@ It is used to generate output files names.</p>
 <dt id="DNNLikelihood.Lik.ndims">
 <code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">ndims</code><a class="headerlink" href="#DNNLikelihood.Lik.ndims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of dimensions of the likelihood, corresponding to the number of parameters.
-It is set equal to the lenght of the array
-<a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>.</p>
+It is set equal to the length of the array
+<a class="reference internal" href="#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
@@ -633,7 +633,7 @@ then central values for all parameters are set to <code class="docutils literal 
 This attribute is used as initial value for optimizing
 <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> with the
 <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> and the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> methods.</p>
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> methods.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>

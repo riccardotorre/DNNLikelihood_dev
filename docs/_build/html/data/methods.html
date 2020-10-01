@@ -279,9 +279,17 @@ to set the attributes corresponding to input files:</p>
 <dt id="DNNLikelihood.Data._Data__check_define_output_files">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">_Data__check_define_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Data._Data__check_define_output_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__init__</span></code></a> one
-to set the attributes corresponding to output files</p>
+to set the attributes corresponding to output folders</p>
 <blockquote>
 <div><ul class="simple">
+<li><p><a class="reference internal" href="../dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_figures_folder" title="DNNLikelihood.DnnLik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_figures_folder</span></code></a></p></li>
+<li><p><a class="reference internal" href="../dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>and output files</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="../dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_figures_base_file" title="DNNLikelihood.DnnLik.output_figures_base_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_figures_base_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_object_h5_file" title="DNNLikelihood.Data.output_object_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_object_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_samples_h5_file" title="DNNLikelihood.Data.output_samples_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_samples_h5_file</span></code></a></p></li>
@@ -1232,6 +1240,228 @@ the <code class="docutils literal notranslate"><span class="pre">X</span></code>
 <li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">[scalerX,scalerY]</span></code></p></li>
 </ul>
 </div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="method">
+<dt id="DNNLikelihood.Data.plot_corners_1samp">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">plot_corners_1samp</code><span class="sig-paren">(</span><em class="sig-param">X</em>, <em class="sig-param">intervals=array([0.68268949</em>, <em class="sig-param">0.95449974</em>, <em class="sig-param">0.9973002 ])</em>, <em class="sig-param">weights=None</em>, <em class="sig-param">pars=None</em>, <em class="sig-param">max_points=None</em>, <em class="sig-param">nbins=50</em>, <em class="sig-param">pars_labels='original'</em>, <em class="sig-param">ranges_extend=None</em>, <em class="sig-param">title=''</em>, <em class="sig-param">color='green'</em>, <em class="sig-param">plot_title='Corner plot'</em>, <em class="sig-param">legend_labels=None</em>, <em class="sig-param">figure_filename=None</em>, <em class="sig-param">show_plot=False</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.plot_corners_1samp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.plot_corners_1samp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters <code class="docutils literal notranslate"><span class="pre">pars</span></code> in the <code class="docutils literal notranslate"><span class="pre">X</span></code> array.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>X</strong></p>
+<blockquote>
+<div><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the
+values of parameters</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(npoints,ndims)</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>intervals</strong></p>
+<blockquote>
+<div><p>Probability intervals for which
+contours are drawn.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(nintervals,)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.array([0.68268949,</span> <span class="pre">0.95449974,</span> <span class="pre">0.9973002])</span></code> (corresponding to 1,2, and 3 sigmas for a 1D Gaussian distribution)</p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>weights</strong></p>
+<blockquote>
+<div><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the
+Weights correspomnding to the <code class="docutils literal notranslate"><span class="pre">X</span></code> points</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(npoints,)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>pars</strong></p>
+<blockquote>
+<div><p>List of parameters
+for which the plots are produced.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>shape of list</strong>: <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>max_points</strong></p>
+<blockquote>
+<div><p>Maximum number of points used to make
+the plot. If the numnber is smaller than the total
+number of available points, then a random subset is taken.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> then all available points are used.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>nbins</strong></p>
+<blockquote>
+<div><p>Number of bins used to make
+the histograms.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">50</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>pars_labels</strong></p>
+<blockquote>
+<div><p>Argument that is passed to the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.__set_pars_labels</span></code>
+method to set the parameters labels to be used in the plots.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>shape of list</strong>: <code class="docutils literal notranslate"><span class="pre">[]</span></code></p></li>
+<li><p><strong>accepted strings</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;original&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;generic&quot;</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">original</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>ranges_extend</strong></p>
+<blockquote>
+<div><p>Percent increase or reduction of the range of the plots with respect
+to the range automatically determined from the points values.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>title</strong></p>
+<blockquote>
+<div><p>Subplot title to which the
+68% HPDI values are appended.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>color</strong></p>
+<blockquote>
+<div><p>Plot
+color.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;green&quot;</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>plot title</strong></p>
+<blockquote>
+<div><p>Title of the corner
+plot.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;Corner</span> <span class="pre">plot&quot;</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>legend labels</strong></p>
+<blockquote>
+<div><p>List of strings. Labels for the contours corresponding to the
+<code class="docutils literal notranslate"><span class="pre">intervals</span></code> to show in the legend.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> the legend automatically reports the intervals.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>figure_filename</strong></p>
+<blockquote>
+<div><p>File name for the saved figure.
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> file name is automatically generated.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>show_plot</strong></p>
+<blockquote>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> the plot is shown on the
+interactive console.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>overwrite</strong></p>
+<blockquote>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> if a file with the same name already exists, then it gets overwritten. If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name
+already exists, then the old file gets renamed with the <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code>
+function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.
+The plots are shown in the interactive console calling <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> only if <code class="docutils literal notranslate"><span class="pre">verbose=True</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Updates file</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
+</ul>
 </div></blockquote>
 </li>
 </ul>

@@ -49,6 +49,8 @@ Methods
 
 .. automethod:: Data.define_scalers
 
+.. automethod:: Data.plot_corners_1samp
+
 .. py:method:: Data.set_verbosity
 
     Method inherited from the :class:`Verbosity <DNNLikelihood.Verbosity>` object.

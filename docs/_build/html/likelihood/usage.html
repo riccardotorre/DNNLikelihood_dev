@@ -44,7 +44,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Class" href="class.html" />
-    <link rel="prev" title="The Lik object" href="index.html" /> 
+    <link rel="prev" title="The Likelihood object" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,14 +98,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Lik object</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Likelihood object</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="class.html">Class</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DnnLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
@@ -164,7 +164,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-          <li><a href="index.html">The Lik object</a> &raquo;</li>
+          <li><a href="index.html">The Likelihood object</a> &raquo;</li>
         
       <li>Usage</li>
     
@@ -313,7 +313,7 @@ For instance we could import the object created above with</p>
 <p>When the object is imported, the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a>
 attribute is updated and saved in the corresponding file <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>.</p>
 <p>The logpdf for a given value of the parameters (for instance the
-<a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>
 can be obtained through</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">pars_central</span><span class="p">,</span><span class="o">*</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf_args</span><span class="p">)</span>
 </pre></div>
@@ -321,7 +321,7 @@ can be obtained through</p>
 <p>We can check the logpdf depencence on the input parameters by plotting it with the method
 <a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a>. For instance, one can get the plot
 for the parameters <code class="docutils literal notranslate"><span class="pre">0</span></code> (signal strength) and <code class="docutils literal notranslate"><span class="pre">5</span></code> (nuisance parameter) in the range <code class="docutils literal notranslate"><span class="pre">(-1,1)</span></code> with all other
-parameters set to their value in <a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>, the plots can be
+parameters set to their value in <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>, the plots can be
 obtained through</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">plot_logpdf_par</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]])</span>
 </pre></div>
@@ -345,12 +345,12 @@ One could also optionally choose a different central value for the parameters th
 </pre></div>
 </div>
 <p>Finally, one could profile the logpdf with respect to some of the parameters and compute local maxima through
-the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima" title="DNNLikelihood.Lik.compute_profiled_maxima"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima</span></code></a> method. This
+the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method. This
 is useful both to initialize chains in an MCMC or to perform profiled likelihood inference. The result is stored in the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.logpdf_profiled_max" title="DNNLikelihood.Lik.logpdf_profiled_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf_profiled_max</span></code></a> attribute.
 For instance, profiling with respect to the nuisance parameters for <code class="docutils literal notranslate"><span class="pre">10</span></code> values of the signal strength parameter
 on a grid in the <code class="docutils literal notranslate"><span class="pre">(-1,1)</span></code> interval can be obtained as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">compute_profiled_maxima</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">pars_ranges</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">]],</span><span class="n">spacing</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">compute_profiled_maxima_logpdf</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">pars_ranges</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">]],</span><span class="n">spacing</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf_profiled_max</span><span class="p">[</span><span class="s2">&quot;X&quot;</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf_profiled_max</span><span class="p">[</span><span class="s2">&quot;Y&quot;</span><span class="p">])</span>
 
@@ -395,7 +395,7 @@ does not update them. Nevertheless, the full object can be saved at any time thr
         <a href="class.html" class="btn btn-neutral float-right" title="Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="The Lik object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="The Likelihood object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

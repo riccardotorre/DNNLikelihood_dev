@@ -47,9 +47,7 @@ reds = sns.color_palette("Reds", 30)
 greens = sns.color_palette("Greens", 30)
 blues = sns.color_palette("Blues", 30)
 
-
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
-
 
 class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resources
     """
@@ -350,7 +348,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.output_tf_model_h5_file = self.output_files_base_name+"_model.h5"
         self.output_tf_model_json_file = self.output_files_base_name+"_model.json"
         self.output_tf_model_onnx_file = self.output_files_base_name+"_model.onnx"
-        self.script_file = self.output_files_base_name++"_script.py"
+        self.script_file = self.output_files_base_name+"_script.py"
         self.output_checkpoints_files = None
         self.output_checkpoints_folder = None
         self.output_figure_plot_losses_keras_file = None
@@ -1095,7 +1093,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print("Setting callbacks")
         for cb in callbacks_string:
             if cb == "PlotLossesKeras":
-                self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
+                self.output_figure_plot_losses_keras_file = utils.check_rename_file(self.output_figures_base_file+"_plot_losses_keras.pdf")
                 string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
             elif cb == "ModelCheckpoint":
                 self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
@@ -1114,7 +1112,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         for cb in callbacks_dict:
             name = cb["name"]
             if name == "PlotLossesKeras":
-                self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
+                self.output_figure_plot_losses_keras_file = utils.check_rename_file(self.output_figures_base_file+"_plot_losses_keras.pdf")
                 string = "fig_path = '"+self.output_figure_plot_losses_keras_file + "', "
                 name = "callbacks."+name
             elif name == "ModelCheckpoint":
@@ -1670,7 +1668,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             X_val = self.scalerX.transform(self.X_val)
             Y_train = self.scalerY.transform(self.Y_train.reshape(-1, 1)).reshape(len(self.Y_train))
             Y_val = self.scalerY.transform(self.Y_val.reshape(-1, 1)).reshape(len(self.Y_val))
-            print([type(X_train),type(X_val),type(Y_train),type(Y_train)],show=verbose)
+            #print([type(X_train),type(X_val),type(Y_train),type(Y_train)],show=verbose)
             # If PlotLossesKeras is in callbacks set plot style
             if "PlotLossesKeras" in str(self.callbacks_strings):
                 plt.style.use(mplstyle_path)
@@ -2847,6 +2845,115 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
         print(r"%s" %figure_filename,"created and saved in",str(end-start),"s.", show=verbose)
 
+    def plot_corners_1samp(self, X, weights=None, pars=None, max_points=None, nbins=50, pars_labels="original",
+                       ranges_extend=None, title = None, color="green",
+                       plot_title="Params contours", legend_labels=None, 
+                       figure_filename=None, show_plot=False, overwrite=False, verbose=None):
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        plt.style.use(mplstyle_path)
+        start = timer()
+        linewidth = 1.3
+        intervals = inference.CI_from_sigma([1, 2, 3])
+        if ranges_extend is None:
+            ranges = extend_corner_range(X, X, pars, 0)
+        else:
+            ranges = extend_corner_range(X, X, pars, ranges_extend)
+        pars_labels = self.__set_pars_labels(pars_labels)
+        labels = np.array(pars_labels)[pars].tolist()
+        if not overwrite:
+            utils.check_rename_file(figure_filename)
+        nndims = len(pars)
+        if max_points is not None:
+            if type(max_points) is list:
+                nnn = np.min([len(X), max_points[0]])
+            else:
+                nnn = np.min([len(X), max_points])
+        else:
+            nnn = len(X)
+        rnd_idx = np.random.choice(np.arange(len(X)), nnn, replace=False)
+        samp = X[rnd_idx][:,pars]
+        if weights is not None:
+            weights = weights[rnd_idx]
+        try:
+            HPDI = [[self.predictions['HPDI'][str(par)][HPDI1_dic["type"]][HPDI1_dic["sample"]][str(interval)]["Intervals"] for interval in intervals] for par in pars]
+            #print(np.shape(HPDI1),np.shape(HPDI2))
+        except:
+            print("HPDI not present in predictions. Computing them.")
+            HPDI = [inference.HPDI(samp[:,i], intervals = intervals, weights=weights, nbins=nbins, print_hist=False, optimize_binning=False) for i in range(nndims)]
+        levels = np.array([[np.sort(inference.HPD_quotas(samp[:,[i,j]], nbins=nbins, intervals = inference.CI_from_sigma([1, 2, 3]), weights=W)).tolist() for j in range(nndims)] for i in range(nndims)])
+        fig, axes = plt.subplots(nndims, nndims, figsize=(3*nndims, 3*nndims))
+        figure = corner(samp, bins=nbins, weights=weights, labels=[r"%s" % s for s in labels], 
+                        fig=fig, max_n_ticks=6, color=color, plot_contours=True, smooth=True, 
+                        smooth1d=True, range=ranges, plot_datapoints=True, plot_density=False, 
+                        fill_contours=False, normalize1d=True, hist_kwargs={"color": color, "linewidth": "1.5"}, 
+                        label_kwargs={"fontsize": 16}, show_titles=False, title_kwargs={"fontsize": 18}, 
+                        levels_lists=levels, data_kwargs={"alpha": 1}, 
+                        contour_kwargs={"linestyles": ["dotted", "dashdot", "dashed"][:len(HPDI[0])], "linewidths": [linewidth, linewidth, linewidth][:len(HPDI[0])]},
+                        no_fill_contours=False, contourf_kwargs={"colors": ["white", "lightgreen", color], "alpha": 1})  
+                        # , levels=(0.393,0.68,)) ,levels=[300],levels_lists=levels1)#,levels=[120])
+        axes = np.array(figure.axes).reshape((nndims, nndims))
+        for i in range(nndims):
+            title_i = ""
+            ax = axes[i, i]
+            #ax.axvline(value1[i], color="green",alpha=1)
+            #ax.axvline(value2[i], color="red",alpha=1)
+            ax.grid(True, linestyle="--", linewidth=1, alpha=0.3)
+            ax.tick_params(axis="both", which="major", labelsize=16)
+            hists_1d = get_1d_hist(i, samp, nbins=nbins, ranges=ranges, weights=weights, normalize1d=True)[0]  # ,intervals=HPDI681)
+            HPDI68 = HPDI[i][intervals[0]]["Intervals"]
+            HPDI95 = HPDI[i][intervals[1]]["Intervals"]
+            HPDI3s = HPDI[i][intervals[2]]["Intervals"]
+            for j in HPDI3s:
+                #ax.fill_between(hists_1d_1[0], 0, hists_1d_1[1], where=(hists_1d_1[0]>=j[0])*(hists_1d_1[0]<=j[1]), facecolor="lightgreen", alpha=0.2)#facecolor=(255/255,89/255,71/255,.4))#
+                ax.axvline(hists_1d[0][hists_1d[0] >= j[0]][0], color=color, alpha=1, linestyle=":", linewidth=linewidth)
+                ax.axvline(hists_1d[0][hists_1d[0] <= j[1]][-1], color=color, alpha=1, linestyle=":", linewidth=linewidth)
+            for j in HPDI95:
+                #ax.fill_between(hists_1d_1[0], 0, hists_1d_1[1], where=(hists_1d_1[0]>=j[0])*(hists_1d_1[0]<=j[1]), facecolor="lightgreen", alpha=0.2)#facecolor=(255/255,89/255,71/255,.4))#
+                ax.axvline(hists_1d[0][hists_1d[0] >= j[0]][0], color=color, alpha=1, linestyle="-.", linewidth=linewidth)
+                ax.axvline(hists_1d[0][hists_1d[0] <= j[1]][-1], color=color, alpha=1, linestyle="-.", linewidth=linewidth)
+            for j in HPDI68:
+                #ax.fill_between(hists_1d_1[0], 0, hists_1d_1[1], where=(hists_1d_1[0]>=j[0])*(hists_1d_1[0]<=j[1]), facecolor="white", alpha=1)#facecolor=(0,1,0,.5))#
+                ax.axvline(hists_1d[0][hists_1d[0] >= j[0]][0], color=color, alpha=1, linestyle="--", linewidth=linewidth)
+                ax.axvline(hists_1d[0][hists_1d[0] <= j[1]][-1], color=color, alpha=1, linestyle="--", linewidth=linewidth)
+                title_i = r"%s"%title + ": ["+"{0:1.2e}".format(j[0])+","+"{0:1.2e}".format(j[1])+"]"
+            if i == 0:
+                x1, x2, _, _ = ax.axis()
+                ax.set_xlim(x1*1.3, x2)
+            ax.set_title(title_i, fontsize=10)
+        for yi in range(nndims):
+            for xi in range(yi):
+                ax = axes[yi, xi]
+                if xi == 0:
+                    x1, x2, _, _ = ax.axis()
+                    ax.set_xlim(x1*1.3, x2)
+                ax.grid(True, linestyle="--", linewidth=1)
+                ax.tick_params(axis="both", which="major", labelsize=16)
+        fig.subplots_adjust(top=0.85,wspace=0.25, hspace=0.25)
+        fig.suptitle(r"%s" % (plot_title), fontsize=26)
+        #fig.text(0.5 ,1, r"%s" % plot_title, fontsize=26)
+        colors = [color, "black", "black", "black"]
+        red_patch = matplotlib.patches.Patch(color=colors[0])  # , label="The red data")
+        #blue_patch = matplotlib.patches.Patch(color=colors[1])  # , label="The blue data")
+        line1 = matplotlib.lines.Line2D([0], [0], color=colors[0], lw=int(7+2*nndims))
+        line2 = matplotlib.lines.Line2D([0], [0], color=colors[1], linewidth=3, linestyle="--")
+        line3 = matplotlib.lines.Line2D([0], [0], color=colors[2], linewidth=3, linestyle="-.")
+        line4 = matplotlib.lines.Line2D([0], [0], color=colors[3], linewidth=3, linestyle=":")
+        lines = [line1, line2, line3, line4]
+        fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc="upper right")#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
+        #plt.tight_layout()
+        plt.savefig(figure_filename)#, dpi=200)  # ,dpi=200)
+        utils.append_without_duplicate(self.figures_list, figure_filename)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved figure",
+                               "file name": path.split(figure_filename)[-1],
+                               "file path": figure_filename}
+        print(r"%s" % figure_filename, "created and saved in", str(end-start), "s.", show=verbose)
+        print("Plot done and saved in", end-start, "s.", show=verbose)
+
     def plot_corners_2samp(self, X1, X2, W1=None, W2=None, pars=None, max_points=None, nbins=50, pars_labels=None,
                      HPDI1_dic={"sample": "train", "type": "true"}, HPDI2_dic={"sample": "test", "type": "true"},
                      ranges_extend=None, title1 = None, title2 = None,
@@ -2894,8 +3001,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             HPDI1 = [inference.HPDI(samp1[:,i], intervals = intervals, weights=W1, nbins=nbins, print_hist=False, optimize_binning=True) for i in range(nndims)]
             HPDI2 = [inference.HPDI(samp2[:, i], intervals=intervals, weights=W2, nbins=nbins,print_hist=False, optimize_binning=True) for i in range(nndims)]
         levels1 = np.array([[np.sort(inference.HPD_quotas(samp1[:,[i,j]], nbins=nbins, intervals = inference.CI_from_sigma([1, 2, 3]), weights=W1)).tolist() for j in range(nndims)] for i in range(nndims)])
-        levels2 = np.array([[np.sort(inference.HPD_quotas(samp2[:, [i, j]], nbins=nbins, intervals=inference.CI_from_sigma(
-            [1, 2, 3]), weights=W2)).tolist() for j in range(nndims)] for i in range(nndims)])
+        levels2 = np.array([[np.sort(inference.HPD_quotas(samp2[:, [i, j]], nbins=nbins, intervals=inference.CI_from_sigma([1, 2, 3]), weights=W2)).tolist() for j in range(nndims)] for i in range(nndims)])
         fig, axes = plt.subplots(nndims, nndims, figsize=(3*nndims, 3*nndims))
         figure1 = corner(samp1, bins=nbins, weights=W1, labels=[r"%s" % s for s in labels], 
                          fig=fig, max_n_ticks=6, color=color1, plot_contours=True, smooth=True, 

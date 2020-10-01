@@ -436,18 +436,26 @@
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.chunks">chunks() (in module DNNLikelihood.utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="inference.html#DNNLikelihood.inference.CI_from_sigma">CI_from_sigma() (in module DNNLikelihood.inference)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data/methods.html#DNNLikelihood.Data.close_opened_dataset">close_opened_dataset() (Data method)</a>
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.closest_power_of_two">closest_power_of_two() (in module DNNLikelihood.utils)</a>
 </li>
-      <li><a href="likelihood/methods.html#DNNLikelihood.Lik.compute_maximum_logpdf">compute_maximum_logpdf() (Lik method)</a>
+      <li><a href="inference.html#DNNLikelihood.inference.compute_maximum_logpdf">compute_maximum_logpdf() (in module DNNLikelihood.inference)</a>
+
+      <ul>
+        <li><a href="likelihood/methods.html#DNNLikelihood.Lik.compute_maximum_logpdf">(Lik method)</a>
 </li>
-      <li><a href="likelihood/methods.html#DNNLikelihood.Lik.compute_profiled_maxima">compute_profiled_maxima() (Lik method)</a>
+      </ul></li>
+      <li><a href="inference.html#DNNLikelihood.inference.compute_profiled_maxima_logpdf">compute_profiled_maxima_logpdf() (in module DNNLikelihood.inference)</a>
+
+      <ul>
+        <li><a href="likelihood/methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf">(Lik method)</a>
 </li>
+      </ul></li>
       <li><a href="data/methods.html#DNNLikelihood.Data.compute_sample_weights">compute_sample_weights() (Data method)</a>
 
       <ul>
@@ -475,6 +483,10 @@
 </li>
       </ul></li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.data_dictionary">data_dictionary (Data attribute)</a>
+</li>
+      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.data_max">data_max (DnnLik attribute)</a>
+</li>
+      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.data_profiled_max">data_profiled_max (DnnLik attribute)</a>
 </li>
       <li><a href="data/arguments.html#Data.data_X">data_X (Data argument)</a>
 
@@ -560,10 +572,6 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="inference.html#DNNLikelihood.inference.find_maximum">find_maximum() (in module DNNLikelihood.inference)</a>
-</li>
-      <li><a href="inference.html#DNNLikelihood.inference.find_prof_maximum">find_prof_maximum() (in module DNNLikelihood.inference)</a>
-</li>
       <li><a href="utils.html#DNNLikelihood.utils.flatten_list">flatten_list() (in module DNNLikelihood.utils)</a>
 </li>
   </ul></td>
@@ -628,6 +636,8 @@
 <h2 id="H">H</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_predictions.h5_file">h5_file (DnnLik.input_predictions attribute)</a>
+</li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.hidden_layers">hidden_layers (DnnLik attribute)</a>
 </li>
       <li><a href="corner.html#DNNLikelihood.corner.hist2d">hist2d() (in module DNNLikelihood.corner)</a>
@@ -713,8 +723,6 @@
 </li>
       </ul></li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.input_object_h5_file">input_object_h5_file (Data attribute)</a>
-</li>
-      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_predictions_json_file">input_predictions_json_file (DnnLik attribute)</a>
 </li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.input_samples_h5_file">input_samples_h5_file (Data attribute)</a>
 </li>
@@ -835,8 +843,6 @@
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.model_compile">model_compile() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/arguments.html#DnnLik.model_compile_inputs">model_compile_inputs (DnnLik argument)</a>
-</li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.model_compute_max">model_compute_max() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.model_compute_predictions">model_compute_predictions() (DnnLik method)</a>
 </li>
@@ -1028,7 +1034,7 @@
       </ul></li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.output_object_h5_file">output_object_h5_file (Data attribute)</a>
 </li>
-      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_predictions_json_file">output_predictions_json_file (DnnLik attribute)</a>
+      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_predictions_h5_file">output_predictions_h5_file (DnnLik attribute)</a>
 </li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.output_samples_h5_file">output_samples_h5_file (Data attribute)</a>
 </li>
@@ -1154,6 +1160,12 @@
 </li>
       <li><a href="sampler/methods.html#DNNLikelihood.Sampler.plot_chains_logpdf">plot_chains_logpdf() (Sampler method)</a>
 </li>
+      <li><a href="data/methods.html#DNNLikelihood.Data.plot_corners_1samp">plot_corners_1samp() (Data method)</a>
+
+      <ul>
+        <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.plot_corners_1samp">(DnnLik method)</a>
+</li>
+      </ul></li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.plot_corners_2samp">plot_corners_2samp() (DnnLik method)</a>
 </li>
       <li><a href="sampler/methods.html#DNNLikelihood.Sampler.plot_dist">plot_dist() (Sampler method)</a>
@@ -1262,7 +1274,7 @@
 </li>
       <li><a href="data/methods.html#DNNLikelihood.Data.save_object_h5">save_object_h5() (Data method)</a>
 </li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_predictions_json">save_predictions_json() (DnnLik method)</a>
+      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_predictions_h5">save_predictions_h5() (DnnLik method)</a>
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.save_samples">save_samples() (in module DNNLikelihood.utils)</a>
 </li>

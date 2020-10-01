@@ -160,7 +160,7 @@ The maximum of the logpdf, and the corresponding parameters values can be obtain
     >>> 47.26988825197074
 
 Finally, one could profile the logpdf with respect to some of the parameters and compute local maxima through
-the :meth:`Lik.compute_profiled_maxima <DNNLikelihood.Lik.compute_profiled_maxima>` method. This
+the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method. This
 is useful both to initialize chains in an MCMC or to perform profiled likelihood inference. The result is stored in the 
 :attr:`Lik.logpdf_profiled_max <DNNLikelihood.Lik.logpdf_profiled_max>` attribute.
 For instance, profiling with respect to the nuisance parameters for ``10`` values of the signal strength parameter
@@ -168,7 +168,7 @@ on a grid in the ``(-1,1)`` interval can be obtained as follows:
 
 .. code-block:: python
 
-    likelihood.compute_profiled_maxima(pars=[0],pars_ranges=[[-1,1,10]],spacing="grid",verbose=2)
+    likelihood.compute_profiled_maxima_logpdf(pars=[0],pars_ranges=[[-1,1,10]],spacing="grid",verbose=2)
     print(likelihood.logpdf_profiled_max["X"])
     print(likelihood.logpdf_profiled_max["Y"])
 
