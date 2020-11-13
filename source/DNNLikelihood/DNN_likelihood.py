@@ -9,7 +9,7 @@ import re
 import time
 from datetime import datetime
 from decimal import Decimal
-from os import path, remove, sep, startfile, stat
+from os import path, remove, sep, stat
 from timeit import default_timer as timer
 
 import deepdish as dd
@@ -37,7 +37,7 @@ from .resources import Resources
 from .show_prints import print
 
 try:
-    from livelossplot import PlotLossesTensorFlowKeras as PlotLossesKeras
+    from livelossplot import PlotLossesKerasTF as PlotLossesKeras
 except:
     print("No module named 'livelossplot's. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
 
@@ -1093,8 +1093,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print("Setting callbacks")
         for cb in callbacks_string:
             if cb == "PlotLossesKeras":
-                self.output_figure_plot_losses_keras_file = utils.check_rename_file(self.output_figures_base_file+"_plot_losses_keras.pdf")
-                string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
+                #self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
+                #utils.check_rename_file(self.output_figure_plot_losses_keras_file)
+                #string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
+                string = "PlotLossesKeras()"
             elif cb == "ModelCheckpoint":
                 self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
                 self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
@@ -1111,11 +1113,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             print("\tAdded callback:", string, show=verbose)
         for cb in callbacks_dict:
             name = cb["name"]
-            if name == "PlotLossesKeras":
-                self.output_figure_plot_losses_keras_file = utils.check_rename_file(self.output_figures_base_file+"_plot_losses_keras.pdf")
-                string = "fig_path = '"+self.output_figure_plot_losses_keras_file + "', "
-                name = "callbacks."+name
-            elif name == "ModelCheckpoint":
+            #if name == "PlotLossesKeras":
+            #    self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
+            #    utils.check_rename_file(self.output_figure_plot_losses_keras_file)
+            #    string = "fig_path = '"+self.output_figure_plot_losses_keras_file + "', "
+            #    name = "callbacks."+name
+            if name == "ModelCheckpoint":
                 self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
                 self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
                 utils.check_create_folder(self.output_checkpoints_folder)
@@ -3581,6 +3584,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         fig_list = np.array(fig_list).flatten().tolist()
         for fig in fig_list:
             try:
+                from os import startfile
                 startfile(r"%s"%fig)
                 print("File", fig, "opened.", show=verbose)
             except:

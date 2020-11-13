@@ -48,7 +48,13 @@ class Resources(Verbosity):
         local_device_protos = device_lib.list_local_devices()
         id = [x.name for x in local_device_protos if x.device_type == 'CPU'][0]
         local_device_protos = cpuinfo.get_cpu_info()
-        brand = local_device_protos['brand']
+        try:
+            brand = local_device_protos['brand']
+        except:
+            try:
+                brand = local_device_protos['brand_raw']
+            except:
+                brand = ""
         cores_count = local_device_protos['count']
         available_cpu = [id, brand, cores_count]
         print(str(cores_count)+" CPU cores available",show=verbose)
