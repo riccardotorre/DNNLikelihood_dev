@@ -1117,7 +1117,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             #    self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
             #    utils.check_rename_file(self.output_figure_plot_losses_keras_file)
             #    string = "fig_path = '"+self.output_figure_plot_losses_keras_file + "', "
-            #    name = "callbacks."+name
+            ##    name = "callbacks."+name
             if name == "ModelCheckpoint":
                 self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
                 self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
