@@ -22,9 +22,9 @@ def delta_chi2_from_CI(CI, dof=1):
 def ks_w(data1, data2, wei1=None, wei2=None):
     """ Weighted Kolmogorov-Smirnov test. Returns the KS statistics and the p-value (in the limit of large samples).
     """
-    if wei1 is None:
+    if wei1 == None:
         wei1 = np.ones(len(data1))
-    if wei2 is None:
+    if wei2 == None:
         wei2 = np.ones(len(data2))
     wei1 = np.array(wei1)
     wei2 = np.array(wei2)
@@ -51,7 +51,7 @@ def sort_consecutive(data, stepsize=1):
 
 def HPDI(data, intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True):
     intervals = np.sort(np.array([intervals]).flatten())
-    if weights is None:
+    if weights == None:
         weights = np.ones(len(data))
     weights = np.array(weights)
     counter = 0
@@ -159,7 +159,7 @@ def weighted_quantiles(data, quantiles=0.68, weights=None, data_sorted=False, on
         data = np.array(data[data > 0])
     else:
         data = np.array(data)
-    if weights is None:
+    if weights == None:
         weights = np.ones(len(data))
     weights = np.array(weights)
     assert np.all(quantiles >= 0) and np.all(quantiles <= 1), 'quantiles should be in [0, 1]'
@@ -190,13 +190,13 @@ def compute_maximum_logpdf(logpdf,
     """
     """
     def minus_logpdf(x): return -logpdf(x)
-    if ndims is None and pars_init is not None:
+    if ndims == None and pars_init is not None:
         ndims = len(pars_init)
-    elif ndims is not None and pars_init is None:
+    elif ndims != None and pars_init is None:
         pars_init = np.full(ndims, 0)
-    elif ndims is None and pars_init is None:
+    elif ndims == None and pars_init is None:
         print("Please specify npars or pars_init or both", show = verbose)
-    if optimizer is {}:
+    if optimizer == {}:
         method = "Powell"
         options = {}
     else:
@@ -208,7 +208,7 @@ def compute_maximum_logpdf(logpdf,
             options = optimizer["options"]
         except:
             options = {}
-    if pars_bounds is None:
+    if pars_bounds == None:
         #print("Optimizing")
         ml = optimize.minimize(minus_logpdf, pars_init, method=method, options=options)
     else:
@@ -231,14 +231,14 @@ def compute_profiled_maxima_logpdf(logpdf,
     # Add check that fixed param is within bounds
     pars_fixed_pos = np.sort(pars_fixed_pos)
     pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))
-    if ndims is None and pars_init is not None:
+    if ndims == None and pars_init is not None:
         ndims = len(pars_init)
-    elif ndims is not None and pars_init is None:
+    elif ndims != None and pars_init is None:
         pars_init = np.full(ndims, 0)
-    elif ndims is None and pars_init is None:
+    elif ndims == None and pars_init is None:
         print("Please specify ndims or pars_init or both",show=verbose())
     pars_init_reduced = np.delete(pars_init, pars_fixed_pos)
-    if optimizer is {}:
+    if optimizer == {}:
         method = "Powell"
         options = {}
     else:
@@ -252,7 +252,7 @@ def compute_profiled_maxima_logpdf(logpdf,
             options = {}
     def minus_logpdf(x):
         return -logpdf(np.insert(x, pars_fixed_pos_insert, pars_fixed_val))
-    if pars_bounds is None:
+    if pars_bounds == None:
         #print("Optimizing")
         ml = optimize.minimize(minus_logpdf, pars_init_reduced, method=method, options=options)
     else:
@@ -289,9 +289,9 @@ def compute_profiled_maxima_sample(pars_fixed_pos=None,
     """
     X = np.array(X)
     Y = np.array(Y)
-    if type(binwidths) is float or type(binwidths) is int:
+    if type(binwidths) == float or type(binwidths) == int:
         binwidths = np.full(len(pars_fixed_pos), binwidths)
-    if binwidths is not "auto":
+    if binwidths != "auto":
         slicings = []
         for i in range(len(pars_fixed_pos)):
             slicings.append([p > pars_fixed_val[i]-binwidths[i]/2 and p <
@@ -305,7 +305,7 @@ def compute_profiled_maxima_sample(pars_fixed_pos=None,
         pos_next_max = np.where(Y == y_next_max)
         x_max = X[pos_max]
         x_next_max = X[pos_next_max]
-    elif binwidths is "auto":
+    elif binwidths == "auto":
         binwidths = np.full(len(pars_fixed_pos), 0.001)
         npoints = 0
         while npoints < 2:

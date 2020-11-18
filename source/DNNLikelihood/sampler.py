@@ -136,20 +136,20 @@ class Sampler(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         # Setting all arguments
-        if new_sampler is None:
+        if new_sampler == None:
             self.new_sampler=False
         else:
             self.new_sampler=new_sampler
         self.likelihood_script_file = likelihood_script_file
         self.likelihood = likelihood
         self.nsteps_required = nsteps_required
-        if moves_str is not None:
+        if moves_str != None:
             self.moves_str = moves_str
-        if parallel_CPU is None:
+        if parallel_CPU == None:
             self.parallel_CPU = True
         else:
             self.parallel_CPU = parallel_CPU
-        if vectorize is None:
+        if vectorize == None:
             self.vectorize = False
         else:
             self.vectorize = vectorize
@@ -160,21 +160,21 @@ class Sampler(Verbosity):
             try:
                 self.__load(verbose=verbose_sub)
                 self.nsteps_required = nsteps_required
-                if moves_str is not None:
+                if moves_str != None:
                     self.moves_str = moves_str
-                if parallel_CPU is not None:
+                if parallel_CPU != None:
                     self.parallel_CPU = parallel_CPU
-                if vectorize is not None:
+                if vectorize != None:
                     self.vectorize = vectorize
                 self.__init_likelihood()
-                if output_folder is not None:
+                if output_folder != None:
                     self.output_folder = path.abspath(output_folder)
                     self.__check_define_output_files()
             except:
                 print("No sampler files have been found. Initializing a new Sampler object.",show=verbose)
                 self.new_sampler = True
         if self.new_sampler:
-            if moves_str is None:
+            if moves_str == None:
                 print("No moves_str parameter has been specified. moves_str has been set to the emcee default 'StretchMove()'.", show=verbose)
                 self.moves_str = "[(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode='random', factor=None), 0)]"
             self.log = {timestamp: {"action": "created"}}
@@ -227,30 +227,30 @@ class Sampler(Verbosity):
                     - **default**: ``None`` 
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        if self.input_file is not None:
+        if self.input_file != None:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
         if not self.new_sampler:
             ### Tries to determine self.input_file from input arguements
-            if self.input_file is None:
-                if self.likelihood_script_file is not None:
+            if self.input_file == None:
+                if self.likelihood_script_file != None:
                     ### Try to detemine input_file from likelihood_script_file
                     self.__get_input_file_from_likelihood_script_file()
                 else:
-                    if self.likelihood is not None:
+                    if self.likelihood != None:
                         ### Try to detemine input_file from likelihood
                         self.__get_input_file_from_likelihood(verbose=verbose_sub)
                     else:
                         raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
         if self.new_sampler:
             ### Tries to determine self.likelihood_script_file from input arguements
-            if self.likelihood_script_file is not None:
+            if self.likelihood_script_file != None:
                 self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
             else:
-                if self.likelihood is not None:
+                if self.likelihood != None:
                     ### Try to detemine input_file from likelihood
                     self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
                 else:
-                    if self.input_file is not None:
+                    if self.input_file != None:
                         self.__get_likelihood_script_file_from_input_file()
                     else:
                         raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
@@ -415,7 +415,7 @@ class Sampler(Verbosity):
         self.pars_bounds = lik.pars_bounds
         self.pars_labels_auto = utils.define_pars_labels_auto(self.pars_pos_poi, self.pars_pos_nuis)
         self.ndims = lik.ndims
-        if self.output_folder is None:
+        if self.output_folder == None:
             self.output_folder = lik.output_folder
         self.nwalkers = len(self.pars_init_vec)
         #lik.output_folder = path.abspath(self.output_folder)
@@ -559,7 +559,7 @@ class Sampler(Verbosity):
             self.backend.reset(self.nwalkers, self.ndims)
             p0 = self.pars_init_vec
         else:
-            if self.backend is None:
+            if self.backend == None:
                 try:
                     print("Initialize backend from file", self.backend_file,".",show=verbose)
                     self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
@@ -583,8 +583,8 @@ class Sampler(Verbosity):
         #        self.sampler.run_mcmc(p0, nsteps_to_run, progress=False, store=True)
         #else:
         self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndims, self.logpdf, args=self.logpdf_args, kwargs=self.logpdf_kwargs, moves=self.moves, backend=self.backend, vectorize=self.vectorize)
-        self.sampler.run_mcmc(p0, nsteps_to_run, progress=False, store=True)
-        if self.sampler._previous_state is None:
+        self.sampler.run_mcmc(p0, nsteps_to_run, progress=False, store=True, skip_initial_state_check=True)
+        if self.sampler._previous_state == None:
             try:
                 self.sampler._previous_state = self.backend.get_last_sample()
             except:
@@ -655,7 +655,7 @@ class Sampler(Verbosity):
             raise Exception("Number of walkers (nwalkers) determined from the input likelihood is inconsitent with the loaded backend. Please check inputs.",show=verbose)
         if ndims_from_backend != self.ndims:
             raise Exception("Number of steps (nsteps)  determined from the input likelihood is inconsitent with loaded backend. Please check inputs.",show=verbose)
-        if self.nsteps_required is None:
+        if self.nsteps_required == None:
             self.nsteps_required = self.nsteps_available
         elif self.nsteps_available > self.nsteps_required:
             print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",self.nsteps_available, ".",show=verbose)
@@ -693,9 +693,9 @@ class Sampler(Verbosity):
                     - **shape of list**: ``[ ]``
                     - **accepted strings**: ``"original"``, ``"generic"``
         """
-        if pars_labels is "original":
+        if pars_labels == "original":
             return self.pars_labels
-        elif pars_labels is "generic":
+        elif pars_labels == "generic":
             return self.pars_labels_auto
         else:
             return pars_labels
@@ -756,10 +756,10 @@ class Sampler(Verbosity):
             with Pool(n_processes) as pool:
                 self.sampler = emcee.EnsembleSampler(
                     self.nwalkers, self.ndims, self.logpdf, moves=self.moves, pool=pool, backend=self.backend, args=self.logpdf_args)
-                self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store=True)
+                self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store=True, skip_initial_state_check=True)
         else:
             self.sampler = emcee.EnsembleSampler(self.nwalkers, self.ndims, self.logpdf, moves=self.moves, args=self.logpdf_args, backend=self.backend, vectorize=self.vectorize)
-            self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store=True)
+            self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store=True, skip_initial_state_check=True)
         self.nsteps_available = self.backend.iteration
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
@@ -1084,7 +1084,7 @@ class Sampler(Verbosity):
         res = []
         pars = np.array([pars]).flatten()
         for par in pars:
-            if nsteps is "all":
+            if nsteps == "all":
                 nsteps = np.array([self.nsteps_available])
             else:
                 nsteps = np.array([nsteps]).flatten()
@@ -1449,7 +1449,7 @@ class Sampler(Verbosity):
             if "DFM 2017: ML" in methods:
                 succeed = None
                 bound = 5.0
-                while succeed is None:
+                while succeed == None:
                     try:
                         for i, n in enumerate(N[1:-1]):
                             k = i + 1
@@ -1771,11 +1771,11 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if output_folder is None:
+        if output_folder == None:
             output_folder = self.output_folder
         start = timer()
         ### Compute available samples
-        if burnin is "auto":
+        if burnin == "auto":
             try:
                 print("Estimating autocorrelation time to optimize burnin. For very large chains this could take a while.",show=verbose)
                 autocorr_max = int(np.max(self.sampler.get_autocorr_time()))
@@ -1786,7 +1786,7 @@ class Sampler(Verbosity):
             print("Burning automatically set to:", burnin, ".", show=verbose)
         else:
             print("Warning: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.", show=verbose)
-        if thin is "auto":
+        if thin == "auto":
             try:
                 autocorr_max
             except:
@@ -1796,7 +1796,7 @@ class Sampler(Verbosity):
                 thin=int((self.nsteps_available-burnin)*self.nwalkers/nsamples)
                 while len(np.unique(self.sampler.get_log_prob(discard=burnin,thin=thin, flat=True),return_index=False)) < nsamples and thin>1:
                     thin=thin-1
-                if autocorr_max is not None:
+                if autocorr_max != None:
                     if thin < autocorr_max:
                         print("The required number of samples does not allow a thin smaller than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".",show=verbose)
                     else:
@@ -1809,7 +1809,7 @@ class Sampler(Verbosity):
         allsamples=self.sampler.get_chain(discard = burnin, thin = thin, flat = True)
         unique_indices = np.sort(np.unique(logpdf_values,return_index=True)[1])
         available_samples = len(unique_indices)
-        if nsamples is "all":
+        if nsamples == "all":
             pass
         elif nsamples <= available_samples:
             unique_indices = unique_indices[-nsamples:]

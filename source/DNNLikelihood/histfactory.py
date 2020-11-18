@@ -71,7 +71,7 @@ class Histfactory(Verbosity):
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.input_file = input_file
         self.__check_define_input_files()
-        if self.input_file is None:
+        if self.input_file == None:
             self.log = {timestamp: {"action": "created"}}
             self.workspace_folder = path.abspath(workspace_folder)
             self.name = name
@@ -88,7 +88,7 @@ class Histfactory(Verbosity):
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.__load(verbose=verbose_sub)
-            if output_folder is not None:
+            if output_folder != None:
                 self.output_folder = path.abspath(output_folder)
                 self.__check_define_output_files()
             self.save_log(overwrite=True, verbose=verbose_sub)
@@ -104,7 +104,7 @@ class Histfactory(Verbosity):
         depending on the value of the 
         :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>` attribute.
         """
-        if self.input_file is None:
+        if self.input_file == None:
             self.input_h5_file = None
             self.input_log_file = None
         else:
@@ -126,7 +126,7 @@ class Histfactory(Verbosity):
         :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` if 
         it does not exist.
         """
-        if self.output_folder is None:
+        if self.output_folder == None:
             self.output_folder = ""
         self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
@@ -141,7 +141,7 @@ class Histfactory(Verbosity):
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_histfactory"``,
         otherwise it appends the suffix "_histfactory" (preventing duplication if it is already present).
         """
-        if self.name is None:
+        if self.name == None:
             timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.name = "model_"+timestamp+"_histfactory"
         else:
@@ -286,7 +286,7 @@ class Histfactory(Verbosity):
         if len(lik_numbers_list) == 1:
             progressbar = False
         start = timer()
-        if lik_numbers_list is None:
+        if lik_numbers_list == None:
             lik_numbers_list = list(self.likelihoods_dict.keys())
         if progressbar:
             overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
@@ -445,7 +445,7 @@ class Histfactory(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_h5_file, verbose=verbose_sub)
-        if lik_numbers_list is None:
+        if lik_numbers_list == None:
             lik_numbers_list = list(self.likelihoods_dict.keys())
         dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", "input_h5_file",
                                                           "input_log_file", "likelihoods_dict", "log", "verbose"])
@@ -519,7 +519,7 @@ class Histfactory(Verbosity):
             - :attr:`Histfactory.output_log_file <DNNLikelihood.Histfactory.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if output_folder is None:
+        if output_folder == None:
             output_folder = self.output_folder
         start = timer()
         lik = dict(self.likelihoods_dict[lik_number])

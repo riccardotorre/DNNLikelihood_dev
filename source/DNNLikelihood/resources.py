@@ -66,10 +66,10 @@ class Resources(Verbosity):
         if len(self.available_gpus) == 0:
             print('No available GPUs. Running with CPU support only.', show=verbose)
             self.active_gpus = self.available_gpus
-        if gpus_list is None:
+        if gpus_list == None:
             print("No GPUs have been set. Running with CPU support only.", show=verbose)
             self.active_gpus = []
-        elif gpus_list is "all":
+        elif gpus_list == "all":
             gpus_list = list(range(len(self.available_gpus)))
         else:
             if np.amax(np.array(gpus_list)) > len(self.available_gpus)-1:
@@ -96,12 +96,12 @@ class Resources(Verbosity):
         if len(self.available_gpus) == 0:
             print('No available GPUs. Running with CPU support only.', show=verbose)
             self.active_gpus = self.available_gpus
-        if gpus_list is None:
+        if gpus_list == None:
             os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
             os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
             print("No GPUs have been set. Running with CPU support only.", show=verbose)
             self.active_gpus = []
-        elif gpus_list is "all":
+        elif gpus_list == "all":
             gpus_list = list(range(len(self.available_gpus)))
         else:
             if np.amax(np.array(gpus_list)) > len(self.available_gpus)-1:

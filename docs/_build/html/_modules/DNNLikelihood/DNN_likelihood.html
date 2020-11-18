@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,21 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,13 +42,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -56,7 +57,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> DNNLikelihood
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
           
 
           
@@ -83,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -101,6 +103,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -139,7 +142,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -170,7 +173,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 <span class="kn">from</span> <span class="nn">decimal</span> <span class="kn">import</span> <span class="n">Decimal</span>
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">remove</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">startfile</span><span class="p">,</span> <span class="n">stat</span>
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span><span class="p">,</span> <span class="n">remove</span><span class="p">,</span> <span class="n">sep</span><span class="p">,</span> <span class="n">stat</span>
 <span class="kn">from</span> <span class="nn">timeit</span> <span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 
 <span class="kn">import</span> <span class="nn">deepdish</span> <span class="k">as</span> <span class="nn">dd</span>
@@ -198,7 +201,7 @@
 <span class="kn">from</span> <span class="nn">.show_prints</span> <span class="kn">import</span> <span class="nb">print</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">livelossplot</span> <span class="kn">import</span> <span class="n">PlotLossesTensorFlowKeras</span> <span class="k">as</span> <span class="n">PlotLossesKeras</span>
+    <span class="kn">from</span> <span class="nn">livelossplot</span> <span class="kn">import</span> <span class="n">PlotLossesKerasTF</span> <span class="k">as</span> <span class="n">PlotLossesKeras</span>
 <span class="k">except</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No module named &#39;livelossplot&#39;s. Continuing without.</span><span class="se">\n</span><span class="s2">If you wish to plot the loss in real time please install &#39;livelossplot&#39;.&quot;</span><span class="p">)</span>
 
@@ -297,7 +300,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">=</span> <span class="n">input_data_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_input_files</span><span class="p">()</span>  
         <span class="c1">############ Check wheather to create a new DNNLik object from inputs or from files</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1">############ Initialize input parameters from arguments</span>
             <span class="c1">#### Set main inputs</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="p">{</span><span class="n">timestamp</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;created&quot;</span><span class="p">}}</span>
@@ -335,12 +338,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="c1">#### Set main inputs and DataSample</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_on_RAM</span> <span class="o">=</span> <span class="n">load_on_RAM</span>
-            <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
-            <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">seed</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
             <span class="c1">### Set name, folders and files names</span>
-            <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">output_folder</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">()</span>
         <span class="c1">#### Set resources (__resources_inputs is None for a standalone DNNLikelihood and is passed only if the DNNLikelihood</span>
@@ -353,7 +356,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__set_data</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span> <span class="c1"># also sets self.ndims</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__set_tf_objects</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span> <span class="c1"># optimizer, loss, metrics, callbacks</span>
         <span class="c1">### Initialize model, history,scalers, data indices, and predictions</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__load_data_indices</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__load_history</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__load_model</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
@@ -375,7 +378,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">X_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_val</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[]],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">X_test</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_test</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[]],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)]</span>
         <span class="c1">### Save object</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_summary_json</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="c1">#self.save(overwrite=False, verbose=verbose_sub)</span>
@@ -435,7 +438,7 @@
 <span class="sd">        :attr:`DnnLik.input_data_file &lt;DNNLikelihood.DnnLik.input_data_file&gt;` if the object has</span>
 <span class="sd">        been initialized directly from a :class:`Data &lt;DNNLikelihood.Data&gt;` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_summary_json_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_summary_json_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_summary_json_file</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_history_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_idx_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span>
@@ -451,7 +454,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">input_predictions_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span><span class="o">+</span><span class="s2">&quot;_predictions.h5&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_scalers_pickle_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span><span class="o">+</span><span class="s2">&quot;_scalers.pickle&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_tf_model_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span><span class="o">+</span><span class="s2">&quot;_model.h5&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">__check_define_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -493,7 +496,7 @@
 <span class="sd">        :attr:`DnnLik.output_figures_folder &lt;DNNLikelihood.DnnLik.output_figures_folder&gt;`</span>
 <span class="sd">        if they do not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;figures&quot;</span><span class="p">)</span>
@@ -509,7 +512,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">output_tf_model_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_name</span><span class="o">+</span><span class="s2">&quot;_model.h5&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_tf_model_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_name</span><span class="o">+</span><span class="s2">&quot;_model.json&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_tf_model_onnx_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_name</span><span class="o">+</span><span class="s2">&quot;_model.onnx&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">script_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_name</span><span class="o">++</span><span class="s2">&quot;_script.py&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">script_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_files_base_name</span><span class="o">+</span><span class="s2">&quot;_script.py&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_files</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_folder</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_figure_plot_losses_keras_file</span> <span class="o">=</span> <span class="kc">None</span>
@@ -524,7 +527,7 @@
 <span class="sd">        If it is ``None`` it replaces it with </span>
 <span class="sd">        ``&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_DNNLikelihood&quot;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S.</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;model_&quot;</span><span class="o">+</span><span class="n">timestamp</span><span class="o">+</span><span class="s2">&quot;_DNNLikelihood&quot;</span>
 
@@ -627,7 +630,7 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_compile_inputs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_compile_inputs</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__model_compile_inputs</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__model_compile_inputs</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span>
@@ -679,7 +682,7 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_name</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_folder</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">standalone</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is a &#39;standalone&#39; DNNLikelihood and does not belong to a DNNLikelihood_ensemble. The attributes &#39;ensemble_name&#39; and &#39;ensemble_folder&#39; are therefore been set to None.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -693,7 +696,7 @@
 <span class="sd">        to initialize the random state of |numpy_link| and |tf_link| to the value of </span>
 <span class="sd">        :attr:`DnnLik.seed &lt;DNNLikelihood.DnnLik.seed&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
         <span class="n">tf</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">set_seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
@@ -705,7 +708,7 @@
 <span class="sd">        If the :attr:`DnnLik.dtype &lt;DNNLikelihood.DnnLik.dtype&gt;` attribute is ``None``, then it is</span>
 <span class="sd">        set to the default value ``&quot;float64&quot;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;float64&quot;</span>
         <span class="n">K</span><span class="o">.</span><span class="n">set_floatx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
@@ -726,7 +729,7 @@
 <span class="sd">        :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;` attribute is set by importing the :class:`Data &lt;DNNLikelihood.Data&gt;` </span>
 <span class="sd">        object from file.</span>
 <span class="sd">        Once the :class:`Data &lt;DNNLikelihood.Data&gt;` object has been set, the </span>
-<span class="sd">        :attr:`DnnLik.ndims &lt;DNNLikelihood.DnnLik.ndims&gt;` attribute is set from the same attribute of the </span>
+<span class="sd">        :attr:`DnnLik.ndims &lt;DNNLikelihood.DnnLik.ndims&gt;` attribute == set from the same attribute of the </span>
 <span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object, and the two private methods</span>
 <span class="sd">        :meth:`DnnLik.__check_npoints &lt;DNNLikelihood.DnnLik._DnnLik__check_npoints&gt;` and</span>
 <span class="sd">        :meth:`DnnLik.__set_pars_info &lt;DNNLikelihood.DnnLik._DnnLik__set_pars_info&gt;`</span>
@@ -743,14 +746,14 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;At least one of the arguments &#39;data&#39; and &#39;input_data_file&#39; should be specified.</span><span class="se">\n</span><span class="s2">Please specify one and retry.&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">input_file</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Both the arguments &#39;data&#39; and &#39;input_data_file&#39; have been specified. &#39;data&#39; will be ignored and the Data object will be set from &#39;input_data_file&#39;.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">data_X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -876,7 +879,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
             <span class="n">dictionary</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
-        <span class="c1">#if self.model_max is not {}:</span>
+        <span class="c1">#if self.model_max != {}:</span>
         <span class="c1">#    self.model_max[&quot;x&quot;] = np.array(self.model_max[&quot;x&quot;])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">dictionary</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
@@ -1124,13 +1127,13 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__model_optimizer_inputs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__model_optimizer_inputs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">optimizer_string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_optimizer_inputs</span>
-        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__model_optimizer_inputs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__model_optimizer_inputs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_optimizer_inputs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
             <span class="n">string</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;(&quot;</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__model_optimizer_inputs</span><span class="p">,[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">value</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span>
                 <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;, &quot;</span>
             <span class="n">optimizer_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;optimizers.&quot;</span><span class="o">+</span><span class="n">string</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;, )&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
@@ -1249,13 +1252,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">callbacks_strings</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">callbacks_string</span> <span class="o">=</span> <span class="p">[</span><span class="n">cb</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_callbacks_inputs</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">]</span>
-        <span class="n">callbacks_dict</span> <span class="o">=</span> <span class="p">[</span><span class="n">cb</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_callbacks_inputs</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">]</span>
+        <span class="n">callbacks_string</span> <span class="o">=</span> <span class="p">[</span><span class="n">cb</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_callbacks_inputs</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cb</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">]</span>
+        <span class="n">callbacks_dict</span> <span class="o">=</span> <span class="p">[</span><span class="n">cb</span> <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__model_callbacks_inputs</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">cb</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Setting callbacks&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks_string</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">cb</span> <span class="o">==</span> <span class="s2">&quot;PlotLossesKeras&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output_figure_plot_losses_keras_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span><span class="o">+</span><span class="s2">&quot;_plot_losses_keras.pdf&quot;</span>
-                <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;PlotLossesKeras(fig_path=&#39;&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figure_plot_losses_keras_file</span><span class="o">+</span><span class="s2">&quot;&#39;)&quot;</span>
+                <span class="c1">#self.output_figure_plot_losses_keras_file = self.output_figures_base_file+&quot;_plot_losses_keras.pdf&quot;</span>
+                <span class="c1">#utils.check_rename_file(self.output_figure_plot_losses_keras_file)</span>
+                <span class="c1">#string = &quot;PlotLossesKeras(fig_path=&#39;&quot; + self.output_figure_plot_losses_keras_file+&quot;&#39;)&quot;</span>
+                <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;PlotLossesKeras()&quot;</span>
             <span class="k">elif</span> <span class="n">cb</span> <span class="o">==</span> <span class="s2">&quot;ModelCheckpoint&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;checkpoints&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_files</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_checkpoint.</span><span class="si">{epoch:02d}</span><span class="s2">-</span><span class="si">{val_loss:.2f}</span><span class="s2">.h5&quot;</span><span class="p">)</span>
@@ -1272,11 +1277,12 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">Added callback:&quot;</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">cb</span> <span class="ow">in</span> <span class="n">callbacks_dict</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">cb</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;PlotLossesKeras&quot;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">output_figure_plot_losses_keras_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span><span class="o">+</span><span class="s2">&quot;_plot_losses_keras.pdf&quot;</span>
-                <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;fig_path = &#39;&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figure_plot_losses_keras_file</span> <span class="o">+</span> <span class="s2">&quot;&#39;, &quot;</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;callbacks.&quot;</span><span class="o">+</span><span class="n">name</span>
-            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;ModelCheckpoint&quot;</span><span class="p">:</span>
+            <span class="c1">#if name == &quot;PlotLossesKeras&quot;:</span>
+            <span class="c1">#    self.output_figure_plot_losses_keras_file = self.output_figures_base_file+&quot;_plot_losses_keras.pdf&quot;</span>
+            <span class="c1">#    utils.check_rename_file(self.output_figure_plot_losses_keras_file)</span>
+            <span class="c1">#    string = &quot;fig_path = &#39;&quot;+self.output_figure_plot_losses_keras_file + &quot;&#39;, &quot;</span>
+            <span class="c1">##    name = &quot;callbacks.&quot;+name</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;ModelCheckpoint&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;checkpoints&quot;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_files</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_checkpoint.</span><span class="si">{epoch:02d}</span><span class="s2">-</span><span class="si">{val_loss:.2f}</span><span class="s2">.h5&quot;</span><span class="p">)</span>
                 <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_checkpoints_folder</span><span class="p">)</span>
@@ -1292,14 +1298,14 @@
                 <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;callbacks.&quot;</span><span class="o">+</span><span class="n">name</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="n">cb</span><span class="p">,[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;monitor&quot;</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;monitor&quot;</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
                     <span class="k">if</span> <span class="s2">&quot;val_&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;val_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;val_loss&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;val_&quot;</span> <span class="o">+</span> <span class="n">utils</span><span class="o">.</span><span class="n">metric_name_unabbreviate</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
                     <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">value</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="s2">&quot;path&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">:</span>
                     <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;, &quot;</span>
@@ -1356,9 +1362,9 @@
 <span class="sd">                    - **shape of list**: ``[ ]``</span>
 <span class="sd">                    - **accepted strings**: ``&quot;original&quot;``, ``&quot;generic&quot;``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">pars_labels</span> <span class="ow">is</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pars_labels</span> <span class="o">==</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span>
-        <span class="k">elif</span> <span class="n">pars_labels</span> <span class="ow">is</span> <span class="s2">&quot;generic&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">pars_labels</span> <span class="o">==</span> <span class="s2">&quot;generic&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels_auto</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">pars_labels</span>
@@ -1751,7 +1757,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model already built.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">gpu_mode</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">gpu</span> <span class="ow">is</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gpu</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
                 <span class="n">gpu</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">elif</span> <span class="n">gpu</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_gpus</span><span class="p">):</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;gpu&quot;</span><span class="p">,</span> <span class="n">gpu</span><span class="p">,</span>
@@ -1760,7 +1766,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">training_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_gpus</span><span class="p">[</span><span class="n">gpu</span><span class="p">]</span>
             <span class="n">device_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_device</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">gpu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gpu</span> <span class="o">!=</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GPU mode selected without any active GPU. Proceeding with CPU support.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">training_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">available_cpu</span>
             <span class="n">device_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">training_device</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -1829,8 +1835,8 @@
             <span class="n">X_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalerX</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_val</span><span class="p">)</span>
             <span class="n">Y_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalerY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_train</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_train</span><span class="p">))</span>
             <span class="n">Y_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalerY</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_val</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Y_val</span><span class="p">))</span>
-            <span class="nb">print</span><span class="p">([</span><span class="nb">type</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span><span class="nb">type</span><span class="p">(</span><span class="n">X_val</span><span class="p">),</span><span class="nb">type</span><span class="p">(</span><span class="n">Y_train</span><span class="p">),</span><span class="nb">type</span><span class="p">(</span><span class="n">Y_train</span><span class="p">)],</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-            <span class="c1"># If PlotLossesKeras is in callbacks set plot style</span>
+            <span class="c1">#print([type(X_train),type(X_val),type(Y_train),type(Y_train)],show=verbose)</span>
+            <span class="c1"># If PlotLossesKeras == in callbacks set plot style</span>
             <span class="k">if</span> <span class="s2">&quot;PlotLossesKeras&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callbacks_strings</span><span class="p">):</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">mplstyle_path</span><span class="p">)</span>
             <span class="c1"># Train model</span>
@@ -1978,20 +1984,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds_train</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">pass</span>
             <span class="c1">#pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid input for &#39;x_boundaries&#39;. Assuming False.&quot;</span><span class="p">)</span>
             <span class="n">x_boundaries</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="c1"># Scale data</span>
-        <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scaling data.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalerX</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -2066,19 +2072,19 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bla bla bla.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">optimizer</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">dict</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Could not set optimizer. The optimizer argument does not have a valid format.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">optimizer</span> <span class="ow">is</span> <span class="p">{}:</span>
+        <span class="k">if</span> <span class="n">optimizer</span> <span class="o">==</span> <span class="p">{}:</span>
             <span class="n">opt_string</span> <span class="o">=</span> <span class="s2">&quot;optimizers.SGD(learning_rate=1)&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="n">optimizer</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="s2">&quot;scipy&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;scipy&quot;</span><span class="p">:</span>
             <span class="n">opt_string</span> <span class="o">=</span> <span class="s2">&quot;scipy.optimize&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">string</span> <span class="o">=</span> <span class="n">name</span><span class="o">+</span><span class="s2">&quot;(&quot;</span>
                 <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
                         <span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">value</span><span class="o">+</span><span class="s2">&quot;&#39;&quot;</span>
                     <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;=&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;, &quot;</span>
                 <span class="n">opt_string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;optimizers.&quot;</span><span class="o">+</span><span class="n">string</span><span class="o">+</span><span class="s2">&quot;)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;, )&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
@@ -2219,17 +2225,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">pars_init</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pars_init</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pars_init</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds_train</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid input for &#39;x_boundaries&#39;. Assuming False.&quot;</span><span class="p">)</span>
@@ -2366,21 +2372,21 @@
         <span class="n">pars_fixed_pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pars_fixed_pos</span><span class="p">)</span>
         <span class="n">pars_fixed_pos_insert</span> <span class="o">=</span> <span class="n">pars_fixed_pos</span> <span class="o">-</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_fixed_pos</span><span class="p">))</span>
         <span class="n">pars_fixed_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pars_fixed_val</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pars_init</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pars_init</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pars_init</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_fixed_pos</span><span class="p">)):</span>
             <span class="n">pars_init</span><span class="p">[</span><span class="n">pars_fixed_pos</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">pars_fixed_val</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">maxiter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">maxiter</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span>
-        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds_train</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Invalid input for &#39;x_boundaries&#39;. Assuming False.&quot;</span><span class="p">)</span>
@@ -2554,13 +2560,13 @@
         <span class="n">pars_vals</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_sorted_grid</span><span class="p">(</span><span class="n">pars_ranges</span><span class="o">=</span><span class="n">pars_ranges</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of points:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">),</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">pars_vals_bounded</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds_train</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">pass</span>
             <span class="c1">#pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2618,19 +2624,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max_sample_abs_error&quot;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max_sample_abs_error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">sample</span> <span class="ow">is</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sample</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating train data&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">generate_train_data</span><span class="p">()</span>
             <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_train</span>
-        <span class="k">elif</span> <span class="n">sample</span> <span class="ow">is</span> <span class="s2">&quot;val&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">sample</span> <span class="o">==</span> <span class="s2">&quot;val&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_val</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating train data&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">generate_train_data</span><span class="p">()</span>
             <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_val</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_val</span>
-        <span class="k">elif</span> <span class="n">sample</span> <span class="ow">is</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">sample</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_test</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating test data&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">generate_test_data</span><span class="p">()</span>
@@ -2688,19 +2694,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max_sample_abs_error&quot;</span><span class="p">]</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max_sample_abs_error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">sample</span> <span class="ow">is</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">sample</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating train data&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">generate_train_data</span><span class="p">()</span>
             <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_train</span>
-        <span class="k">elif</span> <span class="n">sample</span> <span class="ow">is</span> <span class="s2">&quot;val&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">sample</span> <span class="o">==</span> <span class="s2">&quot;val&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_val</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating train data&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">generate_train_data</span><span class="p">()</span>
             <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_val</span>
             <span class="n">Y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Y_val</span>
-        <span class="k">elif</span> <span class="n">sample</span> <span class="ow">is</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">sample</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_test</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating test data&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">generate_test_data</span><span class="p">()</span>
@@ -2713,13 +2719,13 @@
         <span class="n">pars_vals</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_sorted_grid</span><span class="p">(</span><span class="n">pars_ranges</span><span class="o">=</span><span class="n">pars_ranges</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Total number of points:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars_vals</span><span class="p">),</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">pars_vals_bounded</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;original&quot;</span><span class="p">:</span> 
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="s2">&quot;train&quot;</span><span class="p">:</span>
             <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds_train</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">x_boundaries</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
             <span class="k">pass</span>
             <span class="c1">#pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2828,7 +2834,7 @@
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="c1"># Scale data</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scaling data.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scalerX</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
@@ -2896,7 +2902,7 @@
 <div class="viewcode-block" id="DnnLik.plot_pars_coverage"><a class="viewcode-back" href="../../dnn_likelihood/methods.html#DNNLikelihood.DnnLik.plot_pars_coverage">[docs]</a>    <span class="k">def</span> <span class="nf">plot_pars_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">loglik</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">mplstyle_path</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">pars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pars</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pars</span> <span class="o">=</span> <span class="n">pars</span>
@@ -3015,7 +3021,7 @@
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.3</span>
         <span class="n">intervals</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">CI_from_sigma</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">ranges_extend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ranges_extend</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ranges</span> <span class="o">=</span> <span class="n">extend_corner_range</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ranges</span> <span class="o">=</span> <span class="n">extend_corner_range</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">ranges_extend</span><span class="p">)</span>
@@ -3024,8 +3030,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)</span>
         <span class="n">nndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">max_points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">max_points</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">max_points</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">max_points</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
                 <span class="n">nnn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">max_points</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">nnn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">max_points</span><span class="p">])</span>
@@ -3033,7 +3039,7 @@
             <span class="n">nnn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
         <span class="n">rnd_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)),</span> <span class="n">nnn</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">samp</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">rnd_idx</span><span class="p">][:,</span><span class="n">pars</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">weights</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">rnd_idx</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">HPDI</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s1">&#39;HPDI&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">par</span><span class="p">)][</span><span class="n">HPDI1_dic</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]][</span><span class="n">HPDI1_dic</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">]][</span><span class="nb">str</span><span class="p">(</span><span class="n">interval</span><span class="p">)][</span><span class="s2">&quot;Intervals&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">]</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">]</span>
@@ -3126,7 +3132,7 @@
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.3</span>
         <span class="n">intervals</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">CI_from_sigma</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
-        <span class="k">if</span> <span class="n">ranges_extend</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ranges_extend</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ranges</span> <span class="o">=</span> <span class="n">extend_corner_range</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ranges</span> <span class="o">=</span> <span class="n">extend_corner_range</span><span class="p">(</span><span class="n">X1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">ranges_extend</span><span class="p">)</span>
@@ -3135,8 +3141,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)</span>
         <span class="n">nndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">max_points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">max_points</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">max_points</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">max_points</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
                 <span class="n">nnn1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">X1</span><span class="p">),</span> <span class="n">max_points</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
                 <span class="n">nnn2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">X2</span><span class="p">),</span> <span class="n">max_points</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
             <span class="k">else</span><span class="p">:</span>
@@ -3149,9 +3155,9 @@
         <span class="n">rnd_idx_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">X2</span><span class="p">)),</span> <span class="n">nnn2</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">samp1</span> <span class="o">=</span> <span class="n">X1</span><span class="p">[</span><span class="n">rnd_idx_1</span><span class="p">][:,</span><span class="n">pars</span><span class="p">]</span>
         <span class="n">samp2</span> <span class="o">=</span> <span class="n">X2</span><span class="p">[</span><span class="n">rnd_idx_2</span><span class="p">][:,</span><span class="n">pars</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">W1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">W1</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">W1</span> <span class="o">=</span> <span class="n">W1</span><span class="p">[</span><span class="n">rnd_idx_1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">W2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">W2</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">W2</span> <span class="o">=</span> <span class="n">W2</span><span class="p">[</span><span class="n">rnd_idx_2</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">HPDI1</span> <span class="o">=</span> <span class="p">[[</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s1">&#39;HPDI&#39;</span><span class="p">][</span><span class="nb">str</span><span class="p">(</span><span class="n">par</span><span class="p">)][</span><span class="n">HPDI1_dic</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]][</span><span class="n">HPDI1_dic</span><span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">]][</span><span class="nb">str</span><span class="p">(</span><span class="n">interval</span><span class="p">)][</span><span class="s2">&quot;Intervals&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">interval</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">]</span> <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">]</span>
@@ -3288,11 +3294,11 @@
             <span class="k">return</span> <span class="n">inference</span><span class="o">.</span><span class="n">HPDI</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">CI</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="o">**</span><span class="n">HPDI_kwargs</span><span class="p">)</span>
         <span class="n">start_global</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">pars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pars</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pars_pos_poi</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pars</span> <span class="o">=</span> <span class="n">pars</span>
-        <span class="k">if</span> <span class="n">batch_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">batch_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Compute predictions&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -3742,6 +3748,7 @@
         <span class="n">fig_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">fig_list</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">fig</span> <span class="ow">in</span> <span class="n">fig_list</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">startfile</span>
                 <span class="n">startfile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span><span class="o">%</span><span class="n">fig</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;File&quot;</span><span class="p">,</span> <span class="n">fig</span><span class="p">,</span> <span class="s2">&quot;opened.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
             <span class="k">except</span><span class="p">:</span>
@@ -3789,7 +3796,7 @@
 <span class="sd">            - :attr:`DnnLik.script_file &lt;DNNLikelihood.DnnLik.script_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">model_predict_args</span> <span class="ow">is</span> <span class="p">{}:</span>
+        <span class="k">if</span> <span class="n">model_predict_args</span> <span class="o">==</span> <span class="p">{}:</span>
             <span class="n">model_predict_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="s2">&quot;steps&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;x_boundaries&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;y_boundaries&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;save_log&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;verbose&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">script_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_file</span><span class="p">:</span>
             <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;import DNNLikelihood</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
@@ -3829,11 +3836,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -3844,7 +3859,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -136,7 +136,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.input_data_file = input_data_file
         self.__check_define_input_files()  
         ############ Check wheather to create a new DNNLik object from inputs or from files
-        if self.input_files_base_name is None:
+        if self.input_files_base_name == None:
             ############ Initialize input parameters from arguments
             #### Set main inputs
             self.log = {timestamp: {"action": "created"}}
@@ -174,12 +174,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.data = None
             #### Set main inputs and DataSample
             self.load_on_RAM = load_on_RAM
-            if dtype is not None:
+            if dtype != None:
                 self.dtype = dtype
-            if seed is not None:
+            if seed != None:
                 self.seed = seed
             ### Set name, folders and files names
-            if output_folder is not None:
+            if output_folder != None:
                 self.output_folder = path.abspath(output_folder)
                 self.__check_define_output_files()
         #### Set resources (__resources_inputs is None for a standalone DNNLikelihood and is passed only if the DNNLikelihood
@@ -192,7 +192,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.__set_data(verbose=verbose_sub) # also sets self.ndims
         self.__set_tf_objects(verbose=verbose_sub) # optimizer, loss, metrics, callbacks
         ### Initialize model, history,scalers, data indices, and predictions
-        if self.input_files_base_name is not None:
+        if self.input_files_base_name != None:
             self.__load_data_indices(verbose=verbose_sub)
             self.__load_history(verbose=verbose_sub)
             self.__load_model(verbose=verbose_sub)
@@ -214,7 +214,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.X_val, self.Y_val = [np.array([[]], dtype=self.dtype),np.array([], dtype=self.dtype)]
         self.X_test, self.Y_test = [np.array([[]], dtype=self.dtype),np.array([], dtype=self.dtype)]
         ### Save object
-        if self.input_files_base_name is None:
+        if self.input_files_base_name == None:
             self.save_summary_json(overwrite=False, verbose=verbose_sub)
             self.save_log(overwrite=False, verbose=verbose_sub)
             #self.save(overwrite=False, verbose=verbose_sub)
@@ -274,7 +274,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>` if the object has
         been initialized directly from a :class:`Data <DNNLikelihood.Data>` object.
         """
-        if self.input_summary_json_file is None:
+        if self.input_summary_json_file == None:
             self.input_files_base_name = self.input_summary_json_file
             self.input_history_json_file = self.input_files_base_name
             self.input_idx_h5_file = self.input_files_base_name
@@ -290,7 +290,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.input_predictions_h5_file = self.input_files_base_name+"_predictions.h5"
             self.input_scalers_pickle_file = self.input_files_base_name+"_scalers.pickle"
             self.input_tf_model_h5_file = self.input_files_base_name+"_model.h5"
-        if self.input_data_file is not None:
+        if self.input_data_file != None:
             self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
 
     def __check_define_output_files(self):
@@ -332,7 +332,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :attr:`DnnLik.output_figures_folder <DNNLikelihood.DnnLik.output_figures_folder>`
         if they do not exist.
         """
-        if self.output_folder is None:
+        if self.output_folder == None:
             self.output_folder = ""
         self.output_folder = path.abspath(self.output_folder)
         self.output_figures_folder = path.join(self.output_folder, "figures")
@@ -363,7 +363,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         If it is ``None`` it replaces it with 
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_DNNLikelihood"``.
         """
-        if self.name is None:
+        if self.name == None:
             timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.name = "model_"+timestamp+"_DNNLikelihood"
 
@@ -466,7 +466,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     - **default**: ``None`` 
         """
         verbose, _ = self.set_verbosity(verbose)
-        if self.__model_compile_inputs is None:
+        if self.__model_compile_inputs == None:
             self.__model_compile_inputs = {}
         try:
             self.__model_compile_inputs["loss"]
@@ -518,7 +518,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     - **default**: ``None`` 
         """
         verbose, _ = self.set_verbosity(verbose)
-        if self.ensemble_name is None:
+        if self.ensemble_name == None:
             self.ensemble_folder = None
             self.standalone = True
             print("This is a 'standalone' DNNLikelihood and does not belong to a DNNLikelihood_ensemble. The attributes 'ensemble_name' and 'ensemble_folder' are therefore been set to None.",show=verbose)
@@ -532,7 +532,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         to initialize the random state of |numpy_link| and |tf_link| to the value of 
         :attr:`DnnLik.seed <DNNLikelihood.DnnLik.seed>`.
         """
-        if self.seed is None:
+        if self.seed == None:
             self.seed = 1
         np.random.seed(self.seed)
         tf.random.set_seed(self.seed)
@@ -544,7 +544,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         If the :attr:`DnnLik.dtype <DNNLikelihood.DnnLik.dtype>` attribute is ``None``, then it is
         set to the default value ``"float64"``.
         """
-        if self.dtype is None:
+        if self.dtype == None:
             self.dtype = "float64"
         K.set_floatx(self.dtype)
 
@@ -565,7 +565,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` attribute is set by importing the :class:`Data <DNNLikelihood.Data>` 
         object from file.
         Once the :class:`Data <DNNLikelihood.Data>` object has been set, the 
-        :attr:`DnnLik.ndims <DNNLikelihood.DnnLik.ndims>` attribute is set from the same attribute of the 
+        :attr:`DnnLik.ndims <DNNLikelihood.DnnLik.ndims>` attribute == set from the same attribute of the 
         :class:`Data <DNNLikelihood.Data>` object, and the two private methods
         :meth:`DnnLik.__check_npoints <DNNLikelihood.DnnLik._DnnLik__check_npoints>` and
         :meth:`DnnLik.__set_pars_info <DNNLikelihood.DnnLik._DnnLik__set_pars_info>`
@@ -582,14 +582,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if self.data is None and self.input_data_file is None:
+        if self.data == None and self.input_data_file == None:
             raise Exception(
                 "At least one of the arguments 'data' and 'input_data_file' should be specified.\nPlease specify one and retry.")
-        elif self.data is not None and self.input_data_file is None:
+        elif self.data != None and self.input_data_file == None:
             self.input_data_file = self.data.input_file
             self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
         else:
-            if self.data is not None:
+            if self.data != None:
                 print("Both the arguments 'data' and 'input_data_file' have been specified. 'data' will be ignored and the Data object will be set from 'input_data_file'.", show=verbose)
             self.data = Data(name=None,
                              data_X=None,
@@ -715,7 +715,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.__dict__.update(dictionary)
         with open(self.input_log_file) as json_file:
             dictionary = json.load(json_file)
-        #if self.model_max is not {}:
+        #if self.model_max != {}:
         #    self.model_max["x"] = np.array(self.model_max["x"])
         self.log = dictionary
         end = timer()
@@ -963,13 +963,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if type(self.__model_optimizer_inputs) is str:
+        if type(self.__model_optimizer_inputs) == str:
             self.optimizer_string = self.__model_optimizer_inputs
-        elif type(self.__model_optimizer_inputs) is dict:
+        elif type(self.__model_optimizer_inputs) == dict:
             name = self.__model_optimizer_inputs["name"]
             string = name+"("
             for key, value in utils.dic_minus_keys(self.__model_optimizer_inputs,["name"]).items():
-                if type(value) is str:
+                if type(value) == str:
                     value = "'"+value+"'"
                 string = string+str(key)+"="+str(value)+", "
             optimizer_string = str("optimizers."+string+")").replace(", )", ")")
@@ -1088,8 +1088,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         callbacks_strings = []
-        callbacks_string = [cb for cb in self.__model_callbacks_inputs if type(cb) is str]
-        callbacks_dict = [cb for cb in self.__model_callbacks_inputs if type(cb) is dict]
+        callbacks_string = [cb for cb in self.__model_callbacks_inputs if type(cb) == str]
+        callbacks_dict = [cb for cb in self.__model_callbacks_inputs if type(cb) == dict]
         print("Setting callbacks")
         for cb in callbacks_string:
             if cb == "PlotLossesKeras":
@@ -1134,14 +1134,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 string = ""
                 name = "callbacks."+name
             for key, value in utils.dic_minus_keys(cb,["name"]).items():
-                if key == "monitor" and type(value) is str:
+                if key == "monitor" and type(value) == str:
                     if "val_" in value:
                         value = value.split("val_")[1]
                     if value == "loss":
                         value = "val_loss"
                     else:
                         value = "val_" + utils.metric_name_unabbreviate(value)
-                if type(value) is str:
+                if type(value) == str:
                     value = "'"+value+"'"
                 if not "path" in key:
                     string = string+str(key)+"="+str(value)+", "
@@ -1198,9 +1198,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     - **shape of list**: ``[ ]``
                     - **accepted strings**: ``"original"``, ``"generic"``
         """
-        if pars_labels is "original":
+        if pars_labels == "original":
             return self.pars_labels
-        elif pars_labels is "generic":
+        elif pars_labels == "generic":
             return self.pars_labels_auto
         else:
             return pars_labels
@@ -1593,7 +1593,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             print("Model already built.", show=verbose)
             return
         if self.gpu_mode:
-            if gpu is "auto":
+            if gpu == "auto":
                 gpu = 0
             elif gpu > len(self.available_gpus):
                 print("gpu", gpu,
@@ -1602,7 +1602,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.training_device = self.available_gpus[gpu]
             device_id = self.training_device[0]
         else:
-            if gpu is not "auto":
+            if gpu != "auto":
                 print("GPU mode selected without any active GPU. Proceeding with CPU support.",show=verbose)
             self.training_device = self.available_cpu
             device_id = self.training_device[0]
@@ -1672,7 +1672,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             Y_train = self.scalerY.transform(self.Y_train.reshape(-1, 1)).reshape(len(self.Y_train))
             Y_val = self.scalerY.transform(self.Y_val.reshape(-1, 1)).reshape(len(self.Y_val))
             #print([type(X_train),type(X_val),type(Y_train),type(Y_train)],show=verbose)
-            # If PlotLossesKeras is in callbacks set plot style
+            # If PlotLossesKeras == in callbacks set plot style
             if "PlotLossesKeras" in str(self.callbacks_strings):
                 plt.style.use(mplstyle_path)
             # Train model
@@ -1820,20 +1820,20 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        if x_boundaries is "original": 
+        if x_boundaries == "original": 
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is True:
+        elif x_boundaries == True:
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is "train":
+        elif x_boundaries == "train":
             pars_bounds = np.array(self.pars_bounds_train)
-        elif x_boundaries is False:
+        elif x_boundaries == False:
             pass
             #pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         else:
             print("Invalid input for 'x_boundaries'. Assuming False.")
             x_boundaries = False
         # Scale data
-        if batch_size is None:
+        if batch_size == None:
             batch_size = self.batch_size
         print("Scaling data.", show=verbose)
         X = self.scalerX.transform(X)
@@ -1908,19 +1908,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         Bla bla bla.
         """
-        if type(optimizer) is not dict:
+        if type(optimizer) != dict:
             raise Exception("Could not set optimizer. The optimizer argument does not have a valid format.")
-        if optimizer is {}:
+        if optimizer == {}:
             opt_string = "optimizers.SGD(learning_rate=1)"
         else:
             name = optimizer["name"]
-        if name is "scipy":
+        if name == "scipy":
             opt_string = "scipy.optimize"
         else:
             try:
                 string = name+"("
                 for key, value in utils.dic_minus_keys(optimizer,["name"]).items():
-                    if type(value) is str:
+                    if type(value) == str:
                         value = "'"+value+"'"
                     string = string+str(key)+"="+str(value)+", "
                 opt_string = str("optimizers."+string+")").replace(", )", ")")
@@ -2061,17 +2061,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        if pars_init is None:
+        if pars_init == None:
             pars_init = np.array(self.pars_central).astype(self.dtype)
         else:
             pars_init = np.array(pars_init).astype(self.dtype)
-        if x_boundaries is "original":
+        if x_boundaries == "original":
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is True:
+        elif x_boundaries == True:
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is "train":
+        elif x_boundaries == "train":
             pars_bounds = np.array(self.pars_bounds_train)
-        elif x_boundaries is False:
+        elif x_boundaries == False:
             pass
         else:
             print("Invalid input for 'x_boundaries'. Assuming False.")
@@ -2208,21 +2208,21 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         pars_fixed_pos = np.sort(pars_fixed_pos)
         pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))
         pars_fixed_val = np.array(pars_fixed_val)
-        if pars_init is None:
+        if pars_init == None:
             pars_init = np.array(self.pars_central).astype(self.dtype)
         else:
             pars_init = np.array(pars_init).astype(self.dtype)
         for i in range(len(pars_fixed_pos)):
             pars_init[pars_fixed_pos[i]] = pars_fixed_val[i]
-        if maxiter is None:
+        if maxiter == None:
             maxiter=1000*self.ndims
-        if x_boundaries is "original": 
+        if x_boundaries == "original": 
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is True:
+        elif x_boundaries == True:
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is "train":
+        elif x_boundaries == "train":
             pars_bounds = np.array(self.pars_bounds_train)
-        elif x_boundaries is False:
+        elif x_boundaries == False:
             pass
         else:
             print("Invalid input for 'x_boundaries'. Assuming False.")
@@ -2396,13 +2396,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
         print("Total number of points:", len(pars_vals),".",show=verbose)
         pars_vals_bounded = []
-        if x_boundaries is "original": 
+        if x_boundaries == "original": 
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is True:
+        elif x_boundaries == True:
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is "train":
+        elif x_boundaries == "train":
             pars_bounds = np.array(self.pars_bounds_train)
-        elif x_boundaries is False:
+        elif x_boundaries == False:
             pass
             #pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         else:
@@ -2460,19 +2460,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.predictions["logpdf_max_sample_abs_error"]
         except:
             self.predictions["logpdf_max_sample_abs_error"] = {}
-        if sample is "train":
+        if sample == "train":
             if len(self.X_train) <= 1:
                 print("Generating train data", show=verbose)
                 self.generate_train_data()
             X = self.X_train
             Y = self.Y_train
-        elif sample is "val":
+        elif sample == "val":
             if len(self.X_val) <= 1:
                 print("Generating train data", show=verbose)
                 self.generate_train_data()
             X = self.X_val
             Y = self.Y_val
-        elif sample is "test":
+        elif sample == "test":
             if len(self.X_test) <= 1:
                 print("Generating test data", show=verbose)
                 self.generate_test_data()
@@ -2530,19 +2530,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.predictions["logpdf_profiled_max_sample_abs_error"]
         except:
             self.predictions["logpdf_profiled_max_sample_abs_error"] = {}
-        if sample is "train":
+        if sample == "train":
             if len(self.X_train) <= 1:
                 print("Generating train data", show=verbose_sub)
                 self.generate_train_data()
             X = self.X_train
             Y = self.Y_train
-        elif sample is "val":
+        elif sample == "val":
             if len(self.X_val) <= 1:
                 print("Generating train data", show=verbose_sub)
                 self.generate_train_data()
             X = self.X_val
             Y = self.Y_val
-        elif sample is "test":
+        elif sample == "test":
             if len(self.X_test) <= 1:
                 print("Generating test data", show=verbose_sub)
                 self.generate_test_data()
@@ -2555,13 +2555,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
         print("Total number of points:", len(pars_vals),".",show=verbose)
         pars_vals_bounded = []
-        if x_boundaries is "original": 
+        if x_boundaries == "original": 
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is True:
+        elif x_boundaries == True:
             pars_bounds = np.array(self.pars_bounds)
-        elif x_boundaries is "train":
+        elif x_boundaries == "train":
             pars_bounds = np.array(self.pars_bounds_train)
-        elif x_boundaries is False:
+        elif x_boundaries == False:
             pass
             #pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
         else:
@@ -2670,7 +2670,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         # Scale data
         start = timer()
-        if batch_size is None:
+        if batch_size == None:
             batch_size = self.batch_size
         print("Scaling data.", show=verbose)
         X = self.scalerX.transform(X)
@@ -2738,7 +2738,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
     def plot_pars_coverage(self, pars=None, loglik=True, show_plot=False, overwrite=False,verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         plt.style.use(mplstyle_path)
-        if pars is None:
+        if pars == None:
             pars = self.pars_pos_poi
         else:
             pars = pars
@@ -2857,7 +2857,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         start = timer()
         linewidth = 1.3
         intervals = inference.CI_from_sigma([1, 2, 3])
-        if ranges_extend is None:
+        if ranges_extend == None:
             ranges = extend_corner_range(X, X, pars, 0)
         else:
             ranges = extend_corner_range(X, X, pars, ranges_extend)
@@ -2866,8 +2866,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if not overwrite:
             utils.check_rename_file(figure_filename)
         nndims = len(pars)
-        if max_points is not None:
-            if type(max_points) is list:
+        if max_points != None:
+            if type(max_points) == list:
                 nnn = np.min([len(X), max_points[0]])
             else:
                 nnn = np.min([len(X), max_points])
@@ -2875,7 +2875,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             nnn = len(X)
         rnd_idx = np.random.choice(np.arange(len(X)), nnn, replace=False)
         samp = X[rnd_idx][:,pars]
-        if weights is not None:
+        if weights != None:
             weights = weights[rnd_idx]
         try:
             HPDI = [[self.predictions['HPDI'][str(par)][HPDI1_dic["type"]][HPDI1_dic["sample"]][str(interval)]["Intervals"] for interval in intervals] for par in pars]
@@ -2968,7 +2968,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         start = timer()
         linewidth = 1.3
         intervals = inference.CI_from_sigma([1, 2, 3])
-        if ranges_extend is None:
+        if ranges_extend == None:
             ranges = extend_corner_range(X1, X2, pars, 0)
         else:
             ranges = extend_corner_range(X1, X2, pars, ranges_extend)
@@ -2977,8 +2977,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if not overwrite:
             utils.check_rename_file(figure_filename)
         nndims = len(pars)
-        if max_points is not None:
-            if type(max_points) is list:
+        if max_points != None:
+            if type(max_points) == list:
                 nnn1 = np.min([len(X1), max_points[0]])
                 nnn2 = np.min([len(X2), max_points[1]])
             else:
@@ -2991,9 +2991,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         rnd_idx_2 = np.random.choice(np.arange(len(X2)), nnn2, replace=False)
         samp1 = X1[rnd_idx_1][:,pars]
         samp2 = X2[rnd_idx_2][:,pars]
-        if W1 is not None:
+        if W1 != None:
             W1 = W1[rnd_idx_1]
-        if W2 is not None:
+        if W2 != None:
             W2 = W2[rnd_idx_2]
         try:
             HPDI1 = [[self.predictions['HPDI'][str(par)][HPDI1_dic["type"]][HPDI1_dic["sample"]][str(interval)]["Intervals"] for interval in intervals] for par in pars]
@@ -3130,11 +3130,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             return inference.HPDI(X, CI, weights=weights, **HPDI_kwargs)
         start_global = timer()
         start = timer()
-        if pars is None:
+        if pars == None:
             pars = self.data.pars_pos_poi.tolist()
         else:
             pars = pars
-        if batch_size is None:
+        if batch_size == None:
             batch_size = self.batch_size
         print("Compute predictions", show=verbose)
         if len(self.X_train) <= 1:
@@ -3632,7 +3632,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.script_file <DNNLikelihood.DnnLik.script_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if model_predict_args is {}:
+        if model_predict_args == {}:
             model_predict_args = {"batch_size": self.batch_size, "steps": None, "x_boundaries": False, "y_boundaries": False, "save_log": False, "verbose": False}
         with open(self.script_file, "w") as out_file:
             out_file.write("import DNNLikelihood\n"+"\n" +

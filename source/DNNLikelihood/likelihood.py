@@ -73,7 +73,7 @@ class Lik(Verbosity):
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.input_file = input_file
         self.__check_define_input_files()
-        if self.input_file is None:
+        if self.input_file == None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
@@ -93,7 +93,7 @@ class Lik(Verbosity):
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.__load(verbose=verbose_sub)
-            if output_folder is not None:
+            if output_folder != None:
                 self.output_folder = path.abspath(output_folder)
                 self.__check_define_output_files()
                 self.save(overwrite=False, verbose=verbose_sub)
@@ -111,7 +111,7 @@ class Lik(Verbosity):
         depending on the value of the 
         :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>` attribute.
         """
-        if self.input_file is None:
+        if self.input_file == None:
             self.input_h5_file = None
             self.input_log_file = None
         else:
@@ -141,7 +141,7 @@ class Lik(Verbosity):
         and :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>` if 
         they do not exist.
         """
-        if self.output_folder is None:
+        if self.output_folder == None:
             self.output_folder = ""
         self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
         self.output_figures_folder = path.join(self.output_folder, "figures")
@@ -160,7 +160,7 @@ class Lik(Verbosity):
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_likelihood"``,
         otherwise it appends the suffix "_likelihood" (preventing duplication if it is already present).
         """
-        if self.name is None:
+        if self.name == None:
             timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.name = "model_"+timestamp+"_likelihood"
         else:
@@ -326,9 +326,9 @@ class Lik(Verbosity):
                     - **shape of list**: ``[ ]``
                     - **accepted strings**: ``"original"``, ``"auto"``
         """
-        if pars_labels is "original":
+        if pars_labels == "original":
             return self.pars_labels
-        elif pars_labels is "auto":
+        elif pars_labels == "auto":
             return self.pars_labels_auto
         else:
             return pars_labels
@@ -583,7 +583,7 @@ class Lik(Verbosity):
             if not (np.all(x_pars >= self.pars_bounds[:, 0]) and np.all(x_pars <= self.pars_bounds[:, 1])):
                 return -np.inf
             tmp = self.logpdf(x_pars)
-            if type(tmp) is np.ndarray or type(tmp) is list:
+            if type(tmp) == np.ndarray or type(tmp) == list:
                 tmp = tmp[0]
             if np.isnan(tmp):
                 tmp = -np.inf
@@ -628,7 +628,7 @@ class Lik(Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if pars_init is None:
+        if pars_init == None:
             pars_init = np.array(self.pars_central)
         else:
             pars_init = np.array(pars_init)
@@ -758,14 +758,14 @@ class Lik(Verbosity):
                 "padding": "0px", "margin": "-5px 0px -20px 0px"})
             display(overall_progress)
             iterator = 0
-        if pars_init is None:
+        if pars_init == None:
             pars_init = np.array(self.pars_central)
         else:
             pars_init = np.array(pars_init)
         pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
         print("Total number of points:", len(pars_vals),".",show=verbose)
         pars_vals_bounded = []
-        if pars_bounds is None:
+        if pars_bounds == None:
             for i in range(len(pars_vals)):
                 if (np.all(pars_vals[i] >= self.pars_bounds[pars, 0]) and np.all(pars_vals[i] <= self.pars_bounds[pars, 1])):
                     pars_vals_bounded.append(pars_vals[i])
@@ -903,7 +903,7 @@ class Lik(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         plt.style.use(mplstyle_path)
         pars_labels = self.__set_pars_labels(pars_labels)
-        if pars_init is None:
+        if pars_init == None:
             pars_init = self.pars_central
         for par in pars:
             par_number = par[0]

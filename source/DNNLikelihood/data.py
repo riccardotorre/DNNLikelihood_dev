@@ -85,7 +85,7 @@ class Data(Verbosity):
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
         self.input_file = input_file
         self.__check_define_input_files()
-        if self.input_file is None:
+        if self.input_file == None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
@@ -110,16 +110,16 @@ class Data(Verbosity):
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.load_on_RAM = load_on_RAM
-            if dtype is not None:
-                if type(dtype) is str:
+            if dtype != None:
+                if type(dtype) == str:
                     self.dtype_required = dtype
-                elif type(dtype) is list:
+                elif type(dtype) == list:
                     self.dtype_required = dtype[1]
             else:
                 self.dtype_required = "float64"
             self.__load(verbose=verbose_sub)
             self.__define_test_fraction()
-            if output_folder is not None:
+            if output_folder != None:
                 self.output_folder = path.abspath(output_folder)
                 self.__check_define_output_files()
             self.save_log(overwrite=True, verbose=verbose_sub)
@@ -141,7 +141,7 @@ class Data(Verbosity):
         depending on the value of the 
         :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute.
         """
-        if self.input_file is None:
+        if self.input_file == None:
             self.input_object_h5_file = None
             self.input_samples_h5_file = None
             self.input_log_file = None
@@ -173,7 +173,7 @@ class Data(Verbosity):
         :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` if 
         it does not exist.
         """
-        if self.output_folder is None:
+        if self.output_folder == None:
             self.output_folder = ""
         self.output_folder = path.abspath(self.output_folder)
         self.output_figures_folder = path.join(self.output_folder, "figures")
@@ -192,7 +192,7 @@ class Data(Verbosity):
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_data"``,
         otherwise it appends the suffix "_data" (preventing duplication if it is already present).
         """
-        if self.name is None:
+        if self.name == None:
             timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
             self.name = "model_"+timestamp+"_data"
         else:
@@ -207,13 +207,13 @@ class Data(Verbosity):
         :attr:`Data.data_X <DNNLikelihood.Data.data_X>` and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`
         into the dtype corresponding to :attr:`Data.dtype_stored <DNNLikelihood.Data.dtype_stored>`.
         """
-        if self.dtype is None:
+        if self.dtype == None:
             self.dtype_stored = "float64"
             self.dtype_required = "float64"
-        elif type(self.dtype) is str:
+        elif type(self.dtype) == str:
             self.dtype_stored = self.dtype
             self.dtype_required = self.dtype
-        elif type(self.dtype) is list:
+        elif type(self.dtype) == list:
             self.dtype_stored = self.dtype[0]
             self.dtype_required = self.dtype[1]
         del(self.dtype)
@@ -262,36 +262,36 @@ class Data(Verbosity):
                     - **default**: ``None`` 
         """
         verbose, _ = self.set_verbosity(verbose)
-        if self.pars_central is not None:
+        if self.pars_central != None:
             self.pars_central = np.array(self.pars_central)
             if len(self.pars_central) != self.ndims:
                 raise Exception("The length of the parameters central values array does not match the number of dimensions.")
         else:
             self.pars_central = np.zeros(self.ndims)
             print("No central values for the parameters 'pars_central' has been specified. They have been set to zero for all\
-                parameters. If they are known it is better to build the object providing parameters central values.", show=verbose)
-        if self.pars_pos_nuis is not None and self.pars_pos_poi is not None:
+                parameters. If they are known it == better to build the object providing parameters central values.", show=verbose)
+        if self.pars_pos_nuis != None and self.pars_pos_poi != None:
             if len(self.pars_pos_poi)+len(self.pars_pos_nuis) == self.ndims:
                 self.pars_pos_nuis = np.array(self.pars_pos_nuis)
                 self.pars_pos_poi = np.array(self.pars_pos_poi)
             else:
                 raise Exception("The number of parameters positions do not match the number of dimensions.")
-        elif self.pars_pos_nuis is None and self.pars_pos_poi is None:
+        elif self.pars_pos_nuis == None and self.pars_pos_poi == None:
             print("The positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified. Assuming all parameters are parameters of interest.", show=verbose)
             self.pars_pos_nuis = np.array([])
             self.pars_pos_poi = np.array(list(range(self.ndims)))
-        elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
+        elif self.pars_pos_nuis != None and self.pars_pos_poi == None:
             print("Only the positions of the nuisance parameters have been specified. Assuming all other parameters are parameters of interest.", show=verbose)
             self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_nuis))
-        elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
+        elif self.pars_pos_nuis == None and self.pars_pos_poi != None:
             print("Only the positions of the parameters of interest have been specified. Assuming all other parameters are nuisance parameters.", show=verbose)
             self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_poi))
         self.pars_labels_auto = utils.define_pars_labels_auto(self.pars_pos_poi, self.pars_pos_nuis)
-        if self.pars_labels is None:
+        if self.pars_labels == None:
             self.pars_labels = self.pars_labels_auto
         elif len(self.pars_labels) != self.ndims:
             raise Exception("The number of parameters labels do not match the number of dimensions.")
-        if self.pars_bounds is not None:
+        if self.pars_bounds != None:
             self.pars_bounds = np.array(self.pars_bounds)
         else:
             self.pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
@@ -359,7 +359,7 @@ class Data(Verbosity):
         :attr:`Data.data_X <DNNLikelihood.Data.data_X>` and
         :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`.
         """
-        if self.test_fraction is None:
+        if self.test_fraction == None:
             self.test_fraction = 0
         self.train_range = range(int(round(self.npoints*(1-self.test_fraction))))
         self.test_range = range(int(round(self.npoints*(1-self.test_fraction))),self.npoints)
@@ -405,15 +405,15 @@ class Data(Verbosity):
                 strings with the length of the parameters array. If ``pars_labels="original"`` or ``pars_labels="generic"``
                 the function returns the value of :attr:`Sampler.pars_labels <DNNLikelihood.Data.pars_labels>`
                 or :attr:`Data.pars_labels_auto <DNNLikelihood.Data.pars_labels_auto>`, respectively,
-                while if ``pars_labels`` is a list, the function just returns the input.
+                while if ``pars_labels`` == a list, the function just returns the input.
 
                     - **type**: ``list`` or ``str``
                     - **shape of list**: ``[ ]``
                     - **accepted strings**: ``"original"``, ``"generic"``
         """
-        if pars_labels is "original":
+        if pars_labels == "original":
             return self.pars_labels
-        elif pars_labels is "generic":
+        elif pars_labels == "generic":
             return self.pars_labels_auto
         else:
             return pars_labels
@@ -442,7 +442,7 @@ class Data(Verbosity):
             - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        if self.test_fraction is None:
+        if self.test_fraction == None:
             self.test_fraction = 0
         self.train_range = range(int(round(self.npoints*(1-self.test_fraction))))
         self.test_range = range(int(round(self.npoints*(1-self.test_fraction))),self.npoints)
@@ -1306,23 +1306,23 @@ class Data(Verbosity):
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if legend_labels is not None:
+        if legend_labels != None:
             if len(legend_labels) != len(intervals):
                 raise Exception("Legend labels should either be None or a list of strings with the same length as intervals.")
         plt.style.use(mplstyle_path)
         start = timer()
         X = np.array(X)
         weigths = np.array(weights)
-        if title is None:
+        if title == None:
             title = ""
         linewidth = 1.3
-        if ranges_extend is None:
+        if ranges_extend == None:
             ranges = extend_corner_range(X, X, pars, 0)
         else:
             ranges = extend_corner_range(X, X, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        if figure_filename is None:
+        if figure_filename == None:
             figure_filename = self.output_figures_base_file+"_corner_posterior_pars_" + "_".join([str(i) for i in pars]) +".pdf"
         else:
             figpath, figname, figext = [path.split(figure_filename)[0]]+list(path.splitext(path.split(figure_filename)[1]))
@@ -1330,8 +1330,8 @@ class Data(Verbosity):
         if not overwrite:
             utils.check_rename_file(figure_filename)
         nndims = len(pars)
-        if max_points is not None:
-            if type(max_points) is list:
+        if max_points != None:
+            if type(max_points) == list:
                 nnn = np.min([len(X), max_points[0]])
             else:
                 nnn = np.min([len(X), max_points])
@@ -1339,7 +1339,7 @@ class Data(Verbosity):
             nnn = len(X)
         rnd_idx = np.random.choice(np.arange(len(X)), nnn, replace=False)
         samp = X[rnd_idx][:,pars]
-        if weights is not None:
+        if weights != None:
             weights = weights[rnd_idx]
         print("Computing HPDIs.", show=verbose)
         HPDI = [inference.HPDI(samp[:,i], intervals = intervals, weights=weights, nbins=nbins, print_hist=False, optimize_binning=False) for i in range(nndims)]
@@ -1390,7 +1390,7 @@ class Data(Verbosity):
         red_patch = matplotlib.patches.Patch(color=colors[0])  # , label="The red data")
         #blue_patch = matplotlib.patches.Patch(color=colors[1])  # , label="The blue data")
         lines = [matplotlib.lines.Line2D([0], [0], color=colors[1], linewidth=3, linestyle=l) for l in linestyles]
-        if legend_labels is None:
+        if legend_labels == None:
             legend_labels = [intervals_str[i] for i in range(len(intervals))]
         fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc="upper right")#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
         #plt.tight_layout()

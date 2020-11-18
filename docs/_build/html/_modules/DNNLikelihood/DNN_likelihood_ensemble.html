@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,12 +11,21 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+
+  
   
   
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,13 +42,6 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -56,7 +57,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home"> DNNLikelihood
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
           
 
           
@@ -83,6 +84,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -101,6 +103,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -139,7 +142,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
@@ -220,7 +223,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_gpus</span><span class="p">(</span><span class="n">gpus_id_list</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="c1">############ Check wheather to create a new DNNLik_ensemble object from inputs or from files</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">DNNLik_ensemble_input_folder</span> <span class="o">=</span> <span class="n">DNNLik_ensemble_input_folder</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">DNNLik_ensemble_input_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">DNNLik_ensemble_input_folder</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1">############ Initialize input parameters from arguments</span>
             <span class="c1">#### Set main inputs and DataSample</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_name</span> <span class="o">=</span> <span class="n">ensemble_name</span>
@@ -229,7 +232,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_folder</span> <span class="o">=</span> <span class="n">ensemble_folder</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_on_RAM</span> <span class="o">=</span> <span class="n">load_on_RAM</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
-            <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="s2">&quot;float64&quot;</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
@@ -260,7 +263,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">load_on_RAM</span> <span class="o">=</span> <span class="n">load_on_RAM</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">summary_log</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">dtype</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="o">=</span> <span class="n">summary_log</span><span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">same_data</span> <span class="o">=</span> <span class="n">summary_log</span><span class="p">[</span><span class="s1">&#39;same_data&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__set_seed</span><span class="p">()</span>
@@ -348,7 +351,7 @@
 
         <span class="c1">#### Generate or import members (and save summary_log)</span>
         <span class="c1">#</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">DNNLik_ensemble_input_folder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">DNNLik_ensemble_input_folder</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">generate_members</span><span class="p">(</span><span class="n">verbose</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__import_members</span><span class="p">()</span>
@@ -364,11 +367,11 @@
         <span class="c1">#tf.DType = &quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">!=</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Input file is ignored when a data object is provided&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Either a DataSample object or a dataset input file name should be passed while you passed none.</span><span class="se">\n</span><span class="s2">Please input one and retry.&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">data_X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">data_Y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -392,7 +395,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pars_labels</span>
         
     <span class="k">def</span> <span class="nf">__set_ensemble_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_name</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">name</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d</span><span class="si">{4}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">-\d</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">string</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
@@ -416,7 +419,7 @@
     <span class="k">def</span> <span class="nf">__set_ensemble_folder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">global</span> <span class="n">ShowPrints</span>
         <span class="n">ShowPrints</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ensemble_folder</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_folder</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_folder</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;/&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">ensemble_name</span><span class="p">)</span>
@@ -647,7 +650,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seeds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">n_members</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">n_members</span><span class="p">,</span><span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
             <span class="n">members_to_generate</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_members</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">members_to_generate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">n</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
@@ -676,7 +679,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">verbose_2</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">members_list</span> <span class="ow">is</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">members_list</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
             <span class="n">members_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_members</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_data</span><span class="p">:</span>
             <span class="n">proceed</span> <span class="o">=</span> <span class="kc">True</span>
@@ -704,7 +707,7 @@
     <span class="k">def</span> <span class="nf">train_member_on_device</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">member</span><span class="p">,</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="k">global</span> <span class="n">ShowPrints</span>
         <span class="n">ShowPrints</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="k">if</span> <span class="n">gpu</span> <span class="ow">is</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">gpu</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
             <span class="n">gpu</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">elif</span> <span class="n">gpu</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">available_gpus</span><span class="p">):</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;GPU&quot;</span><span class="p">,</span> <span class="n">gpu</span><span class="p">,</span> <span class="s2">&quot;does not exist. Continuing on first active GPU.&quot;</span><span class="p">)</span>
@@ -726,7 +729,7 @@
             <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">members_list</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">train_member_on_device</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">gpus_id_list</span> <span class="ow">is</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gpus_id_list</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
                 <span class="n">gpus_id_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_gpus</span><span class="p">)))</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">members_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">gpus_id_list</span><span class="p">):</span>
                 <span class="n">gpus_id_list</span> <span class="o">=</span> <span class="n">gpus_id_list</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">members_list</span><span class="p">)]</span>
@@ -818,7 +821,7 @@
             <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">members_list</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">train_member_on_device</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">gpu</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">gpus_id_list</span> <span class="ow">is</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gpus_id_list</span> <span class="o">==</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
                 <span class="n">gpus_id_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_gpus</span><span class="p">)))</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">members_list</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">gpus_id_list</span><span class="p">):</span>
                 <span class="n">gpus_id_list</span> <span class="o">=</span> <span class="n">gpus_id_list</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">members_list</span><span class="p">)]</span>
@@ -910,11 +913,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -925,7 +936,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

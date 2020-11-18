@@ -59,7 +59,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         self.set_gpus(gpus_id_list,verbose=True)
         ############ Check wheather to create a new DNNLik_ensemble object from inputs or from files
         self.DNNLik_ensemble_input_folder = DNNLik_ensemble_input_folder
-        if self.DNNLik_ensemble_input_folder is None:
+        if self.DNNLik_ensemble_input_folder == None:
             ############ Initialize input parameters from arguments
             #### Set main inputs and DataSample
             self.ensemble_name = ensemble_name
@@ -68,7 +68,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
             self.ensemble_folder = ensemble_folder
             self.load_on_RAM = load_on_RAM
             self.seed = seed
-            if dtype is None:
+            if dtype == None:
                 self.dtype = "float64"
             else:
                 self.dtype = dtype
@@ -99,7 +99,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
             self.load_on_RAM = load_on_RAM
             self.seed = summary_log['seed']
             self.dtype = dtype
-            if self.dtype is None:
+            if self.dtype == None:
                 self.dtype = summary_log['dtype']
             self.same_data = summary_log['same_data']
             self.__set_seed()
@@ -187,7 +187,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
 
         #### Generate or import members (and save summary_log)
         #
-        if self.DNNLik_ensemble_input_folder is None:
+        if self.DNNLik_ensemble_input_folder == None:
             self.generate_members(verbose=-1)
         else:
             self.__import_members()
@@ -203,11 +203,11 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         #tf.DType = ""
 
     def __set_data(self):
-        if self.data is not None and self.input_data_file is not None:
+        if self.data != None and self.input_data_file != None:
             print("Input file is ignored when a data object is provided")
-        elif self.data is None and self.input_data_file is None:
+        elif self.data == None and self.input_data_file == None:
             raise Exception("Either a DataSample object or a dataset input file name should be passed while you passed none.\nPlease input one and retry.")
-        elif self.data is None and self.input_data_file is not None:
+        elif self.data == None and self.input_data_file != None:
             self.data = Data(name=None,
                              data_X=None,
                              data_Y=None,
@@ -231,7 +231,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         self.pars_labels = self.data.pars_labels
         
     def __set_ensemble_name(self):
-        if self.ensemble_name is None:
+        if self.ensemble_name == None:
             string = self.data.name
             try:
                 match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', string).group()
@@ -255,7 +255,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
     def __set_ensemble_folder(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        if self.ensemble_folder is not None:
+        if self.ensemble_folder != None:
             utils.check_rename_folder(self.ensemble_folder)
         else:
             utils.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
@@ -486,7 +486,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         else:
             np.random.seed(self.seed)
             self.seeds = np.random.choice(np.arange(100*self.n_members),self.n_members,replace=False)
-        if n is "all":
+        if n == "all":
             members_to_generate = range(self.n_members)
         else:
             members_to_generate = np.array([n]).flatten()
@@ -515,7 +515,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         else:
             verbose_2 = verbose
         start = timer()
-        if members_list is "all":
+        if members_list == "all":
             members_list = list(range(self.n_members))
         if self.same_data:
             proceed = True
@@ -543,7 +543,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
     def train_member_on_device(self, member, gpu="auto", verbose=2):
         global ShowPrints
         ShowPrints = verbose
-        if gpu is "auto":
+        if gpu == "auto":
             gpu = 0
         elif gpu > len(self.available_gpus):
             print("GPU", gpu, "does not exist. Continuing on first active GPU.")
@@ -565,7 +565,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
             for member in members_list:
                 self.train_member_on_device(member, gpu="auto", verbose=2)
         else:
-            if gpus_id_list is "all":
+            if gpus_id_list == "all":
                 gpus_id_list = list(range(len(self.active_gpus)))
             if len(members_list) < len(gpus_id_list):
                 gpus_id_list = gpus_id_list[:len(members_list)]
@@ -657,7 +657,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
             for member in members_list:
                 self.train_member_on_device(member, gpu="auto", verbose=2)
         else:
-            if gpus_id_list is "all":
+            if gpus_id_list == "all":
                 gpus_id_list = list(range(len(self.active_gpus)))
             if len(members_list) < len(gpus_id_list):
                 gpus_id_list = gpus_id_list[:len(members_list)]

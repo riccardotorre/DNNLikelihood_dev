@@ -37,7 +37,7 @@ class Verbosity():
             ``[verbose,verbose_sub]``.
         """
         #global verbose
-        if verbose is None:
+        if verbose == None:
             verbose = self.verbose
         if verbose < 0:
             verbose_sub = 0

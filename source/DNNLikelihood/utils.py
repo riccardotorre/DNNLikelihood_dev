@@ -24,8 +24,8 @@ class _FunctionWrapper(object):
     """
     def __init__(self, f, args, kwargs):
         self.f = f
-        self.args = [] if args is None else args
-        self.kwargs = {} if kwargs is None else kwargs
+        self.args = [] if args == None else args
+        self.kwargs = {} if kwargs == None else kwargs
 
     def __call__(self, x):
         try:
@@ -102,14 +102,14 @@ def filename_without_datetime(name):
         match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', file).group()
     except:
         match = ""
-    if match is not "":
+    if match != "":
         file = file.replace(match, "")+extension
     else:
         file = file+"_"+extension
 
 def check_rename_file(path,timestamp=None,verbose=True):
     if os.path.exists(path):
-        if timestamp is None:
+        if timestamp == None:
             now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         else:
             now = timestamp
@@ -120,7 +120,7 @@ def check_rename_file(path,timestamp=None,verbose=True):
             match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', file).group()
         except:
             match = ""
-        if match is not "":
+        if match != "":
             new_path = file.replace(match,now)+extension
         else:
             new_path = os.path.join(filepath,"old_"+filename+"_"+now+extension)
@@ -134,7 +134,7 @@ def check_delete_file(path):
 
 def check_rename_folder(path, timestamp=None):
     if os.path.exists(path):
-        if timestamp is None:
+        if timestamp == None:
             now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
         else:
             now = timestamp
@@ -143,7 +143,7 @@ def check_rename_folder(path, timestamp=None):
             match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', path).group()
         except:
             match = ""
-        if match is not "":
+        if match != "":
             new_path = path.replace(match, now)
         else:
             new_path = path+"_"+now
@@ -168,7 +168,7 @@ def save_samples(allsamples, logpdf_values, data_sample_filename, name):
     print("File saved in", end-start,"seconds.\nFile size is", statinfo.st_size, ".")
 
 #def set_param(obj_name, par_name):
-#    if eval(par_name) is None:
+#    if eval(par_name) == None:
 #        exec("%s = %s" % (par_name, obj_name+"."+par_name))
 #    else:
 #        setattr(eval(obj_name), par_name, eval(par_name))
@@ -211,9 +211,9 @@ def convert_types_dict(d):
     for k, v in d.items():
         if isinstance(v, dict):
             convert_types_dict(v)
-        elif type(v) is np.ndarray:
+        elif type(v) == np.ndarray:
             d[k] = v.tolist()
-        elif type(v) is list:
+        elif type(v) == list:
             if str in [type(q) for q in flatten_list(v)]:
                 d[k] = np.array(v, dtype=object).tolist()
             else:
@@ -256,14 +256,14 @@ def product_dict(**kwargs):
         yield dict(zip(keys, instance))
 
 def dic_minus_keys(dictionary, keys):
-    if type(keys) is str:
+    if type(keys) == str:
         shallow_copy = dict(dictionary)
         try:
             del shallow_copy[keys]
         except:
             pass
         return shallow_copy
-    elif type(keys) is list:
+    elif type(keys) == list:
         shallow_copy = dict(dictionary)
         for i in keys:
             try:
