@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -221,7 +221,7 @@
 </style>
 <div class="section" id="arguments">
 <span id="likelihood-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#Lik.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object.
@@ -234,7 +234,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.logpdf">
 <code class="sig-name descname">logpdf</code><a class="headerlink" href="#Lik.logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Callable function returning the logpdf given parameters and additional arguments, passed through the
@@ -296,7 +296,7 @@ by the <a class="reference internal" href="#Lik.logpdf" title="Lik.logpdf"><code
 </ul>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.logpdf_args">
 <code class="sig-name descname">logpdf_args</code><a class="headerlink" href="#Lik.logpdf_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optional list of additional positional arguments required by the
@@ -309,7 +309,7 @@ by the <a class="reference internal" href="#Lik.logpdf" title="Lik.logpdf"><code
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.logpdf_kwargs">
 <code class="sig-name descname">logpdf_kwargs</code><a class="headerlink" href="#Lik.logpdf_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optional dictionary of additional keyword arguments required by the
@@ -321,7 +321,7 @@ by the <a class="reference internal" href="#Lik.logpdf" title="Lik.logpdf"><code
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.pars_central">
 <code class="sig-name descname">pars_central</code><a class="headerlink" href="#Lik.pars_central" title="Permalink to this definition">¶</a></dt>
 <dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing central values of the parameters.
@@ -335,7 +335,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.pars_pos_poi">
 <code class="sig-name descname">pars_pos_poi</code><a class="headerlink" href="#Lik.pars_pos_poi" title="Permalink to this definition">¶</a></dt>
 <dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing the positions in the parameters list of the
@@ -350,7 +350,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.pars_pos_nuis">
 <code class="sig-name descname">pars_pos_nuis</code><a class="headerlink" href="#Lik.pars_pos_nuis" title="Permalink to this definition">¶</a></dt>
 <dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing the positions in the parameters list of the
@@ -365,7 +365,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.pars_labels">
 <code class="sig-name descname">pars_labels</code><a class="headerlink" href="#Lik.pars_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>List containing the parameters names as strings.
@@ -381,7 +381,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.pars_bounds">
 <code class="sig-name descname">pars_bounds</code><a class="headerlink" href="#Lik.pars_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing containing bounds for the parameters.
@@ -395,7 +395,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.output_folder">
 <code class="sig-name descname">output_folder</code><a class="headerlink" href="#Lik.output_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
@@ -408,7 +408,7 @@ It is used to set the <a class="reference internal" href="attributes.html#DNNLik
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.input_file">
 <code class="sig-name descname">input_file</code><a class="headerlink" href="#Lik.input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name (either relative to the code execution folder or absolute, with or without extension)
@@ -424,7 +424,7 @@ attribute.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="argument">
+<dl class="py argument">
 <dt id="Lik.verbose">
 <code class="sig-name descname">verbose</code><a class="headerlink" href="#Lik.verbose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argument used to set the verbosity mode of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a>

@@ -15,18 +15,18 @@ Arguments
 
 .. argument:: data
 
-   Input :class:`Data <DNNLikelihood.Data>` object.
+   Input :mod:`Data <data>` object.
    Either this or the :argument:`input_data_file` input argument should be provided to initialize a 
    :class:`DnnLik <DNNLikelihood.DnnLik>` object and to set the
    :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` attribute.
       
-      - **type**: :class:`Data <DNNLikelihood.Data>` object or ``None``
+      - **type**: :mod:`Data <data>` object or ``None``
       - **default**: ``None``
 
 .. argument:: input_data_file
 
    File name (either relative to the code execution folder or absolute, with or without any of the
-   .json or .h5 extensions) of a saved :class:`Data <DNNLikelihood.Data>` object. 
+   .json or .h5 extensions) of a saved :mod:`Data <data>` object. 
    Either this or the :argument:`data` input argument should be provided to initialize a 
    :class:`DnnLik <DNNLikelihood.DnnLik>` objectand to set the
    :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` attribute.
@@ -66,7 +66,7 @@ Arguments
    :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object to specify if the same
    train/val data are used for the different :class:`DnnLiks <DNNLikelihood.DnnLik>` in the
    ensemble or not. In this way :class:`DnnLik <DNNLikelihood.DnnLik>` object knows how to
-   deal with the corresponding :class:`Data <DNNLikelihood.Data>` object to generate train/val data.
+   deal with the corresponding :mod:`Data <data>` object to generate train/val data.
    It is used to ste the :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>` attribute.
 
       - **type**: ``bool``
@@ -288,7 +288,7 @@ Arguments
    :class:`DnnLik <DNNLikelihood.DnnLik>` object is created from within the 
    :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` one in order to sync resources between the 
    different :class:`DnnLiks <DNNLikelihood.DnnLik>`
-   (see :ref:`the DnnLikEnsemble object <DnnLikEnsemble_object>`).
+   (see the :mod:`DNNLikEnsemble <dnn_likelihood_ensemble>` object).
 
    - **type**: ``None`` or ``dict`` with the following structure:
 

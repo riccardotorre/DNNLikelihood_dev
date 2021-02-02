@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -222,7 +222,7 @@
 </style>
 <div class="section" id="attributes">
 <h1>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h1>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.backend">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">backend</code><a class="headerlink" href="#DNNLikelihood.Sampler.backend" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <code class="docutils literal notranslate"><span class="pre">emcee.Backends</span></code> object (see the <a href="https://emcee.readthedocs.io/en/stable/user/backends/"  target="_blank"> emcee.Backends</a> documentation for details).
@@ -235,7 +235,7 @@ It is initialized (either from scratch or through an existing file) by the
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.backend_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">backend_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.backend_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name (with absolute path) of the <a href="https://emcee.rhttps://emcee.readthedocs.io/en/stable/"  target="_blank"> emcee</a> HDF5 backend file.
@@ -248,7 +248,7 @@ See the <a href="https://emcee.readthedocs.io/en/stable/user/backends/"  target=
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.figures_list">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">figures_list</code><a class="headerlink" href="#DNNLikelihood.Sampler.figures_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of absolute paths to the generated figures.</p>
@@ -259,7 +259,7 @@ See the <a href="https://emcee.readthedocs.io/en/stable/user/backends/"  target=
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.input_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>.
@@ -274,7 +274,7 @@ method for details).</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.input_h5_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">input_h5_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.input_h5_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .h5 file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object (see
@@ -289,7 +289,7 @@ When the latter is <code class="docutils literal notranslate"><span class="pre">
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.input_log_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">input_log_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.input_log_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .log file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object log (see
@@ -304,7 +304,7 @@ When the latter is <code class="docutils literal notranslate"><span class="pre">
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.likelihood_script_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">likelihood_script_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.likelihood_script_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .py script containing the code necessary to intantiate a
@@ -322,7 +322,7 @@ is set.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.log">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">log</code><a class="headerlink" href="#DNNLikelihood.Sampler.log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary containing a log of the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object calls. The dictionary has datetime
@@ -384,7 +384,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt>
 <code class="sig-name descname">Sampler.logpdf:</code></dt>
 <dd><p>Callable function that could accept <code class="docutils literal notranslate"><span class="pre">x_pars</span></code> either as a single point in parameter space corresponding
@@ -449,10 +449,10 @@ of the logpdf.</p>
 </ul>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.logpdf_args">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">logpdf_args</code><a class="headerlink" href="#DNNLikelihood.Sampler.logpdf_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="#DNNLikelihood.Sampler.logpdf_args" title="DNNLikelihood.Sampler.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a>.</p>
+<dd><p>Attribute containing a list of optional arguments (<code class="docutils literal notranslate"><span class="pre">*args</span></code>) for the <code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
@@ -461,7 +461,18 @@ of the logpdf.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
+<dt id="DNNLikelihood.Sampler.logpdf_kwargs">
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">logpdf_kwargs</code><a class="headerlink" href="#DNNLikelihood.Sampler.logpdf_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attribute containing a dictionary of optional keyword arguments (<code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>) for the <code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code> function.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.moves">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">moves</code><a class="headerlink" href="#DNNLikelihood.Sampler.moves" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <code class="docutils literal notranslate"><span class="pre">emcee.moves</span></code> object generated by evaluating the
@@ -474,7 +485,7 @@ See the <a href="https://emcee.readthedocs.io/en/stable/user/moves/"  target="_b
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.moves_str">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">moves_str</code><a class="headerlink" href="#DNNLikelihood.Sampler.moves_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>String representing an instance to an <code class="docutils literal notranslate"><span class="pre">emcee.moves</span></code> object. If <code class="docutils literal notranslate"><span class="pre">None</span></code>
@@ -483,17 +494,18 @@ See the <a href="https://emcee.readthedocs.io/en/stable/user/moves/"  target="_b
 <blockquote>
 <div><ul>
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>example</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;[(emcee.moves.StretchMove(0.7),</span> <span class="pre">0.2),</span> <span class="pre">(emcee.moves.GaussianMove(0.1,</span> <span class="pre">mode='random',factor=None),0.8)]&quot;</span></code></p>
+<li><p><strong>example</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;[(moves.StretchMove(0.7),</span> <span class="pre">0.2),</span> <span class="pre">(moves.GaussianMove(0.1,</span> <span class="pre">mode='random',factor=None),0.8)]&quot;</span></code></p>
 <blockquote>
-<div><p>This gives a move that is 20% StretchMove with parameter 0.7 and 80% GaussianMove with covariance 0.1 and mode “random” (i.e.
-updating a random single parameter at each step).</p>
+<div><p>where <code class="docutils literal notranslate"><span class="pre">moves</span></code> represents the <code class="docutils literal notranslate"><span class="pre">emcee.moves</span></code> class.
+This gives a move that is 20% StretchMove with parameter 0.7 and 80% GaussianMove with covariance 0.1 and mode “random” (i.e.
+updating a single randomly chosen parameter at each step).</p>
 </div></blockquote>
 </li>
 </ul>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.name">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">name</code><a class="headerlink" href="#DNNLikelihood.Sampler.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object. It is used to generate
@@ -508,7 +520,7 @@ by replacing the suffix “_likelihood” with the suffix “_sampler”</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.ndims">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">ndims</code><a class="headerlink" href="#DNNLikelihood.Sampler.ndims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of dimensions of the input vector (i.e. number of
@@ -521,7 +533,7 @@ the first vector in <a class="reference internal" href="#DNNLikelihood.Sampler.p
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.new_sampler">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">new_sampler</code><a class="headerlink" href="#DNNLikelihood.Sampler.new_sampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a>.
@@ -537,7 +549,7 @@ and a new one is created.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.nsteps_available">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">nsteps_available</code><a class="headerlink" href="#DNNLikelihood.Sampler.nsteps_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of MCMC steps available in the current <a class="reference internal" href="#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a>.
@@ -552,7 +564,7 @@ then the <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_requi
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.nsteps_required">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">nsteps_required</code><a class="headerlink" href="#DNNLikelihood.Sampler.nsteps_required" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.nsteps_required" title="Sampler.nsteps_required"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nsteps_required</span></code></a> and representing the
@@ -572,7 +584,7 @@ for a number of steps given by the difference between
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.nwalkers">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">nwalkers</code><a class="headerlink" href="#DNNLikelihood.Sampler.nwalkers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of walkers (equivalent of chains
@@ -585,7 +597,7 @@ for Ensamble Sampler MCMC). It is automatically set to the length of
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.output_figures_base_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">output_figures_base_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.output_figures_base_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the saved figures. It includes the base figure name and is
@@ -599,7 +611,7 @@ automatically generated from the
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.output_folder">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">output_folder</code><a class="headerlink" href="#DNNLikelihood.Sampler.output_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the folder where all output files are saved.
@@ -612,7 +624,7 @@ It is automatically set to the corresponding attribute of the <code class="xref 
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.output_h5_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">output_h5_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.output_h5_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .h5 file where the <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a>
@@ -627,7 +639,7 @@ It is automatically generated from the attribute
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.output_log_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">output_log_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.output_log_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .log file where the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a>
@@ -638,7 +650,7 @@ It is automatically generated from the
 <a class="reference internal" href="#DNNLikelihood.Sampler.name" title="DNNLikelihood.Sampler.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.name</span></code></a> attributes.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.parallel_CPU">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">parallel_CPU</code><a class="headerlink" href="#DNNLikelihood.Sampler.parallel_CPU" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.parallel_CPU" title="Sampler.parallel_CPU"><code class="xref py py-argument docutils literal notranslate"><span class="pre">parallel_CPU</span></code></a>.
@@ -650,7 +662,7 @@ If <code class="docutils literal notranslate"><span class="pre">True</span></cod
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_bounds">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_bounds</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array containing the parameters bounds.
@@ -664,7 +676,7 @@ It is automatically set to the corresponding attribute of the <code class="xref 
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_central">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_central</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_central" title="Permalink to this definition">¶</a></dt>
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array containing central values of the parameters.
@@ -678,7 +690,7 @@ It is automatically set to the corresponding attribute of the <code class="xref 
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_init_vec">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_init_vec</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_init_vec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Array of points with parameters initialization for each
@@ -691,7 +703,7 @@ walker.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_labels">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_labels</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>List containing parameters names as strings.
@@ -707,7 +719,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_labels_auto">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_labels_auto</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_labels_auto" title="Permalink to this definition">¶</a></dt>
 <dd><p>List containing parameters names automatically generated by the function
@@ -725,7 +737,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_pos_nuis">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_pos_nuis</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_pos_nuis" title="Permalink to this definition">¶</a></dt>
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array containing the positions in the parameters list of the nuisance parameters.
@@ -739,7 +751,7 @@ It is automatically set to the corresponding attribute of the <code class="xref 
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_pos_poi">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_pos_poi</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_pos_poi" title="Permalink to this definition">¶</a></dt>
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array containing the positions in the parameters list of the parameters of interest.
@@ -753,7 +765,7 @@ It is automatically set to the corresponding attribute of the <code class="xref 
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.sampler">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">sampler</code><a class="headerlink" href="#DNNLikelihood.Sampler.sampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>An <code class="docutils literal notranslate"><span class="pre">emcee.EnsembleSampler</span></code> object (see the <a href="https://emcee.readthedocs.io/en/stable/user/sampler/#emcee.EnsembleSampler"  target="_blank"> emcee.EnsembleSampler</a> documentation for details).
@@ -766,7 +778,7 @@ method.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.vectorize">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">vectorize</code><a class="headerlink" href="#DNNLikelihood.Sampler.vectorize" title="Permalink to this definition">¶</a></dt>
 <dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the function <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code> is expected to accept a list of
@@ -784,7 +796,7 @@ See the <a href="https://emcee.readthedocs.io/en/stable/user/sampler/#emcee.Ense
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.verbose">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">verbose</code><a class="headerlink" href="#DNNLikelihood.Sampler.verbose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.verbose" title="Sampler.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.

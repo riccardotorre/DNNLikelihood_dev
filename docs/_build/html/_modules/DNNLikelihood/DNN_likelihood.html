@@ -36,7 +36,7 @@
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -436,7 +436,7 @@
 <span class="sd">        :attr:`DnnLik.input_summary_json_file &lt;DNNLikelihood.DnnLik.input_summary_json_file&gt;` attribute.</span>
 <span class="sd">        It also sets the attribute</span>
 <span class="sd">        :attr:`DnnLik.input_data_file &lt;DNNLikelihood.DnnLik.input_data_file&gt;` if the object has</span>
-<span class="sd">        been initialized directly from a :class:`Data &lt;DNNLikelihood.Data&gt;` object.</span>
+<span class="sd">        been initialized directly from a :mod:`Data &lt;data&gt;` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_summary_json_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_files_base_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_summary_json_file</span>
@@ -547,11 +547,11 @@
         <span class="k">if</span> <span class="n">required_points_train_val</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">npoints_train_val_available</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">opened_dataset</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;npoints_train+npoints_val larger than the available number of points in data.</span><span class="se">\</span>
-<span class="s2">                Please reduce npoints_train+npoints_val or change test_fraction in the Data object.&quot;</span><span class="p">)</span>
+<span class="s2">                Please reduce npoints_train+npoints_val or change test_fraction in the :mod:`Data &lt;data&gt;` object.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">required_points_test</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">npoints_test_available</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">opened_dataset</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;npoints_test larger than the available number of points in data.</span><span class="se">\</span>
-<span class="s2">                Please reduce npoints_test or change test_fraction in the Data object.&quot;</span><span class="p">)</span>
+<span class="s2">                Please reduce npoints_test or change test_fraction in the :mod:`Data &lt;data&gt;` object.&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__check_define_model_data_inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -715,7 +715,7 @@
     <span class="k">def</span> <span class="nf">__set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method used by the :meth:`DnnLik.__init__ &lt;DNNLikelihood.DnnLik.__init__&gt;` one</span>
-<span class="sd">        to initialize the :class:`Data &lt;DNNLikelihood.Data&gt;` object saved in the</span>
+<span class="sd">        to initialize the :mod:`Data &lt;data&gt;` object saved in the</span>
 <span class="sd">        :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;` attribute and used to provide data to the </span>
 <span class="sd">        :class:`DnnLik &lt;DNNLikelihood.DnnLik&gt;` object.</span>
 <span class="sd">        Data are set differently depending on the value of the attributes</span>
@@ -724,13 +724,13 @@
 <span class="sd">        input class arguments: :argument:`data` and :argument:`input_data_file`, respectively. If both</span>
 <span class="sd">        are not ``None``, then the former is ignored. If only :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`</span>
 <span class="sd">        is not ``None``, then :attr:`DnnLik.input_data_file &lt;DNNLikelihood.DnnLik.input_data_file&gt;`</span>
-<span class="sd">        is set to the :attr:`Data.input_file &lt;DNNLikelihood.Data.input_file&gt;` attribute of the :class:`Data &lt;DNNLikelihood.Data&gt;` object.</span>
+<span class="sd">        is set to the :attr:`Data.input_file &lt;DNNLikelihood.Data.input_file&gt;` attribute of the :mod:`Data &lt;data&gt;` object.</span>
 <span class="sd">        If :attr:`DnnLik.input_data_file &lt;DNNLikelihood.DnnLik.input_data_file&gt;` is not ``None`` the </span>
 <span class="sd">        :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;` attribute is set by importing the :class:`Data &lt;DNNLikelihood.Data&gt;` </span>
 <span class="sd">        object from file.</span>
-<span class="sd">        Once the :class:`Data &lt;DNNLikelihood.Data&gt;` object has been set, the </span>
+<span class="sd">        Once the :mod:`Data &lt;data&gt;` object has been set, the </span>
 <span class="sd">        :attr:`DnnLik.ndims &lt;DNNLikelihood.DnnLik.ndims&gt;` attribute == set from the same attribute of the </span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object, and the two private methods</span>
+<span class="sd">        :mod:`Data &lt;data&gt;` object, and the two private methods</span>
 <span class="sd">        :meth:`DnnLik.__check_npoints &lt;DNNLikelihood.DnnLik._DnnLik__check_npoints&gt;` and</span>
 <span class="sd">        :meth:`DnnLik.__set_pars_info &lt;DNNLikelihood.DnnLik._DnnLik__set_pars_info&gt;`</span>
 <span class="sd">        are called.</span>
@@ -754,7 +754,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_data_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Both the arguments &#39;data&#39; and &#39;input_data_file&#39; have been specified. &#39;data&#39; will be ignored and the Data object will be set from &#39;input_data_file&#39;.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Both the arguments &#39;data&#39; and &#39;input_data_file&#39; have been specified. &#39;data&#39; will be ignored and the :mod:`Data &lt;data&gt;` object will be set from &#39;input_data_file&#39;.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">Data</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">data_X</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                              <span class="n">data_Y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -786,7 +786,7 @@
 <span class="sd">            - :attr:`DnnLik.pars_labels_auto &lt;DNNLikelihood.DnnLik.pars_labels_auto&gt;`</span>
 <span class="sd">            - :attr:`DnnLik.pars_bounds &lt;DNNLikelihood.DnnLik.pars_bounds&gt;`</span>
 <span class="sd">        </span>
-<span class="sd">        by copying the corresponding attributes of the :class:`Data &lt;DNNLikelihood.Data&gt;` object </span>
+<span class="sd">        by copying the corresponding attributes of the :mod:`Data &lt;data&gt;` object </span>
 <span class="sd">        :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">pars_central</span>
@@ -1020,9 +1020,9 @@
 <span class="sd">        from the file :attr:`DnnLik.input_idx_h5_file &lt;DNNLikelihood.DnnLik.input_idx_h5_file&gt;`.</span>
 <span class="sd">        Once the attributes are set, the items ``&quot;idx_train&quot;``, ``&quot;idx_val&quot;``, and ``&quot;idx_test&quot;``</span>
 <span class="sd">        of the :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;` dictionary attribute</span>
-<span class="sd">        of the :class:`Data &lt;DNNLikelihood.Data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`</span>
+<span class="sd">        of the :mod:`Data &lt;data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`</span>
 <span class="sd">        is updated to match the three index attributes</span>
-<span class="sd">        If the file is not found the attributes are set to ``None`` and the :class:`Data &lt;DNNLikelihood.Data&gt;` object is</span>
+<span class="sd">        If the file is not found the attributes are set to ``None`` and the :mod:`Data &lt;data&gt;` object is</span>
 <span class="sd">        not touched.</span>
 
 <span class="sd">        - **Arguments**</span>
@@ -1374,7 +1374,7 @@
 <span class="sd">        Method that computes weights of :attr:`DnnLik.Y_train &lt;DNNLikelihood.DnnLik.Y_train&gt;`</span>
 <span class="sd">        points given their distribution by calling the</span>
 <span class="sd">        :meth:`Data.compute_sample_weights &lt;DNNLikelihood.Data.compute_sample_weights&gt;` method of the </span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
+<span class="sd">        :mod:`Data &lt;data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
 <span class="sd">        When the :attr:`DnnLik.weighted &lt;DNNLikelihood.DnnLik.weighted&gt;` is ``True``, the method is called</span>
 <span class="sd">        with default arguments when data are generated. Manually call the method after data generation to compute weights with</span>
 <span class="sd">        custom arguments.</span>
@@ -1429,7 +1429,7 @@
 <span class="sd">        equal to the identity.</span>
 <span class="sd">        The method computes the scalers by calling the corresponding method </span>
 <span class="sd">        :meth:`Data.define_scalers &lt;DNNLikelihood.Data.define_scalers&gt;` method of the </span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
+<span class="sd">        :mod:`Data &lt;data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
 
 <span class="sd">        - **Arguments**</span>
 
@@ -1463,7 +1463,7 @@
 <span class="sd">        Data are generated by calling the methods</span>
 <span class="sd">        :meth:`Data.update_train_data &lt;DNNLikelihood.Data.update_train_data&gt;` or</span>
 <span class="sd">        :meth:`Data.generate_train_data &lt;DNNLikelihood.Data.generate_train_data&gt;` of the </span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`</span>
+<span class="sd">        :mod:`Data &lt;data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`</span>
 <span class="sd">        depending on the value of :attr:`DnnLik.same_data &lt;DNNLikelihood.DnnLik.same_data&gt;`.</span>
 
 <span class="sd">        When the :class:`DnnLik &lt;DNNLikelihood.DnnLik&gt;` object is not part of a</span>
@@ -1473,7 +1473,7 @@
 <span class="sd">        attribute is ``True``, that means that all members of the ensemble will share the same data (or a</span>
 <span class="sd">        subset of the same data if they have different number of points), then data are kept up-to-date in the </span>
 <span class="sd">        :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;` attribute of the </span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
+<span class="sd">        :mod:`Data &lt;data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
 <span class="sd">        This means that data are not generated again if they are already available from another member and that</span>
 <span class="sd">        if the number of points is increased, data are added to the existing ones and are not re-generated from scratch.</span>
 
@@ -1543,9 +1543,9 @@
 <span class="sd">        :class:`DnnLikEnsemble &lt;DNNLikelihood.DnnLikEnsemble&gt;` object.</span>
 <span class="sd">        Therefore test data are always kept up-to-date in the </span>
 <span class="sd">        :attr:`Data.data_dictionary &lt;DNNLikelihood.Data.data_dictionary&gt;` attribute of the </span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`</span>
+<span class="sd">        :mod:`Data &lt;data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`</span>
 <span class="sd">        and are always generated by calling the :meth:`Data.generate_test_data &lt;DNNLikelihood.Data.generate_test_data&gt;` of the </span>
-<span class="sd">        :class:`Data &lt;DNNLikelihood.Data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
+<span class="sd">        :mod:`Data &lt;data&gt;` object :attr:`DnnLik.data &lt;DNNLikelihood.DnnLik.data&gt;`.</span>
 <span class="sd">        In this way test data are never re-generated if they are (even partially) available.</span>
 
 <span class="sd">        - **Arguments**</span>
@@ -2092,7 +2092,7 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Could not set optimizer. The optimizer argument does not have a valid format.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">opt_string</span><span class="p">,</span><span class="nb">eval</span><span class="p">(</span><span class="n">opt_string</span><span class="p">)]</span>
 
-    <span class="k">def</span> <span class="nf">compute_maximum_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="DnnLik.compute_maximum_model"><a class="viewcode-back" href="../../dnn_likelihood/methods.html#DNNLikelihood.DnnLik.compute_maximum_model">[docs]</a>    <span class="k">def</span> <span class="nf">compute_maximum_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">pars_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                               <span class="n">optimizer</span><span class="o">=</span><span class="p">{},</span>
                               <span class="n">x_boundaries</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
@@ -2353,9 +2353,9 @@
                                <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max_model&quot;</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_predictions_h5</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum of DNN computed in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum of DNN computed in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">compute_profiled_maximum_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="DnnLik.compute_profiled_maximum_model"><a class="viewcode-back" href="../../dnn_likelihood/methods.html#DNNLikelihood.DnnLik.compute_profiled_maximum_model">[docs]</a>    <span class="k">def</span> <span class="nf">compute_profiled_maximum_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                        <span class="n">pars_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                        <span class="n">pars_fixed_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
                                        <span class="n">pars_fixed_val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -2526,7 +2526,7 @@
                                <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max_model&quot;</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]}</span>
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_predictions_h5</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">compute_profiled_maxima_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                       <span class="n">pars_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -3273,8 +3273,6 @@
                                   <span class="n">CI</span><span class="o">=</span><span class="n">inference</span><span class="o">.</span><span class="n">CI_from_sigma</span><span class="p">([</span><span class="n">inference</span><span class="o">.</span><span class="n">sigma_from_CI</span><span class="p">(</span><span class="mf">0.5</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> 
                                   <span class="n">pars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="n">batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                  <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="n">model_predict_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># batch_size=None, steps=None, x_boundaries=False, y_boundaries=False, save_log=True, verbose=None</span>
                                   <span class="n">HPDI_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="c1"># intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True</span>
                                   <span class="n">plot_training_history_kwargs</span> <span class="o">=</span> <span class="p">{},</span> <span class="c1"># metrics=[&quot;loss&quot;], yscale=&quot;log&quot;, show_plot=False, overwrite=False, verbose=None</span>
@@ -3286,7 +3284,9 @@
                                                                   <span class="c1"># color1=&quot;green&quot;, color2=&quot;red&quot;, </span>
                                                                   <span class="c1"># plot_title=&quot;Params contours&quot;, legend_labels=None, </span>
                                                                   <span class="c1"># figure_filename=None, show_plot=False, overwrite=False, verbose=None</span>
-                                  <span class="n">frequentist_inference</span> <span class="o">=</span> <span class="p">{}):</span>
+                                  <span class="n">frequentist_inference</span> <span class="o">=</span> <span class="p">{},</span>
+                                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                  <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">model_predict_sub</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">,</span><span class="o">**</span><span class="n">model_predict_kwargs</span><span class="p">)</span>

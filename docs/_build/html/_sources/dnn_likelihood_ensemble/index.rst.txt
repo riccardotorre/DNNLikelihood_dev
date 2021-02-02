@@ -1,5 +1,7 @@
 .. _DnnLikEnsemble_object:
 
+.. module:: dnn_likelihood_ensemble
+
 The DnnLikEnsemble object
 ----------------------------------
 

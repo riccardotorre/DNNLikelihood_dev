@@ -3,14 +3,16 @@
 Usage
 ^^^^^
 
-We give here a brief introduction to the use of the :class:`Data <DNNLikelihood.Data>` class. Once created, 
-the object is not supposed to be used directly by the used, but it is automatically used by the :class:`DnnLik <DNNLikelihood.DnnLik>` and 
+We give here a brief introduction to the use of the :class:`Data <DNNLikelihood.Data>` class. Refer to the 
+full class documentation for more details. The :mod:`Data <data>` object is not supposed to be 
+used directly by the user, but it is instead automatically used by the :class:`DnnLik <DNNLikelihood.DnnLik>` and 
 :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` objects to manage training/validation/test data.
-For more details refer to the full class documentation and to the documentation of :ref:`the DNNLikelihood object <DnnLik_object>` and 
-:ref:`the DnnLikEnsemble object <DnnLikEnsemble_object>`.
+For more details refer to the :mod:`Data <data>` object documentation and to the documentation of the :mod:`DNNLikelihood <dnn_likelihood>` and 
+the :mod:`DnnLikEnsemble <dnn_likelihood_ensemble>` objects. Examples will be referred to the toy likelihood introduced in the
+:mod:`Likelihood <likelihood>` object :ref:`Usage <likelihood_usage>` section of the documentation.
 
-The :class:`Data <DNNLikelihood.Data>` object can be directly created from a :class:`Sampler <DNNLikelihood.Sampler>` object or from
-input arguments. An example of the first method is given in :ref:`the Sampler object Usage <sampler_usage>` section of the documentation
+The :mod:`Data <data>` object can be created from a :class:`Sampler <DNNLikelihood.Sampler>` object or from
+input arguments. An example of the first method is given in the :mod:`Sampler <sampler>` object :ref:`Usage <sampler_usage>` section of the documentation
 and consists of the following code:
 
 .. code-block:: python
@@ -21,14 +23,14 @@ and consists of the following code:
 
     data = sampler.get_data_object(nsamples=200000, burnin=5000, thin=10, dtype="float64", test_fraction=0)
 
-This gives a :class:`Data <DNNLikelihood.Data>` object with ``200000`` points which gets automatically stored in the files
+This gives a :mod:`Data <data>` object with 200K points which gets automatically stored in the files
 
     - <my_output_folder>/toy_data.log
     - <my_output_folder>/toy_data_object.h5
     - <my_output_folder>/toy_data_samples.h5 
     
 To give an example of the creation of the object from input arguments we first define data arrays (for simplicity we use here
-100000 points from the 100000 available in ``data``, the user can use any other data) and parameters central values,
+100K of the 200K points available in ``data``, but the user can of course use any other data) and parameters central values,
 and then create the object as follows:
 
 .. code-block:: python
@@ -58,22 +60,23 @@ This created the new object ``data_new`` and saves it to the files
     - <my_output_folder>/new_data_object.h5
     - <my_output_folder>/new_data_samples.h5
 
-See the documentation of the :meth:`Data.save <DNNLikelihood.Data.save>` and of the corresponding methods
-with a :meth:`_h5 <DNNLikelihood.Data.save_h5>`,
-:meth:`_json <DNNLikelihood.Data.save_json>`,
-and :meth:`_log <DNNLikelihood.Data.save_log>` suffix.
+See the documentation of the :meth:`Data.save <DNNLikelihood.Data.save>`, :meth:`Data.save_log <DNNLikelihood.Data.save_log>`,
+:meth:`Data.save_object_h5 <DNNLikelihood.Data.save_object_h5>`, and :meth:`Data.save_samples_h5 <DNNLikelihood.Data.save_samples_h5>` 
+methods for details on how the object is saved.
 
-If the :argument:`name` argument is not passed, then one is automatically generated. In the example above we passed a list for the
-:argument:`dtype` argument, where the first entry represents the data type of the stored data, while the second is the required data
-type of the train/validation/test data created from the :class:`Data <DNNLikelihood.Data>` object (see below). Concerning the arguments
-related to parameters, if neither :argument:`pars_pos_poi` nor :argument:`pars_pos_nuis` are specified, then all parameters are assumed to
-be parameters of interest, while if only one is specified, the other is automatically set. The arguments :argument:`pars_labels` and
-:argument:`pars_bounds` can be optionally speficied, otherwise they are automatically set (see the full documentation for details).
-The :argument:`output_folder` is also optional and, if not specified, the output folder will automatically be set to the code execution
-folder.
+If the :argument:`name <Data.name>` argument is not passed, then one is automatically generated. In the example above we passed a list for the
+:argument:`dtype <Data.dtype>` argument, where the first entry represents the data type of the stored data, while the second is the required data
+type of the train/validation/test data created from the :mod:`Data <data>` object (see below). Concerning the arguments
+related to parameters, if neither :argument:`pars_pos_poi <Data.pars_pos_poi>` nor :argument:`pars_pos_nuis <Data.pars_pos_nuis>` are specified, 
+then all parameters are assumed to be parameters of interest, while if only one is specified, the other is automatically set. 
+The arguments :argument:`pars_labels <Data.pars_labels>` and :argument:`pars_bounds <Data.pars_bounds>` can be optionally speficied, 
+otherwise they are automatically set (see the full documentation for details).
+The :argument:`output_folder <Data.output_folder>` is also optional and, if not specified, will automatically be set to the absolute 
+path to the code execution folder.
 
-The fraction of train/validation vs test sets is specified through the :argument:`test_fraction`, which, in our example, has been set to ``0.2``.
-If :argument:`test_fraction` is not specified (default is ``None``), it is automatically set to ``0`` and no test data will be available.
+The fraction of train/validation vs test sets is specified through the :argument:`test_fraction <Data.test_fraction>` attribute, which, 
+in our example, has been set to ``0.2``. If :argument:`test_fraction <Data.test_fraction>` is not specified (default is ``None``), 
+it is automatically set to ``0`` and no test data will be available.
 The fraction of train/validation vs test sets can be changed at any time by changing the 
 :attr:`Data.test_fraction <DNNLikelihood.Data.test_fraction>` attribute and calling the 
 :meth:`Data.define_test_fraction <DNNLikelihood.Data.define_test_fraction>` method as follows:
@@ -86,23 +89,23 @@ The fraction of train/validation vs test sets can be changed at any time by chan
 This updates the attributes :attr:`Data.train_range <DNNLikelihood.Data.train_range>` and 
 :attr:`Data.test_range <DNNLikelihood.Data.test_range>`, used for train/validation/test data generation.
 
-The :class:`Data <DNNLikelihood.Data>` object can also be initialized importing it from saved files. 
-In this case only the :argument:`input_file` argument needs to be specified,
-while all other arguments are ignored. One could also optionally specify a new :argument:`output_folder`. 
+The :mod:`Data <data>` object can also be initialized importing it from saved files. 
+In this case only the :argument:`input_file <Data.input_file>` argument needs to be specified,
+while all other arguments are ignored. One could also optionally specify a new :argument:`output_folder <Data.output_folder>`. 
 In case this is not specified, the 
 :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute from the imported object is used and the object is
-saved by updating existing files. If a new :argument:`output_folder` is specified, then the whole object is saved to the new location.
+saved by updating existing files. If a new :argument:`output_folder <Data.output_folder>` is specified, then the whole object is saved to the new location.
 One could decide, when importing the object, to load all data stored in the 
 :attr:`Data.input_h5_file <DNNLikelihood.Data.input_h5_file>` into the RAM for faster generation of train/validation/test data
-by setting to ``True`` the argument :argument:`load_on_RAM`.
-One could specify the option :argument:`dtype`. This will affect neither saved data, nor the 
+by setting to ``True`` the argument :argument:`load_on_RAM <Data.load_on_RAM>`.
+One could also specify the option :argument:`dtype <Data.dtype>`. This will affect neither saved data, nor the 
 :attr:`Data.dtype_stored <DNNLikelihood.Data.dtype_stored>`, which is read from input files, but will change the value of the
 :attr:`Data.dtype_required <DNNLikelihood.Data.dtype_required>` that will affect the dtype of the generated 
-train/validation/test data. If :argument:`dtype` is not specified, then the attribute
+train/validation/test data. If :argument:`dtype <Data.dtype>` is not specified, then the attribute
 :attr:`Data.dtype_required <DNNLikelihood.Data.dtype_required>` is set equal to the 
-:attr:`Data.dtype_stored <DNNLikelihood.Data.dtype_stored>` attribute. Finally, also the argument :argument:`test_fraction` can be
-specified, which will update the corresponding attribute available from input files.
-An example of code to create the object from input files is given by:
+:attr:`Data.dtype_stored <DNNLikelihood.Data.dtype_stored>` attribute. Finally, also the argument 
+:argument:`test_fraction <Data.test_fraction>` can be specified, which will update the corresponding attribute available from 
+input files. An example of code to create the object from input files is given by:
 
 .. code-block:: python
     
@@ -131,8 +134,9 @@ and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` attributes as follows:
 
     >>> array([-58.52285607, -51.57067745, -52.23295711, ..., -52.55021968, -53.44788316, -54.33490431])
 
-Upon creation of the :class:`Data <DNNLikelihood.Data>` object, the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`
-dictionary is initialized as an empyt dictionary containing empty |numpy_link| arrays with the correct ``dtype``:
+Upon creation of the :mod:`Data <data>` object, the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`
+dictionary is initialized as an empty dictionary containing empty |numpy_link| arrays with ``dtype`` equal to the value of
+:attr:`Data.dtype_required <DNNLikeliohood.Data.dtype_required>` (for data) and to ``int`` for indices:
 
 .. code-block:: python
 
@@ -175,9 +179,9 @@ and 5000 test points as follows:
          'idx_test': array([70000, 70001, 70002, ..., 74997, 74998, 74999])}
 
 Where we have also print the new value of the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute.
-In the generation of train/validation data one can profit of the ``seed`` option to make the process reproducible. Indeed this
+In the generation of train/validation data one can profit of the ``seed`` argument to make the process reproducible. Indeed this
 initializes the |numpy_link| random state to ``seed`` every time before selecting and splitting data. Concerning test data, 
-these are always generated deterministically by taking the first ``npoints_test`` points in 
+these are always generated (deterministically) by taking the first ``npoints_test`` points in 
 :attr:`Data.test_range <DNNLikelihood.Data.test_range>` range of data.
 
 If scaling of ``X`` or ``Y`` data is necessary to train the neural network, one can define |standard_scalers_link| with the 
@@ -192,9 +196,9 @@ data generated above with the following code:
          StandardScaler(copy=True, with_mean=True, with_std=True)]
 
 One could also define weights for data points, that allow to train on weighted data. This is done using the 
-:meth:`Data.compute_sample_weights <DNNLikelihood.Data.compute_sample_weights>` method. This method bins data and weights data
-with the inverse frequency of the bins allowing for an arbitrary exponent. For instance we can compute weights making an histogram
-with ``50`` bins and weights equal to the inverse square root of frequencies as follows:
+:meth:`Data.compute_sample_weights <DNNLikelihood.Data.compute_sample_weights>` method. This method bins data and weights them
+according to the inverse frequency of the bins (and also allows for an arbitrary exponent). For instance we can compute weights 
+making an histogram with ``50`` bins and weights equal to the inverse square root of frequencies as follows:
 
 .. code-block:: python
 
@@ -204,14 +208,24 @@ with ``50`` bins and weights equal to the inverse square root of frequencies as 
 
 Notice that the :meth:`Data.define_scalers <DNNLikelihood.Data.define_scalers>` and 
 :meth:`Data.compute_sample_weights <DNNLikelihood.Data.compute_sample_weights>` methods return a result and do not set any 
-attribute.
+attribute (they are used by the :mod:`DNNLikelihood <dnn_likelihood>` object to set its corresponding attributes).
 
-Data in the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` as well as |standard_scalers_link| and sample weights
-are not stored when saving the :class:`Data <DNNLikelihood.Data>` object, and will only be saved as part of trained models and 
+Data in the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` as well as scalers and sample weights
+are not stored when saving the :mod:`Data <data>` object, and will only be saved as part of trained models and 
 models ensemble by the :class:`DnnLik <DNNLikelihood.DnnLik>` and 
 :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` objects.
-For more details refer to the full class documentation and to the documentation of :ref:`the DNNLikelihood object <DnnLik_object>` and 
-:ref:`the DnnLikEnsemble object <DnnLikEnsemble_object>`.
+For more details refer to the full class documentation and to the documentation of the :mod:`DNNLikelihood <dnn_likelihood>` and 
+the :mod:`DNNLikEnsemble <dnn_likelihood_ensemble>` objects.
+
+The :mod:`Data <data>` object offers some methods useful to make plots that can be used to inspect the data. 
+**Bla bla bla: add 1d histograms of X and Y data analogous to the methods in the Sampler class.**
+
+Finally, the :meth:`plot_corners_1samp <DNNLikelihood.Data.plot_corners_1samp>` methos allows one to make a corner plot 
+of 2D histograms of the data. As an example, **bla bla bla.** 
+
+.. image:: ../figs/toy_data_plot_corners_1samp.png
+    :class: with-shadow
+    :scale: 48
 
 Even though the files corresponding to the saved object are usually kept sync with the object state, manual change of some attributes
 does not update them. Nevertheless, the full object can be saved at any time through

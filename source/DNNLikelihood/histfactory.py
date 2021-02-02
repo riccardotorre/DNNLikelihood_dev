@@ -24,9 +24,9 @@ from .show_prints import Verbosity, print
 
 class Histfactory(Verbosity):
     """
-    This class is a container for the :ref:`the Histfactory object <histfactory_object>` created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, 
+    This class is a container for the the :mod:`Histfactory <histfactory>` object created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, 
     read parameters and logpdf using the |pyhf_link| package, create :class:`Lik <DNNLikelihood.Lik>` objects and save them for later use
-    (see :ref:`the Likelihood object <likelihood_object>`).
+    (see the :mod:`Likelihood <likelihood>` object documentation).
     """
 #    __slots__ = "workspace_folder"
     def __init__(self,
@@ -40,7 +40,7 @@ class Histfactory(Verbosity):
                  verbose = True):
         """
         The :class:`Histfactory <DNNLikelihood.Histfactory>` object can be initialized in two different ways, depending on the value of 
-        the :argument:`input_file` argument.
+        the :argument:`input_file <Histfactory.input_file>` argument.
 
         - :argument:`input_file` is ``None`` (default)
 
@@ -131,7 +131,6 @@ class Histfactory(Verbosity):
         self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
-        utils.check_create_folder(self.output_folder)
 
     def __check_define_name(self):
         """

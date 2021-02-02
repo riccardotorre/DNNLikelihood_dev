@@ -58,7 +58,7 @@ The Histfactory object
 
     - Internal modules
 
-        - :obj:`DNNLikelihood.utils <utils_module>`
+        - :obj:`DNNLikelihood.utils <utils>`
 
         - :class:`DNNLikelihood.Lik`
 
@@ -81,7 +81,7 @@ The Likelihood object
 
     - Internal modules
 
-        - :obj:`DNNLikelihood.utils <utils_module>`
+        - :obj:`DNNLikelihood.utils <utils>`
 
         - :obj:`DNNLikelihood.inference <inference_module>`
 
@@ -107,7 +107,7 @@ The Sampler object
 
     - Internal modules
 
-        - :obj:`DNNLikelihood.utils <utils_module>`
+        - :obj:`DNNLikelihood.utils <utils>`
 
         - :class:`DNNLikelihood.Data`
 
@@ -122,7 +122,7 @@ The Data object
 
     - Internal modules
 
-        - :obj:`DNNLikelihood.utils <utils_module>`
+        - :obj:`DNNLikelihood.utils <utils>`
 
 The DNNLikelihood object
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -141,7 +141,7 @@ The DNNLikelihood object
 
         - :obj:`DNNLikelihood.set_resources <set_resources_module>`
 
-        - :obj:`DNNLikelihood.utils <utils_module>`
+        - :obj:`DNNLikelihood.utils <utils>`
 
         - :class:`DNNLikelihood.Data`
 

@@ -139,15 +139,15 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
         the 2-D histogram plots.
 
     """
-    if quantiles == None:
+    if quantiles is None:
         quantiles = []
-    if title_kwargs == None:
+    if title_kwargs is None:
         title_kwargs = dict()
-    if label_kwargs == None:
+    if label_kwargs is None:
         label_kwargs = dict()
 
     # Try filling in labels from pandas.DataFrame columns.
-    if labels == None:
+    if labels is None:
         try:
             labels = xs.columns
         except AttributeError:
@@ -164,7 +164,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                                        "dimensions than samples!"
 
     # Parse the weight array.
-    if weights != None:
+    if weights is not None:
         weights = np.asarray(weights)
         if weights.ndim != 1:
             raise ValueError("Weights must be 1-D")
@@ -245,7 +245,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                         wspace=whspace, hspace=whspace)
 
     # Set up the default histogram keywords.
-    if hist_kwargs == None:
+    if hist_kwargs is None:
         hist_kwargs = dict()
     hist_kwargs["color"] = hist_kwargs.get("color", color)
     if smooth1d == None:
@@ -382,7 +382,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
                        color=color, smooth=smooth, bins=[bins[j], bins[i]],
                        **hist2d_kwargs)
-            elif levels_lists != None:
+            elif levels_lists is not None:
                 hist2d(y, x, ax=ax, range=[range[j], range[i]], weights=weights,
                        color=color, smooth=smooth, bins=[bins[j], bins[i]],
                        levels=levels_lists[j, i].tolist(),
@@ -486,7 +486,7 @@ def quantile(x, q, weights=None):
     if np.any(q < 0.0) or np.any(q > 1.0):
         raise ValueError("Quantiles must be between 0 and 1")
 
-    if weights == None:
+    if weights is None:
         return np.percentile(x, list(100.0 * q))
     else:
         weights = np.atleast_1d(weights)
@@ -563,7 +563,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         ax = pl.gca()
 
     # Set the default range based on the data range if not provided.
-    if range == None:
+    if range is None:
         if "extent" in kwargs:
             logging.warn("Deprecated keyword argument 'extent'. "
                          "Use 'range' instead.")
@@ -576,7 +576,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         color = "k"
 
     # Choose the default "sigma" contour levels.
-    if levels == None:
+    if levels is None:
         levels = 1.0 - np.exp(-0.5 * np.arange(0.5, 2.1, 0.5) ** 2)
 
     # This is the color map for the density plot, over-plotted to indicate the
@@ -658,7 +658,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     ])
 
     if plot_datapoints:
-        if data_kwargs == None:
+        if data_kwargs is None:
             data_kwargs = dict()
         data_kwargs["color"] = data_kwargs.get("color", color)
         data_kwargs["ms"] = data_kwargs.get("ms", 2.0)
@@ -672,7 +672,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
                     cmap=white_cmap, antialiased=False)
 
     if plot_contours and fill_contours:
-        if contourf_kwargs == None:
+        if contourf_kwargs is None:
             contourf_kwargs = dict()
         contourf_kwargs["colors"] = contourf_kwargs.get("colors", contour_cmap)
         contourf_kwargs["antialiased"] = contourf_kwargs.get("antialiased",
@@ -683,13 +683,13 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
     # Plot the density map. This can't be plotted at the same time as the
     # contour fills.
     elif plot_density:
-        if pcolor_kwargs == None:
+        if pcolor_kwargs is None:
             pcolor_kwargs = dict()
         ax.pcolor(X, Y, H.max() - H.T, cmap=density_cmap, **pcolor_kwargs)
 
     # Plot the contour edge colors.
     if plot_contours:
-        if contour_kwargs == None:
+        if contour_kwargs is None:
             contour_kwargs = dict()
         contour_kwargs["colors"] = contour_kwargs.get("colors", color)
         ax.contour(X2, Y2, H2.T, V, **contour_kwargs)
@@ -710,14 +710,14 @@ def get_1d_hist(i_dim, xs, nbins=25, ranges=None, weights=None, intervals=None, 
     assert xs.shape[0] <= xs.shape[1], "I don't believe that you want more " \
                                        "dimensions than samples!"
     # Parse the weight array.
-    if weights != None:
+    if weights is not None:
         weights = np.asarray(weights)
         if weights.ndim != 1:
             raise ValueError("Weights must be 1-D")
         if xs.shape[1] != weights.shape[0]:
             raise ValueError("Lengths of weights must match number of samples")
     # Parse the parameter ranges.
-    if ranges == None:
+    if ranges is None:
         ranges = [[x.min(), x.max()] for x in xs]
         # Check for parameters that never change.
         m = np.array([e[0] == e[1] for e in ranges], dtype=bool)
@@ -759,7 +759,7 @@ def get_1d_hist(i_dim, xs, nbins=25, ranges=None, weights=None, intervals=None, 
     y0 = np.array(list(zip(n, n))).flatten()
     # Generate 1D curves in intervals.
     result = []
-    if intervals == None:
+    if intervals is None:
         result.append([x0, y0])
     else:
         for interval in intervals:

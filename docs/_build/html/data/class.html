@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -219,9 +219,9 @@
 </style>
 <div class="section" id="class">
 <h1>Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="DNNLikelihood.Data">
-<em class="property">class </em><code class="sig-name descname">Data</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">data_X=None</em>, <em class="sig-param">data_Y=None</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">pars_central=None</em>, <em class="sig-param">pars_pos_poi=None</em>, <em class="sig-param">pars_pos_nuis=None</em>, <em class="sig-param">pars_labels=None</em>, <em class="sig-param">pars_bounds=None</em>, <em class="sig-param">test_fraction=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">input_file=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">Data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_X</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_Y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_central</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_pos_poi</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_pos_nuis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">test_fraction</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_on_RAM</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class contains the <code class="docutils literal notranslate"><span class="pre">Data</span></code> object representing the dataset used for training, validating and testing
 the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an existing <code class="docutils literal notranslate"><span class="pre">Data</span></code> object.</p>
 </dd></dl>
@@ -233,92 +233,6 @@ the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an 
 <li class="toctree-l1"><a class="reference internal" href="methods.html">Methods</a></li>
 </ul>
 </div>
-<p><strong>Methods summary</strong></p>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 51%" />
-<col style="width: 49%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Method</p></th>
-<th class="head"><p>Short description</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__init__</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_input_files" title="DNNLikelihood.Data._Data__check_define_input_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_input_files</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_output_files" title="DNNLikelihood.Data._Data__check_define_output_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_output_files</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_name" title="DNNLikelihood.Data._Data__check_define_name"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_name</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_data" title="DNNLikelihood.Data._Data__check_define_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_data</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_pars" title="DNNLikelihood.Data._Data__check_define_pars"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_pars</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_sync_data_dictionary" title="DNNLikelihood.Data._Data__check_sync_data_dictionary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_sync_data_dictionary</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__load" title="DNNLikelihood.Data._Data__load"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__load</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__define_test_fraction" title="DNNLikelihood.Data._Data__define_test_fraction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__define_test_fraction</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.define_test_fraction" title="DNNLikelihood.Data.define_test_fraction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.define_test_fraction</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.close_opened_dataset" title="DNNLikelihood.Data.close_opened_dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.close_opened_dataset</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.save_log" title="DNNLikelihood.Data.save_log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.save_log</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.save_object_h5" title="DNNLikelihood.Data.save_object_h5"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.save_object_h5</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.save_samples_h5" title="DNNLikelihood.Data.save_samples_h5"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.save_samples_h5</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_train_indices" title="DNNLikelihood.Data.generate_train_indices"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_train_indices</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_train_data" title="DNNLikelihood.Data.generate_train_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_train_data</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.update_train_indices" title="DNNLikelihood.Data.update_train_indices"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.update_train_indices</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.update_train_data" title="DNNLikelihood.Data.update_train_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.update_train_data</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_test_indices" title="DNNLikelihood.Data.generate_test_indices"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_test_indices</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_test_data" title="DNNLikelihood.Data.generate_test_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_test_data</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.compute_sample_weights" title="DNNLikelihood.Data.compute_sample_weights"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.compute_sample_weights</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.define_scalers" title="DNNLikelihood.Data.define_scalers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.define_scalers</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.plot_corners_1samp" title="DNNLikelihood.Data.plot_corners_1samp"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.plot_corners_1samp</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.set_verbosity" title="DNNLikelihood.Data.set_verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.set_verbosity</span></code></a></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 <p><strong>Attributes summary</strong></p>
 <table class="docutils align-default">
 <colgroup>
@@ -417,8 +331,94 @@ the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an 
 </tr>
 </tbody>
 </table>
+<p><strong>Methods summary</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Short description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.__init__" title="DNNLikelihood.Data.__init__"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__init__</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_input_files" title="DNNLikelihood.Data._Data__check_define_input_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_input_files</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_output_files" title="DNNLikelihood.Data._Data__check_define_output_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_output_files</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_name" title="DNNLikelihood.Data._Data__check_define_name"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_name</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_data" title="DNNLikelihood.Data._Data__check_define_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_data</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_define_pars" title="DNNLikelihood.Data._Data__check_define_pars"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_define_pars</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__check_sync_data_dictionary" title="DNNLikelihood.Data._Data__check_sync_data_dictionary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__check_sync_data_dictionary</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__load" title="DNNLikelihood.Data._Data__load"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__load</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data._Data__define_test_fraction" title="DNNLikelihood.Data._Data__define_test_fraction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.__define_test_fraction</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.define_test_fraction" title="DNNLikelihood.Data.define_test_fraction"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.define_test_fraction</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.close_opened_dataset" title="DNNLikelihood.Data.close_opened_dataset"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.close_opened_dataset</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.save_log" title="DNNLikelihood.Data.save_log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.save_log</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.save_object_h5" title="DNNLikelihood.Data.save_object_h5"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.save_object_h5</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.save_samples_h5" title="DNNLikelihood.Data.save_samples_h5"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.save_samples_h5</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_train_indices" title="DNNLikelihood.Data.generate_train_indices"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_train_indices</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_train_data" title="DNNLikelihood.Data.generate_train_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_train_data</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.update_train_indices" title="DNNLikelihood.Data.update_train_indices"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.update_train_indices</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.update_train_data" title="DNNLikelihood.Data.update_train_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.update_train_data</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_test_indices" title="DNNLikelihood.Data.generate_test_indices"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_test_indices</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.generate_test_data" title="DNNLikelihood.Data.generate_test_data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.generate_test_data</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.compute_sample_weights" title="DNNLikelihood.Data.compute_sample_weights"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.compute_sample_weights</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.define_scalers" title="DNNLikelihood.Data.define_scalers"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.define_scalers</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.plot_corners_1samp" title="DNNLikelihood.Data.plot_corners_1samp"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.plot_corners_1samp</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Data.set_verbosity" title="DNNLikelihood.Data.set_verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.set_verbosity</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Inheritance diagram</strong></p>
-<div class="graphviz"><img src="../_images/inheritance-309952609083b74d26cfef786d9d5e310ee49868.png" alt="Inheritance diagram of DNNLikelihood.Data" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="../_images/inheritance-203232b71fe5e9adf961ca951cd6f2ab379ad4d9.png" alt="Inheritance diagram of DNNLikelihood.Data" class="inheritance graphviz" /></div>
 <hr class="docutils" />
 </div>
 

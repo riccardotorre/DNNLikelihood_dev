@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -216,11 +216,12 @@
 <span id="histfactory-usage"></span><h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <p>We give here a brief introduction to the use of the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> class. Refer to the
 full class documentation for more details.</p>
-<p>The first time a <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object is created, the <code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code> argument,
+<p>The first time a <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object is created, the
+<a class="reference internal" href="arguments.html#Histfactory.workspace_folder" title="Histfactory.workspace_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code></a> argument,
 corresponding to the folder containing the histfactory workspace, needs to be specified. All other input arguments have a default value
 that may need to be changed (see <a class="reference internal" href="arguments.html#histfactory-arguments"><span class="std std-ref">Arguments documentation</span></a>). Optionally, the user may specify the argument
-<code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code> containing the path (either relative or absolute) to a folder where output files will be saved and the argument
-<code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code> with the name of the object (which is otherwise automatically generated).</p>
+<a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> containing the path (either relative or absolute) to a folder where output files will be saved and the argument
+<a class="reference internal" href="arguments.html#Histfactory.name" title="Histfactory.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> with the name of the object (which is otherwise automatically generated).</p>
 <p>A basic initialization code is</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
@@ -238,9 +239,9 @@ that may need to be changed (see <a class="reference internal" href="arguments.h
 </div></blockquote>
 <p>See the documentation of the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a> and
 <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a> methods.</p>
-<p>The object can also be initialized importing it from saved files. In this case only the <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code> argument needs to be specified,
-while all other arguments are ignored.
-One could also optionally specify a new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code>. In case this is not specified, the
+<p>The object can also be initialized importing it from saved files. In this case only the <a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>
+argument needs to be specified, while all other arguments are ignored.
+One could also optionally specify a new <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>. In case this is not specified, the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute from the imported object is used.
 For instance we could import the object created above with</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
@@ -313,8 +314,7 @@ first likelihood we can do</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood_0</span> <span class="o">=</span> <span class="n">histfactory</span><span class="o">.</span><span class="n">get_likelihood_object</span><span class="p">(</span><span class="n">lik_number</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For additional information on the <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object see <a class="reference internal" href="../likelihood/index.html#likelihood-object"><span class="std std-ref">the Likelihood object</span></a>
-documentation.</p>
+<p>For additional information see the <a class="reference internal" href="../likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object documentation.</p>
 </div>
 
 

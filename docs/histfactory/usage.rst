@@ -6,11 +6,12 @@ Usage
 We give here a brief introduction to the use of the :class:`Histfactory <DNNLikelihood.Histfactory>` class. Refer to the 
 full class documentation for more details.
 
-The first time a :class:`Histfactory <DNNLikelihood.Histfactory>` object is created, the :argument:`workspace_folder` argument, 
+The first time a :class:`Histfactory <DNNLikelihood.Histfactory>` object is created, the 
+:argument:`workspace_folder <Histfactory.workspace_folder>` argument, 
 corresponding to the folder containing the histfactory workspace, needs to be specified. All other input arguments have a default value
 that may need to be changed (see :ref:`Arguments documentation <histfactory_arguments>`). Optionally, the user may specify the argument
-:argument:`output_folder` containing the path (either relative or absolute) to a folder where output files will be saved and the argument
-:argument:`name` with the name of the object (which is otherwise automatically generated).
+:argument:`output_folder <Histfactory.output_folder>` containing the path (either relative or absolute) to a folder where output files will be saved and the argument
+:argument:`name <Histfactory.name>` with the name of the object (which is otherwise automatically generated).
 
 A basic initialization code is
 
@@ -30,9 +31,9 @@ When the object is created, it is automatically saved and two files are created:
 See the documentation of the :meth:`Histfactory.save <DNNLikelihood.Histfactory.save>` and 
 :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>` methods.
 
-The object can also be initialized importing it from saved files. In this case only the :argument:`input_file` argument needs to be specified,
-while all other arguments are ignored.
-One could also optionally specify a new ``output_folder``. In case this is not specified, the 
+The object can also be initialized importing it from saved files. In this case only the :argument:`input_file <Histfactory.input_file>` 
+argument needs to be specified, while all other arguments are ignored.
+One could also optionally specify a new :argument:`output_folder <Histfactory.output_folder>`. In case this is not specified, the 
 :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute from the imported object is used.
 For instance we could import the object created above with
 
@@ -119,7 +120,6 @@ first likelihood we can do
 
    likelihood_0 = histfactory.get_likelihood_object(lik_number=0)
 
-For additional information on the :class:`Lik <DNNLikelihood.Lik>` object see :ref:`the Likelihood object <likelihood_object>` 
-documentation.
+For additional information see the :mod:`Likelihood <likelihood>` object documentation.
 
 .. include:: ../external_links.rst

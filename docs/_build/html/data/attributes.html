@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -221,7 +221,7 @@
 </style>
 <div class="section" id="attributes">
 <h1>Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h1>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.data_dictionary">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">data_dictionary</code><a class="headerlink" href="#DNNLikelihood.Data.data_dictionary" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary used by the <a class="reference internal" href="../dnn_likelihood/class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> and
@@ -230,8 +230,8 @@ the generated train/validation/test data (used, for instance, when training the 
 The dictionary is updated each time data are generated or updated and is not stored when saving the object (data
 indices only are stored with trained models by the <a class="reference internal" href="../dnn_likelihood/class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> and
 <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> objects).
-See <a class="reference internal" href="../dnn_likelihood/index.html#dnnlik-object"><span class="std std-ref">the DNNLikelihood object</span></a> and
-<a class="reference internal" href="../dnn_likelihood_ensemble/index.html#dnnlikensemble-object"><span class="std std-ref">the DNNLikelihood Ensemble object</span></a> objects for more
+See the <code class="xref py py-mod docutils literal notranslate"><span class="pre">DNNLikelihood</span></code> object and
+the <a class="reference internal" href="../dnn_likelihood_ensemble/index.html#module-dnn_likelihood_ensemble" title="dnn_likelihood_ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">DNNLikEnsemble</span></code></a> object objects for more
 information.</p>
 <blockquote>
 <div><ul>
@@ -290,7 +290,7 @@ information.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.data_X">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">data_X</code><a class="headerlink" href="#DNNLikelihood.Data.data_X" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.data_X" title="Data.data_X"><code class="xref py py-argument docutils literal notranslate"><span class="pre">data_X</span></code></a> and
@@ -303,7 +303,7 @@ containing a <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_bla
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.data_Y">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">data_Y</code><a class="headerlink" href="#DNNLikelihood.Data.data_Y" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.data_X" title="Data.data_X"><code class="xref py py-argument docutils literal notranslate"><span class="pre">data_X</span></code></a> and
@@ -316,7 +316,7 @@ containing a <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_bla
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.dtype_required">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">dtype_required</code><a class="headerlink" href="#DNNLikelihood.Data.dtype_required" title="Permalink to this definition">¶</a></dt>
 <dd><p>Required data type for the generation of the train/validation/test datasets. The attribute is always set to
@@ -330,13 +330,13 @@ It represents the data type of the data stored in the attribute
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.dtype_stored">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">dtype_stored</code><a class="headerlink" href="#DNNLikelihood.Data.dtype_stored" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data type of the dataset stored in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_h5_file</span></code>.
 It is set to the value of the <a class="reference internal" href="arguments.html#Data.dtype" title="Data.dtype"><code class="xref py py-argument docutils literal notranslate"><span class="pre">dtype</span></code></a> input argument if not <code class="docutils literal notranslate"><span class="pre">None</span></code> and to <code class="docutils literal notranslate"><span class="pre">&quot;float64&quot;</span></code> if <code class="docutils literal notranslate"><span class="pre">None</span></code>
 the first time the object is created and remains unchanged when saving/loading the
-<a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
+<a class="reference internal" href="index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -344,7 +344,7 @@ the first time the object is created and remains unchanged when saving/loading t
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.pars_labels_auto">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">pars_labels_auto</code><a class="headerlink" href="#DNNLikelihood.Data.pars_labels_auto" title="Permalink to this definition">¶</a></dt>
 <dd><p>List containing parameters names automatically generated by the function
@@ -362,7 +362,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.input_file">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Data.input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="arguments.html#Data.input_file" title="Data.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>.
@@ -376,10 +376,10 @@ method for details).</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.input_log_file">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">input_log_file</code><a class="headerlink" href="#DNNLikelihood.Data.input_log_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Absolute path to the .log file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object log (see
+<dd><p>Absolute path to the .log file containing a saved <a class="reference internal" href="index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object log (see
 the <a class="reference internal" href="methods.html#DNNLikelihood.Data.save_log" title="DNNLikelihood.Data.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save_log</span></code></a> method for details).
 It is automatically generated from the attribute
 <a class="reference internal" href="#DNNLikelihood.Data.input_file" title="DNNLikelihood.Data.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_file</span></code></a>.
@@ -391,10 +391,10 @@ When the latter is <code class="docutils literal notranslate"><span class="pre">
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.input_object_h5_file">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">input_object_h5_file</code><a class="headerlink" href="#DNNLikelihood.Data.input_object_h5_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Absolute path to the .h5 file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object (see
+<dd><p>Absolute path to the .h5 file containing a saved <a class="reference internal" href="index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object (see
 the <a class="reference internal" href="methods.html#DNNLikelihood.Data.save_object_h5" title="DNNLikelihood.Data.save_object_h5"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.save_object_h5</span></code></a> method for details).
 It is automatically generated from the attribute
 <a class="reference internal" href="#DNNLikelihood.Data.input_file" title="DNNLikelihood.Data.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.input_file</span></code></a>.
@@ -406,7 +406,7 @@ When the latter is <code class="docutils literal notranslate"><span class="pre">
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.input_samples_h5_file">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">input_samples_h5_file</code><a class="headerlink" href="#DNNLikelihood.Data.input_samples_h5_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .h5 file containing saved <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>
@@ -424,7 +424,7 @@ When the latter is <code class="docutils literal notranslate"><span class="pre">
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.load_on_RAM">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">load_on_RAM</code><a class="headerlink" href="#DNNLikelihood.Data.load_on_RAM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.load_on_RAM" title="Data.load_on_RAM"><code class="xref py py-argument docutils literal notranslate"><span class="pre">load_on_RAM</span></code></a>.
@@ -438,10 +438,10 @@ If <code class="docutils literal notranslate"><span class="pre">False</span></co
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.log">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">log</code><a class="headerlink" href="#DNNLikelihood.Data.log" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary containing a log of the <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object calls. The dictionary has datetime
+<dd><p>Dictionary containing a log of the <a class="reference internal" href="index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object calls. The dictionary has datetime
 strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.</p>
 <blockquote>
 <div><ul>
@@ -518,11 +518,11 @@ dictionary corresponding to values (data) that have been updated.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.name">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">name</code><a class="headerlink" href="#DNNLikelihood.Data.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.name" title="Data.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> and containing the
-name of the <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.
+name of the <a class="reference internal" href="index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code> is passed, then <code class="docutils literal notranslate"><span class="pre">name</span></code> is assigned the value
 <code class="docutils literal notranslate"><span class="pre">model_&quot;</span> <span class="pre">+</span> <span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_data&quot;</span></code>,
 while if a string is passed, the <code class="docutils literal notranslate"><span class="pre">&quot;_data&quot;</span></code> suffix is appended
@@ -535,7 +535,7 @@ It is used to generate output files names.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.ndims">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">ndims</code><a class="headerlink" href="#DNNLikelihood.Data.ndims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of dimensions of the X data (i.e. number of
@@ -548,7 +548,7 @@ the first vector in the input argument <a class="reference internal" href="argum
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.npoints">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">npoints</code><a class="headerlink" href="#DNNLikelihood.Data.npoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of X/Y data. It is automatically set to the length of
@@ -560,7 +560,7 @@ the the input argument <a class="reference internal" href="arguments.html#Data.d
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.opened_dataset">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">opened_dataset</code><a class="headerlink" href="#DNNLikelihood.Data.opened_dataset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Opened HDF5 dataset. When importing data with the <a class="reference internal" href="#DNNLikelihood.Data.load_on_RAM" title="DNNLikelihood.Data.load_on_RAM"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.load_on_RAM</span></code></a>
@@ -573,7 +573,7 @@ attribute set to <code class="docutils literal notranslate"><span class="pre">Fa
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.output_folder">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">output_folder</code><a class="headerlink" href="#DNNLikelihood.Data.output_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path corresponding to the input argument
@@ -589,7 +589,7 @@ function.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.output_log_file">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">output_log_file</code><a class="headerlink" href="#DNNLikelihood.Data.output_log_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .log file where the <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>
@@ -604,7 +604,7 @@ It is automatically generated from the attribute
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.output_object_h5_file">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">output_object_h5_file</code><a class="headerlink" href="#DNNLikelihood.Data.output_object_h5_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .h5 file where the <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>
@@ -619,7 +619,7 @@ It is automatically generated from the attribute
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.output_samples_h5_file">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">output_samples_h5_file</code><a class="headerlink" href="#DNNLikelihood.Data.output_samples_h5_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .h5 file where the <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>
@@ -636,7 +636,7 @@ It is automatically generated from the attribute
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.pars_bounds">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">pars_bounds</code><a class="headerlink" href="#DNNLikelihood.Data.pars_bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.pars_bounds" title="Data.pars_bounds"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_bounds</span></code></a> and
@@ -650,7 +650,7 @@ then bounds for all parameters are set to <code class="docutils literal notransl
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.pars_central">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">pars_central</code><a class="headerlink" href="#DNNLikelihood.Data.pars_central" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.pars_central" title="Data.pars_central"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_central</span></code></a> and
@@ -665,7 +665,7 @@ then central values for all parameters are set to <code class="docutils literal 
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.pars_labels">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">pars_labels</code><a class="headerlink" href="#DNNLikelihood.Data.pars_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>List corresponding to the input argument <a class="reference internal" href="arguments.html#Data.pars_labels" title="Data.pars_labels"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_labels</span></code></a>. If the input argument is <code class="docutils literal notranslate"><span class="pre">None</span></code> then
@@ -681,7 +681,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.pars_pos_nuis">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">pars_pos_nuis</code><a class="headerlink" href="#DNNLikelihood.Data.pars_pos_nuis" title="Permalink to this definition">¶</a></dt>
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array corresponding to the input argument <a class="reference internal" href="arguments.html#Data.pars_pos_nuis" title="Data.pars_pos_nuis"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_nuis</span></code></a>.</p>
@@ -693,7 +693,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.pars_pos_poi">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">pars_pos_poi</code><a class="headerlink" href="#DNNLikelihood.Data.pars_pos_poi" title="Permalink to this definition">¶</a></dt>
 <dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array corresponding to the input argument <a class="reference internal" href="arguments.html#Data.pars_pos_poi" title="Data.pars_pos_poi"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_poi</span></code></a>.</p>
@@ -705,7 +705,7 @@ and can contain latex expressions that are properly compiled when making plots.<
 </div></blockquote>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.test_fraction">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">test_fraction</code><a class="headerlink" href="#DNNLikelihood.Data.test_fraction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.test_fraction" title="Data.test_fraction"><code class="xref py py-argument docutils literal notranslate"><span class="pre">test_fraction</span></code></a>.
@@ -714,7 +714,7 @@ of points will be used to generate train and validation data while the remaining
 to generate test data.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.test_range">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">test_range</code><a class="headerlink" href="#DNNLikelihood.Data.test_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute set from the <a class="reference internal" href="#DNNLikelihood.Data.test_fraction" title="DNNLikelihood.Data.test_fraction"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.test_fraction</span></code></a>
@@ -723,7 +723,7 @@ attribute and containing the range of test data indices in the
 <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> arrays.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.train_range">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">train_range</code><a class="headerlink" href="#DNNLikelihood.Data.train_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute set from the <a class="reference internal" href="#DNNLikelihood.Data.test_fraction" title="DNNLikelihood.Data.test_fraction"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.test_fraction</span></code></a>
@@ -732,7 +732,7 @@ attribute and containing the range of train/validation data indices in the
 <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> arrays.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="DNNLikelihood.Data.verbose">
 <code class="sig-prename descclassname">Data.</code><code class="sig-name descname">verbose</code><a class="headerlink" href="#DNNLikelihood.Data.verbose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Data.verbose" title="Data.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.

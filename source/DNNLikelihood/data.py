@@ -51,7 +51,7 @@ class Data(Verbosity):
                  verbose = True
                  ):
         """
-        The :class:`Data <DNNLikelihood.Data>` object can be initialized in two different ways, depending on the value of
+        The :mod:`Data <data>` object can be initialized in two different ways, depending on the value of
         the :argument:`input_file` argument.
 
         - :argument:`input_file` is ``None`` (default)
@@ -262,7 +262,7 @@ class Data(Verbosity):
                     - **default**: ``None`` 
         """
         verbose, _ = self.set_verbosity(verbose)
-        if self.pars_central != None:
+        if self.pars_central is not None:
             self.pars_central = np.array(self.pars_central)
             if len(self.pars_central) != self.ndims:
                 raise Exception("The length of the parameters central values array does not match the number of dimensions.")
@@ -270,28 +270,28 @@ class Data(Verbosity):
             self.pars_central = np.zeros(self.ndims)
             print("No central values for the parameters 'pars_central' has been specified. They have been set to zero for all\
                 parameters. If they are known it == better to build the object providing parameters central values.", show=verbose)
-        if self.pars_pos_nuis != None and self.pars_pos_poi != None:
+        if self.pars_pos_nuis is not None and self.pars_pos_poi is not None:
             if len(self.pars_pos_poi)+len(self.pars_pos_nuis) == self.ndims:
                 self.pars_pos_nuis = np.array(self.pars_pos_nuis)
                 self.pars_pos_poi = np.array(self.pars_pos_poi)
             else:
                 raise Exception("The number of parameters positions do not match the number of dimensions.")
-        elif self.pars_pos_nuis == None and self.pars_pos_poi == None:
+        elif self.pars_pos_nuis is None and self.pars_pos_poi is None:
             print("The positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified. Assuming all parameters are parameters of interest.", show=verbose)
             self.pars_pos_nuis = np.array([])
             self.pars_pos_poi = np.array(list(range(self.ndims)))
-        elif self.pars_pos_nuis != None and self.pars_pos_poi == None:
+        elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
             print("Only the positions of the nuisance parameters have been specified. Assuming all other parameters are parameters of interest.", show=verbose)
             self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_nuis))
-        elif self.pars_pos_nuis == None and self.pars_pos_poi != None:
+        elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
             print("Only the positions of the parameters of interest have been specified. Assuming all other parameters are nuisance parameters.", show=verbose)
             self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_poi))
         self.pars_labels_auto = utils.define_pars_labels_auto(self.pars_pos_poi, self.pars_pos_nuis)
-        if self.pars_labels == None:
+        if self.pars_labels is None:
             self.pars_labels = self.pars_labels_auto
         elif len(self.pars_labels) != self.ndims:
             raise Exception("The number of parameters labels do not match the number of dimensions.")
-        if self.pars_bounds != None:
+        if self.pars_bounds is not None:
             self.pars_bounds = np.array(self.pars_bounds)
         else:
             self.pars_bounds = np.vstack([np.full(self.ndims, -np.inf), np.full(self.ndims, np.inf)]).T
@@ -302,7 +302,7 @@ class Data(Verbosity):
         """
         Private method used by the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` one 
         to load a previously saved
-        :class:`Data <DNNLikelihood.Data>` object from the files 
+        :mod:`Data <data>` object from the files 
         
             - :attr:`Data.input_samples_h5_file <DNNLikelihood.Data.input_samples_h5_file>`
             - :attr:`Data.input_object_h5_file <DNNLikelihood.Data.input_object_h5_file>`
@@ -369,7 +369,7 @@ class Data(Verbosity):
         Private method used to check that indices and data are synced in the 
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`
         dictionary. It is called by all methods generating or updating data.
-        This is needed when the :class:`Data <DNNLikelihood.Data>` object is used by the 
+        This is needed when the :mod:`Data <data>` object is used by the 
         :class:`DnnLik <DNNLikelihood.DnnLik>` one. In particular, when the latter is imported from files
         only indices are loaded and properly put in the corresponding 
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`, while, to gain speed, data are not.
@@ -377,8 +377,8 @@ class Data(Verbosity):
         generate them, the method :meth:`Data.__check_sync_data_dictionary <DNNLikelihood.Data._Data__check_sync_data_dictionary>`
         automatically loads the data corresponding to the existing indices in the 
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` of the corresponding 
-        :class:`Data <DNNLikelihood.Data>` object. See the documentation of 
-        :ref:`the DNNLikelihood object <DnnLik_object>` for more details.
+        :mod:`Data <data>` object. See the documentation of 
+        the :mod:`DNNLikelihood <dnn_likelihood>` object for more details.
         """
         if len(self.data_dictionary["idx_train"]) != 0 and len(self.data_dictionary["idx_train"]) != len(self.data_dictionary["X_train"]):
             self.data_dictionary["X_train"] = self.data_X[self.data_dictionary["idx_train"]].astype(self.dtype_required)
@@ -1339,7 +1339,7 @@ class Data(Verbosity):
             nnn = len(X)
         rnd_idx = np.random.choice(np.arange(len(X)), nnn, replace=False)
         samp = X[rnd_idx][:,pars]
-        if weights != None:
+        if weights is not None:
             weights = weights[rnd_idx]
         print("Computing HPDIs.", show=verbose)
         HPDI = [inference.HPDI(samp[:,i], intervals = intervals, weights=weights, nbins=nbins, print_hist=False, optimize_binning=False) for i in range(nndims)]
@@ -1390,7 +1390,7 @@ class Data(Verbosity):
         red_patch = matplotlib.patches.Patch(color=colors[0])  # , label="The red data")
         #blue_patch = matplotlib.patches.Patch(color=colors[1])  # , label="The blue data")
         lines = [matplotlib.lines.Line2D([0], [0], color=colors[1], linewidth=3, linestyle=l) for l in linestyles]
-        if legend_labels == None:
+        if legend_labels is None:
             legend_labels = [intervals_str[i] for i in range(len(intervals))]
         fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc="upper right")#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
         #plt.tight_layout()

@@ -141,10 +141,16 @@ Attributes
 
 .. py:attribute:: Sampler.logpdf_args   
 
-    Attribute corresponding to the input argument :argument:`logpdf_args`.
+    Attribute containing a list of optional arguments (``*args``) for the :argument:`logpdf` function.
         
         - **type**: ``list`` or ``None``
         - **shape**: ``(nargs,)``
+
+.. py:attribute:: Sampler.logpdf_kwargs   
+
+    Attribute containing a dictionary of optional keyword arguments (``**kwargs``) for the :argument:`logpdf` function.
+        
+        - **type**: ``dict`` or ``None``
 
 .. py:attribute:: Sampler.moves
 
@@ -161,10 +167,11 @@ Attributes
     See the |emcee_moves_link| documentation for details.
 
         - **type**: ``str`` or ``None``
-        - **example**: ``"[(emcee.moves.StretchMove(0.7), 0.2), (emcee.moves.GaussianMove(0.1, mode='random',factor=None),0.8)]"``
+        - **example**: ``"[(moves.StretchMove(0.7), 0.2), (moves.GaussianMove(0.1, mode='random',factor=None),0.8)]"``
             
+            where ``moves`` represents the ``emcee.moves`` class.
             This gives a move that is 20% StretchMove with parameter 0.7 and 80% GaussianMove with covariance 0.1 and mode "random" (i.e.
-            updating a random single parameter at each step).
+            updating a single randomly chosen parameter at each step).
 
 .. py:attribute:: Sampler.name   
 

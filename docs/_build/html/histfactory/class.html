@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -219,12 +219,12 @@
 </style>
 <div class="section" id="class">
 <h1>Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="DNNLikelihood.Histfactory">
-<em class="property">class </em><code class="sig-name descname">Histfactory</code><span class="sig-paren">(</span><em class="sig-param">workspace_folder=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">regions_folders_base_name='Region'</em>, <em class="sig-param">bkg_files_base_name='BkgOnly'</em>, <em class="sig-param">patch_files_base_name='patch'</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">input_file=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class is a container for the <a class="reference internal" href="index.html#histfactory-object"><span class="std std-ref">the Histfactory object</span></a> created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces,
+<em class="property">class </em><code class="sig-name descname">Histfactory</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workspace_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">regions_folders_base_name</span><span class="o">=</span><span class="default_value">'Region'</span></em>, <em class="sig-param"><span class="n">bkg_files_base_name</span><span class="o">=</span><span class="default_value">'BkgOnly'</span></em>, <em class="sig-param"><span class="n">patch_files_base_name</span><span class="o">=</span><span class="default_value">'patch'</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class is a container for the the <a class="reference internal" href="index.html#module-histfactory" title="histfactory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces,
 read parameters and logpdf using the <a href="https://scikit-hep.org/pyhf/"  target="_blank"> pyhf</a> package, create <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> objects and save them for later use
-(see <a class="reference internal" href="../likelihood/index.html#likelihood-object"><span class="std std-ref">the Likelihood object</span></a>).</p>
+(see the <a class="reference internal" href="../likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object documentation).</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
@@ -234,49 +234,40 @@ read parameters and logpdf using the <a href="https://scikit-hep.org/pyhf/"  tar
 <li class="toctree-l1"><a class="reference internal" href="methods.html">Methods</a></li>
 </ul>
 </div>
-<p><strong>Methods summary</strong></p>
+<p><strong>Arguments summary</strong></p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 55%" />
 <col style="width: 45%" />
+<col style="width: 55%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Method</p></th>
+<tr class="row-odd"><th class="head"><p>Argument</p></th>
 <th class="head"><p>Short description</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="arguments.html#Histfactory.workspace_folder" title="Histfactory.workspace_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__check_define_input_files" title="DNNLikelihood.Histfactory._Histfactory__check_define_input_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__check_define_input_files</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="arguments.html#Histfactory.name" title="Histfactory.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__check_define_output_files" title="DNNLikelihood.Histfactory._Histfactory__check_define_output_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__check_define_output_files</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="arguments.html#Histfactory.regions_folders_base_name" title="Histfactory.regions_folders_base_name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">regions_folders_base_name</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__check_define_name" title="DNNLikelihood.Histfactory._Histfactory__check_define_name"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__check_define_name</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="arguments.html#Histfactory.bkg_files_base_name" title="Histfactory.bkg_files_base_name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">bkg_files_base_name</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__import" title="DNNLikelihood.Histfactory._Histfactory__import"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__import</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="arguments.html#Histfactory.patch_files_base_name" title="Histfactory.patch_files_base_name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">patch_files_base_name</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__load" title="DNNLikelihood.Histfactory._Histfactory__load"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__load</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.import_likelihoods" title="DNNLikelihood.Histfactory.import_likelihoods"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.import_likelihoods</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.get_likelihood_object" title="DNNLikelihood.Histfactory.get_likelihood_object"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.get_likelihood_object</span></code></a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.set_verbosity" title="DNNLikelihood.Histfactory.set_verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.set_verbosity</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="arguments.html#Histfactory.verbose" title="Histfactory.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -340,8 +331,55 @@ read parameters and logpdf using the <a href="https://scikit-hep.org/pyhf/"  tar
 </tr>
 </tbody>
 </table>
+<p><strong>Methods summary</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 55%" />
+<col style="width: 45%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Short description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__check_define_input_files" title="DNNLikelihood.Histfactory._Histfactory__check_define_input_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__check_define_input_files</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__check_define_output_files" title="DNNLikelihood.Histfactory._Histfactory__check_define_output_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__check_define_output_files</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__check_define_name" title="DNNLikelihood.Histfactory._Histfactory__check_define_name"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__check_define_name</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__import" title="DNNLikelihood.Histfactory._Histfactory__import"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__import</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory._Histfactory__load" title="DNNLikelihood.Histfactory._Histfactory__load"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.__load</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.import_likelihoods" title="DNNLikelihood.Histfactory.import_likelihoods"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.import_likelihoods</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.get_likelihood_object" title="DNNLikelihood.Histfactory.get_likelihood_object"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.get_likelihood_object</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.set_verbosity" title="DNNLikelihood.Histfactory.set_verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory.set_verbosity</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Inheritance diagram</strong></p>
-<div class="graphviz"><img src="../_images/inheritance-b5e2ccf0b945d7359b369ee4f604c85ce67ca2bd.png" alt="Inheritance diagram of DNNLikelihood.Histfactory" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="../_images/inheritance-9e8730e8c58154871ff10814c40a0bb734fcb2a5.png" alt="Inheritance diagram of DNNLikelihood.Histfactory" class="inheritance graphviz" /></div>
 <hr class="docutils" />
 </div>
 

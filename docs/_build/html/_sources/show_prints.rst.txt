@@ -1,5 +1,7 @@
 .. _verbosity_mode:
 
+.. module:: show_prints
+
 Verbosity mode
 --------------
 

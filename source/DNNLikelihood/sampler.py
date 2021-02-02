@@ -34,7 +34,7 @@ class Sampler(Verbosity):
     (MCMC) using the |emcee_link| package (ensemble sampling MCMC). See ref. :cite:`ForemanMackey:2012ig` for
     details about |emcee_link|. On top of performing
     MCMC :class:`Sampler <DNNLikelihood.Sampler>` class several methods to check convergence, and export 
-    :ref:`the Data object <data_object>` used to train and test the DNNLikelihood.
+    the :mod:`Data <data>` object used to train and test the DNNLikelihood.
     The object can be instantiated both passing a ``Lik`` object or a ``likelihood_script_file`` created 
     with the ``Lik.save_script`` method.
     """
@@ -154,6 +154,7 @@ class Sampler(Verbosity):
         else:
             self.vectorize = vectorize
         self.input_file = input_file
+        self.output_folder = output_folder
         self.__check_define_input_files(verbose=verbose_sub)
         if not self.new_sampler:
             #self.__load(verbose=verbose_sub)
@@ -227,6 +228,10 @@ class Sampler(Verbosity):
                     - **default**: ``None`` 
         """
         _, verbose_sub = self.set_verbosity(verbose)
+        ### Sets output folder if needed to find existing files
+        if self.output_folder == None:
+            self.output_folder = ""
+        self.output_folder = path.abspath(self.output_folder)
         if self.input_file != None:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
         if not self.new_sampler:
@@ -286,6 +291,8 @@ class Sampler(Verbosity):
         :attr:`Sampler.output_figures_folder <DNNLikelihood.Sampler.output_figures_folder>` if 
         they do not exist.
         """
+        if self.output_folder == None:
+            self.output_folder = ""
         self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
         self.output_figures_folder = path.join(self.output_folder, "figures")
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
@@ -324,8 +331,16 @@ class Sampler(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         tmp_likelihood = copy(self.likelihood)
         tmp_likelihood.verbose = verbose
-        self.likelihood_script_file = tmp_likelihood.script_file
-        tmp_likelihood.save_script(verbose=verbose_sub)
+        tmp_likelihood_script_file = tmp_likelihood.script_file
+        likelihood_script_file_name = path.split(tmp_likelihood_script_file)[-1]
+        tmp_likelihood_script_file_new = path.join(self.output_folder,likelihood_script_file_name)
+        if path.exists(tmp_likelihood_script_file_new):
+            self.likelihood_script_file = tmp_likelihood_script_file_new
+            print("qui")
+        else:    
+            self.likelihood_script_file = tmp_likelihood_script_file
+            tmp_likelihood.save_script(verbose=verbose_sub)
+            print("qua")
 
     def __get_input_file_from_likelihood_script_file(self):
         """
@@ -335,10 +350,14 @@ class Sampler(Verbosity):
         attribute.
         """
         self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
+        print(self.likelihood_script_file)
         folder, file = path.split(self.likelihood_script_file)
         file = path.splitext(file)[0]
-        input_file_name = file.replace("likelihood_script","sampler")
-        self.input_file = path.join(folder, input_file_name)
+        input_file = path.join(self.output_folder, file.replace("likelihood_script", "sampler"))
+        if path.exists(input_file+".h5"):
+            self.input_file = input_file
+        else:
+            self.input_file = path.join(folder, file.replace("likelihood_script","sampler"))
 
     def __get_input_file_from_likelihood(self, verbose=None):
         """
@@ -1672,7 +1691,7 @@ class Sampler(Verbosity):
 
     def get_data_object(self, nsamples="all", burnin="auto", thin="auto", dtype="float64", test_fraction=0, output_folder=None, verbose=None):
         """
-        Returns a :class:`Data <DNNLikelihood.Data>` object with ``nsamples`` samples by taking chains and logpdf values, discarding 
+        Returns a :mod:`Data <data>` object with ``nsamples`` samples by taking chains and logpdf values, discarding 
         ``burnin`` steps, thinning every ``thin``, deleting duplicates, and converting to dtype ``dtype``. When ``nsamples="all"`` (default) all samples 
         available for the given choice of ``burnin`` and ``thin`` are included to the :class:`DNNLikelihood.Data` object, 
         otherwise only the last ``nsamples`` are included. If ``nsamples`` is more than the available number of samples, then all available 
@@ -1693,7 +1712,7 @@ class Sampler(Verbosity):
             - **nsamples**
             
                 Number of samples to include in the 
-                :class:`Data <DNNLikelihood.Data>` object.
+                :mod:`Data <data>` object.
                     
                     - **type**: ``int`` or ``str``
                     - **allowed string**: ``"all"``
@@ -1725,16 +1744,16 @@ class Sampler(Verbosity):
             - **dtype**
             
                 dtype of the data included in the 
-                :class:`Data <DNNLikelihood.Data>` object.
+                :mod:`Data <data>` object.
                     
                     - **type**: ``str``
                     - **default**: ``"float64"``
 
             - **test_fraction**
             
-                If specified, in the :class:`Data <DNNLikelihood.Data>` object
+                If specified, in the :mod:`Data <data>` object
                 data are already split into train (and valudation) and test sets.
-                See :ref:`the Data object <data_object>`.
+                See the :mod:`Data <data>` object documentation.
                     
                     - **type**: ``float`` in the range ``(0,1)``
                     - **default**: ``0``
@@ -1743,7 +1762,7 @@ class Sampler(Verbosity):
             
                 If specified is passed as input to the :class:`Data <DNNLikelihood.Data>`, otherwise
                 the :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` is passed
-                and the :class:`Data <DNNLikelihood.Data>` object is saved in the same folder as the 
+                and the :mod:`Data <data>` object is saved in the same folder as the 
                 :class:`Sampler <DNNLikelihood.Sampler>` object.
                     
                     - **type**: ``str``
@@ -1759,7 +1778,7 @@ class Sampler(Verbosity):
 
         - **Returns**
 
-            :class:`Data <DNNLikelihood.Data>` object.
+            :mod:`Data <data>` object.
 
         - **Creates files**
 
@@ -1798,7 +1817,7 @@ class Sampler(Verbosity):
                     thin=thin-1
                 if autocorr_max != None:
                     if thin < autocorr_max:
-                        print("The required number of samples does not allow a thin smaller than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".",show=verbose)
+                        print("The required number of samples does not allow a thin value larger than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".",show=verbose)
                     else:
                         print("Thin automatically set to:",thin,".",show=verbose)
                 else:

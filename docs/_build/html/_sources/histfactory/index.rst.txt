@@ -1,12 +1,15 @@
 .. _histfactory_object:
 
+.. module:: histfactory
+
 The Histfactory object
 ----------------------
 
 The :class:`Histfactory <DNNLikelihood.Histfactory>` class is an API to the |pyhf_link| Python package that can be used to import 
 likelihoods in the ATLAS histfactory format into the DNNLikelihood module. 
 The API uses |pyhf_link| (with default |numpy_link| backend) to parse all relevant information contained in the histfactory workspace
-and to create a :class:`Lik <DNNLikelihood.Lik>` class object (see :ref:`the Likelihood object <likelihood_object>`).
+and to create a :class:`Lik <DNNLikelihood.Lik>` class object (see the
+:mod:`Likelihood <likelihood>` object documentation).
 The :class:`Histfactory <DNNLikelihood.Histfactory>` object is stored in an HDF5 file. A log of the relevant calls to the class methods
 is also saved in json format into a log file.
 

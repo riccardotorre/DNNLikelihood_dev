@@ -1,4 +1,4 @@
-.. module:: corner_module
+.. module:: corner
 
 Notes on corner.py
 ------------------

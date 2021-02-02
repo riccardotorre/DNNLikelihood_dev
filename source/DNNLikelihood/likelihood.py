@@ -24,9 +24,9 @@ mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mpl
 
 class Lik(Verbosity):
     """
-    This class is a container for :ref:`the Likelihood object <likelihood_object>`, storing all information of the likelihood function.
+    This class is a container for the :mod:`Likelihood <likelihood>` object, storing all information of the likelihood function.
     The object can be directly created or obtained from an ATLAS histfactory workspace through the 
-    :class:`DNNLikelihood.Histfactory` object (see :ref:`the Histfactory object <histfactory_object>`).
+    :class:`DNNLikelihood.Histfactory` object (see the :mod:`Histfactory <histfactory>` object documentation).
     """
     def __init__(self,
                  name = None,
@@ -144,13 +144,11 @@ class Lik(Verbosity):
         if self.output_folder == None:
             self.output_folder = ""
         self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
-        self.output_figures_folder = path.join(self.output_folder, "figures")
+        self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
         self.script_file = path.join(self.output_folder, self.name+"_script.py")
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
-        utils.check_create_folder(self.output_folder)
-        utils.check_create_folder(self.output_figures_folder)
 
     def __check_define_name(self):
         """
@@ -669,7 +667,7 @@ class Lik(Verbosity):
         storing maximum profiled logpdf information.
         They could be used both for frequentist profiled likelihood inference or as initial condition for
         Markov Chain Monte Carlo through the :class:`Sampler <DNNLikelihood.Sampler>` object
-        (see :ref:`the Sampler object <sampler_object>`). 
+        (see the :mod:`Sampler <sampler>` object documentation). 
         The method uses the function :func:`inference.compute_profiled_maxima_logpdf <DNNLikelihood.inference.compute_profiled_maxima_logpdf>`
         based on |scipy_optimize_minimize_link| to find the (local) minimum of minus
         :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. Since the latter

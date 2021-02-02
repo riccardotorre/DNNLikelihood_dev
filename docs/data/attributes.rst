@@ -11,8 +11,8 @@ Attributes
     The dictionary is updated each time data are generated or updated and is not stored when saving the object (data
     indices only are stored with trained models by the :class:`DnnLik <DNNLikelihood.DnnLik>` and 
     :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` objects).
-    See :ref:`the DNNLikelihood object <DnnLik_object>` and 
-    :ref:`the DNNLikelihood Ensemble object <DnnLikEnsemble_object>` objects for more
+    See the :mod:`DNNLikelihood <dnn_likelihood>` object and 
+    the :mod:`DNNLikEnsemble <dnn_likelihood_ensemble>` object objects for more
     information.
 
         - **type**: ``dict`` with the following structure:
@@ -66,7 +66,7 @@ Attributes
     Data type of the dataset stored in the :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`.
     It is set to the value of the :argument:`dtype` input argument if not ``None`` and to ``"float64"`` if ``None`` 
     the first time the object is created and remains unchanged when saving/loading the 
-    :class:`Data <DNNLikelihood.Data>` object.
+    :mod:`Data <data>` object.
 
         - **type**: ``str``
 
@@ -94,7 +94,7 @@ Attributes
 
 .. py:attribute:: Data.input_log_file
 
-    Absolute path to the .log file containing a saved :class:`Data <DNNLikelihood.Data>` object log (see
+    Absolute path to the .log file containing a saved :mod:`Data <data>` object log (see
     the :meth:`Data.save_log <DNNLikelihood.Data.save_log>` method for details).
     It is automatically generated from the attribute
     :attr:`Data.input_file <DNNLikelihood.Data.input_file>`.
@@ -104,7 +104,7 @@ Attributes
 
 .. py:attribute:: Data.input_object_h5_file
 
-    Absolute path to the .h5 file containing a saved :class:`Data <DNNLikelihood.Data>` object (see
+    Absolute path to the .h5 file containing a saved :mod:`Data <data>` object (see
     the :meth:`Data.save_object_h5 <DNNLikelihood.Data.save_object_h5>` method for details).
     It is automatically generated from the attribute
     :attr:`Data.input_file <DNNLikelihood.Data.input_file>`.
@@ -136,7 +136,7 @@ Attributes
 
 .. py:attribute:: Data.log
 
-    Dictionary containing a log of the :class:`Data <DNNLikelihood.Data>` object calls. The dictionary has datetime 
+    Dictionary containing a log of the :mod:`Data <data>` object calls. The dictionary has datetime 
     strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
           
         - **type**: ``dict``
@@ -175,7 +175,7 @@ Attributes
 .. py:attribute:: Data.name
 
     Attribute corresponding to the input argument :argument:`name` and containing the
-    name of the :class:`Data <DNNLikelihood.Data>` object. 
+    name of the :mod:`Data <data>` object. 
     If ``None`` is passed, then ``name`` is assigned the value 
     ``model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_data"``, 
     while if a string is passed, the ``"_data"`` suffix is appended 

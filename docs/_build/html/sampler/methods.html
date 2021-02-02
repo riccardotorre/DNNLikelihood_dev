@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -222,9 +222,9 @@
 </style>
 <div class="section" id="methods">
 <h1>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.__init__">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">new_sampler=None</em>, <em class="sig-param">likelihood_script_file=None</em>, <em class="sig-param">likelihood=None</em>, <em class="sig-param">nsteps_required=None</em>, <em class="sig-param">moves_str=None</em>, <em class="sig-param">parallel_CPU=None</em>, <em class="sig-param">vectorize=None</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">input_file=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_sampler</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">likelihood_script_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">likelihood</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nsteps_required</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">moves_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parallel_CPU</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vectorize</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object can be initialized in two different ways, depending on the value of
 the <a class="reference internal" href="arguments.html#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a> argument.</p>
 <p>1. <code class="docutils literal notranslate"><span class="pre">new_sampler=True</span></code>: all attributes are set from input arguments. The
@@ -321,9 +321,9 @@ if <code class="docutils literal notranslate"><span class="pre">new_sampler=Fals
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__check_define_input_files">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__check_define_input_files</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__check_define_input_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__check_define_input_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__check_define_input_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> one
 to set the input files attributes.
 If <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.new_sampler</span> <span class="pre">&lt;DNNLikelihood.Sampler.new_sampler</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the
@@ -365,7 +365,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__check_define_output_files">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__check_define_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__check_define_output_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> one
@@ -386,7 +386,7 @@ to set the attributes corresponding to the output folder</p>
 </div></blockquote>
 <p>depending on the value of the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> attribute.
-The latter is set from the input argument <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> if given, otherwise it is
+The latter is set from the input argument <a class="reference internal" href="arguments.html#Sampler.output_folder" title="Sampler.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> if given, otherwise it is
 taken from the same attribute of the <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object when creating a new
 <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object or imported from files if loading an existing
 <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.
@@ -396,7 +396,7 @@ It also creates the folders
 they do not exist.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_input_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__get_likelihood_script_file_from_input_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method that attempts to determine the
@@ -405,9 +405,9 @@ from the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampl
 attribute.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_likelihood">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__get_likelihood_script_file_from_likelihood</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__get_likelihood_script_file_from_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method that generates the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a> attribute
 and corresponding file from the
@@ -434,7 +434,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood_script_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__get_input_file_from_likelihood_script_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood_script_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method that attempts to determine the
@@ -443,9 +443,9 @@ from the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampl
 attribute.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__get_input_file_from_likelihood</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__get_input_file_from_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method that attempts to determine the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a> attribute
 from the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood</span></code>
@@ -474,9 +474,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__init_likelihood">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__init_likelihood</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__init_likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__init_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__init_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> one
 to set the likelihood related attributes from the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a> attribute.
@@ -521,9 +521,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__load">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__load</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> one
 to load a previously saved
 <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object from the files</p>
@@ -560,9 +560,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__init_backend">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__init_backend</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__init_backend" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__init_backend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__init_backend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> one
 to create a backend file
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>
@@ -597,9 +597,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__init_sampler">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__init_sampler</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__init_sampler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__init_sampler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__init_sampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler._Sampler__init_backend" title="DNNLikelihood.Sampler._Sampler__init_backend"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init_backend</span></code></a> one
 to initialize <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> and
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.sampler" title="DNNLikelihood.Sampler.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.sampler</span></code></a> attributes depending on the value of
@@ -633,9 +633,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__check_vectorize">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__check_vectorize</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__check_vectorize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__check_vectorize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__check_vectorize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> one
 to check consistency between the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.vectorize" title="DNNLikelihood.Sampler.vectorize"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.vectorize</span></code></a> and
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code> attributes. In particular, when
@@ -666,9 +666,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__check_params_backend">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__check_params_backend</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__check_params_backend" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__check_params_backend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__check_params_backend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> one
 to check consistency between the attributes
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nwalkers" title="DNNLikelihood.Sampler.nwalkers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nwalkers</span></code></a> and <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.ndims" title="DNNLikelihood.Sampler.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.ndims</span></code></a>
@@ -698,7 +698,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__set_steps_to_run">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__set_steps_to_run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__set_steps_to_run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method that returns the number of steps to run computed as the difference between the value of
@@ -708,9 +708,9 @@ number of steps available in
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a>.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler._Sampler__set_pars_labels">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__set_pars_labels</code><span class="sig-paren">(</span><em class="sig-param">pars_labels</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__set_pars_labels" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">_Sampler__set_pars_labels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars_labels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Sampler._Sampler__set_pars_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method that returns the <code class="docutils literal notranslate"><span class="pre">pars_labels</span></code> choice based on the <code class="docutils literal notranslate"><span class="pre">pars_labels</span></code> input.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -738,9 +738,9 @@ while if <code class="docutils literal notranslate"><span class="pre">pars_label
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.run_sampler">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">run_sampler</code><span class="sig-paren">(</span><em class="sig-param">progress=True</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.run_sampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.run_sampler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">run_sampler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">progress</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.run_sampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.run_sampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs MCMC sampling. Parameters are initialized to the last last sample available in
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> or to
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_init</span></code> if no sample is available.</p>
@@ -785,92 +785,9 @@ If <code class="docutils literal notranslate"><span class="pre">verbose=2</span>
 </ul>
 </dd></dl>
 
-<dl class="method">
-<dt id="DNNLikelihood.Sampler.save">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object is saved to the HDF5 file
-<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_h5_file" title="DNNLikelihood.Sampler.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_h5_file</span></code></a>, the sampler attribute
-<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> is saved to the HDF5 file
-<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>, and the object log is saved
-to the json file <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a>.
-The object is saved by storing the content of the :attr:<code class="docutils literal notranslate"><span class="pre">Sampler.__dict__</span> <span class="pre">&lt;DNNLikelihood.Sampler.__dict__&gt;</span></code>
-attribute in an h5 file using the <a href="https://deepdish.readthedocs.io/en/latest/index.html"  target="_blank"> deepdish</a> package. The following attributes are excluded from the saved
-dictionary:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>)</p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_h5_file" title="DNNLikelihood.Sampler.input_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_h5_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_log_file" title="DNNLikelihood.Sampler.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_log_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.log" title="DNNLikelihood.Sampler.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.log</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a>)</p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.new_sampler" title="DNNLikelihood.Sampler.new_sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.new_sampler</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.moves" title="DNNLikelihood.Sampler.moves"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.moves</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.sampler" title="DNNLikelihood.Sampler.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.sampler</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.verbose" title="DNNLikelihood.Sampler.verbose"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.verbose</span></code></a></p></li>
-</ul>
-</div></blockquote>
-<p>and the attributes that are associated with the corresponding <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.logpdf_args" title="DNNLikelihood.Sampler.logpdf_args"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf_args</span></code></a></p></li>
-<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf_kwargs</span></code></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.ndims" title="DNNLikelihood.Sampler.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.ndims</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nwalkers" title="DNNLikelihood.Sampler.nwalkers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nwalkers</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_init_vec" title="DNNLikelihood.Sampler.pars_init_vec"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_init_vec</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_labels" title="DNNLikelihood.Sampler.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_labels</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_labels_auto" title="DNNLikelihood.Sampler.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_labels_auto</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_pos_nuis" title="DNNLikelihood.Sampler.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_pos_nuis</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_pos_poi" title="DNNLikelihood.Sampler.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_pos_poi</span></code></a></p></li>
-</ul>
-</div></blockquote>
-<ul>
-<li><p><strong>Arguments</strong></p>
-<blockquote>
-<div><ul>
-<li><p><strong>overwrite</strong></p>
-<blockquote>
-<div><p>It determines whether an existing file gets overwritten or if a new file is created.
-If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> is used
-to append a time-stamp to the file name.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><p><strong>verbose</strong></p>
-<blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><strong>Creates/updates files</strong></p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_h5_file" title="DNNLikelihood.Sampler.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_h5_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a></p></li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.save_log">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">save_log</code><span class="sig-paren">(</span><em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.save_log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">save_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.save_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the content of the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.log" title="DNNLikelihood.Sampler.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.log</span></code></a> attribute in the file
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a></p>
 <p>This method is called by the methods</p>
@@ -925,105 +842,59 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
-<dt id="DNNLikelihood.Sampler.get_data_object">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">get_data_object</code><span class="sig-paren">(</span><em class="sig-param">nsamples='all'</em>, <em class="sig-param">burnin='auto'</em>, <em class="sig-param">thin='auto'</em>, <em class="sig-param">dtype='float64'</em>, <em class="sig-param">test_fraction=0</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.get_data_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.get_data_object" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object with <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> samples by taking chains and logpdf values, discarding
-<code class="docutils literal notranslate"><span class="pre">burnin</span></code> steps, thinning every <code class="docutils literal notranslate"><span class="pre">thin</span></code>, deleting duplicates, and converting to dtype <code class="docutils literal notranslate"><span class="pre">dtype</span></code>. When <code class="docutils literal notranslate"><span class="pre">nsamples=&quot;all&quot;</span></code> (default) all samples
-available for the given choice of <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">thin</span></code> are included to the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a> object,
-otherwise only the last <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> are included. If <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> is more than the available number of samples, then all available
-samples are included and a warning message is printed.
-The <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">thin</span></code> options can be set to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> to optimize them and/or get an idea of the optimal values.
-For details on the <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> option see the arguments documentation below. When chains are very large the <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> mode
-can take a long time.
-It prints a warning is there are non finite values of logpdf (e.g. <code class="docutils literal notranslate"><span class="pre">np.nan</span></code> or <code class="docutils literal notranslate"><span class="pre">np.inf</span></code>).</p>
-<p>The method also allows one to pass to the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a> a value for <code class="docutils literal notranslate"><span class="pre">test_fraction</span></code>, which already
-splits data into <code class="docutils literal notranslate"><span class="pre">train</span></code> (sample from which training and valudation data are extracted) and <code class="docutils literal notranslate"><span class="pre">test</span></code> (sample only
-used for final test) sets. See <a class="reference internal" href="../data/attributes.html#DNNLikelihood.Data.test_fraction" title="DNNLikelihood.Data.test_fraction"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.test_fraction</span></code></a> for more details.</p>
-<p>Finally, based on the value of <code class="docutils literal notranslate"><span class="pre">save</span></code>, the generated <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a> object</p>
+<dl class="py method">
+<dt id="DNNLikelihood.Sampler.save">
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object is saved to the HDF5 file
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_h5_file" title="DNNLikelihood.Sampler.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_h5_file</span></code></a>, the sampler attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> is saved to the HDF5 file
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>, and the object log is saved
+to the json file <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a>.
+The object is saved by storing the content of the :attr:<code class="docutils literal notranslate"><span class="pre">Sampler.__dict__</span> <span class="pre">&lt;DNNLikelihood.Sampler.__dict__&gt;</span></code>
+attribute in an h5 file using the <a href="https://deepdish.readthedocs.io/en/latest/index.html"  target="_blank"> deepdish</a> package. The following attributes are excluded from the saved
+dictionary:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_h5_file" title="DNNLikelihood.Sampler.input_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_h5_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_log_file" title="DNNLikelihood.Sampler.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.log" title="DNNLikelihood.Sampler.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.log</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a>)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.new_sampler" title="DNNLikelihood.Sampler.new_sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.new_sampler</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.moves" title="DNNLikelihood.Sampler.moves"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.moves</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.sampler" title="DNNLikelihood.Sampler.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.sampler</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.verbose" title="DNNLikelihood.Sampler.verbose"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.verbose</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>and the attributes that are associated with the corresponding <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.logpdf_args" title="DNNLikelihood.Sampler.logpdf_args"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf_args</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.logpdf_kwargs" title="DNNLikelihood.Sampler.logpdf_kwargs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf_kwargs</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.ndims" title="DNNLikelihood.Sampler.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.ndims</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nwalkers" title="DNNLikelihood.Sampler.nwalkers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nwalkers</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_init_vec" title="DNNLikelihood.Sampler.pars_init_vec"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_init_vec</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_labels" title="DNNLikelihood.Sampler.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_labels</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_labels_auto" title="DNNLikelihood.Sampler.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_labels_auto</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_pos_nuis" title="DNNLikelihood.Sampler.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_pos_nuis</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.pars_pos_poi" title="DNNLikelihood.Sampler.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_pos_poi</span></code></a></p></li>
+</ul>
+</div></blockquote>
 <ul>
 <li><p><strong>Arguments</strong></p>
 <blockquote>
 <div><ul>
-<li><p><strong>nsamples</strong></p>
+<li><p><strong>overwrite</strong></p>
 <blockquote>
-<div><p>Number of samples to include in the
-<a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
-<li><p><strong>allowed string</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><p><strong>burnin</strong></p>
-<blockquote>
-<div><p>Number of samples to skip as burnin. If set to “auto”, the autocorrelation time of parameters is computed
-using the <a href="https://emcee.readthedocs.io/en/stable/user/sampler/?highlight=get_autocorr_time#emcee.EnsembleSampler.get_autocorr_time"  target="_blank"> emcee.EnsembleSample.get_autocorr_time</a> method of the sampler <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.sampler" title="DNNLikelihood.Sampler.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.sampler</span></code></a>
-and the burnin is set to the minimum between 5 times the autocorrelation time and half the total number of available steps.
-If “auto” option fails it raises an error asking the user to manually specify <code class="docutils literal notranslate"><span class="pre">burnin</span></code>.
-Notice that for very large chains the calculation of the autocorrelation time can take a long time.</p>
+<div><p>It determines whether an existing file gets overwritten or if a new file is created.
+If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> is used
+to append a time-stamp to the file name.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
-<li><p><strong>allowed string</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><p><strong>thin</strong></p>
-<blockquote>
-<div><p>If larger than <code class="docutils literal notranslate"><span class="pre">1</span></code> then one sampler every thin is taken. If set to <code class="docutils literal notranslate"><span class="pre">auto</span></code> thin is optimized by taking the largest possible
-thin compatible with <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">nsamples</span></code>.
-If “auto” option fails it raises an error asking the user to manually specify <code class="docutils literal notranslate"><span class="pre">thin</span></code>.
-Notice that for very large chains the optimization of <code class="docutils literal notranslate"><span class="pre">thin</span></code> can take a long time.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
-<li><p><strong>allowed string</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><p><strong>dtype</strong></p>
-<blockquote>
-<div><p>dtype of the data included in the
-<a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;float64&quot;</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><p><strong>test_fraction</strong></p>
-<blockquote>
-<div><p>If specified, in the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object
-data are already split into train (and valudation) and test sets.
-See <a class="reference internal" href="../data/index.html#data-object"><span class="std std-ref">the Data object</span></a>.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">float</span></code> in the range <code class="docutils literal notranslate"><span class="pre">(0,1)</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-<li><p><strong>output_folder</strong></p>
-<blockquote>
-<div><p>If specified is passed as input to the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>, otherwise
-the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> is passed
-and the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object is saved in the same folder as the
-<a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
 </div></blockquote>
@@ -1043,22 +914,10 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </div></blockquote>
 </li>
-<li><p><strong>Returns</strong></p>
-<blockquote>
-<div><p><a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
-</div></blockquote>
-</li>
-<li><p><strong>Creates files</strong></p>
+<li><p><strong>Creates/updates files</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_h5_file</span></code></p></li>
-<li><p><a class="reference internal" href="../data/attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p><strong>Updates file</strong></p>
-<blockquote>
-<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_h5_file" title="DNNLikelihood.Sampler.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a></p></li>
 </ul>
 </div></blockquote>
@@ -1066,45 +925,45 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.autocorr_func_1d">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_func_1d</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">norm=True</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_func_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_func_1d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_func_1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_func_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_func_1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function adapted from the <a href="https://emcee.readthedocs.io/en/stable/tutorials/autocorr/"  target="_blank"> emcee autocorrelation tutorial</a> (see the link for documentation)
 and used to compute and plot autocorrelation time estimates.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.auto_window">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">auto_window</code><span class="sig-paren">(</span><em class="sig-param">taus</em>, <em class="sig-param">c</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.auto_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.auto_window" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">auto_window</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">taus</span></em>, <em class="sig-param"><span class="n">c</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.auto_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.auto_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function adapted from the <a href="https://emcee.readthedocs.io/en/stable/tutorials/autocorr/"  target="_blank"> emcee autocorrelation tutorial</a> (see the link for documentation)
 and used to compute and plot autocorrelation time estimates.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.autocorr_gw2010">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_gw2010</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">c=5.0</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_gw2010"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_gw2010" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_gw2010</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_gw2010"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_gw2010" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function adapted from the <a href="https://emcee.readthedocs.io/en/stable/tutorials/autocorr/"  target="_blank"> emcee autocorrelation tutorial</a> (see the link for documentation).
 Estimate of the integrated autocorrelation time based on ref. <a class="bibtex reference internal" href="references.html#goodmanweare-2010qj" id="id1">[GW10]</a>.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.autocorr_new">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_new</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">c=5.0</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_new" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_new</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_new" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function adapted from the <a href="https://emcee.readthedocs.io/en/stable/tutorials/autocorr/"  target="_blank"> emcee autocorrelation tutorial</a> (see the link for documentation).
 Estimate of the integrated autocorrelation time based on ref. <a class="bibtex reference internal" href="references.html#fardal-2017" id="id2">[Far17]</a>.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.autocorr_ml">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_ml</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">thin=1</em>, <em class="sig-param">c=5.0</em>, <em class="sig-param">bound=5.0</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_ml" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">autocorr_ml</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">thin</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">c</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">bound</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.autocorr_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.autocorr_ml" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function adapted from the <a href="https://emcee.readthedocs.io/en/stable/tutorials/autocorr/"  target="_blank"> emcee autocorrelation tutorial</a> (see the link for documentation).
 Estimate of the integrated autocorrelation time obtained by fitting an autoregressive model
 (2nd order ARMA model) <a class="bibtex reference internal" href="references.html#danforeman-mackey-2017" id="id3">[FM17]</a> using the <a href="https://docs.python.org/3/library/importlib.html"  target="_blank">celerite</a> package.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.gelman_rubin">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">gelman_rubin</code><span class="sig-paren">(</span><em class="sig-param">pars=0</em>, <em class="sig-param">nsteps='all'</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.gelman_rubin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.gelman_rubin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">gelman_rubin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">nsteps</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.gelman_rubin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.gelman_rubin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a parameter (or list of parameters) <code class="docutils literal notranslate"><span class="pre">pars</span></code> and a number of <code class="docutils literal notranslate"><span class="pre">nsteps</span></code>, the method computes
 the Gelman and Rubin ratio <a class="bibtex reference internal" href="references.html#gelman-1992zz" id="id4">[GR92]</a> and related quantities for monitoring convergence.
 The formula for <span class="math notranslate nohighlight">\(R_{c}\)</span> implements the correction due to Brooks and Gelman <a class="bibtex reference internal" href="references.html#brooks-1998" id="id5">[BG98]</a>
@@ -1185,9 +1044,9 @@ and each choice of nsteps.</p>
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.plot_gelman_rubin">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_gelman_rubin</code><span class="sig-paren">(</span><em class="sig-param">pars=0</em>, <em class="sig-param">npoints=5</em>, <em class="sig-param">pars_labels='original'</em>, <em class="sig-param">show_plot=False</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_gelman_rubin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_gelman_rubin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_gelman_rubin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">npoints</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_gelman_rubin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_gelman_rubin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the evolution with the number of steps of the convergence metrics <span class="math notranslate nohighlight">\(R_{c}\)</span>,
 <span class="math notranslate nohighlight">\(\sqrt{\hat{V}}\)</span>, and <span class="math notranslate nohighlight">\(\sqrt{W}\)</span> computed by the method
 <a class="reference internal" href="#DNNLikelihood.Sampler.gelman_rubin" title="DNNLikelihood.Sampler.gelman_rubin"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.gelman_rubin</span></code></a> for parameter (or list of parameters) <code class="docutils literal notranslate"><span class="pre">pars</span></code>.
@@ -1286,9 +1145,9 @@ The plots are shown in the interactive console calling <code class="docutils lit
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.plot_dist">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_dist</code><span class="sig-paren">(</span><em class="sig-param">pars=0</em>, <em class="sig-param">pars_labels='original'</em>, <em class="sig-param">show_plot=False</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_dist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the 1D distribution of parameter (or list of parameters) <code class="docutils literal notranslate"><span class="pre">pars</span></code>.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -1383,9 +1242,9 @@ The plots are shown in the interactive console calling <code class="docutils lit
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.plot_autocorr">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_autocorr</code><span class="sig-paren">(</span><em class="sig-param">pars=0, pars_labels='original', methods=['G&amp;W 2010', 'Fardal 2017', 'DFM 2017: ML'], show_plot=False, overwrite=False, verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_autocorr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_autocorr" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_autocorr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">methods</span><span class="o">=</span><span class="default_value">['G&amp;W 2010', 'Fardal 2017', 'DFM 2017: ML']</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_autocorr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_autocorr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the integrated autocorrelation time estimate evolution with the number of steps for parameter (or list of parameters) <code class="docutils literal notranslate"><span class="pre">pars</span></code>.
 Three different methods are used to estimate the autocorrelation time: “G&amp;W 2010” <a class="bibtex reference internal" href="references.html#goodmanweare-2010qj" id="id7">[GW10]</a>,
 “Fardal 2017” <a class="bibtex reference internal" href="references.html#fardal-2017" id="id8">[Far17]</a>, and “DFM 2017: ML” <a class="bibtex reference internal" href="references.html#danforeman-mackey-2017" id="id9">[FM17]</a>, described in details
@@ -1489,9 +1348,9 @@ The plots are shown in the interactive console calling <code class="docutils lit
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.plot_chains">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_chains</code><span class="sig-paren">(</span><em class="sig-param">pars=0</em>, <em class="sig-param">n_chains=100</em>, <em class="sig-param">pars_labels='original'</em>, <em class="sig-param">show_plot=False</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_chains" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_chains</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">n_chains</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_chains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the evolution of chains (walkers) with the number of steps for <code class="docutils literal notranslate"><span class="pre">n_chains</span></code> randomly selected chains among the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nwalkers</span> <span class="pre">&lt;DNNLikelihood.Sampler.nwalkers&gt;`</span></code> walkers. If <code class="docutils literal notranslate"><span class="pre">n_chains</span></code> is larger than the available number
 of walkers, the plot is done for all walkers.</p>
@@ -1588,9 +1447,9 @@ The plots are shown in the interactive console calling <code class="docutils lit
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Sampler.plot_chains_logpdf">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_chains_logpdf</code><span class="sig-paren">(</span><em class="sig-param">n_chains=100</em>, <em class="sig-param">show_plot=False</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_chains_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_chains_logpdf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">plot_chains_logpdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_chains</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.plot_chains_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.plot_chains_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the evolution of minus the logpdf values with the number of steps for <code class="docutils literal notranslate"><span class="pre">n_chains</span></code> randomly selected chains among the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nwalkers</span> <span class="pre">&lt;DNNLikelihood.Sampler.nwalkers&gt;`</span></code> walkers. If <code class="docutils literal notranslate"><span class="pre">n_chains</span></code> is larger than the available number
 of walkers, the plot is done for all walkers.</p>
@@ -1661,7 +1520,148 @@ The plots are shown in the interactive console calling <code class="docutils lit
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="DNNLikelihood.Sampler.get_data_object">
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">get_data_object</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nsamples</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">burnin</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">thin</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">'float64'</span></em>, <em class="sig-param"><span class="n">test_fraction</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/sampler.html#Sampler.get_data_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Sampler.get_data_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object with <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> samples by taking chains and logpdf values, discarding
+<code class="docutils literal notranslate"><span class="pre">burnin</span></code> steps, thinning every <code class="docutils literal notranslate"><span class="pre">thin</span></code>, deleting duplicates, and converting to dtype <code class="docutils literal notranslate"><span class="pre">dtype</span></code>. When <code class="docutils literal notranslate"><span class="pre">nsamples=&quot;all&quot;</span></code> (default) all samples
+available for the given choice of <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">thin</span></code> are included to the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a> object,
+otherwise only the last <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> are included. If <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> is more than the available number of samples, then all available
+samples are included and a warning message is printed.
+The <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">thin</span></code> options can be set to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> to optimize them and/or get an idea of the optimal values.
+For details on the <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> option see the arguments documentation below. When chains are very large the <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> mode
+can take a long time.
+It prints a warning is there are non finite values of logpdf (e.g. <code class="docutils literal notranslate"><span class="pre">np.nan</span></code> or <code class="docutils literal notranslate"><span class="pre">np.inf</span></code>).</p>
+<p>The method also allows one to pass to the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a> a value for <code class="docutils literal notranslate"><span class="pre">test_fraction</span></code>, which already
+splits data into <code class="docutils literal notranslate"><span class="pre">train</span></code> (sample from which training and valudation data are extracted) and <code class="docutils literal notranslate"><span class="pre">test</span></code> (sample only
+used for final test) sets. See <a class="reference internal" href="../data/attributes.html#DNNLikelihood.Data.test_fraction" title="DNNLikelihood.Data.test_fraction"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.test_fraction</span></code></a> for more details.</p>
+<p>Finally, based on the value of <code class="docutils literal notranslate"><span class="pre">save</span></code>, the generated <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNNLikelihood.Data</span></code></a> object</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>nsamples</strong></p>
+<blockquote>
+<div><p>Number of samples to include in the
+<a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed string</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>burnin</strong></p>
+<blockquote>
+<div><p>Number of samples to skip as burnin. If set to “auto”, the autocorrelation time of parameters is computed
+using the <a href="https://emcee.readthedocs.io/en/stable/user/sampler/?highlight=get_autocorr_time#emcee.EnsembleSampler.get_autocorr_time"  target="_blank"> emcee.EnsembleSample.get_autocorr_time</a> method of the sampler <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.sampler" title="DNNLikelihood.Sampler.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.sampler</span></code></a>
+and the burnin is set to the minimum between 5 times the autocorrelation time and half the total number of available steps.
+If “auto” option fails it raises an error asking the user to manually specify <code class="docutils literal notranslate"><span class="pre">burnin</span></code>.
+Notice that for very large chains the calculation of the autocorrelation time can take a long time.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+<li><p><strong>allowed string</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>thin</strong></p>
+<blockquote>
+<div><p>If larger than <code class="docutils literal notranslate"><span class="pre">1</span></code> then one sampler every thin is taken. If set to <code class="docutils literal notranslate"><span class="pre">auto</span></code> thin is optimized by taking the largest possible
+thin compatible with <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">nsamples</span></code>.
+If “auto” option fails it raises an error asking the user to manually specify <code class="docutils literal notranslate"><span class="pre">thin</span></code>.
+Notice that for very large chains the optimization of <code class="docutils literal notranslate"><span class="pre">thin</span></code> can take a long time.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><strong>allowed string</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>dtype</strong></p>
+<blockquote>
+<div><p>dtype of the data included in the
+<a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;float64&quot;</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>test_fraction</strong></p>
+<blockquote>
+<div><p>If specified, in the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object
+data are already split into train (and valudation) and test sets.
+See the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object documentation.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">float</span></code> in the range <code class="docutils literal notranslate"><span class="pre">(0,1)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">0</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>output_folder</strong></p>
+<blockquote>
+<div><p>If specified is passed as input to the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a>, otherwise
+the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> is passed
+and the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object is saved in the same folder as the
+<a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Returns</strong></p>
+<blockquote>
+<div><p><a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Creates files</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_h5_file</span></code></p></li>
+<li><p><a class="reference internal" href="../data/attributes.html#DNNLikelihood.Data.output_log_file" title="DNNLikelihood.Data.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_log_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Updates file</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt id="DNNLikelihood.DNNLikelihood.Sampler.set_verbosity">
 <code class="sig-prename descclassname">DNNLikelihood.Sampler.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DNNLikelihood.Sampler.set_verbosity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method inherited from the <a class="reference internal" href="../show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> object.

@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -221,9 +221,9 @@
 </style>
 <div class="section" id="methods">
 <h1>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h1>
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory.__init__">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">workspace_folder=None</em>, <em class="sig-param">name=None</em>, <em class="sig-param">regions_folders_base_name='Region'</em>, <em class="sig-param">bkg_files_base_name='BkgOnly'</em>, <em class="sig-param">patch_files_base_name='patch'</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">input_file=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">workspace_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">regions_folders_base_name</span><span class="o">=</span><span class="default_value">'Region'</span></em>, <em class="sig-param"><span class="n">bkg_files_base_name</span><span class="o">=</span><span class="default_value">'BkgOnly'</span></em>, <em class="sig-param"><span class="n">patch_files_base_name</span><span class="o">=</span><span class="default_value">'patch'</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object can be initialized in two different ways, depending on the value of
 the <a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> argument.</p>
 <ul>
@@ -260,7 +260,7 @@ is set from the input file, otherwise it is set to the input argument.</p>
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory._Histfactory__check_define_input_files">
 <code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__check_define_input_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__check_define_input_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> one
@@ -275,7 +275,7 @@ to set the attributes corresponding to input files</p>
 <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.input_file" title="DNNLikelihood.Histfactory.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_file</span></code></a> attribute.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory._Histfactory__check_define_output_files">
 <code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__check_define_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__check_define_output_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> one
@@ -293,7 +293,7 @@ It also creates the folder
 it does not exist.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory._Histfactory__check_define_name">
 <code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__check_define_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__check_define_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> one
@@ -303,9 +303,9 @@ If it is <code class="docutils literal notranslate"><span class="pre">None</span
 otherwise it appends the suffix “_histfactory” (preventing duplication if it is already present).</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory._Histfactory__import">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__import</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__import" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__import</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__import" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> one to import
 an histfactory workspace. The method scans through the regions folders in the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.workspace_folder" title="DNNLikelihood.Histfactory.workspace_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.workspace_folder</span></code></a>,
@@ -334,9 +334,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory._Histfactory__load">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__load</code><span class="sig-paren">(</span><em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">_Histfactory__load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory._Histfactory__load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> one
 to load a previously saved
 <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object from the files</p>
@@ -374,9 +374,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory.import_likelihoods">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">import_likelihoods</code><span class="sig-paren">(</span><em class="sig-param">lik_numbers_list=None</em>, <em class="sig-param">progressbar=True</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.import_likelihoods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.import_likelihoods" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">import_likelihoods</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lik_numbers_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">progressbar</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.import_likelihoods"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.import_likelihoods" title="Permalink to this definition">¶</a></dt>
 <dd><p>Imports the likelihoods <code class="docutils literal notranslate"><span class="pre">lik_numbers_list</span></code> (if the argument is <code class="docutils literal notranslate"><span class="pre">None</span></code> it imports all available likelihoods)
 adding to the corresponding item in the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.likelihoods_dict" title="DNNLikelihood.Histfactory.likelihoods_dict"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.likelihoods_dict</span></code></a>
 dictionary the items corresponding to the keys <em>“model”</em>, <em>“obs_data”</em>, <em>“pars_central”</em>, <em>“pars_bounds”</em>,
@@ -440,9 +440,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory.save_log">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">save_log</code><span class="sig-paren">(</span><em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.save_log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">save_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.save_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the content of the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.log" title="DNNLikelihood.Histfactory.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.log</span></code></a> attribute in the file
 <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_log_file" title="DNNLikelihood.Histfactory.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_log_file</span></code></a></p>
 <p>This method is called by the methods</p>
@@ -492,9 +492,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory.save">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">lik_numbers_list=None</em>, <em class="sig-param">overwrite=False</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.save" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lik_numbers_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object is saved to the HDF5 file
 <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_h5_file" title="DNNLikelihood.Histfactory.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_h5_file</span></code></a> and the object log is saved
 to the json file <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_log_file" title="DNNLikelihood.Histfactory.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_log_file</span></code></a>.
@@ -570,9 +570,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory.get_likelihood_object">
-<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">get_likelihood_object</code><span class="sig-paren">(</span><em class="sig-param">lik_number=0</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">verbose=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.get_likelihood_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.get_likelihood_object" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">get_likelihood_object</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lik_number</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/histfactory.html#Histfactory.get_likelihood_object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Histfactory.get_likelihood_object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object containing all properties needed for further processing.
 The <a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.logpdf" title="DNNLikelihood.Lik.logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf</span></code></a> method is built from the <a href="https://scikit-hep.org/pyhf/_generated/pyhf.pdf.Model.html?highlight=logpdf#pyhf.pdf.Model.logpdf"  target="_blank"> pyhf.Model.logpdf</a> method,
 and it takes two arguments: the array of parameters values <code class="docutils literal notranslate"><span class="pre">x</span></code> and the array of observed data <code class="docutils literal notranslate"><span class="pre">obs_data</span></code>.
@@ -646,7 +646,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </ul>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Histfactory.set_verbosity">
 <code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Histfactory.set_verbosity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method inherited from the <a class="reference internal" href="../show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> object.

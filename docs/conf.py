@@ -64,7 +64,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx_click.ext',
     'nbsphinx',
-    'm2r',
+#    'm2r',
+    'recommonmark',
     'sphinx_issues',
     'sphinx_copybutton',
     'sphinx_automodapi.automodapi'

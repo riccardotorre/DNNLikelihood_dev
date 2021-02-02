@@ -1,3 +1,5 @@
+.. _DnnLik_methods:
+
 Methods
 """""""
 
@@ -83,7 +85,9 @@ Methods
 
 .. automethod:: DnnLik.model_predict_scalar
 
-.. automethod:: DnnLik.model_compute_max
+.. automethod:: DnnLik.compute_maximum_model
+
+.. automethod:: DnnLik.compute_profiled_maximum_model
 
 .. automethod:: DnnLik.model_evaluate
 

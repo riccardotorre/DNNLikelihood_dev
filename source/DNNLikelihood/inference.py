@@ -22,9 +22,9 @@ def delta_chi2_from_CI(CI, dof=1):
 def ks_w(data1, data2, wei1=None, wei2=None):
     """ Weighted Kolmogorov-Smirnov test. Returns the KS statistics and the p-value (in the limit of large samples).
     """
-    if wei1 == None:
+    if wei1 is None:
         wei1 = np.ones(len(data1))
-    if wei2 == None:
+    if wei2 is None:
         wei2 = np.ones(len(data2))
     wei1 = np.array(wei1)
     wei2 = np.array(wei2)
@@ -51,7 +51,7 @@ def sort_consecutive(data, stepsize=1):
 
 def HPDI(data, intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True):
     intervals = np.sort(np.array([intervals]).flatten())
-    if weights == None:
+    if weights is None:
         weights = np.ones(len(data))
     weights = np.array(weights)
     counter = 0
@@ -159,7 +159,7 @@ def weighted_quantiles(data, quantiles=0.68, weights=None, data_sorted=False, on
         data = np.array(data[data > 0])
     else:
         data = np.array(data)
-    if weights == None:
+    if weights is None:
         weights = np.ones(len(data))
     weights = np.array(weights)
     assert np.all(quantiles >= 0) and np.all(quantiles <= 1), 'quantiles should be in [0, 1]'
@@ -208,7 +208,7 @@ def compute_maximum_logpdf(logpdf,
             options = optimizer["options"]
         except:
             options = {}
-    if pars_bounds == None:
+    if pars_bounds is None:
         #print("Optimizing")
         ml = optimize.minimize(minus_logpdf, pars_init, method=method, options=options)
     else:

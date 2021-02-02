@@ -415,7 +415,10 @@ def dict_structure(dic):
     return res
 
 def compare_objects(obj1,obj2,string="",verbose=False):
-    print("Comparing obejects", string,".", show=verbose)
+    verbose_sub = verbose
+    if verbose < 0:
+        verbose_sub = 0
+    print("Comparing obejects", string, ".", show=verbose_sub)
     dict1=obj1.__dict__
     dict2=obj2.__dict__
     diffs = compare_dictionaries(dict1,dict2,string,verbose=verbose)
@@ -456,13 +459,13 @@ def compare_dictionaries(dict1,dict2,string="",verbose=False):
             pass
         if areobjects:
             print("Keys", prestring, "are objects.", show=verbose_sub)
-            diffs=diffs + compare_objects(dict1[k],dict2[k],prestring,verbose=verbose_sub)
+            diffs=diffs + compare_objects(dict1[k],dict2[k],prestring,verbose=verbose)
         elif isinstance(dict1[k],dict) and isinstance(dict2[k],dict):
             print("Keys", prestring, "are dictionaries.", show=verbose_sub)
-            diffs=diffs +compare_dictionaries(dict1[k],dict2[k],prestring,verbose=verbose_sub)
+            diffs=diffs +compare_dictionaries(dict1[k],dict2[k],prestring,verbose=verbose)
         elif isinstance(dict1[k],(np.ndarray,list,tuple)) and isinstance(dict2[k],(np.ndarray,list,tuple)):
             print("Keys", prestring, "are lists, numpy arrays, or tuple.", show=verbose_sub)
-            diffs=diffs +compare_lists_arrays_tuple(dict1[k], dict2[k], prestring,verbose=verbose_sub)
+            diffs=diffs +compare_lists_arrays_tuple(dict1[k], dict2[k], prestring,verbose=verbose)
         else:
             try:
                 if not dict1[k] == dict2[k]:
@@ -479,14 +482,17 @@ def compare_lists_arrays_tuple(list1,list2,string="",verbose=False):
     verbose_sub = verbose
     if verbose < 0:
         verbose_sub = 0
-    print("Comparing list or arrays", string, ".", show=verbose)
+    print("Comparing list or arrays", string, ".", show=verbose_sub)
     diffs = []
     arequal = False
     try:
-        arr1 = np.array(list1)
-        arr2 = np.array(list2)
-        min_dtype = np.min([arr1.dtype,arr2.dtype])
-        arequal = np.all(np.equal(list1,list2, dtype=min_dtype))
+        #arr1 = np.array(list1)
+        #arr2 = np.array(list2)
+        #min_dtype = np.min([arr1.dtype,arr2.dtype])
+        #arequal = np.all(np.equal(list1,list2, dtype=min_dtype))
+        arr1 = np.array(list1, dtype=object)
+        arr2 = np.array(list2, dtype=object)
+        arequal = np.all(np.equal(arr1, arr2))
     except:
         pass
     if arequal:
@@ -508,14 +514,14 @@ def compare_lists_arrays_tuple(list1,list2,string="",verbose=False):
                     pass
                 if areobjects:
                     print("Items", prestring, "are objects.", show=verbose_sub)
-                    diffs = diffs + compare_objects(list1[i],list2[i],prestring)
+                    diffs = diffs + compare_objects(list1[i],list2[i],prestring,verbose=verbose)
                 elif isinstance(list1[i],dict) and isinstance(list2[i],dict):
                     print("Items", prestring, "are dictionaries.", show=verbose_sub)
-                    diffs = diffs + compare_dictionaries(list1[i],list2[i],prestring)
+                    diffs = diffs + compare_dictionaries(list1[i],list2[i],prestring,verbose=verbose)
                 elif isinstance(list1[i],(np.ndarray,list,tuple)) and isinstance(list2[i],(np.ndarray,list,tuple)):
                     print("Items", prestring,
                           "are lists, numpy arrays, or tuple.", show=verbose_sub)
-                    diffs = diffs + compare_lists_arrays_tuple(list1[i], list2[i], prestring)
+                    diffs = diffs + compare_lists_arrays_tuple(list1[i], list2[i], prestring,verbose=verbose)
                 else:
                     try:
                         if not list1[i] == list2[i]:

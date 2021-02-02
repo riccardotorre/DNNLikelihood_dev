@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -210,12 +210,13 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="the-histfactory-object">
-<span id="histfactory-object"></span><h1>The Histfactory object<a class="headerlink" href="#the-histfactory-object" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-histfactory"><span id="histfactory-object"></span></span><div class="section" id="the-histfactory-object">
+<h1>The Histfactory object<a class="headerlink" href="#the-histfactory-object" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> class is an API to the <a href="https://scikit-hep.org/pyhf/"  target="_blank"> pyhf</a> Python package that can be used to import
 likelihoods in the ATLAS histfactory format into the DNNLikelihood module.
 The API uses <a href="https://scikit-hep.org/pyhf/"  target="_blank"> pyhf</a> (with default <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> backend) to parse all relevant information contained in the histfactory workspace
-and to create a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> class object (see <a class="reference internal" href="../likelihood/index.html#likelihood-object"><span class="std std-ref">the Likelihood object</span></a>).
+and to create a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> class object (see the
+<a class="reference internal" href="../likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object documentation).
 The <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object is stored in an HDF5 file. A log of the relevant calls to the class methods
 is also saved in json format into a log file.</p>
 <p>Code examples shown below refer to the following ATLAS histfactory likelihood:</p>

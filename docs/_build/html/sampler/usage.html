@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -216,30 +216,34 @@
 <div class="section" id="usage">
 <span id="sampler-usage"></span><h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <p>We give here a brief introduction to the use of the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> class. Refer to the
-full class documentation for more details. All examples will be referred to the toy likelihood discussed in
-<a class="reference internal" href="../likelihood/usage.html#likelihood-usage"><span class="std std-ref">the Likelihood object Usage</span></a> section of the documentation.</p>
+full class documentation for more details. All examples will be referred to the toy likelihood introduced in
+the
+<a class="reference internal" href="../likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object <a class="reference internal" href="../likelihood/usage.html#likelihood-usage"><span class="std std-ref">Usage</span></a> section of the documentation.</p>
 <p>The <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> class has been thought to be as flexible as possible in terms of initialization
 and input parameters. Indeed the object can be initialized by passing different combinations of arguments and the
 <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> method always extracts (or creates if it does not exist) the file
 corresponding to the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a> attribute.
 The likelihood related parameters and the logpdf are always set by importing this file as a module, which instantiates a
-<a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object, and by extracting the parameters from it.</p>
+<a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object, and defines parameters from it.</p>
 <p>The procedure of passing the <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object through a script file instead of
 passing it directly may seem redundant. However, this is needed to ensure that MCMC properly runs in parallel also on
 Windows machines, where the <a href="https://docs.python.org/3/library/multiprocessing.html"  target="_blank"> multiprocessing</a> package may have unexpected behavior.</p>
-<p>Let us start by creating a new <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object, which requires the input argument
-<code class="docutils literal notranslate"><span class="pre">new_sampler=True</span></code>. We can proceed in three different ways, by giving as input one of the three arguments
-<code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code>, <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code>, and, in case we have previously saved a <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a>
-and we are interested in creating a new sampler with the same parameters, the argument <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code>. Each of these
-arguments is used to determine the attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a>
+<p>To create a new <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object, the input argument <a class="reference internal" href="arguments.html#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a>
+shoule be set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.
+One can proceed in three different ways, by giving as input one of the three arguments
+<a class="reference internal" href="arguments.html#Sampler.likelihood_script_file" title="Sampler.likelihood_script_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a>, <a class="reference internal" href="arguments.html#Sampler.likelihood" title="Sampler.likelihood"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code></a>, and,
+in case one has previously saved a <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object, and is interested in creating a new
+sampler with the same parameters, the argument <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>. Each of these arguments is used to
+determine the attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a>
 which is then used to import the likelihood related attributes. If more than one of these inputs is give, only one is used,
-with priority in the order <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code>, <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code>, and <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code>.
-Let us see the three options in code:</p>
+with priority in the order <a class="reference internal" href="arguments.html#Sampler.likelihood_script_file" title="Sampler.likelihood_script_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a>,
+argument:<cite>likelihood &lt;Sampler.likelihood&gt;</cite>, and <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span> <span class="pre">&lt;Sampler.input_file</span></code>.
+The code corresponding to these three options is:</p>
 <blockquote>
 <div><ul>
-<li><p>Initialization from <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></p>
+<li><p>Initialization from <a class="reference internal" href="arguments.html#Sampler.likelihood_script_file" title="Sampler.likelihood_script_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a></p>
 <blockquote>
-<div><p>We assume that a likelihood script file has been already created (see then <a class="reference internal" href="../likelihood/usage.html#likelihood-usage"><span class="std std-ref">the Likelihood object Usage</span></a>
+<div><p>This assumes that a likelihood script file has been already created (see then <a class="reference internal" href="../likelihood/usage.html#likelihood-usage"><span class="std std-ref">the Likelihood object Usage</span></a>
 section of the documentation). The <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> can then be initialized as</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
@@ -248,8 +252,8 @@ section of the documentation). The <a class="reference internal" href="class.htm
                                 <span class="n">nsteps_required</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This initialize the object with a required number of steps <code class="docutils literal notranslate"><span class="pre">nsteps_required=50000</span></code> (this could then be changed to run for more steps). We have not
-passed a <code class="docutils literal notranslate"><span class="pre">move_str</span></code> input so that the default <a href="https://emcee.rhttps://emcee.readthedocs.io/en/stable/"  target="_blank"> emcee</a> move <code class="docutils literal notranslate"><span class="pre">emcee.moves.StretchMove()</span></code> will be set (see the
+<p>This initializes the object with a required number of steps <code class="docutils literal notranslate"><span class="pre">nsteps_required=50000</span></code> (this could then be changed to run for more steps).
+We have not passed a <code class="docutils literal notranslate"><span class="pre">move_str</span></code> input so that the default <a href="https://emcee.rhttps://emcee.readthedocs.io/en/stable/"  target="_blank"> emcee</a> move <code class="docutils literal notranslate"><span class="pre">emcee.moves.StretchMove()</span></code> will be set (see the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.move_str</span></code> attribute documentation for more details). Moreover, since
 <code class="docutils literal notranslate"><span class="pre">parallel_CPU</span></code> has not been specified, the attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a>
 is automatically set to <code class="docutils literal notranslate"><span class="pre">True</span></code> and the sampler will be running in parallel mode.</p>
@@ -263,10 +267,11 @@ is automatically set to <code class="docutils literal notranslate"><span class="
 </div></blockquote>
 </div></blockquote>
 </li>
-<li><p>Initialization from <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code></p>
+<li><p>Initialization from <a class="reference internal" href="arguments.html#Sampler.likelihood" title="Sampler.likelihood"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code></a></p>
 <blockquote>
-<div><p>The exact same object could be initialized directly from a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> one. In this case the
-<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> method takes care of generating the script file:</p>
+<div><p>The exact same object as above could be initialized directly from a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object. In this case the
+<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> method takes care of generating the script file
+(and storing it in the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a> folder):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Lik</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;&lt;my_output_folder&gt;/toy_likelihood&quot;</span><span class="p">)</span>
@@ -278,12 +283,12 @@ is automatically set to <code class="docutils literal notranslate"><span class="
 </div>
 </div></blockquote>
 </li>
-<li><p>Initialization from <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></p>
+<li><p>Initialization from <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a></p>
 <blockquote>
 <div><p>Finally, in the case the object has been initialized in the past, and the output files are available, a new object can be initialized
-with the same parameters by passing the <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code> input. In this case, again, the
+with the same parameters by passing the <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> input. In this case, again, the
 <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> method uses the argument to determine or create the
-<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a> and then proceeds in the usual way.
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a> and then proceeds as above.
 The following code produces an object identical to the previous ones:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
@@ -296,19 +301,23 @@ The following code produces an object identical to the previous ones:</p>
 </li>
 </ul>
 </div></blockquote>
-<p>A previously saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> could be imported by using the <code class="docutils literal notranslate"><span class="pre">new_sampler=False</span></code> input.
-Again, one could provide one of the three arguments <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code>, <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code>,
-and <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code>. This time, each of these
+<p>In one is interested in importing a previously saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a>, instead of generating a new one, then the input
+argument <a class="reference internal" href="arguments.html#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a> should be set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.
+Again, one could provide one of the three arguments <a class="reference internal" href="arguments.html#Sampler.likelihood_script_file" title="Sampler.likelihood_script_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a>,
+<a class="reference internal" href="arguments.html#Sampler.likelihood" title="Sampler.likelihood"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code></a>, and <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>. This time, each of these
 arguments is used to determine the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a> and
-<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a> attributes, used to build the object. If more than
-one of these inputs is give, only one is used, with priority in the order <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code>,
-<code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code>, and <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code>. Obviously, independently on the passed input arguments,
-the files corresponding to <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a> should exist (i.e. a
-saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object should be available).</p>
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a> attributes, used to reconstruct the object. If more than
+one of these inputs is give, only one is used, with priority in the order <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>,
+<a class="reference internal" href="arguments.html#Sampler.likelihood_script_file" title="Sampler.likelihood_script_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a>, and <a class="reference internal" href="arguments.html#Sampler.likelihood" title="Sampler.likelihood"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code></a>. Obviously,
+independently on the passed input arguments, the files corresponding to <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.input_file" title="DNNLikelihood.Sampler.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.input_file</span></code></a>
+should exist (i.e. a saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object should be available). Notice that the
+<a class="reference internal" href="arguments.html#Sampler.output_folder" title="Sampler.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> argument plays the following role in this procedure: if it is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
+then the input files are searched for in the same directory as the likelihood_script_file file (as in the examples below),
+otherwise, input files are searched for in the <a class="reference internal" href="arguments.html#Sampler.output_folder" title="Sampler.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> folder.</p>
 <p>The following three code options produce the same result, importing the object saved before:</p>
 <blockquote>
 <div><ul>
-<li><p>Import from <code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></p>
+<li><p>Import from <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a></p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
@@ -318,7 +327,7 @@ saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" titl
 </div>
 </div></blockquote>
 </li>
-<li><p>Import from <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></p>
+<li><p>Import from <a class="reference internal" href="arguments.html#Sampler.likelihood_script_file" title="Sampler.likelihood_script_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a></p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
@@ -328,16 +337,14 @@ saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" titl
 </div>
 </div></blockquote>
 </li>
-<li><p>Import from <code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code></p>
+<li><p>Import from <a class="reference internal" href="arguments.html#Sampler.likelihood" title="Sampler.likelihood"><code class="xref py py-argument docutils literal notranslate"><span class="pre">likelihood</span></code></a></p>
 <blockquote>
-<div><p>The exact same object could be initialized directly from a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> one. In this case the
-<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a> method takes care of generating the script file:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Lik</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;&lt;my_output_folder&gt;/toy_likelihood&quot;</span><span class="p">)</span>
 
 <span class="n">sampler</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Sampler</span><span class="p">(</span><span class="n">new_sampler</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                <span class="n">slikelihood</span><span class="o">=</span><span class="n">likelihood</span><span class="p">)</span>
+                                <span class="n">likelihood</span><span class="o">=</span><span class="n">likelihood</span><span class="p">)</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -348,22 +355,23 @@ saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" titl
 &lt;my_output_folder&gt;/toy_sampler.log. If a new <code class="docutils literal notranslate"><span class="pre">nsteps_required</span></code> input, larger than the number of steps available in the existing backend is passed,
 then this is saved in the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a>, which is otherwise set to the number of available steps.
 Also the <code class="docutils literal notranslate"><span class="pre">moves_str</span></code> input can be passed to update (change) the move of the sampler.</p>
-<p>Now that we have discussed how to create and import the object, let us see how to use it. The first thing we want to do is to produce
-a sampling, which is done as follows:</p>
+<p>Now that we have discussed how to create and import the object, let us see how to use it. The first thing the object is used for is
+sampling. Onee can produce a sampling as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">run_sampler</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This runs the sampler and, through the <code class="docutils literal notranslate"><span class="pre">verbose=2</span></code> argument, shows a progress bar, together with the remaining time. Since the object
-has attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a> set to <code class="docutils literal notranslate"><span class="pre">True</span></code> the sampling is run in <code class="docutils literal notranslate"><span class="pre">n</span></code> parallel
-processes, with <code class="docutils literal notranslate"><span class="pre">n</span></code> equal to the number of physical (not logical) cores. While the sampler runs, all produced sampler are saved in related
+has attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a> set to <code class="docutils literal notranslate"><span class="pre">True</span></code> the sampling is run in n parallel
+processes, with n equal to the number of physical (not logical) cores. While the sampler runs, all produced sampler are saved in real
 time in the backend file corresponding to the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>
 attribute. At the end of the sampling also the log attribute and file are updated.
 The <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.sampler" title="DNNLikelihood.Sampler.sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.sampler</span></code></a> and <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> correspond to the
 <a href="https://emcee.rhttps://emcee.readthedocs.io/en/stable/"  target="_blank"> emcee</a> objects <a href="https://emcee.readthedocs.io/en/stable/user/sampler/#emcee.EnsembleSampler"  target="_blank"> emcee.EnsembleSampler</a> and <a href="https://emcee.readthedocs.io/en/stable/user/backends/"  target="_blank"> emcee.Backends</a> and we refer to the <a href="https://emcee.rhttps://emcee.readthedocs.io/en/stable/"  target="_blank"> emcee</a> documentation for their use.
 Nevertheless, the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object, includes several methods that allow to perform convergence studies,
 produce plots, and extract samples without the need of directly digging into the <a href="https://emcee.rhttps://emcee.readthedocs.io/en/stable/"  target="_blank"> emcee</a> objects and documentation.</p>
-<p>As a first step we can compute the the Gelman and Rubin metrics <a class="bibtex reference internal" href="references.html#gelman-1992zz" id="id1">[GR92]</a> for some parameters. For instance let us
-compute the metrics for parameters <code class="docutils literal notranslate"><span class="pre">0</span></code> (poi) and <code class="docutils literal notranslate"><span class="pre">5</span></code> (nuis) after <code class="docutils literal notranslate"><span class="pre">[500,1000,5000,10000,50000]</span></code> steps:</p>
+<p>One can for instance compute the Gelman and Rubin metrics <a class="bibtex reference internal" href="references.html#gelman-1992zz" id="id1">[GR92]</a> for some parameters using the
+<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_gelman_rubin" title="DNNLikelihood.Sampler.plot_gelman_rubin"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_gelman_rubin</span></code></a> method. As an example we show below the metrics
+for parameters <code class="docutils literal notranslate"><span class="pre">0</span></code> (poi) and <code class="docutils literal notranslate"><span class="pre">5</span></code> (nuis) after <code class="docutils literal notranslate"><span class="pre">[500,1000,5000,10000,50000]</span></code> steps:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">gelman_rubin</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">nsteps</span><span class="o">=</span><span class="p">[</span><span class="mi">500</span><span class="p">,</span><span class="mi">1000</span><span class="p">,</span><span class="mi">5000</span><span class="p">,</span><span class="mi">10000</span><span class="p">,</span><span class="mi">50000</span><span class="p">])</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="n">array</span><span class="p">([[</span><span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="mf">5.00000000e+02</span><span class="p">,</span> <span class="mf">1.09139684e+00</span><span class="p">,</span> <span class="mf">2.47454986e-01</span><span class="p">,</span> <span class="mf">2.08260547e-01</span><span class="p">],</span>
@@ -378,11 +386,11 @@ compute the metrics for parameters <code class="docutils literal notranslate"><s
            <span class="p">[</span><span class="mf">5.00000000e+00</span><span class="p">,</span> <span class="mf">5.00000000e+04</span><span class="p">,</span> <span class="mf">1.00122323e+00</span><span class="p">,</span> <span class="mf">2.56878972e-01</span><span class="p">,</span> <span class="mf">2.56262912e-01</span><span class="p">]])</span>
 </pre></div>
 </div>
-<p>This returns an array where in the first column there is the parameter, in the second the number of steps and in the third to fifth
-the values of the metrics. See the documentation of the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.gelman_rubin" title="DNNLikelihood.Sampler.gelman_rubin"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.gelman_rubin</span></code></a> method for
-details.</p>
-<p>We could also produce a plot of these metrics using the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_gelman_rubin" title="DNNLikelihood.Sampler.plot_gelman_rubin"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_gelman_rubin</span></code></a>
-method</p>
+<p>This returns an array with the value of the parameter in the first column, the number of steps in the second and
+the values of the metrics in the third to fifth (see the documentation of the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.gelman_rubin" title="DNNLikelihood.Sampler.gelman_rubin"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.gelman_rubin</span></code></a> method for
+details on the metrics and additional options).</p>
+<p>One could also produce plots of these metrics using the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_gelman_rubin" title="DNNLikelihood.Sampler.plot_gelman_rubin"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_gelman_rubin</span></code></a>
+method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">plot_gelman_rubin</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span> <span class="n">npoints</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -394,23 +402,24 @@ method</p>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_GR_sqrtW_5.png"><img alt="../_images/toy_sampler_figure_GR_sqrtW_5.png" class="with-shadow" src="../_images/toy_sampler_figure_GR_sqrtW_5.png" style="width: 226.79999999999998px; height: 169.2px;" /></a>
 <p>Convergence could also be monitored through the autocorrelation time, which could be plot using the
 <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_autocorr" title="DNNLikelihood.Sampler.plot_autocorr"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_autocorr</span></code></a>. See the method documentation for details on the various
-algorithms and options. For instance, using all available methods we can monitor parameters <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">5</span></code> by</p>
+algorithms and options. For instance, using all available methods plots for parameters <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">5</span></code> can be produces
+as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">plot_autocorr</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
 </pre></div>
 </div>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_autocorr_0.png"><img alt="../_images/toy_sampler_figure_autocorr_0.png" class="with-shadow" src="../_images/toy_sampler_figure_autocorr_0.png" style="width: 340.20000000000005px; height: 253.8px;" /></a>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_autocorr_5.png"><img alt="../_images/toy_sampler_figure_autocorr_5.png" class="with-shadow" src="../_images/toy_sampler_figure_autocorr_5.png" style="width: 340.20000000000005px; height: 253.8px;" /></a>
 <p>The 1D distribution of the parameters can be obtained through the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_dist" title="DNNLikelihood.Sampler.plot_dist"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_dist</span></code></a>
-method by</p>
+method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">plot_dist</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
 </pre></div>
 </div>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_distr_0.png"><img alt="../_images/toy_sampler_figure_distr_0.png" class="with-shadow" src="../_images/toy_sampler_figure_distr_0.png" style="width: 340.20000000000005px; height: 253.8px;" /></a>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_distr_5.png"><img alt="../_images/toy_sampler_figure_distr_5.png" class="with-shadow" src="../_images/toy_sampler_figure_distr_5.png" style="width: 339.66px; height: 253.26000000000002px;" /></a>
-<p>The last series of plots that can be automatically obtained are the parameters and logpdf evolution for a given number of walkers
-with the number of steps.
-They are plot by the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_chains" title="DNNLikelihood.Sampler.plot_chains"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_chains</span></code></a> and
-<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_chains_logpdf" title="DNNLikelihood.Sampler.plot_chains_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_chains_logpdf</span></code></a> methods respectively. For instance we could plot
+<p>The last series of plots that can be automatically obtained are the parameters and logpdf evolution with the number of steps
+for a given number of walkers.
+They are produced by the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_chains" title="DNNLikelihood.Sampler.plot_chains"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_chains</span></code></a> and
+<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.plot_chains_logpdf" title="DNNLikelihood.Sampler.plot_chains_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.plot_chains_logpdf</span></code></a> methods, respectively. For instance, one could plot
 <code class="docutils literal notranslate"><span class="pre">30</span></code> randomly selected walkers as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">plot_chains</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">],</span><span class="n">n_chains</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
 <span class="n">sampler</span><span class="o">.</span><span class="n">plot_chains_logprob</span><span class="p">(</span><span class="n">n_chains</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
@@ -419,7 +428,7 @@ They are plot by the <a class="reference internal" href="methods.html#DNNLikelih
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_chains_0.png"><img alt="../_images/toy_sampler_figure_chains_0.png" class="with-shadow" src="../_images/toy_sampler_figure_chains_0.png" style="width: 226.79999999999998px; height: 169.2px;" /></a>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_chains_5.png"><img alt="../_images/toy_sampler_figure_chains_5.png" class="with-shadow" src="../_images/toy_sampler_figure_chains_5.png" style="width: 226.79999999999998px; height: 169.2px;" /></a>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_sampler_figure_chains_logpdf.png"><img alt="../_images/toy_sampler_figure_chains_logpdf.png" class="with-shadow" src="../_images/toy_sampler_figure_chains_logpdf.png" style="width: 226.79999999999998px; height: 169.2px;" /></a>
-<p>The full list of figures we produced can be extracted from the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.figures_list" title="DNNLikelihood.Sampler.figures_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.figures_list</span></code></a></p>
+<p>The full list of produced figures is saved in the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.figures_list" title="DNNLikelihood.Sampler.figures_list"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.figures_list</span></code></a> attribute:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">figures_list</span><span class="p">()</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="p">[</span><span class="s1">&#39;&lt;my_output_folder&gt;/toy_sampler_figure_GR_Rc_0.pdf&#39;</span><span class="p">,</span>
@@ -439,27 +448,28 @@ They are plot by the <a class="reference internal" href="methods.html#DNNLikelih
 </div>
 <p>The <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a> can be increased at any time, and the method
 <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.run_sampler" title="DNNLikelihood.Sampler.run_sampler"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.run_sampler</span></code></a> can be called again to run the steps missing to reach
-<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a>. For instance, to run for another 20K steps one does</p>
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a>. For instance, one can run for another 20K steps through:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">nsteps_required</span> <span class="o">=</span> <span class="mi">70000</span>
 <span class="n">sampler</span><span class="o">.</span><span class="n">run_sampler</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Once a satisfactory sampling has been obtained, we can generate a <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object storing the
-desired dataset (see <a class="reference internal" href="../data/index.html#data-object"><span class="std std-ref">the Data object</span></a>). The dataset is obtained from the sampling by taking samples after a possible <code class="docutils literal notranslate"><span class="pre">burnin</span></code> number of steps, and
+<p>Once a satisfactory sampling has been obtained, a <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object storing the
+desired dataset (see <a class="reference internal" href="../data/index.html#data-object"><span class="std std-ref">the Data object</span></a>) can be generated. The dataset is obtained from the sampling
+by taking samples after a given <code class="docutils literal notranslate"><span class="pre">burnin</span></code> number of steps, and
 to avoid large correlation between samples, by taking a step every <code class="docutils literal notranslate"><span class="pre">thin</span></code> (a fully unbiased sampling, that is a faithful
-random number generator would need <code class="docutils literal notranslate"><span class="pre">thin</span></code> equal or slightly larger than the autocorrelation time). This is done with the
-<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.get_data_object" title="DNNLikelihood.Sampler.get_data_object"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.get_data_object</span></code></a> as follows:</p>
+random number generator, would need <code class="docutils literal notranslate"><span class="pre">thin</span></code> of the same order or larger than the autocorrelation time). This is done with the
+<a class="reference internal" href="methods.html#DNNLikelihood.Sampler.get_data_object" title="DNNLikelihood.Sampler.get_data_object"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.get_data_object</span></code></a> method as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_data_object</span><span class="p">(</span><span class="n">nsamples</span><span class="o">=</span><span class="mi">200000</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">thin</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="n">test_fraction</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This generates a <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object with <code class="docutils literal notranslate"><span class="pre">200000</span></code> sampler obtained by discarding from the sampling the first
+<p>This generates a <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object with <code class="docutils literal notranslate"><span class="pre">200000</span></code> sampler obtained by discarding from the sampling the first
 <code class="docutils literal notranslate"><span class="pre">5000</span></code> steps and by taking one every <code class="docutils literal notranslate"><span class="pre">2</span></code> steps after (until the required <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> is reached). If the number <code class="docutils literal notranslate"><span class="pre">nsamples</span></code> is
 larger than the one available consistently with the <code class="docutils literal notranslate"><span class="pre">burnin</span></code> and <code class="docutils literal notranslate"><span class="pre">thin</span></code> options, then all available samples are taken (and a warning
 message is printed). The user may choose the data type of the exported samples <code class="docutils literal notranslate"><span class="pre">dtype</span></code> (default is <code class="docutils literal notranslate"><span class="pre">&quot;float64&quot;</span></code>), which is useful
 to format data with the precision needed to train the DNNLikelihood. Finally, the user may already choose a <code class="docutils literal notranslate"><span class="pre">test_fraction</span></code>, so that
-data are divided, inside the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object, into two samples, one used to feedtrain and validation data
-and the other used as test data. If <code class="docutils literal notranslate"><span class="pre">test_fraction</span></code> is left to the default value <code class="docutils literal notranslate"><span class="pre">0</span></code>, it could simply be updated afterwards from
-the <a class="reference internal" href="../data/class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> object itself.</p>
+data are divided, inside the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object, into two samples, one used to feed train (and validation) data
+and the other to be used as a test dataset. If <code class="docutils literal notranslate"><span class="pre">test_fraction</span></code> is left to the default value <code class="docutils literal notranslate"><span class="pre">0</span></code>, it could simply be updated afterwards from
+the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object itself.</p>
 <p>As a final step we can save the state of the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object by using the
 <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.save" title="DNNLikelihood.Sampler.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.save</span></code></a> method.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

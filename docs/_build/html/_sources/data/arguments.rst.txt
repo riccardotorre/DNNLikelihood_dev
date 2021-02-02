@@ -7,7 +7,7 @@ Arguments
 
 .. argument:: name
 
-    Name of the :class:`Data <DNNLikelihood.Data>` object.
+    Name of the :mod:`Data <data>` object.
     It is used to build the :attr:`Data.name <DNNLikelihood.Data.name>` attribute.
      
         - **type**: ``str`` or ``None``
@@ -50,7 +50,7 @@ Arguments
     generation of train/validation/test datasets, one can pass a list of two strings corresponding to two dtypes
     that are assigned to the :attr:`Data.dtype_stored <DNNLikelihood.Data.dtype_stored>` and
     :attr:`Data.dtype_required <DNNLikelihood.Data.dtype_required>` attributes, respectively.
-    When importing a saved :class:`Data <DNNLikelihood.Data>` object, if a list of two dtypes is passed, then the first
+    When importing a saved :mod:`Data <data>` object, if a list of two dtypes is passed, then the first
     is ignored (is always fixed from the saved data) and only the second is assigned to the 
     :attr:`Data.dtype_required <DNNLikelihood.Data.dtype_required>` attribute.
 
@@ -131,7 +131,7 @@ Arguments
 
     File name (either relative to the code execution folder or absolute, with or without extension
     and with or without the "_object" suffix) 
-    of a saved :class:`Data <DNNLikelihood.Data>` object. 
+    of a saved :mod:`Data <data>` object. 
     It is used to set the 
     :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute.
 

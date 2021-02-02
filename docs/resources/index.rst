@@ -1,5 +1,7 @@
 .. _resources_module:
 
+.. module:: resources
+
 Resources management
 --------------------
 

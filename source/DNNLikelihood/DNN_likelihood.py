@@ -39,7 +39,7 @@ from .show_prints import print
 try:
     from livelossplot import PlotLossesKerasTF as PlotLossesKeras
 except:
-    print("No module named 'livelossplot's. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
+    print("No module named 'livelossplot's. Continuing without.\nIf you wish to plot the loss in real time please install 'liveflossplot'.")
 
 sns.set()
 kubehelix = sns.color_palette("cubehelix", 30)
@@ -272,7 +272,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
         It also sets the attribute
         :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>` if the object has
-        been initialized directly from a :class:`Data <DNNLikelihood.Data>` object.
+        been initialized directly from a :mod:`Data <data>` object.
         """
         if self.input_summary_json_file == None:
             self.input_files_base_name = self.input_summary_json_file
@@ -348,6 +348,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.output_tf_model_h5_file = self.output_files_base_name+"_model.h5"
         self.output_tf_model_json_file = self.output_files_base_name+"_model.json"
         self.output_tf_model_onnx_file = self.output_files_base_name+"_model.onnx"
+        #self.output_tf_model_training_history = self.output_files_base_name+"_training_history_object.pickle"
         self.script_file = self.output_files_base_name+"_script.py"
         self.output_checkpoints_files = None
         self.output_checkpoints_folder = None
@@ -383,11 +384,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if required_points_train_val > self.npoints_train_val_available:
             self.data.opened_dataset.close()
             raise Exception("npoints_train+npoints_val larger than the available number of points in data.\
-                Please reduce npoints_train+npoints_val or change test_fraction in the Data object.")
+                Please reduce npoints_train+npoints_val or change test_fraction in the :mod:`Data <data>` object.")
         if required_points_test > self.npoints_test_available:
             self.data.opened_dataset.close()
             raise Exception("npoints_test larger than the available number of points in data.\
-                Please reduce npoints_test or change test_fraction in the Data object.")
+                Please reduce npoints_test or change test_fraction in the :mod:`Data <data>` object.")
 
     def __check_define_model_data_inputs(self):
         """
@@ -551,7 +552,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
     def __set_data(self,verbose=None):
         """
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
-        to initialize the :class:`Data <DNNLikelihood.Data>` object saved in the
+        to initialize the :mod:`Data <data>` object saved in the
         :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` attribute and used to provide data to the 
         :class:`DnnLik <DNNLikelihood.DnnLik>` object.
         Data are set differently depending on the value of the attributes
@@ -560,13 +561,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         input class arguments: :argument:`data` and :argument:`input_data_file`, respectively. If both
         are not ``None``, then the former is ignored. If only :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
         is not ``None``, then :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>`
-        is set to the :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute of the :class:`Data <DNNLikelihood.Data>` object.
+        is set to the :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute of the :mod:`Data <data>` object.
         If :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>` is not ``None`` the 
         :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>` attribute is set by importing the :class:`Data <DNNLikelihood.Data>` 
         object from file.
-        Once the :class:`Data <DNNLikelihood.Data>` object has been set, the 
+        Once the :mod:`Data <data>` object has been set, the 
         :attr:`DnnLik.ndims <DNNLikelihood.DnnLik.ndims>` attribute == set from the same attribute of the 
-        :class:`Data <DNNLikelihood.Data>` object, and the two private methods
+        :mod:`Data <data>` object, and the two private methods
         :meth:`DnnLik.__check_npoints <DNNLikelihood.DnnLik._DnnLik__check_npoints>` and
         :meth:`DnnLik.__set_pars_info <DNNLikelihood.DnnLik._DnnLik__set_pars_info>`
         are called.
@@ -590,7 +591,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
         else:
             if self.data != None:
-                print("Both the arguments 'data' and 'input_data_file' have been specified. 'data' will be ignored and the Data object will be set from 'input_data_file'.", show=verbose)
+                print("Both the arguments 'data' and 'input_data_file' have been specified. 'data' will be ignored and the :mod:`Data <data>` object will be set from 'input_data_file'.", show=verbose)
             self.data = Data(name=None,
                              data_X=None,
                              data_Y=None,
@@ -622,7 +623,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.pars_labels_auto <DNNLikelihood.DnnLik.pars_labels_auto>`
             - :attr:`DnnLik.pars_bounds <DNNLikelihood.DnnLik.pars_bounds>`
         
-        by copying the corresponding attributes of the :class:`Data <DNNLikelihood.Data>` object 
+        by copying the corresponding attributes of the :mod:`Data <data>` object 
         :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
         """
         self.pars_central = self.data.pars_central
@@ -720,7 +721,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.log = dictionary
         end = timer()
         timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-        self.log[timestamp] = {"action": "loaded summary json",
+        self.log[timestamp] = {"action": "loaded summary and log json",
                                "files names": [path.split(self.input_summary_json_file)[-1],
                                                path.split(self.input_log_file)[-1]],
                                "files paths": [self.input_summary_json_file,
@@ -856,9 +857,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         from the file :attr:`DnnLik.input_idx_h5_file <DNNLikelihood.DnnLik.input_idx_h5_file>`.
         Once the attributes are set, the items ``"idx_train"``, ``"idx_val"``, and ``"idx_test"``
         of the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary attribute
-        of the :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
+        of the :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
         is updated to match the three index attributes
-        If the file is not found the attributes are set to ``None`` and the :class:`Data <DNNLikelihood.Data>` object is
+        If the file is not found the attributes are set to ``None`` and the :mod:`Data <data>` object is
         not touched.
 
         - **Arguments**
@@ -1103,9 +1104,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 utils.check_create_folder(self.output_checkpoints_folder)
                 string = "callbacks.ModelCheckpoint(filepath='" + self.output_checkpoints_files+"')"
             elif cb == "TensorBoard":
-                self.output_tensorboard_log_dir = path.join(self.output_folder, "logs")
+                self.output_tensorboard_log_dir = path.join(self.output_folder, "tensorboard_logs")
                 utils.check_create_folder(self.output_tensorboard_log_dir)
-                utils.check_create_folder(path.join(self.output_folder, "logs/fit"))
+                #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
                 string = "callbacks.TensorBoard(log_dir='" + self.output_tensorboard_log_dir+"')"
             else:
                 string = "callbacks."+cb+"()"
@@ -1124,26 +1125,49 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 utils.check_create_folder(self.output_checkpoints_folder)
                 string = "filepath = '"+self.output_checkpoints_files+"', "
                 name = "callbacks."+name
+                for key, value in utils.dic_minus_keys(cb, ["name"]).items():
+                    if key == "monitor" and type(value) == str:
+                        if "val_" in value:
+                            value = value.split("val_")[1]
+                        if value == "loss":
+                            value = "val_loss"
+                        else:
+                            value = "val_" + utils.metric_name_unabbreviate(value)
+                    if type(value) == str:
+                        value = "'"+value+"'"
+                    if not "filepath" in key:
+                        string = string+str(key)+"="+str(value)+", "
             elif name == "TensorBoard":
-                self.output_tensorboard_log_dir = path.join(self.output_folder, "logs")
+                self.output_tensorboard_log_dir = path.join(self.output_folder, "tensorboard_logs")
                 utils.check_create_folder(self.output_tensorboard_log_dir)
-                utils.check_create_folder(path.join(self.output_folder, "logs/fit"))
+                #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
                 string = "log_dir = '"+self.output_tensorboard_log_dir+"', "
                 name = "callbacks."+name
+                for key, value in utils.dic_minus_keys(cb, ["name"]).items():
+                    if key == "monitor" and type(value) == str:
+                        if "val_" in value:
+                            value = value.split("val_")[1]
+                        if value == "loss":
+                            value = "val_loss"
+                        else:
+                            value = "val_" + utils.metric_name_unabbreviate(value)
+                    if type(value) == str:
+                        value = "'"+value+"'"
+                    if not "log_dir" in key:
+                        string = string+str(key)+"="+str(value)+", "
             else:
                 string = ""
                 name = "callbacks."+name
-            for key, value in utils.dic_minus_keys(cb,["name"]).items():
-                if key == "monitor" and type(value) == str:
-                    if "val_" in value:
-                        value = value.split("val_")[1]
-                    if value == "loss":
-                        value = "val_loss"
-                    else:
-                        value = "val_" + utils.metric_name_unabbreviate(value)
-                if type(value) == str:
-                    value = "'"+value+"'"
-                if not "path" in key:
+                for key, value in utils.dic_minus_keys(cb,["name"]).items():
+                    if key == "monitor" and type(value) == str:
+                        if "val_" in value:
+                            value = value.split("val_")[1]
+                        if value == "loss":
+                            value = "val_loss"
+                        else:
+                            value = "val_" + utils.metric_name_unabbreviate(value)
+                    if type(value) == str:
+                        value = "'"+value+"'"
                     string = string+str(key)+"="+str(value)+", "
             string = str(name+"("+string+")").replace(", )", ")")
             callbacks_strings.append(string)
@@ -1210,7 +1234,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         Method that computes weights of :attr:`DnnLik.Y_train <DNNLikelihood.DnnLik.Y_train>`
         points given their distribution by calling the
         :meth:`Data.compute_sample_weights <DNNLikelihood.Data.compute_sample_weights>` method of the 
-        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
         When the :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>` is ``True``, the method is called
         with default arguments when data are generated. Manually call the method after data generation to compute weights with
         custom arguments.
@@ -1265,7 +1289,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         equal to the identity.
         The method computes the scalers by calling the corresponding method 
         :meth:`Data.define_scalers <DNNLikelihood.Data.define_scalers>` method of the 
-        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
 
         - **Arguments**
 
@@ -1299,7 +1323,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         Data are generated by calling the methods
         :meth:`Data.update_train_data <DNNLikelihood.Data.update_train_data>` or
         :meth:`Data.generate_train_data <DNNLikelihood.Data.generate_train_data>` of the 
-        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
+        :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
         depending on the value of :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>`.
 
         When the :class:`DnnLik <DNNLikelihood.DnnLik>` object is not part of a
@@ -1309,7 +1333,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         attribute is ``True``, that means that all members of the ensemble will share the same data (or a
         subset of the same data if they have different number of points), then data are kept up-to-date in the 
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute of the 
-        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
         This means that data are not generated again if they are already available from another member and that
         if the number of points is increased, data are added to the existing ones and are not re-generated from scratch.
 
@@ -1379,9 +1403,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object.
         Therefore test data are always kept up-to-date in the 
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute of the 
-        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
+        :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
         and are always generated by calling the :meth:`Data.generate_test_data <DNNLikelihood.Data.generate_test_data>` of the 
-        :class:`Data <DNNLikelihood.Data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
         In this way test data are never re-generated if they are (even partially) available.
 
         - **Arguments**
@@ -1679,10 +1703,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             print("Start training of model for DNNLikelihood",self.name, ".",show=verbose)
             if self.weighted:
                 # Train
-                history = self.model.fit(X_train, Y_train, sample_weight=self.W_train, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_sub,
+                history = self.model.fit(X_train, Y_train, sample_weight=self.W_train, initial_epoch=self.epochs_available, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_sub,
                         validation_data=(X_val, Y_val), callbacks=self.callbacks)
             else:
-                history = self.model.fit(X_train, Y_train, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_sub,
+                history = self.model.fit(X_train, Y_train, initial_epoch=self.epochs_available, epochs=epochs_to_run, batch_size=self.batch_size, verbose=verbose_sub,
                         validation_data=(X_val, Y_val), callbacks=self.callbacks)
             end = timer()
             self.training_time = (end - start)/epochs_to_run
@@ -2991,9 +3015,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         rnd_idx_2 = np.random.choice(np.arange(len(X2)), nnn2, replace=False)
         samp1 = X1[rnd_idx_1][:,pars]
         samp2 = X2[rnd_idx_2][:,pars]
-        if W1 != None:
+        if W1 is not None:
             W1 = W1[rnd_idx_1]
-        if W2 != None:
+        if W2 is not None:
             W2 = W2[rnd_idx_2]
         try:
             HPDI1 = [[self.predictions['HPDI'][str(par)][HPDI1_dic["type"]][HPDI1_dic["sample"]][str(interval)]["Intervals"] for interval in intervals] for par in pars]
@@ -3109,8 +3133,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                   CI=inference.CI_from_sigma([inference.sigma_from_CI(0.5), 1, 2, 3]), 
                                   pars=None,
                                   batch_size=None,
-                                  overwrite=False,
-                                  verbose=None,
                                   model_predict_kwargs={}, # batch_size=None, steps=None, x_boundaries=False, y_boundaries=False, save_log=True, verbose=None
                                   HPDI_kwargs={}, # intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True
                                   plot_training_history_kwargs = {}, # metrics=["loss"], yscale="log", show_plot=False, overwrite=False, verbose=None
@@ -3122,7 +3144,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                   # color1="green", color2="red", 
                                                                   # plot_title="Params contours", legend_labels=None, 
                                                                   # figure_filename=None, show_plot=False, overwrite=False, verbose=None
-                                  frequentist_inference = {}):
+                                  frequentist_inference = {},
+                                  overwrite=False,
+                                  verbose=None,):
         verbose, verbose_sub = self.set_verbosity(verbose)
         def model_predict_sub(X):
             return self.model_predict(X, batch_size=self.batch_size, verbose=verbose_sub,**model_predict_kwargs)

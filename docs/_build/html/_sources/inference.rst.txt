@@ -1,4 +1,4 @@
-.. module:: inference_module
+.. module:: inference
 
 Inference functions
 -------------------

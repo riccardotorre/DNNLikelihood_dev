@@ -158,14 +158,14 @@ Attributes
 
 .. py:attribute:: DnnLik.data
 
-   The :class:`Data <DNNLikelihood.Data>` object used by the 
+   The :mod:`Data <data>` object used by the 
    :class:`DnnLik <DNNLikelihood.DnnLik>` one for data management.
    It is set to the value of the input ärgument :argument:`data` if passed. Otherwise,
    the :meth:`DnnLik.__set_data <DNNLikelihood.DnnLik._DnnLik__set_data>`
-   sets it to a :class:`Data <DNNLikelihood.Data>` object imported from the 
+   sets it to a :mod:`Data <data>` object imported from the 
    :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>`.
 
-      - **type**: :class:`Data <DNNLikelihood.Data>` object
+      - **type**: :mod:`Data <data>` object
 
 .. py:attribute:: DnnLik.data_max
 
@@ -280,7 +280,7 @@ Attributes
 .. py:attribute:: DnnLik.pars_labels_auto
 
    Copy of the :attr:`DnnLik.data.pars_labels_auto <DNNLikelihood.Data.pars_labels_auto>`
-   attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management
+   attribute of the :mod:`Data <data>` object used for data management
    (see the doc of the :attr:`Data.pars_labels_auto <DNNLikelihood.Data.pars_labels_auto>` attribute).
 
       - **type**: ``list``
@@ -625,7 +625,7 @@ Attributes
 
    Number of dimensions of the input vector (i.e. number of 
    parameters entering in the logpdf). It is automatically set to the corresponding attribute 
-   :attr:`Data.ndims <DNNLikelihood.Data.ndims>` of the :class:`Data <DNNLikelihood.Data>` object
+   :attr:`Data.ndims <DNNLikelihood.Data.ndims>` of the :mod:`Data <data>` object
    :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`. 
 
       - **type**: ``int``
@@ -898,7 +898,7 @@ Attributes
 .. py:attribute:: DnnLik.pars_bounds
 
    Copy of the :attr:`DnnLik.data.pars_bounds <DNNLikelihood.Data.pars_bounds>`
-   attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+   attribute of the :mod:`Data <data>` object used for data management.
 
       - **type**: ``numpy.ndarray``
       - **shape**: ``(ndims,2)``
@@ -916,7 +916,7 @@ Attributes
 .. py:attribute:: Lik.pars_central   
 
    Copy of the :attr:`DnnLik.data.pars_central <DNNLikelihood.Data.pars_central>`
-   attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+   attribute of the :mod:`Data <data>` object used for data management.
         
       - **type**: ``numpy.ndarray``
       - **shape**: ``(ndims,)``
@@ -924,7 +924,7 @@ Attributes
 .. py:attribute:: DnnLik.pars_labels
 
    Copy of the :attr:`DnnLik.data.pars_labels <DNNLikelihood.Data.pars_labels>`
-   attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+   attribute of the :mod:`Data <data>` object used for data management.
 
       - **type**: ``list``
       - **shape**: ``(ndims,)``
@@ -932,7 +932,7 @@ Attributes
 .. py:attribute:: DnnLik.pars_pos_nuis
 
    Copy of the :attr:`DnnLik.data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>`
-   attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+   attribute of the :mod:`Data <data>` object used for data management.
 
       - **type**: ``list`` or ``numpy.ndarray``
       - **shape**: ``(n_nuis,)``
@@ -940,7 +940,7 @@ Attributes
 .. py:attribute:: DnnLik.pars_pos_poi
 
    Copy of the :attr:`DnnLik.data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`
-   attribute of the :class:`Data <DNNLikelihood.Data>` object used for data management.
+   attribute of the :mod:`Data <data>` object used for data management.
 
       - **type**: ``list`` or ``numpy.ndarray``
       - **shape**: ``(n_poi,)``

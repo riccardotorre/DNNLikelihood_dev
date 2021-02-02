@@ -36,7 +36,7 @@
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
@@ -210,8 +210,8 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="verbosity-mode">
-<span id="id1"></span><h1>Verbosity mode<a class="headerlink" href="#verbosity-mode" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-show_prints"><span id="verbosity-mode"></span></span><div class="section" id="id1">
+<h1>Verbosity mode<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>The verbosity mode is implemented through the file <code class="docutils literal notranslate"><span class="pre">show_prints.py</span></code>. This contains a modification of the built-in <code class="docutils literal notranslate"><span class="pre">print</span></code> function,
@@ -285,14 +285,14 @@ in that class that accept a <code class="docutils literal notranslate"><span cla
 </div>
 <div class="section" id="code-documentation">
 <h2>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="DNNLikelihood.Verbosity">
 <em class="property">class </em><code class="sig-name descname">Verbosity</code><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#Verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Verbosity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class inherited by all other classes to provide the
 <a class="reference internal" href="#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a> method.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="DNNLikelihood.Verbosity.set_verbosity">
-<code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><em class="sig-param">verbose</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#Verbosity.set_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Verbosity.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#Verbosity.set_verbosity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Verbosity.set_verbosity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method inherited by all classes (from the <a class="reference internal" href="#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> class)
 used to set the verbosity mode. If the input argument <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is
 set to the default class verbosity <code class="docutils literal notranslate"><span class="pre">self.verbose</span></code>. If the input argument <code class="docutils literal notranslate"><span class="pre">verbose</span></code> is negative
@@ -326,9 +326,9 @@ See the <a class="reference internal" href="#verbosity-mode"><span class="std st
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="DNNLikelihood.print">
-<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.print" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">print</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/show_prints.html#print"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Redefinition of the built-in print function.
 It accepts an additional argument <code class="docutils literal notranslate"><span class="pre">show</span></code> allowing to switch print on and off.</p>
 </dd></dl>

@@ -76,6 +76,20 @@ Arguments
     is automatically set to ``False``. See the |emcee_ensemble_sampler_link| documentation for more details.
     It is used to set the :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>` attribute.
 
+.. argument:: output_folder
+     
+    Path (either relative to the code execution folder or absolute) where output files are saved.
+    It is used to set the :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
+    The :argument:`output_folder <Sampler.output_folder>` argument is also used
+    when importing and existing :class:`Sampler <DNNLikelihood.Sampler>` object with the 
+    ``new_sampler=False`` input. In this case if it is ``None`` (default), 
+    then the input files are searched for in the same directory of the 
+    :attr:`likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` file,
+    otherwise, input files are searched for in the :argument:`output_folder <Sampler.output_folder>` folder.
+        
+        - **type**: ``str`` or ``None``
+        - **default**: ``None``
+
 .. argument:: input_file   
 
     File name (either relative to the code execution folder or absolute, with or without extension) 

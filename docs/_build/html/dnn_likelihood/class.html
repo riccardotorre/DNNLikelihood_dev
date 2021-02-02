@@ -36,7 +36,7 @@
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
@@ -219,9 +219,9 @@
 </style>
 <div class="section" id="class">
 <h1>Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="DNNLikelihood.DnnLik">
-<em class="property">class </em><code class="sig-name descname">DnnLik</code><span class="sig-paren">(</span><em class="sig-param">name=None</em>, <em class="sig-param">data=None</em>, <em class="sig-param">input_data_file=None</em>, <em class="sig-param">load_on_RAM=False</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">same_data=True</em>, <em class="sig-param">model_data_inputs=None</em>, <em class="sig-param">model_define_inputs=None</em>, <em class="sig-param">model_optimizer_inputs=None</em>, <em class="sig-param">model_compile_inputs=None</em>, <em class="sig-param">model_callbacks_inputs=None</em>, <em class="sig-param">model_train_inputs=None</em>, <em class="sig-param">resources_inputs=None</em>, <em class="sig-param">output_folder=None</em>, <em class="sig-param">ensemble_name=None</em>, <em class="sig-param">input_summary_json_file=None</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-name descname">DnnLik</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_data_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_on_RAM</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">same_data</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">model_data_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_define_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_optimizer_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_compile_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_callbacks_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_train_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">resources_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ensemble_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_summary_json_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class contains the <code class="docutils literal notranslate"><span class="pre">DnnLik</span></code> object, that is the core object of the DNNLikelihood package.
 It represents the DNNLikelihood through a <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model"  target="_blank"> tf.keras.Model</a> object. The class allows one to train and evaluate the performance
 of the DNNLikelihood, to produce several plots, make inference with the DNNLikelihood from both a Bayesian and a frequentist
@@ -235,6 +235,23 @@ perspective, and to export the trained model in the standard <a href="https://ww
 <li class="toctree-l1"><a class="reference internal" href="methods.html">Methods</a></li>
 </ul>
 </div>
+<p><strong>Attributes summary</strong></p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 46%" />
+<col style="width: 54%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Atrribute</p></th>
+<th class="head"><p>Short description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a></p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Methods summary</strong></p>
 <table class="docutils align-default">
 <colgroup>
@@ -247,13 +264,13 @@ perspective, and to export the trained model in the standard <a href="https://ww
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik.meth</span></code></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a></p></td>
 <td></td>
 </tr>
 </tbody>
 </table>
 <p><strong>Inheritance diagram</strong></p>
-<div class="graphviz"><img src="../_images/inheritance-6e5647f35e4d9a531768a1681b57a2927e014930.png" alt="Inheritance diagram of DNNLikelihood.DnnLik" class="inheritance graphviz" /></div>
+<div class="graphviz"><img src="../_images/inheritance-ceb875e78e6a3de05925cc8351850dcd80d73ea8.png" alt="Inheritance diagram of DNNLikelihood.DnnLik" class="inheritance graphviz" /></div>
 </div>
 
 

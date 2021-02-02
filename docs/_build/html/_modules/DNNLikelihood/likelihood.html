@@ -36,7 +36,7 @@
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -188,9 +188,9 @@
 
 <div class="viewcode-block" id="Lik"><a class="viewcode-back" href="../../likelihood/class.html#DNNLikelihood.Lik">[docs]</a><span class="k">class</span> <span class="nc">Lik</span><span class="p">(</span><span class="n">Verbosity</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class is a container for :ref:`the Likelihood object &lt;likelihood_object&gt;`, storing all information of the likelihood function.</span>
+<span class="sd">    This class is a container for the :mod:`Likelihood &lt;likelihood&gt;` object, storing all information of the likelihood function.</span>
 <span class="sd">    The object can be directly created or obtained from an ATLAS histfactory workspace through the </span>
-<span class="sd">    :class:`DNNLikelihood.Histfactory` object (see :ref:`the Histfactory object &lt;histfactory_object&gt;`).</span>
+<span class="sd">    :class:`DNNLikelihood.Histfactory` object (see the :mod:`Histfactory &lt;histfactory&gt;` object documentation).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="Lik.__init__"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -308,13 +308,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;figures&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span> <span class="o">=</span>  <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;figures&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_script.py&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_figure&quot;</span><span class="p">)</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__check_define_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -833,7 +831,7 @@
 <span class="sd">        storing maximum profiled logpdf information.</span>
 <span class="sd">        They could be used both for frequentist profiled likelihood inference or as initial condition for</span>
 <span class="sd">        Markov Chain Monte Carlo through the :class:`Sampler &lt;DNNLikelihood.Sampler&gt;` object</span>
-<span class="sd">        (see :ref:`the Sampler object &lt;sampler_object&gt;`). </span>
+<span class="sd">        (see the :mod:`Sampler &lt;sampler&gt;` object documentation). </span>
 <span class="sd">        The method uses the function :func:`inference.compute_profiled_maxima_logpdf &lt;DNNLikelihood.inference.compute_profiled_maxima_logpdf&gt;`</span>
 <span class="sd">        based on |scipy_optimize_minimize_link| to find the (local) minimum of minus</span>
 <span class="sd">        :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;`. Since the latter</span>

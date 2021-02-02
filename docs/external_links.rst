@@ -131,10 +131,6 @@
     
    <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> callbacks</a> 
 
-.. |tf_distribute_onedevicestrategy_link| raw:: html
-    
-   <a href="https://www.tensorflow.org/api_docs/python/tf/distribute/OneDeviceStrategy"  target="_blank"> tf.distribute.OneDeviceStrategy</a> 
-
 .. |livelossplot_link| raw:: html
     
    <a href="https://github.com/stared/livelossplot/"  target="_blank"> livelossplot</a> 
@@ -142,6 +138,10 @@
 .. |tf_keras_model_checkpoint_callback_link| raw:: html
     
    <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint"  target="_blank"> tf.keras.callbacks.ModelCheckpoint</a> 
+
+.. |tf_distribute_onedevicestrategy_link| raw:: html
+
+    <a href="https://www.tensorflow.org/api_docs/python/tf/distribute/OneDeviceStrategy"  target="_blank"> tf.distribute.OneDeviceStrategy</a> 
 
 .. |tensorboard_link| raw:: html
     

@@ -36,7 +36,7 @@
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -188,9 +188,9 @@
 
 <div class="viewcode-block" id="Histfactory"><a class="viewcode-back" href="../../histfactory/class.html#DNNLikelihood.Histfactory">[docs]</a><span class="k">class</span> <span class="nc">Histfactory</span><span class="p">(</span><span class="n">Verbosity</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This class is a container for the :ref:`the Histfactory object &lt;histfactory_object&gt;` created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, </span>
+<span class="sd">    This class is a container for the the :mod:`Histfactory &lt;histfactory&gt;` object created from an ATLAS histfactory workspace. It allows one to import histfactory workspaces, </span>
 <span class="sd">    read parameters and logpdf using the |pyhf_link| package, create :class:`Lik &lt;DNNLikelihood.Lik&gt;` objects and save them for later use</span>
-<span class="sd">    (see :ref:`the Likelihood object &lt;likelihood_object&gt;`).</span>
+<span class="sd">    (see the :mod:`Likelihood &lt;likelihood&gt;` object documentation).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <span class="c1">#    __slots__ = &quot;workspace_folder&quot;</span>
 <div class="viewcode-block" id="Histfactory.__init__"><a class="viewcode-back" href="../../histfactory/methods.html#DNNLikelihood.Histfactory.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -204,7 +204,7 @@
                  <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The :class:`Histfactory &lt;DNNLikelihood.Histfactory&gt;` object can be initialized in two different ways, depending on the value of </span>
-<span class="sd">        the :argument:`input_file` argument.</span>
+<span class="sd">        the :argument:`input_file &lt;Histfactory.input_file&gt;` argument.</span>
 
 <span class="sd">        - :argument:`input_file` is ``None`` (default)</span>
 
@@ -295,7 +295,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__check_define_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

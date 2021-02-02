@@ -247,10 +247,10 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         available_points_test = self.data.test_fraction*available_points_tot
         max_required_points_train = np.max(np.array(self.__model_data_ensemble_inputs['npoints_list'])[:,0]+np.array(self.__model_data_ensemble_inputs['npoints_list'])[:,1])
         if max_required_points_train > available_points_train:
-            print("Some models require more training points than available in data. Please reduce npoints_train+npoints_val or change test_fraction in the Data object.")
+            print("Some models require more training points than available in data. Please reduce npoints_train+npoints_val or change test_fraction in the :mod:`Data <data>` object.")
         max_required_points_test=np.max(np.array(self.__model_data_ensemble_inputs['npoints_list'])[:,2])
         if max_required_points_test > available_points_test:
-            print("Some models requiring more test points than available in data. Please reduce npoints_test or change test_fraction in the Data object.")
+            print("Some models requiring more test points than available in data. Please reduce npoints_test or change test_fraction in the :mod:`Data <data>` object.")
         
     def __set_ensemble_folder(self, verbose=True):
         global ShowPrints

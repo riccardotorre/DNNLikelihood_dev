@@ -1,4 +1,4 @@
-.. module:: utils_module
+.. module:: utils
 
 Useful functions
 ----------------

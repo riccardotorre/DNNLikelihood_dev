@@ -36,7 +36,7 @@
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -198,7 +198,7 @@
 <span class="sd">    (MCMC) using the |emcee_link| package (ensemble sampling MCMC). See ref. :cite:`ForemanMackey:2012ig` for</span>
 <span class="sd">    details about |emcee_link|. On top of performing</span>
 <span class="sd">    MCMC :class:`Sampler &lt;DNNLikelihood.Sampler&gt;` class several methods to check convergence, and export </span>
-<span class="sd">    :ref:`the Data object &lt;data_object&gt;` used to train and test the DNNLikelihood.</span>
+<span class="sd">    the :mod:`Data &lt;data&gt;` object used to train and test the DNNLikelihood.</span>
 <span class="sd">    The object can be instantiated both passing a ``Lik`` object or a ``likelihood_script_file`` created </span>
 <span class="sd">    with the ``Lik.save_script`` method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -318,6 +318,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">vectorize</span> <span class="o">=</span> <span class="n">vectorize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">output_folder</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_input_files</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_sampler</span><span class="p">:</span>
             <span class="c1">#self.__load(verbose=verbose_sub)</span>
@@ -391,6 +392,10 @@
 <span class="sd">                    - **default**: ``None`` </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="c1">### Sets output folder if needed to find existing files</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">new_sampler</span><span class="p">:</span>
@@ -450,6 +455,8 @@
 <span class="sd">        :attr:`Sampler.output_figures_folder &lt;DNNLikelihood.Sampler.output_figures_folder&gt;` if </span>
 <span class="sd">        they do not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;figures&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
@@ -488,8 +495,16 @@
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">tmp_likelihood</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood</span><span class="p">)</span>
         <span class="n">tmp_likelihood</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span> <span class="o">=</span> <span class="n">tmp_likelihood</span><span class="o">.</span><span class="n">script_file</span>
-        <span class="n">tmp_likelihood</span><span class="o">.</span><span class="n">save_script</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="n">tmp_likelihood_script_file</span> <span class="o">=</span> <span class="n">tmp_likelihood</span><span class="o">.</span><span class="n">script_file</span>
+        <span class="n">likelihood_script_file_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">tmp_likelihood_script_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">tmp_likelihood_script_file_new</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span><span class="n">likelihood_script_file_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmp_likelihood_script_file_new</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span> <span class="o">=</span> <span class="n">tmp_likelihood_script_file_new</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qui&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span> <span class="o">=</span> <span class="n">tmp_likelihood_script_file</span>
+            <span class="n">tmp_likelihood</span><span class="o">.</span><span class="n">save_script</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;qua&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__get_input_file_from_likelihood_script_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -499,10 +514,14 @@
 <span class="sd">        attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;.py&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span><span class="p">)</span>
         <span class="n">folder</span><span class="p">,</span> <span class="n">file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span><span class="p">)</span>
         <span class="n">file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">input_file_name</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;likelihood_script&quot;</span><span class="p">,</span><span class="s2">&quot;sampler&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">input_file_name</span><span class="p">)</span>
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;likelihood_script&quot;</span><span class="p">,</span> <span class="s2">&quot;sampler&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;likelihood_script&quot;</span><span class="p">,</span><span class="s2">&quot;sampler&quot;</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__get_input_file_from_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1836,7 +1855,7 @@
 
 <div class="viewcode-block" id="Sampler.get_data_object"><a class="viewcode-back" href="../../sampler/methods.html#DNNLikelihood.Sampler.get_data_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_data_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="n">burnin</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">thin</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;float64&quot;</span><span class="p">,</span> <span class="n">test_fraction</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns a :class:`Data &lt;DNNLikelihood.Data&gt;` object with ``nsamples`` samples by taking chains and logpdf values, discarding </span>
+<span class="sd">        Returns a :mod:`Data &lt;data&gt;` object with ``nsamples`` samples by taking chains and logpdf values, discarding </span>
 <span class="sd">        ``burnin`` steps, thinning every ``thin``, deleting duplicates, and converting to dtype ``dtype``. When ``nsamples=&quot;all&quot;`` (default) all samples </span>
 <span class="sd">        available for the given choice of ``burnin`` and ``thin`` are included to the :class:`DNNLikelihood.Data` object, </span>
 <span class="sd">        otherwise only the last ``nsamples`` are included. If ``nsamples`` is more than the available number of samples, then all available </span>
@@ -1857,7 +1876,7 @@
 <span class="sd">            - **nsamples**</span>
 <span class="sd">            </span>
 <span class="sd">                Number of samples to include in the </span>
-<span class="sd">                :class:`Data &lt;DNNLikelihood.Data&gt;` object.</span>
+<span class="sd">                :mod:`Data &lt;data&gt;` object.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``int`` or ``str``</span>
 <span class="sd">                    - **allowed string**: ``&quot;all&quot;``</span>
@@ -1889,16 +1908,16 @@
 <span class="sd">            - **dtype**</span>
 <span class="sd">            </span>
 <span class="sd">                dtype of the data included in the </span>
-<span class="sd">                :class:`Data &lt;DNNLikelihood.Data&gt;` object.</span>
+<span class="sd">                :mod:`Data &lt;data&gt;` object.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``str``</span>
 <span class="sd">                    - **default**: ``&quot;float64&quot;``</span>
 
 <span class="sd">            - **test_fraction**</span>
 <span class="sd">            </span>
-<span class="sd">                If specified, in the :class:`Data &lt;DNNLikelihood.Data&gt;` object</span>
+<span class="sd">                If specified, in the :mod:`Data &lt;data&gt;` object</span>
 <span class="sd">                data are already split into train (and valudation) and test sets.</span>
-<span class="sd">                See :ref:`the Data object &lt;data_object&gt;`.</span>
+<span class="sd">                See the :mod:`Data &lt;data&gt;` object documentation.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``float`` in the range ``(0,1)``</span>
 <span class="sd">                    - **default**: ``0``</span>
@@ -1907,7 +1926,7 @@
 <span class="sd">            </span>
 <span class="sd">                If specified is passed as input to the :class:`Data &lt;DNNLikelihood.Data&gt;`, otherwise</span>
 <span class="sd">                the :attr:`Sampler.output_folder &lt;DNNLikelihood.Sampler.output_folder&gt;` is passed</span>
-<span class="sd">                and the :class:`Data &lt;DNNLikelihood.Data&gt;` object is saved in the same folder as the </span>
+<span class="sd">                and the :mod:`Data &lt;data&gt;` object is saved in the same folder as the </span>
 <span class="sd">                :class:`Sampler &lt;DNNLikelihood.Sampler&gt;` object.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``str``</span>
@@ -1923,7 +1942,7 @@
 
 <span class="sd">        - **Returns**</span>
 
-<span class="sd">            :class:`Data &lt;DNNLikelihood.Data&gt;` object.</span>
+<span class="sd">            :mod:`Data &lt;data&gt;` object.</span>
 
 <span class="sd">        - **Creates files**</span>
 
@@ -1962,7 +1981,7 @@
                     <span class="n">thin</span><span class="o">=</span><span class="n">thin</span><span class="o">-</span><span class="mi">1</span>
                 <span class="k">if</span> <span class="n">autocorr_max</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">thin</span> <span class="o">&lt;</span> <span class="n">autocorr_max</span><span class="p">:</span>
-                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The required number of samples does not allow a thin smaller than the estimated autocorrelation time.</span><span class="se">\n</span><span class="s2">Thin hase been set to the maximum possible value compatible with &#39;burnin&#39;:&quot;</span><span class="p">,</span><span class="n">thin</span><span class="p">,</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The required number of samples does not allow a thin value larger than the estimated autocorrelation time.</span><span class="se">\n</span><span class="s2">Thin hase been set to the maximum possible value compatible with &#39;burnin&#39;:&quot;</span><span class="p">,</span><span class="n">thin</span><span class="p">,</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Thin automatically set to:&quot;</span><span class="p">,</span><span class="n">thin</span><span class="p">,</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>

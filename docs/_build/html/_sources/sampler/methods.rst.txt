@@ -35,11 +35,9 @@ Methods
 
 .. automethod:: Sampler.run_sampler
 
-.. automethod:: Sampler.save
-
 .. automethod:: Sampler.save_log
 
-.. automethod:: Sampler.get_data_object
+.. automethod:: Sampler.save
 
 .. automethod:: Sampler.autocorr_func_1d
 
@@ -62,6 +60,8 @@ Methods
 .. automethod:: Sampler.plot_chains
 
 .. automethod:: Sampler.plot_chains_logpdf
+
+.. automethod:: Sampler.get_data_object
 
 .. py:method:: DNNLikelihood.Sampler.set_verbosity
 
