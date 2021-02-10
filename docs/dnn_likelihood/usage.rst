@@ -442,6 +442,96 @@ devoted to a comprehensive evaluation of the model performances. It can be used 
                                             frequentist_inference = {},
                                             overwrite=True,verbose=2)
 
-    >>> 
+    >>> Compute predictions
+        Generating test data
+        Data log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\data\toy_data.log updated in 0.00940459999998211 s.
+        Added 5000 (X_test, Y_test) samples in 0.09486880000000042 s.
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0020919000000105825 s.
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy_idx.h5 created and saved in 0.0030768999999963853 s.
+        Evaluate all metrics on (scaled) train/val/test using best models
+        Scaling data.
+        20/20 - 0s - loss: 0.0186 - mean_squared_error: 0.0186 - mean_absolute_error: 0.1078 - mean_squared_logarithmic_error: 0.0029 - mean_error: 0.0573
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0016846999999984291 s.
+        Scaling data.
+        6/6 - 0s - loss: 0.0311 - mean_squared_error: 0.0311 - mean_absolute_error: 0.1365 - mean_squared_logarithmic_error: 0.0047 - mean_error: 0.0456
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0014307000000144399 s.
+        Scaling data.
+        10/10 - 0s - loss: 0.0321 - mean_squared_error: 0.0321 - mean_absolute_error: 0.1398 - mean_squared_logarithmic_error: 0.0045 - mean_error: 0.0494
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0017982999999901494 s.
+        Predict Y for train/val/test samples
+        Scaling data.
+        20/20 - 0s
+        Scaling data.
+        6/6 - 0s
+        Scaling data.
+        10/10 - 0s
+        Evaluate all metrics on (un-scaled) train/val/test using best models
+        Compute exp(Y_true) and exp(Y_pred) for train/val/test samples
+        Prediction on (10000,3000,5000) (train,val,test) points done in 1.929473900000005 s.
+        Compute Bayesian inference benchmarks
+        Computing weights (pred vs true) for reweighting of distributions
+        Computing HPDI (pred vs true) using reweighted distributions
+        For some probability values there are different numbers of intervals. In this case error is not computed and is set to None.
+        For some probability values there are different numbers of intervals. In this case error is not computed and is set to None.
+        For some probability values there are different numbers of intervals. In this case error is not computed and is set to None.
+        For some probability values there are different numbers of intervals. In this case error is not computed and is set to None.
+        Computing KS test between one-dimensional distributions (pred vs true) using reweighted distributions
+        Compute Frequentist inference benchmarks
+        Bayesian inference benchmarks computed in 0.4213579999999979 s.
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy_predictions.h5 created and saved. 0.3258619000000067 s.
+        Making plots.
+        <image1>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_training_history_loss.pdf created and saved in 13.923065600000001 s.
+        <image2>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_training_history_mean_error.pdf created and saved in 1.075111899999996 s.
+        Scaling data.
+        WARNING:tensorflow:Callbacks method `on_predict_batch_end` is slow compared to the batch time (batch time: 0.0010s vs `on_predict_batch_end` time: 0.0020s). Check your callbacks.
+        2/2 - 0s
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0018082999999933236 s.
+        <image3>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_par_lik_coverage_0.pdf created and saved in 2.7255876000000114 s.
+        Scaling data.
+        2/2 - 0s
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.001866199999994933 s.
+        <image4>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_par_lik_coverage_2.pdf created and saved in 0.7378712000000007 s.
+        Scaling data.
+        WARNING:tensorflow:Callbacks method `on_predict_batch_end` is slow compared to the batch time (batch time: 0.0010s vs `on_predict_batch_end` time: 0.0020s). Check your callbacks.
+        2/2 - 0s
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0019431999999994787 s.
+        <image5>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_par_lik_coverage_4.pdf created and saved in 0.7502341999999942 s.
+        Scaling data.
+        WARNING:tensorflow:Callbacks method `on_predict_batch_end` is slow compared to the batch time (batch time: 0.0010s vs `on_predict_batch_end` time: 0.0020s). Check your callbacks.
+        2/2 - 0s
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.002036299999986113 s.
+        <image6>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_par_lik_coverage_5.pdf created and saved in 1.1413129999999967 s.
+        Scaling data.
+        2/2 - 0s
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0021658000000002176 s.
+        <image7>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_par_lik_coverage_8.pdf created and saved in 0.7079006000000163 s.
+        Scaling data.
+        10/10 - 0s
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.0024187999999867316 s.
+        <image8>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_lik_distribution.pdf created and saved in 0.7603044999999895 s.
+        <image9>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_corner_pars_train.pdf created and saved in 27.115436800000005 s.
+        Plot done and saved in 27.115436800000005 s.
+        <image10>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_corner_pars_test.pdf created and saved in 16.431002199999995 s.
+        Plot done and saved in 16.431002199999995 s.
+        <image11>
+        C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\figures\DNNLikelihood_toy_figure_corner_pars_train_vs_test.pdf created and saved in 3.5123906999999974 s.
+        Plot done and saved in 3.5123906999999974 s.
+        All plots done in 66.39576910000001 s.
+        DnnLik json file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy_summary.json updated in 0.0035619000000082224 s.
+        DnnLik log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\dnnlikelihood\DNNLikelihood_toy.log updated in 0.004614300000000071 s.
+        All predictions done in 69.43028389999999 s.
+
+
+
 
 .. include:: ../external_links.rst

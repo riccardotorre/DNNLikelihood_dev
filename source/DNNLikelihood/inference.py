@@ -181,7 +181,7 @@ def weighted_central_quantiles(data, intervals=0.68, weights=None, onesided=Fals
         data = np.array(data)
     return [[i, [weighted_quantiles(data, (1-i)/2, weights), weighted_quantiles(data, 0.5, weights), weighted_quantiles(data, 1-(1-i)/2, weights)]] for i in intervals]
 
-def compute_maximum_logpdf(logpdf, 
+def compute_maximum_logpdf(logpdf=None, 
                            ndims=None, 
                            pars_init=None, 
                            pars_bounds=None,
@@ -189,6 +189,12 @@ def compute_maximum_logpdf(logpdf,
                            verbose=True):
     """
     """
+    if verbose < 0:
+        verbose_sub = 0
+    else:
+        verbose_sub = verbose
+    if logpdf is None:
+        raise Exception("The 'logpdf' input argument cannot be empty.")
     def minus_logpdf(x): return -logpdf(x)
     if ndims == None and pars_init is not None:
         ndims = len(pars_init)
@@ -196,18 +202,11 @@ def compute_maximum_logpdf(logpdf,
         pars_init = np.full(ndims, 0)
     elif ndims == None and pars_init is None:
         print("Please specify npars or pars_init or both", show = verbose)
-    if optimizer == {}:
-        method = "Powell"
-        options = {}
-    else:
-        try:
-            method = optimizer["method"]
-        except:
-            method = "Powell"
-        try:
-            options = optimizer["options"]
-        except:
-            options = {}
+    utils.check_set_dict_keys(optimizer, ["method",
+                                          "options"],
+                                         ["Powell", {}], verbose=verbose_sub)
+    method = optimizer["method"]
+    options = optimizer["options"]
     if pars_bounds is None:
         #print("Optimizing")
         ml = optimize.minimize(minus_logpdf, pars_init, method=method, options=options)
@@ -218,50 +217,65 @@ def compute_maximum_logpdf(logpdf,
         ml = optimize.minimize(minus_logpdf, pars_init, bounds=bounds, method=method, options=options)
     return [ml['x'], -ml['fun']]
 
-def compute_profiled_maxima_logpdf(logpdf, 
+def compute_profiled_maximum_logpdf(logpdf=None, 
+                                   pars=None,
+                                   pars_val=None,
                                    ndims=None, 
                                    pars_init=None, 
                                    pars_bounds=None, 
-                                   pars_fixed_pos=None, 
-                                   pars_fixed_val=None,
                                    optimizer={},
                                    verbose=True):
     """
     """
-    # Add check that fixed param is within bounds
-    pars_fixed_pos = np.sort(pars_fixed_pos)
-    pars_fixed_pos_insert = pars_fixed_pos - range(len(pars_fixed_pos))
+    if verbose < 0:
+        verbose_sub = 0
+    else:
+        verbose_sub = verbose
+    # Add check that pars are within bounds
+    if logpdf is None:
+        raise Exception("The 'logpdf' input argument cannot be empty.")
+    if pars is None:
+        raise Exception("The 'pars' input argument cannot be empty.")
+    if pars_val is None:
+        raise Exception("The 'pars_val' input argument cannot be empty.")
+    if len(pars)!=len(pars_val):
+        raise Exception("The input arguments 'pars' and 'pars_val' should have the same length.")
+    pars = np.array(pars)
+    pars_insert = pars - range(len(pars))
     if ndims == None and pars_init is not None:
         ndims = len(pars_init)
     elif ndims != None and pars_init is None:
         pars_init = np.full(ndims, 0)
     elif ndims == None and pars_init is None:
         print("Please specify ndims or pars_init or both",show=verbose())
-    pars_init_reduced = np.delete(pars_init, pars_fixed_pos)
-    if optimizer == {}:
-        method = "Powell"
-        options = {}
     else:
-        try:
-            method = optimizer["method"]
-        except:
-            method = "Powell"
-        try:
-            options = optimizer["options"]
-        except:
-            options = {}
+        if len(pars_init)!=ndims:
+            raise Exception("Parameters initialization has the wrong dimension. The dimensionality should be"+str(ndims)+".")
+    pars_init_reduced = np.delete(pars_init, pars)
+    utils.check_set_dict_keys(optimizer, ["method",
+                                          "options"],
+                                         ["Powell", {}], verbose=verbose_sub)
+    method = optimizer["method"]
+    options = optimizer["options"]
     def minus_logpdf(x):
-        return -logpdf(np.insert(x, pars_fixed_pos_insert, pars_fixed_val))
-    if pars_bounds == None:
+        return -logpdf(np.insert(x, pars_insert, pars_val))
+    if pars_bounds is not None:
+        pars_bounds=np.array(pars_bounds)
+        if len(pars_bounds)!=len(pars_init):
+            raise Exception("The input argument 'pars_bounds' should be either 'None' or have the same length of 'pars'.")
+        if not ((np.all(pars_val >= pars_bounds[pars, 0]) and np.all(pars_val <= pars_bounds[pars, 1]))):
+            print("Parameter values",pars_val,"lies outside parameters bounds",pars_bounds,".")
+            return
+    if pars_bounds is None:
         #print("Optimizing")
         ml = optimize.minimize(minus_logpdf, pars_init_reduced, method=method, options=options)
     else:
         #print("Optimizing")
-        pars_bounds_reduced = np.delete(pars_bounds, pars_fixed_pos,axis=0)
+        pars_bounds_reduced = np.delete(pars_bounds, pars,axis=0)
         pars_bounds_reduced = np.array(pars_bounds_reduced)
         bounds=optimize.Bounds(pars_bounds_reduced[:, 0], pars_bounds_reduced[:, 1])
         ml = optimize.minimize(minus_logpdf, pars_init_reduced, bounds=bounds, method=method, options=options)
-    return [np.insert(ml['x'], pars_fixed_pos_insert, pars_fixed_val, axis=0), -ml['fun']]
+    return [np.insert(ml['x'], pars_insert, pars_val, axis=0), -ml['fun']]
 
 def compute_maximum_sample(X=None,
                            Y=None):
@@ -279,23 +293,23 @@ def compute_maximum_sample(X=None,
     x_next_max = X[pos_next_max]
     return [x_max, y_max, np.abs(x_next_max-x_max), np.abs(y_next_max-y_max)]
 
-def compute_profiled_maxima_sample(pars_fixed_pos=None,
-                                   pars_fixed_val=None,
-                                   X=None,
-                                   Y=None,
-                                   binwidths="auto"):
+def compute_profiled_maximum_sample(pars,
+                                    pars_val,
+                                    X=None,
+                                    Y=None,
+                                    binwidths="auto"):
     """
 
     """
     X = np.array(X)
     Y = np.array(Y)
     if type(binwidths) == float or type(binwidths) == int:
-        binwidths = np.full(len(pars_fixed_pos), binwidths)
+        binwidths = np.full(len(pars), binwidths)
     if binwidths != "auto":
         slicings = []
-        for i in range(len(pars_fixed_pos)):
-            slicings.append([p > pars_fixed_val[i]-binwidths[i]/2 and p <
-                             pars_fixed_val[i]+binwidths[i]/2 for p in X[:, pars_fixed_pos[i]]])
+        for i in range(len(pars)):
+            slicings.append([p > pars_val[i]-binwidths[i]/2 and p <
+                             pars_val[i]+binwidths[i]/2 for p in X[:, pars[i]]])
         slicing = np.prod(np.array(slicings), axis=0).astype(bool)
         npoints = np.count_nonzero(slicing)
         y_max = np.amax(Y[slicing])
@@ -306,14 +320,14 @@ def compute_profiled_maxima_sample(pars_fixed_pos=None,
         x_max = X[pos_max]
         x_next_max = X[pos_next_max]
     elif binwidths == "auto":
-        binwidths = np.full(len(pars_fixed_pos), 0.001)
+        binwidths = np.full(len(pars), 0.001)
         npoints = 0
         while npoints < 2:
             binwidths = binwidths+0.001
             slicings = []
-            for i in range(len(pars_fixed_pos)):
-                slicings.append([p > pars_fixed_val[i]-binwidths[i]/2 and p <
-                                 pars_fixed_val[i]+binwidths[i]/2 for p in X[:, pars_fixed_pos[i]]])
+            for i in range(len(pars)):
+                slicings.append([p > pars_val[i]-binwidths[i]/2 and p <
+                                 pars_val[i]+binwidths[i]/2 for p in X[:, pars[i]]])
             slicing = np.prod(np.array(slicings), axis=0).astype(bool)
             npoints = np.count_nonzero(slicing)
         y_max = np.amax(Y[slicing])

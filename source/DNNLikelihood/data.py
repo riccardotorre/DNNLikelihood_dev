@@ -82,7 +82,7 @@ class Data(Verbosity):
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.input_file = input_file
         self.__check_define_input_files()
         if self.input_file == None:
@@ -122,6 +122,7 @@ class Data(Verbosity):
             if output_folder != None:
                 self.output_folder = path.abspath(output_folder)
                 self.__check_define_output_files()
+            self.figures_list = utils.check_figures_list(self.figures_list)
             self.save_log(overwrite=True, verbose=verbose_sub)
 
         self.data_dictionary = {"X_train": np.array([[]], dtype=self.dtype_required), "Y_train": np.array([], dtype=self.dtype_required),
@@ -193,7 +194,7 @@ class Data(Verbosity):
         otherwise it appends the suffix "_data" (preventing duplication if it is already present).
         """
         if self.name == None:
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.name = "model_"+timestamp+"_data"
         else:
             self.name = utils.check_add_suffix(self.name, "_data")
@@ -337,7 +338,7 @@ class Data(Verbosity):
             self.data_Y = self.data_Y[:].astype(self.dtype_required)
             self.opened_dataset.close()
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_samples_h5_file)[-1],
                                                path.split(self.input_log_file)[-1],
@@ -519,8 +520,7 @@ class Data(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
-        dictionary = dict(self.log)
-        dictionary = utils.convert_types_dict(dictionary)
+        dictionary = utils.convert_types_dict(self.log)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
@@ -594,7 +594,7 @@ class Data(Verbosity):
                                                           "train_range","verbose"])
         dd.io.save(self.output_object_h5_file, dictionary)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_object_h5_file)[-1],
                                "file path": self.output_object_h5_file}
@@ -650,7 +650,7 @@ class Data(Verbosity):
         data["Y"] = self.data_Y.astype(self.dtype_stored)
         h5_out.close()
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_samples_h5_file)[-1],
                                "file path": self.output_samples_h5_file}
@@ -733,7 +733,7 @@ class Data(Verbosity):
         idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val)]
         self.data_dictionary["idx_train"] = idx_train
         self.data_dictionary["idx_val"] = idx_val
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_train", "idx_val"],
                                "npoints train": npoints_train,
@@ -790,7 +790,7 @@ class Data(Verbosity):
         self.data_dictionary["X_val"] = self.data_X[self.data_dictionary["idx_val"]].astype(self.dtype_required)
         self.data_dictionary["Y_val"] = self.data_Y[self.data_dictionary["idx_val"]].astype(self.dtype_required)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["X_train", "Y_train", "X_val", "Y_val"],
                                "npoints train": npoints_train,
@@ -847,7 +847,7 @@ class Data(Verbosity):
             idx_val = idx_train
         self.data_dictionary["idx_train"] = np.sort(np.concatenate((self.data_dictionary["idx_train"],idx_train)))
         self.data_dictionary["idx_val"] = np.sort(np.concatenate((self.data_dictionary["idx_val"],idx_val)))
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_train", "idx_val"],
                                "npoints train": npoints_train,
@@ -915,7 +915,7 @@ class Data(Verbosity):
                 self.data_dictionary["X_val"] = np.concatenate((self.data_dictionary["X_val"], self.data_X[idx_val])).astype(self.dtype_required)
                 self.data_dictionary["Y_val"] = np.concatenate((self.data_dictionary["Y_val"], self.data_Y[idx_val])).astype(self.dtype_required)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["X_train", "Y_train", "X_val", "Y_val"],
                                "npoints train": npoints_train,
@@ -954,7 +954,7 @@ class Data(Verbosity):
         n_existing_test = len(self.data_dictionary["idx_test"])
         idx_test = np.array(self.test_range)[range(n_existing_test, n_existing_test+npoints_test)]
         self.data_dictionary["idx_test"] = np.concatenate((self.data_dictionary["idx_test"],idx_test))
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_test"],
                                "npoints test": npoints_test}
@@ -1006,7 +1006,7 @@ class Data(Verbosity):
                 self.data_dictionary["X_test"] = np.concatenate((self.data_dictionary["X_test"], self.data_X[idx_test])).astype(self.dtype_required)
                 self.data_dictionary["Y_test"] = np.concatenate((self.data_dictionary["Y_test"], self.data_Y[idx_test])).astype(self.dtype_required)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["X_train", "Y_train", "X_val", "Y_val"],
                                "npoints train": npoints_test}
@@ -1070,7 +1070,7 @@ class Data(Verbosity):
         W = 1/np.power(hist[np.where(tmp == nbins, nbins-1, tmp)], power)
         W = W/np.sum(W)*len(sample)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "computed sample weights"}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Sample weights computed in", end-start, "s.",show=verbose)
@@ -1146,7 +1146,7 @@ class Data(Verbosity):
             scalerY = StandardScaler(with_mean=False, with_std=False)
             scalerY.fit(data_Y.reshape(-1, 1))
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "defined scalers",
                                "scaler X": scalerX_bool,
                                "scaler Y": scalerY_bool}
@@ -1396,11 +1396,12 @@ class Data(Verbosity):
         #plt.tight_layout()
         plt.savefig(figure_filename)#, dpi=200)  # ,dpi=200)
         utils.append_without_duplicate(self.figures_list, figure_filename)
+        self.figures_list = utils.check_figures_list(self.figures_list)
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
                                "file name": path.split(figure_filename)[-1],
                                "file path": figure_filename}

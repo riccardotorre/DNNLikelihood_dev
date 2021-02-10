@@ -68,7 +68,7 @@ class Histfactory(Verbosity):
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.input_file = input_file
         self.__check_define_input_files()
         if self.input_file == None:
@@ -141,7 +141,7 @@ class Histfactory(Verbosity):
         otherwise it appends the suffix "_histfactory" (preventing duplication if it is already present).
         """
         if self.name == None:
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.name = "model_"+timestamp+"_histfactory"
         else:
             self.name = utils.check_add_suffix(self.name, "_histfactory")
@@ -185,7 +185,7 @@ class Histfactory(Verbosity):
         for n in list(likelihoods_dict.keys()):
             likelihoods_dict[n]["name"] = self.name+"_" + str(n)+"_"+likelihoods_dict[n]["name"]+"_likelihood"
         self.likelihoods_dict = likelihoods_dict
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "import histfactory",
                                "folder": self.workspace_folder}
         print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.",show=verbose)
@@ -224,7 +224,7 @@ class Histfactory(Verbosity):
             dictionary = json.load(json_file)
         self.log = dictionary
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_h5_file)[-1],
                                                path.split(self.input_log_file)[-1]],
@@ -331,7 +331,7 @@ class Histfactory(Verbosity):
                 iterator = iterator + 1
                 overall_progress.value = float(iterator)/(len(lik_numbers_list))
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "imported likelihoods",
                                "likelihoods numbers": lik_numbers_list}
         self.save_log(overwrite=True, verbose=verbose_sub)
@@ -377,8 +377,7 @@ class Histfactory(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file,verbose=verbose_sub)
-        dictionary = dict(self.log)
-        dictionary = utils.convert_types_dict(dictionary)
+        dictionary = utils.convert_types_dict(self.log)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
@@ -461,7 +460,7 @@ class Histfactory(Verbosity):
         dictionary = {**dictionary, **{"likelihoods_dict": sub_dict}}
         dd.io.save(self.output_h5_file, dictionary)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_h5_file)[-1],
                                "file path": self.output_h5_file}
@@ -538,7 +537,7 @@ class Histfactory(Verbosity):
                       input_file=None,
                       verbose = self.verbose)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved likelihood object", 
                                "likelihood number": lik_number, 
                                "file names": [path.split(lik_obj.output_h5_file)[-1],

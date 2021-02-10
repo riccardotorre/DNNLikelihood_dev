@@ -181,12 +181,19 @@ The maximum of the logpdf, and the corresponding parameters values can be obtain
 .. code-block:: python
 
     likelihood.compute_maximum_logpdf()
-    print(likelihood.logpdf_max["x"])
-    print(likelihood.logpdf_max["y"])
+    likelihood.logpdf_max
 
-    >>> [0.04380427  0.27652363  0.02134356 -0.15662528 -0.0267759  -0.30837557
-         0.35269854 -0.36984361 -0.08494277 -0.13147428  0.52011438]
-    >>> 47.26988825197074
+    >>> Maximum logpdf computed in 0.04643089999444783 s.
+        Likelihood object saved to file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\likelihood\toy_likelihood.h5 in 0.05072530001052655 s.
+        Likelihood log file C:\Users\Admin\Dropbox\Work\09_Resources\Git\GitHub\DNNLikelihood\DNNLikelihood_dev_tutorials\tutorials\toy\toy\likelihood\toy_likelihood.log updated in 0.014584399992600083 s.
+        C:\Users\Admin\Anaconda3\envs\TensorFlow2-GPU\lib\site-packages\tables\path.py:155: NaturalNameWarning: object name is not a valid Python identifier: '2021-02-08-09-29-59.0171'; it does not match the pattern ``^[a-zA-Z_][a-zA-Z0-9_]*$``; you will not be able to use natural naming to access this object; using ``getattr()`` will still work, though
+          check_attribute_name(name)
+        {'2021-02-08-09-29-59.0171': {'x': array([ 0.14663238,  0.15318527, -0.10622347, -0.01992516,  0.12520089,
+                 -0.17515322, -0.53098445,  0.30681495, -0.01017801,  0.26935243,
+                  0.1252277 ]),
+          'y': -47.09979581844456,
+          'pars_init': array([1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+          'optimizer': {'name': 'scipy', 'method': 'Powell', 'options': {}}}}
 
 Finally, one could profile the logpdf with respect to some of the parameters and compute local maxima through
 the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method. This

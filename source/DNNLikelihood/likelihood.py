@@ -70,7 +70,7 @@ class Lik(Verbosity):
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.input_file = input_file
         self.__check_define_input_files()
         if self.input_file == None:
@@ -88,11 +88,11 @@ class Lik(Verbosity):
             self.__check_define_output_files()
             self.logpdf_max = {}
             self.logpdf_profiled_max = {}
-            self.logpdf_profiled_max_tmp = {}
             self.figures_list = []
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.__load(verbose=verbose_sub)
+            self.figures_list = utils.check_figures_list(self.figures_list)
             if output_folder != None:
                 self.output_folder = path.abspath(output_folder)
                 self.__check_define_output_files()
@@ -159,7 +159,7 @@ class Lik(Verbosity):
         otherwise it appends the suffix "_likelihood" (preventing duplication if it is already present).
         """
         if self.name == None:
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.name = "model_"+timestamp+"_likelihood"
         else:
             self.name = utils.check_add_suffix(self.name, "_likelihood")
@@ -295,9 +295,8 @@ class Lik(Verbosity):
         with open(self.input_log_file) as json_file:
             dictionary = json.load(json_file)
         self.log = dictionary
-        self.logpdf_profiled_max_tmp = {}
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_h5_file)[-1],
                                                 path.split(self.input_log_file)[-1]],
@@ -375,8 +374,7 @@ class Lik(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_log_file, verbose=verbose_sub)
-        dictionary = dict(self.log)
-        dictionary = utils.convert_types_dict(dictionary)
+        dictionary = utils.convert_types_dict(self.log)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
@@ -403,7 +401,6 @@ class Lik(Verbosity):
             - :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`
             - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
             - :attr:`Lik.log <DNNLikelihood.Lik.log>` (saved to the file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`)
-            - :attr:`Lik.logpdf_profiled_max_tmp <DNNLikelihood.Lik.logpdf_profiled_max_tmp>`
             - :attr:`Lik.verbose <DNNLikelihood.Lik.verbose>`
 
         - **Arguments**
@@ -445,12 +442,12 @@ class Lik(Verbosity):
             utils.check_rename_file(self.output_h5_file, verbose=verbose_sub)
         dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", "input_h5_file",
                                                           "input_log_file", "logpdf",
-                                                          "logpdf_profiled_max_tmp","log", "verbose"])
+                                                          "log", "verbose"])
         dump = np.void(cloudpickle.dumps(self.logpdf))
         dictionary = {**dictionary, **{"logpdf_dump": dump}}
         dd.io.save(self.output_h5_file, dictionary)
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_h5_file)[-1],
                                "file path": self.output_h5_file}
@@ -500,7 +497,7 @@ class Lik(Verbosity):
                            "ndims = lik.ndims\n" +
                            "output_folder = lik.output_folder"
                            )
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved", 
                                "file name": path.split(self.script_file)[-1], 
                                "file path": self.script_file}
@@ -600,7 +597,9 @@ class Lik(Verbosity):
                                pars_init=None,
                                pars_bounds=None,
                                optimizer={},
-                               force=False,verbose=None):
+                               timestamp = None,
+                               save=True,
+                               verbose=None):
         """
         Computes the maximum of :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. 
         The values of the parameters and of logpdf at the 
@@ -626,35 +625,49 @@ class Lik(Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if pars_init == None:
+        if timestamp is None:
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        utils.check_set_dict_keys(optimizer, ["name",
+                                              "method",
+                                              "options"],
+                                             ["scipy", "Powell", {}], verbose=True)
+        if pars_init is None:
             pars_init = np.array(self.pars_central)
         else:
             pars_init = np.array(pars_init)
-        if self.logpdf_max == {} or force:
-            start = timer()
-            res = inference.compute_maximum_logpdf(lambda x: self.logpdf_fn(x,*self.logpdf.args, *self.logpdf.kwargs), 
-                                                   pars_init=pars_init,
-                                                   pars_bounds=pars_bounds,
-                                                   optimizer=optimizer,
-                                                   verbose=verbose_sub)
-            self.logpdf_max["x"], self.logpdf_max["y"] = res
-            end = timer()
-            print("Maximum logpdf computed in",end-start,"s.")
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
-            self.log[timestamp] = {"action": "computed maximum logpdf"}
-            self.save_log(overwrite=True, verbose=verbose_sub)
-        else:
-            print("Maximum logpdf already stored in self.logpdf_max.",show=verbose)
+        max_exist = []
+        for i in list(self.logpdf_max.keys()):
+            max_exist.append(self.logpdf_max[i] != {})
+        max_exist = np.any(max_exist)
+        utils.check_set_dict_keys(self.logpdf_max,
+                                  [timestamp],
+                                  [{}], verbose=False)
+        start = timer()
+        res = inference.compute_maximum_logpdf(logpdf=lambda x: self.logpdf_fn(x,*self.logpdf.args, *self.logpdf.kwargs), 
+                                               pars_init=pars_init,
+                                               pars_bounds=pars_bounds,
+                                               optimizer=optimizer,
+                                               verbose=verbose_sub)
+        self.logpdf_max[timestamp]["x"], self.logpdf_max[timestamp]["y"] = res
+        end = timer()
+        self.logpdf_max[timestamp]["pars_init"] = pars_init
+        self.logpdf_max[timestamp]["optimizer"] = optimizer
+        self.logpdf_max[timestamp]["optimization_time"] = end-start
+        print("Maximum logpdf computed in",end-start,"s.")
+        self.log[timestamp] = {"action": "computed maximum logpdf"}
+        if save:
+            self.save(overwrite=True, verbose=verbose_sub)
 
     def compute_profiled_maxima_logpdf(self,
-                                       pars,
-                                       pars_ranges,
+                                       pars=None,
+                                       pars_ranges=None,
                                        pars_init = None,
                                        pars_bounds = None,
                                        spacing="grid",
                                        optimizer = {},
-                                       append=False,
+                                       timestamp = None,
                                        progressbar=True,
+                                       save=True,
                                        verbose=None):
         """
         Computes logal maxima of the logpdf for different values of the parameter ``pars``.
@@ -668,13 +681,13 @@ class Lik(Verbosity):
         They could be used both for frequentist profiled likelihood inference or as initial condition for
         Markov Chain Monte Carlo through the :class:`Sampler <DNNLikelihood.Sampler>` object
         (see the :mod:`Sampler <sampler>` object documentation). 
-        The method uses the function :func:`inference.compute_profiled_maxima_logpdf <DNNLikelihood.inference.compute_profiled_maxima_logpdf>`
+        The method uses the function :func:`inference.compute_profiled_maximum_logpdf <DNNLikelihood.inference.compute_profiled_maximum_logpdf>`
         based on |scipy_optimize_minimize_link| to find the (local) minimum of minus
         :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. Since the latter
         method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the 
-        :func:`inference.compute_profiled_maxima_logpdf <DNNLikelihood.inference.compute_profiled_maxima_logpdf>`
+        :func:`inference.compute_profiled_maximum_logpdf <DNNLikelihood.inference.compute_profiled_maximum_logpdf>`
         function to optimize speed. See the documentation of the
-        :func:`inference.compute_profiled_maxima_logpdf <DNNLikelihood.inference.compute_profiled_maxima_logpdf>` 
+        :func:`inference.compute_profiled_maximum_logpdf <DNNLikelihood.inference.compute_profiled_maximum_logpdf>` 
         function for details.
 
         When using interactive python in Jupyter notebooks if ``verbose=2`` a progress bar is shown through 
@@ -709,23 +722,6 @@ class Lik(Verbosity):
                     - **accepted**: ``"grid"`` or ``"random"``
                     - **default**: ``grid``
 
-            - **append**
-            
-                If ``append=False`` the values in
-                :attr:`Lik.logpdf_profiled_max <DNNLikelihood.Lik.logpdf_profiled_max>`
-                are replaced, otherwise, newly computed values are appended to the existing ones.
-                If the shape ot the newly computed ones is incompatible with the one of the existing ones,
-                new values are saved in the temporary 
-                :attr:`Lik.logpdf_profiled_max_tmp <DNNLikelihood.Lik.logpdf_profiled_max_tmp>` dictionary and
-                a warning message is generated. Notice that the latter two attributes, as suggested by their names,
-                are temporary, are not saved by the :meth:`Lik.save <DNNLikelihood.Lik.save>`
-                method, and are always initialized to ``None`` when the :class:`Lik <DNNLikelihood.Lik>` object
-                is created.
-
-                    - **type**: ``str``
-                    - **accepted**: ``"grid"`` or ``"random"``
-                    - **default**: ``grid``
-
             - **progressbar**
             
                 If ``True`` 
@@ -743,6 +739,15 @@ class Lik(Verbosity):
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        if timestamp is None:
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        if pars is None:
+            raise Exception("The 'pars' input argument cannot be empty.")
+        if pars_ranges is None:
+            raise Exception("The 'pars_ranges' input argument cannot be empty.")
+        if len(pars)!=len(pars_ranges):
+            raise Exception("The input arguments 'pars' and 'pars_ranges' should have the same length.")
+        pars_string = str(np.array(pars).tolist())
         if progressbar:
             try:
                 import ipywidgets as widgets
@@ -756,62 +761,111 @@ class Lik(Verbosity):
                 "padding": "0px", "margin": "-5px 0px -20px 0px"})
             display(overall_progress)
             iterator = 0
-        if pars_init == None:
+        utils.check_set_dict_keys(self.logpdf_profiled_max,
+                                  [timestamp],
+                                  [{}], verbose=verbose_sub)
+        utils.check_set_dict_keys(self.logpdf_profiled_max[timestamp],
+                                  [pars_string],
+                                  [{}], verbose=False)
+        utils.check_set_dict_keys(optimizer, ["name",
+                                              "method",
+                                              "options"],
+                                             ["scipy","Powell", {}], verbose=verbose_sub)
+        if pars_init is None:
             pars_init = np.array(self.pars_central)
         else:
             pars_init = np.array(pars_init)
         pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
         print("Total number of points:", len(pars_vals),".",show=verbose)
         pars_vals_bounded = []
-        if pars_bounds == None:
+        if pars_bounds is None:
             for i in range(len(pars_vals)):
                 if (np.all(pars_vals[i] >= self.pars_bounds[pars, 0]) and np.all(pars_vals[i] <= self.pars_bounds[pars, 1])):
                     pars_vals_bounded.append(pars_vals[i])
         else:
+            pars_bounds=np.array(pars_bounds)
+            if len(pars_bounds)!=len(pars_init):
+                raise Exception("The specified parameter bounds do not match the number of parameters ("+str(len(pars_init))+").")
             for i in range(len(pars_vals)):
                 if (np.all(pars_vals[i] >= pars_bounds[pars, 0]) and np.all(pars_vals[i] <= pars_bounds[pars, 1])):
                     pars_vals_bounded.append(pars_vals[i])
         if len(pars_vals) != len(pars_vals_bounded):
             print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.",show=verbose)
         res = []
+        try:
+            optimization_times = self.logpdf_profiled_max[timestamp][pars_string]["optimization_times"]
+        except:
+            optimization_times = []
         for pars_val in pars_vals_bounded:
-            res.append(inference.compute_profiled_maxima_logpdf(lambda x: self.logpdf_fn(x, *self.logpdf.args,*self.logpdf.kwargs),
-                                                                pars_init=self.pars_central,
-                                                                pars_bounds=pars_bounds,
-                                                                pars_fixed_pos=pars, 
-                                                                pars_fixed_val=pars_val,
-                                                                optimizer=optimizer,
-                                                                verbose=verbose_sub))
+            print("Optimizing for parameters:",pars," - values:",pars_val.tolist(),".",show=verbose)
+            start_sub = timer()
+            res.append(inference.compute_profiled_maximum_logpdf(logpdf=lambda x: self.logpdf_fn(x, *self.logpdf.args,*self.logpdf.kwargs),
+                                                                 pars=pars, 
+                                                                 pars_val=pars_val,
+                                                                 ndims=self.ndims,
+                                                                 pars_init=pars_init,
+                                                                 pars_bounds=pars_bounds,
+                                                                 optimizer=optimizer,
+                                                                 verbose=verbose_sub))
+            end_sub = timer()
+            optimization_times.append(end_sub-start_sub)
             if progressbar:
                 iterator = iterator + 1
                 overall_progress.value = float(iterator)/(len(pars_vals_bounded))
         X_tmp = np.array([x[0].tolist() for x in res])
         Y_tmp = np.array(res)[:, 1]
-        if self.logpdf_profiled_max == {}:
-            self.logpdf_profiled_max["X"], self.logpdf_profiled_max["Y"] = [X_tmp,Y_tmp]
-        else:
-            if append:
-                if np.shape(self.logpdf_profiled_max["X"])[1] == np.shape(X_tmp)[1]:
-                    self.logpdf_profiled_max["X"] = np.concatenate((self.logpdf_profiled_max["X"], X_tmp))
-                    self.logpdf_profiled_max["Y"] = np.concatenate((self.logpdf_profiled_max["Y"], Y_tmp))
-                    print("New values have been appended to the existing ones.",show=verbose)
-                else:
-                    self.logpdf_profiled_max_tmp["X"], self.logpdf_profiled_max_tmp["Y"] = [X_tmp,Y_tmp]
-                    print("New values and existing ones have different shape and cannot be concatenated. New values stored in the temporary 'logpdf_profiled_max_tmp' dictionary.", show=verbose)
-            else:
-                self.logpdf_profiled_max["X"], self.logpdf_profiled_max["Y"] = [X_tmp,Y_tmp]
+        self.logpdf_profiled_max[timestamp][pars_string]["X"] = X_tmp
+        self.logpdf_profiled_max[timestamp][pars_string]["Y"] = Y_tmp
         end = timer()
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+        self.logpdf_profiled_max[timestamp][pars_string]["pars"] = pars
+        self.logpdf_profiled_max[timestamp][pars_string]["pars_ranges"] = pars_ranges
+        self.logpdf_profiled_max[timestamp][pars_string]["pars_init"] = pars_init
+        self.logpdf_profiled_max[timestamp][pars_string]["pars_bounds"] = pars_bounds
+        self.logpdf_profiled_max[timestamp][pars_string]["optimizer"] = optimizer
+        self.logpdf_profiled_max[timestamp][pars_string]["optimization_times"] = optimization_times
+        self.logpdf_profiled_max[timestamp][pars_string]["global_optimization_time"] = np.array(optimization_times).sum()
         self.log[timestamp] = {"action": "computed profiled maxima", 
-                               "pars": pars, 
+                               "pars": pars,
                                "pars_ranges": pars_ranges, 
                                "number of maxima": len(X_tmp)}
-        self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Log-pdf values lie in the range [", 
-              np.min(self.logpdf_profiled_max["Y"]), 
-              ",", 
-              np.max(self.logpdf_profiled_max["Y"]), "]", show=verbose)
+        if save:
+            self.save(overwrite=True, verbose=verbose_sub)
+        print("Log-pdf values lie in the range [", np.min(self.logpdf_profiled_max[timestamp][pars_string]["Y"]), ",", np.max(self.logpdf_profiled_max[timestamp][pars_string]["Y"]), "]", show=verbose)
         print(len(pars_vals_bounded),"local maxima computed in", end-start, "s.",show=verbose)
+
+    #def compute_tmu(self,
+    #                pars=None,
+    #                pars_ranges=None,
+    #                verbose=None):
+    #    """
+    #
+    #    """
+    #    verbose, verbose_sub = self.set_verbosity(verbose)
+    #    if pars is None:
+    #        raise Exception("The 'pars' input argument cannot be empty.")
+    #    if pars_ranges is None:
+    #        raise Exception("The 'pars_ranges' input argument cannot be empty.")
+    #    if len(pars)!=len(pars_ranges):
+    #        raise Exception("The input arguments 'pars' and 'pars_ranges' should have the same length.")
+    #    # Check existence of logpdf values     
+    #    if self.predictions['logpdf_profiled_max_likelihood']["pars"] == pars:
+    #        pars_exist = True
+    #    else:
+    #        print("Profiled maxima do not exist for the parameters",pars,". Please compute them with the 'compute_profiled_maxima_logpdf' method and try again.")
+    #        pars_exist = False
+    #    
+    #    if self.predictions['logpdf_profiled_max_likelihood']["pars_ranges"] == pars_ranges
+    #        pars_ranges_exist = True
+    #    else:
+    #        pars_ranges_exist = False
+    #    
+    #    
+    #    pars=np.array(self.predictions['logpdf_profiled_max_likelihood']["pars"])
+    #    logpdf_max=np.array(self.predictions['logpdf_max_likelihood']["y"])
+    #    pars_vals=np.array(self.predictions['logpdf_profiled_max_likelihood']["X"])[:,pars].flatten()
+    #    logpdf_vals=np.array(self.predictions['logpdf_profiled_max_likelihood']["Y"])
+    #    tmu_vals=-2*(logpdf_vals-logpdf_max)
+    #    [[pars_vals[i],tmu_vals[i]] for i in range(len(pars_vals))]
 
     def plot_logpdf_par(self, pars=[[0,0,1]], npoints=100, pars_init=None, 
                         pars_labels="original", title_fontsize=12, show_plot=False, overwrite=False, verbose=None):
@@ -918,6 +972,7 @@ class Lik(Verbosity):
             plt.tight_layout()
             figure_filename = self.output_figures_base_file + "_par_"+str(par[0])+".pdf"
             utils.append_without_duplicate(self.figures_list, figure_filename)
+            self.figures_list = utils.check_figures_list(self.figures_list)
             if not overwrite:
                 utils.check_rename_file(figure_filename)
             plt.savefig(figure_filename)
@@ -925,7 +980,7 @@ class Lik(Verbosity):
             if show_plot:
                 plt.show()
             plt.close()
-            timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]
+            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}

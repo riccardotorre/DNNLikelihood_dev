@@ -107,10 +107,18 @@ def filename_without_datetime(name):
     else:
         file = file+"_"+extension
 
+def generate_dump_file_path(path, timestamp=None):
+    if timestamp is None:
+        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+    file, extension = os.path.splitext(path)
+    filepath, filename = os.path.split(file)
+    dump_file_path = os.path.join(filepath, "dump_"+filename+"_"+timestamp+extension)
+    return dump_file_path
+
 def check_rename_file(path,timestamp=None,verbose=True):
     if os.path.exists(path):
         if timestamp == None:
-            now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         else:
             now = timestamp
         print("The file", path, "already exists. Renaming the old file.",show=verbose)
@@ -135,7 +143,7 @@ def check_delete_file(path):
 def check_rename_folder(path, timestamp=None):
     if os.path.exists(path):
         if timestamp == None:
-            now = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         else:
             now = timestamp
         print("The folder", path, "already exists.")
@@ -155,7 +163,7 @@ def save_samples(allsamples, logpdf_values, data_sample_filename, name):
     start = timer()
     data_sample_filename = check_rename_file(data_sample_filename)
     data_sample_shape = np.shape(allsamples)
-    #data_sample_timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+    #data_sample_timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
     #data_sample_name = name+"_"+data_sample_timestamp
     h5_out = h5py.File(data_sample_filename, "w")
     grp = h5_out.create_group(name)
@@ -173,6 +181,18 @@ def save_samples(allsamples, logpdf_values, data_sample_filename, name):
 #    else:
 #        setattr(eval(obj_name), par_name, eval(par_name))
 #    return eval(par_name)
+
+def check_set_dict_keys(dic, keys, vals,verbose=None):
+    keys = np.array([keys]).flatten()
+    vals = np.array([vals]).flatten()
+    if len(keys) != len(vals):
+        raise Exception("Keys and values should have the same dimension.")
+    for i in range(len(keys)):
+        try:
+            dic[keys[i]]
+        except:
+            dic[keys[i]] = vals[i]
+            print("The key", str(keys[i]), "was not specified and has been set to the default value",str(vals[i]),".",show=verbose)
 
 def check_repeated_elements_at_start(lst):
     x0 = lst[0]
@@ -193,6 +213,13 @@ def show_figures(fig_list):
         except:
             print('File',fig,'not found.')
 
+def check_figures_list(fig_list):
+    new_fig_list = []
+    for fig in fig_list:
+        if os.path.exists(fig):
+            new_fig_list.append(fig)
+    return new_fig_list
+
 def get_spaced_elements(array, numElems=5):
     out = array[np.round(np.linspace(0, len(array)-1, numElems)).astype(int)]
     return out
@@ -208,22 +235,42 @@ def closest_power_of_two(x):
     return 2**(op(math.log(x, 2)))
 
 def convert_types_dict(d):
+    dd = {}
     for k, v in d.items():
         if isinstance(v, dict):
-            convert_types_dict(v)
+            dd[k] = convert_types_dict(v)
         elif type(v) == np.ndarray:
-            d[k] = v.tolist()
+            dd[k] = v.tolist()
         elif type(v) == list:
             if str in [type(q) for q in flatten_list(v)]:
-                d[k] = np.array(v, dtype=object).tolist()
+                dd[k] = np.array(v, dtype=object).tolist()
             else:
-                d[k] = np.array(v).tolist()
+                dd[k] = np.array(v).tolist()
         else:
-            d[k] = np.array(v).tolist()
-    return d
+            dd[k] = np.array(v).tolist()
+    return dd
 
-def sort_dict(d):
-    return json.loads(json.dumps(d,sort_keys=True))
+#def convert_types_dict(dictionary):
+#    d = dict(dictionary)
+#    for k, v in d.items():
+#        if isinstance(v, dict):
+#            convert_types_dict(v)
+#        elif type(v) == np.ndarray:
+#            d[k] = v.tolist()
+#        elif type(v) == list:
+#            if str in [type(q) for q in flatten_list(v)]:
+#                d[k] = np.array(v, dtype=object).tolist()
+#            else:
+#                d[k] = np.array(v).tolist()
+#        else:
+#            d[k] = np.array(v).tolist()
+#    return d
+
+def sort_dict(item: dict):
+    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(item.items())}
+
+#def sort_dict(d):
+#    return json.loads(json.dumps(d,sort_keys=True))
 
 #def convert_types_dic(dic):
 #    new_dic = {}
