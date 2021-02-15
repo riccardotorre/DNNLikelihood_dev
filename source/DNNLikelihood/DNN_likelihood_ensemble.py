@@ -50,7 +50,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
                  ):
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         #### Set model date time
         self.ensemble_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         #### Set resources

@@ -285,10 +285,10 @@ def compute_maximum_sample(X=None,
     X = np.array(X)
     Y = np.array(Y)
     y_max = np.amax(Y)
-    pos_max = np.where(Y == y_max)
+    pos_max = np.where(Y == y_max)[0][0]
     Y[pos_max] = -np.inf
     y_next_max = np.amax(Y)
-    pos_next_max = np.where(Y == y_next_max)
+    pos_next_max = np.where(Y == y_next_max)[0][0]
     x_max = X[pos_max]
     x_next_max = X[pos_next_max]
     return [x_max, y_max, np.abs(x_next_max-x_max), np.abs(y_next_max-y_max)]
@@ -313,10 +313,10 @@ def compute_profiled_maximum_sample(pars,
         slicing = np.prod(np.array(slicings), axis=0).astype(bool)
         npoints = np.count_nonzero(slicing)
         y_max = np.amax(Y[slicing])
-        pos_max = np.where(Y == y_max)
+        pos_max = np.where(Y == y_max)[0][0]
         Y[pos_max] = -np.inf
         y_next_max = np.amax(Y[slicing])
-        pos_next_max = np.where(Y == y_next_max)
+        pos_next_max = np.where(Y == y_next_max)[0][0]
         x_max = X[pos_max]
         x_next_max = X[pos_next_max]
     elif binwidths == "auto":
@@ -331,10 +331,10 @@ def compute_profiled_maximum_sample(pars,
             slicing = np.prod(np.array(slicings), axis=0).astype(bool)
             npoints = np.count_nonzero(slicing)
         y_max = np.amax(Y[slicing])
-        pos_max = np.where(Y == y_max)
+        pos_max = np.where(Y == y_max)[0][0]
         Y[pos_max] = -np.inf
         y_next_max = np.amax(Y[slicing])
-        pos_next_max = np.where(Y == y_next_max)
+        pos_next_max = np.where(Y == y_next_max)[0][0]
         x_max = X[pos_max]
         x_next_max = X[pos_next_max]
     return [x_max, y_max, np.abs(x_next_max-x_max), np.abs(y_next_max-y_max), npoints]

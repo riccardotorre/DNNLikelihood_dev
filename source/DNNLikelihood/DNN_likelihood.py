@@ -132,7 +132,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         #### Set input files
         self.input_summary_json_file = input_summary_json_file
         self.input_data_file = input_data_file
@@ -205,21 +205,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.__load_model(verbose=verbose_sub)
             self.__load_predictions(verbose=verbose_sub)
             self.__load_scalers(verbose=verbose_sub)
-            self.figures_list = utils.check_figures_list(self.figures_list)
+            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         else:
             self.epochs_available = 0
             self.idx_train, self.idx_val, self.idx_test = [np.array([], dtype="int"),np.array([], dtype="int"),np.array([], dtype="int")]
             self.scalerX, self.scalerY = [None,None]
             self.model = None
-            #self.logpdf_max_model = {}
-            #self.logpdf_profiled_max_model = {}
-            #self.logpdf_max_data = {}
-            #self.logpdf_profiled_max_data = {}
             self.history = {}
-            self.predictions = {"Model evaluation": {}, 
-                                "Bayesian inference": {}, 
-                                "Frequentist inference": {}}
-            self.figures_list = []
+            self.predictions = {"Model_evaluation": {}, 
+                                "Bayesian_inference": {}, 
+                                "Frequentist_inference": {},
+                                "Figures": {}}
         self.X_train, self.Y_train, self.W_train = [np.array([[]], dtype=self.dtype),np.array([], dtype=self.dtype),np.array([], dtype=self.dtype)]
         self.X_val, self.Y_val = [np.array([[]], dtype=self.dtype),np.array([], dtype=self.dtype)]
         self.X_test, self.Y_test = [np.array([[]], dtype=self.dtype),np.array([], dtype=self.dtype)]
@@ -270,7 +266,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if self.input_likelihood_file is not None:
             try:
                 self.likelihood = Lik(input_file=self.input_likelihood_file,verbose=verbose_sub)
-                timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+                timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
                 self.log[timestamp] = {"action": "loaded likelihood object",
                                        "file name": path.split(self.input_likelihood_file)[-1],
                                        "file path": self.input_likelihood_file}
@@ -395,7 +391,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_DNNLikelihood"``.
         """
         if self.name == None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.name = "model_"+timestamp+"_DNNLikelihood"
 
     def __check_npoints(self):
@@ -730,7 +726,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #    self.model_max["x"] = np.array(self.model_max["x"])
         self.log = dictionary
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded summary and log json",
                                "files names": [path.split(self.input_summary_json_file)[-1],
                                                path.split(self.input_log_file)[-1]],
@@ -774,7 +770,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.epochs_available = 0
             return
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded history json",
                                "file name": path.split(self.input_history_json_file)[-1],
                                "file path": self.input_history_json_file}
@@ -820,7 +816,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 print("No training history file available.")
                 return
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded tf model h5 and tf model history pickle",
                                "file name": path.split(self.input_tf_model_h5_file)[-1],
                                "file path": self.input_tf_model_h5_file}
@@ -858,7 +854,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.scalerY = None
             return
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded scalers h5",
                                "file name": path.split(self.input_scalers_pickle_file)[-1],
                                "file path": self.input_scalers_pickle_file}
@@ -909,7 +905,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.data.data_dictionary["idx_test"] = self.idx_test
         h5_in.close()
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded data indices h5",
                                "file name": path.split(self.input_idx_h5_file)[-1],
                                "file path": self.input_idx_h5_file}
@@ -937,19 +933,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         try:
-            dictionary = dd.io.load(self.input_h5_file)
+            dictionary = dd.io.load(self.input_predictions_h5_file)
             self.predictions = dictionary
         except:
             print("No predictions file available. The predictions attribute will be initialized to {}.")
-            self.model_reset_predictions(verbose=verbose_sub)
+            self.reset_predictions(verbose=verbose_sub)
             return
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded predictions h5",
                                "file name": path.split(self.input_predictions_h5_file)[-1],
                                "file path": self.input_predictions_h5_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print("DnnLik predictions json file loaded in",str(end-start), ".", show=verbose)
+        print("DnnLik predictions h5 file loaded in",str(end-start), ".", show=verbose)
 
     #def __load(self,verbose=None):
     #    """
@@ -998,7 +994,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         else:
             raise Exception("Could not set optimizer. The model_optimizer_inputs argument does not have a valid format (str or dict).")
         self.optimizer = eval(optimizer_string)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "optimizer set",
                                "optimizer": self.optimizer_string}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
@@ -1037,7 +1033,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 print("Could not set loss", loss_string, ".", show=verbose)
         self.loss_string = loss_string
         self.loss = loss_obj
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loss set",
                                "loss": self.loss_string}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
@@ -1082,7 +1078,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         print("\tCould not set metric", metrics_string[i], ".",show=verbose)
         self.metrics_string = metrics_string
         self.metrics = metrics_obj
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "metrics set",
                                "metrics": self.metrics_string}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
@@ -1205,7 +1201,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 print(e)
         self.callbacks_strings = callbacks_strings
         self.callbacks = callbacks_obj
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "callbacks set",
                                "callbacks": self.callbacks_strings}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
@@ -1296,7 +1292,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         _, verbose_sub = self.set_verbosity(verbose)
         self.W_train = self.data.compute_sample_weights(
             self.Y_train, nbins=nbins, power=power, verbose=verbose_sub).astype(self.dtype)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "computed sample weights"}
         #self.save_log(overwrite=True, verbose=verbose_sub)
 
@@ -1323,7 +1319,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         _, verbose_sub = self.set_verbosity(verbose)
         self.scalerX, self.scalerY = self.data.define_scalers(self.X_train, self.Y_train, self.scalerX_bool, self.scalerY_bool, verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "defined scalers",
                                "scaler X": self.scalerX_bool,
                                "scaler Y": self.scalerY_bool}
@@ -1398,7 +1394,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.pred_bounds_train = np.array([np.min(self.Y_train), np.max(self.Y_train)])
         # Define scalers
         self.define_scalers(verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "generated train data",
                                "data": ["idx_train", "X_train", "Y_train", "idx_val", "X_val", "Y_val"],
                                "npoints train": self.npoints_train,
@@ -1448,7 +1444,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.idx_test = self.data.data_dictionary["idx_test"][:self.npoints_train]
         self.X_test = self.data.data_dictionary["X_test"][:self.npoints_test].astype(self.dtype)
         self.Y_test = self.data.data_dictionary["Y_test"][:self.npoints_test].astype(self.dtype)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "generated test data",
                                "data": ["idx_test", "X_test", "Y_test"],
                                "npoints test": self.npoints_test}
@@ -1530,7 +1526,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.model_trainable_params = int(np.sum([K.count_params(p) for p in self.model.trainable_weights]))
         self.model_non_trainable_params = int(np.sum([K.count_params(p) for p in self.model.non_trainable_weights]))
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         summary_list = []
         self.model.summary(print_fn=lambda x: summary_list.append(x.replace("\"","'")))
         self.log[timestamp] = {"action": "defined tf model",
@@ -1568,7 +1564,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         start = timer()
         self.model.compile(loss=self.loss, optimizer=self.optimizer, metrics=self.metrics)
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "compiled tf model"}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Model for DNNLikelihood",self.name,"compiled in",str(end-start),"s.",show=verbose)
@@ -1657,7 +1653,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 self.model_define(verbose=verbose_sub)
             if compile:
                 self.model_compile(verbose=verbose_sub)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "built tf model",
                                "gpu mode": self.gpu_mode,
                                "device id": device_id}
@@ -1748,7 +1744,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.model.history.epoch = np.arange(self.epochs_available).tolist()
             if "PlotLossesKeras" in str(self.callbacks_strings):
                 plt.close()
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "trained tf model",
                                    "epochs run": epochs_to_run,
                                    "epochs total": self.epochs_available,
@@ -1899,7 +1895,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         prediction_time = (end - start)/len(X)
         if save_log:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "predicted with tf model",
                                    "batch size": batch_size,
                                    "npoints": len(pred),
@@ -2112,9 +2108,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         start = timer()
-        if pars_init == None:
+        if pars_init is None:
             pars_init = np.array(self.pars_central).astype(self.dtype)
         else:
             pars_init = np.array(pars_init).astype(self.dtype)
@@ -2133,21 +2129,22 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not self.check_x_bounds(pars_init, pars_bounds):
                 raise Exception("pars_init out of bounds.")
         opt_log, opt = self.__set_optimizer_minimization(optimizer)
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"], ["logpdf_max_model"],
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"], ["logpdf_max_model"],
                                                  [{}],verbose=verbose_sub)
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"]["logpdf_max_model"], [timestamp],
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_max_model"], [timestamp],
                                                  [{}],verbose=False)
         if "scipy" in opt_log:
-            utils.check_set_dict_keys(optimizer, ["method",
+            utils.check_set_dict_keys(optimizer, ["name",
+                                                  "method",
                                                   "options"],
-                                                 ["Powell",{}],verbose=verbose_sub)
+                                                 ["scipy","Powell",{}],verbose=verbose_sub)
             method=optimizer["method"]
             options=optimizer["options"]
             print("Optimizing with scipy.optimize.", show=verbose)
             def minus_loglik(x):
                 return -self.model_predict_scalar(x, x_boundaries=x_boundaries, y_boundaries=y_boundaries)
             ml = opt.minimize(minus_loglik, pars_init, method=method, options=options)
-            self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp] = {"x": np.array(ml["x"]), "y": -ml["fun"]}
+            self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp] = {"x": np.array(ml["x"]), "y": -ml["fun"]}
             end = timer()
             print("Optimized in", str(end-start), "s.", show=verbose)
         else:
@@ -2232,24 +2229,24 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                           lr.numpy(), "to", (lr/2).numpy(), ".", show=verbose)
             x_final = self.scalerX.inverse_transform(x_var.numpy())[0]
             y_final = self.scalerY.inverse_transform([-f().numpy()])[0]
-            self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp] = {"x": np.array(x_final), "y": y_final}
+            self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp] = {"x": np.array(x_final), "y": y_final}
             end = timer()
             print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.", show=verbose)
             print("Best tolerance",variation,"reached in",str(end-start),"s.", show=verbose)
-        if y_boundaries and self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["y"] < self.pred_bounds_train[0]: 
-            print("Warning: the model maximum (",self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["y"],") is smaller than the minimum y value in the training data (",self.pred_bounds_train[0],").")
-        if y_boundaries and self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["y"] > self.pred_bounds_train[1]:
-            print("Warning: the model maximum (",self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["y"],") is larger than the maximum y value in the training data (",self.pred_bounds_train[1],").")
-        self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["pars_init"] = pars_init
-        self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["optimizer"] = optimizer
-        self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["x_boundaries"] = x_boundaries
-        self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["y_boundaries"] = y_boundaries
-        self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["optimization_time"] = end-start
+        if y_boundaries and self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"] < self.pred_bounds_train[0]: 
+            print("Warning: the model maximum (",self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"],") is smaller than the minimum y value in the training data (",self.pred_bounds_train[0],").")
+        if y_boundaries and self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"] > self.pred_bounds_train[1]:
+            print("Warning: the model maximum (",self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"],") is larger than the maximum y value in the training data (",self.pred_bounds_train[1],").")
+        self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["pars_init"] = pars_init
+        self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["optimizer"] = optimizer
+        self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["x_boundaries"] = x_boundaries
+        self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y_boundaries"] = y_boundaries
+        self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["optimization_time"] = end-start
         self.log[timestamp] = {"action": "computed maximum model",
                                "optimizer": opt_log,
                                "optimization time": end-start,
-                               "x": self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["x"],
-                               "y": self.predictions["Frequentist inference"]["logpdf_max_model"][timestamp]["y"]}
+                               "x": self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["x"],
+                               "y": self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"]}
         if save:
             self.save_predictions(overwrite=True, verbose=verbose_sub)
             self.save_log(overwrite=True, verbose=verbose_sub)
@@ -2270,7 +2267,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             multiple=False
         else:
             multiple=True
@@ -2285,7 +2282,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         pars_string = str(pars.tolist())
         pars_insert = pars - range(len(pars))
         pars_val = np.array(pars_val)
-        if pars_init == None:
+        if pars_init is None:
             pars_init = np.array(self.pars_central).astype(self.dtype)
         else:
             pars_init = np.array(pars_init).astype(self.dtype)
@@ -2306,15 +2303,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not self.check_x_bounds(pars_init, pars_bounds):
                 raise Exception("pars_init out of bounds.")
         opt_log, opt = self.__set_optimizer_minimization(optimizer)
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"],
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"],
                                   ["logpdf_profiled_max_model"],
                                   [{}],verbose=verbose_sub)
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"]["logpdf_profiled_max_model"],
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"],
                                   [timestamp],
                                   [{}], verbose=verbose_sub)
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp], 
-                                  [pars_string],
-                                  [{}],verbose=False)
         if "scipy" in opt_log:
             utils.check_set_dict_keys(optimizer, ["method",
                                                   "options"],
@@ -2326,14 +2320,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             def minus_loglik(x):
                 return -self.model_predict_scalar(np.insert(x, pars_insert, pars_val), x_boundaries=x_boundaries, y_boundaries=y_boundaries)
             ml = opt.minimize(minus_loglik, pars_init_reduced, method=method, options=options)
-            if multiple:
-                try:
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["X"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["X"], [np.insert(ml["x"], pars_insert, pars_val)]))
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["Y"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["Y"], [-ml["fun"]]))
-                except:
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string] = {"X": np.array([np.insert(ml["x"], pars_insert, pars_val)]), "Y": np.array([-ml["fun"]])}
-            else:
-                self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string] = {"X": np.array([np.insert(ml["x"], pars_insert, pars_val)]), "Y": np.array([-ml["fun"]])}
+            x_final = np.insert(ml["x"], pars_insert, pars_val)
+            y_final = -ml["fun"]
             end = timer()
             print("Optimized in", str(end-start), "s.", show=verbose)
         else:
@@ -2434,36 +2422,59 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             var = tf.reshape(tf.gather_nd(var,idx_resort),(1,-1))
             x_final = self.scalerX.inverse_transform(var.numpy())[0]
             y_final = self.scalerY.inverse_transform([-f().numpy()])[0]
-            if multiple:
-                try:
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["X"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["X"], [x_final]))
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["Y"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["Y"], [y_final]))
-                except:
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string] = {"X": np.array([x_final]), "Y": np.array([y_final])}
-            else:
-                self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string] = {"X": np.array([x_final]), "Y": np.array([y_final])}
             end = timer()
             print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.", show=verbose)
             print("Best tolerance",variation,"reached in",str(end-start),"s.", show=verbose)
-        if not multiple:
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["pars"] = pars
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["pars_init"] = pars_init
-        self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["optimizer"] = optimizer
-        if not multiple:
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["x_boundaries"] = x_boundaries
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["y_boundaries"] = y_boundaries
-        try:    
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["optimization_times"].append(end-start)
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["global_optimization_time"]=np.array(self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["optimization_times"]).sum()
+        ## Check for existing global maximum
+        try:
+            y_max=self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"]
+            if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["pars_init"] != pars_init:
+                print("Warning: existing global maximum has been computed with a different parameters initialization 'pars_init'.", show=verbose_sub)
+            if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["optimizer"] != optimizer:
+                print("Warning: existing global maximum has been computed with a different optimizer and or different optimization parameters.", show=verbose_sub)
+            if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["x_boundaries"] != x_boundaries:
+                print("Warning: existing global maximum has been computed with different 'x_boundaries'.", show=verbose_sub)
+            if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y_boundaries"] != y_boundaries:
+                print("Warning: existing global maximum has been computed with different 'y_boundaries'.", show=verbose_sub)
         except:
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["optimization_times"]=[end-start]
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["global_optimization_time"]=end-start
+            print("Computing global maximum to estimate tmu test statistics.",show=verbose)
+            self.compute_maximum_model(pars_init=pars_init,
+                                       optimizer=optimizer,
+                                       x_boundaries=x_boundaries, 
+                                       y_boundaries=y_boundaries,
+                                       timestamp=timestamp,
+                                       save=True,
+                                       verbose=verbose_sub)
+            y_max = self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"]
+        tmu_final = np.array([x_final[pars][0], -2*(y_final-y_max)])
+        if multiple:
+            try:
+                self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["X"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["X"], [x_final]))
+                self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["Y"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["Y"], [y_final]))
+                self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["tmu"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["tmu"], [tmu_final]))
+            except:
+                self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp] = {"X": np.array([x_final]), "Y": np.array([y_final]), "tmu": np.array([tmu_final])}
+        else:
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp] = {"X": np.array([x_final]), "Y": np.array([y_final]), "tmu": np.array([tmu_final])}
+        if not multiple:
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars"] = pars
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars_init"] = pars_init
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimizer"] = optimizer
+        if not multiple:
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["x_boundaries"] = x_boundaries
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["y_boundaries"] = y_boundaries
+        try:    
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimization_times"].append(end-start)
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["global_optimization_time"]=np.array(self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimization_times"]).sum()
+        except:
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimization_times"]=[end-start]
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["global_optimization_time"]=end-start
         self.log[timestamp] = {"action": "computed profiled maximum model",
                                "optimizer": opt_log,
                                "optimization time": end-start,
                                "pars": pars,
-                               "x": self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["X"][-1],
-                               "y": self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["Y"][-1]}
+                               "x": self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["X"][-1],
+                               "y": self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["Y"][-1]}
         if save:
             self.save_predictions(overwrite=True, verbose=verbose_sub)
             self.save_log(overwrite=True, verbose=verbose_sub)
@@ -2483,7 +2494,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                       verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if pars is None:
             raise Exception("The 'pars' input argument cannot be empty.")
         if pars_ranges is None:
@@ -2544,12 +2555,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 iterator = iterator + 1
                 overall_progress.value = float(iterator)/(len(pars_vals_bounded))
         end = timer()
-        self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["pars"] = pars
-        self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["pars_ranges"] = pars_ranges
-        self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["pars_init"] = pars_init
-        self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["spacing"] = spacing
-        self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["x_boundaries"] = x_boundaries
-        self.predictions["Frequentist inference"]["logpdf_profiled_max_model"][timestamp][pars_string]["y_boundaries"] = y_boundaries
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars"] = pars
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars_ranges"] = pars_ranges
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars_init"] = pars_init
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["spacing"] = spacing
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["x_boundaries"] = x_boundaries
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["y_boundaries"] = y_boundaries
         self.log[timestamp] = {"action": "computed profiled maxima model",
                                "pars": pars, 
                                "pars_ranges": pars_ranges, 
@@ -2571,9 +2582,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         samples = np.array([samples]).flatten()
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"], ["logpdf_max_sample"],
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"], ["logpdf_max_sample"],
                                                     [{}],verbose=verbose_sub)
         for sample in samples:
             start = timer()
@@ -2589,16 +2600,16 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             else:
                 raise Exception("Invalid sample input. It should be one of: 'train', 'val', or 'test'.")
             res = inference.compute_maximum_sample(X=X, Y=Y)
-            utils.check_set_dict_keys(self.predictions["Frequentist inference"]["logpdf_max_sample"],
+            utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_max_sample"],
                                                    [timestamp],
                                                    [{}],verbose=verbose_sub)
             end = timer()
-            self.predictions["Frequentist inference"]["logpdf_max_sample"][timestamp][sample] = {"x": np.array(res[0]), "y": res[1], "x_abs_err": np.array(res[2]), "y_abs_err": res[3], "optimization_time": end-start, "data_file": self.input_data_file, "idx_file": self.output_idx_h5_file}
+            self.predictions["Frequentist_inference"]["logpdf_max_sample"][timestamp][sample] = {"x": np.array(res[0]), "y": res[1], "x_abs_err": np.array(res[2]), "y_abs_err": res[3], "optimization_time": end-start, "data_file": self.input_data_file, "idx_file": self.output_idx_h5_file}
             self.log[timestamp] = {"action": "computed maximum sample",
                                    "sample": sample,
                                    "total time": end-start,
-                                   "x": self.predictions["Frequentist inference"]["logpdf_max_sample"][timestamp][sample]["x"],
-                                   "y": self.predictions["Frequentist inference"]["logpdf_max_sample"][timestamp][sample]["y"]}
+                                   "x": self.predictions["Frequentist_inference"]["logpdf_max_sample"][timestamp][sample]["x"],
+                                   "y": self.predictions["Frequentist_inference"]["logpdf_max_sample"][timestamp][sample]["y"]}
             print("Maximum of",sample,"sample computed in", str(end-start),"s.", show=verbose)
         if save:
             self.save_predictions(overwrite=True, verbose=verbose_sub)
@@ -2620,7 +2631,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         samples = np.array([samples]).flatten()
         pars_string = str(np.array(pars).tolist())
         if progressbar:
@@ -2635,17 +2646,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 "padding": "0px", "margin": "-5px 0px -20px 0px"})
             display(overall_progress)
             iterator = 0
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"], ["logpdf_profiled_max_sample"],
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"], ["logpdf_profiled_max_sample"],
                                                     [{}],verbose=verbose_sub)
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"],
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"],
                                   [timestamp],
                                   [{}],verbose=verbose_sub)
-        utils.check_set_dict_keys(self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp],
-                                  [pars_string],
-                                  [{}], verbose=verbose_sub)
         for sample in samples:
             start = timer()
-            utils.check_set_dict_keys(self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string],
+            utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp],
                                   [sample],
                                   [{}], verbose=verbose_sub)
             if sample in ["train", "val", "test"]:
@@ -2690,15 +2698,30 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                 X=X,
                                                                 Y=Y,
                                                                 binwidths=binwidths)
+                x_final = tmp[0]
+                y_final = tmp[1]
+                x_abs_err_final = tmp[2]
+                y_abs_err_final = tmp[3]
+                try:
+                    y_max = self.predictions["Frequentist_inference"]["logpdf_max_sample"][timestamp][sample]["y"]
+                except:
+                    print("Computing global maximum to estimate tmu test statistics.",show=verbose)
+                    self.compute_maximum_sample(samples = sample,
+                                                timestamp = timestamp,
+                                                save = True,
+                                                verbose = verbose_sub)
+                    y_max = self.predictions["Frequentist_inference"]["logpdf_max_sample"][timestamp][sample]["y"]
+                tmu_final = np.array([x_final[pars][0], -2*(y_final-y_max)])
                 end_sub = timer()
                 try:
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["X"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["X"], [tmp[0]]))
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["Y"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["Y"], [tmp[1]]))
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["X_abs_err"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["X_abs_err"], [tmp[2]]))
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["Y_abs_err"] = np.concatenate((self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["Y_abs_err"], [tmp[3]]))
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["optimization_times"].append(end_sub-start_sub)
+                    self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["X"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["X"], [x_final]))
+                    self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["Y"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["Y"], [y_final]))
+                    self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["tmu"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["tmu"], [tmu_final]))
+                    self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["X_abs_err"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["X_abs_err"], [tmp[2]]))
+                    self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["Y_abs_err"] = np.concatenate((self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["Y_abs_err"], [tmp[3]]))
+                    self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["optimization_times"].append(end_sub-start_sub)
                 except:
-                    self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample] = {"X": np.array([tmp[0]]), "Y": np.array([tmp[1]]), "X_abs_err": np.array([tmp[2]]), "Y_abs_err": np.array([tmp[3]]), "optimization_times": [end_sub-start_sub]}
+                    self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample] = {"X": np.array([x_final]), "Y": np.array([y_final]), "tmu": np.array([tmu_final]), "X_abs_err": np.array([tmp[2]]), "Y_abs_err": np.array([tmp[3]]), "optimization_times": [end_sub-start_sub]}
                 self.log[timestamp] = {"action": "computed profiled maximum model",
                                        "sample": sample,
                                        "pars": pars,
@@ -2707,15 +2730,15 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 if progressbar:
                     iterator = iterator + 1
                     overall_progress.value = float(iterator)/(len(pars_vals_bounded))
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["pars"] = pars
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["pars_ranges"] = pars_ranges
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["data_file"] = self.input_data_file
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["idx_file"] = self.output_idx_h5_file
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["global_optimization_time"] = np.array(self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["optimization_times"]).sum()
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["spacing"] = spacing
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["binwidths"] = binwidths
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["x_boundaries"] = x_boundaries            
             end = timer()
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["pars"] = pars
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["pars_ranges"] = pars_ranges
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["data_file"] = self.input_data_file
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["idx_file"] = self.output_idx_h5_file
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["global_optimization_time"] = np.array(self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["optimization_times"]).sum()
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["spacing"] = spacing
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["binwidths"] = binwidths
-            self.predictions["Frequentist inference"]["logpdf_profiled_max_sample"][timestamp][pars_string][sample]["x_boundaries"] = x_boundaries            
             self.log[timestamp] = {"action": "computed profiled maxima sample",
                                    "sample": sample,
                                    "pars": pars,
@@ -2791,7 +2814,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         pred = self.model.evaluate(X, Y, batch_size=batch_size, verbose=verbose_sub)
         end = timer()
         prediction_time = (end - start)/len(X)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "evaluated tf model",
                                "npoints": len(Y),
                                "evaluation time": prediction_time}
@@ -2810,8 +2833,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         title = title.replace("+", "") + "Loss: " + str(self.loss_string)
         self.fig_base_title = title
 
-    def plot_training_history(self, metrics=["loss"], yscale="log", show_plot=False, overwrite=False, verbose=None):
+    def plot_training_history(self, metrics=["loss"], yscale="log", show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         metrics = np.unique(metrics)
         for metric in metrics:
@@ -2836,21 +2861,71 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             plt.text(0.967, 0.2, r"%s" % self.summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
                                                                               edgecolor="black", boxstyle="round,pad=0.5"), ha="right", ma="left", transform=ax.transAxes)
             plt.savefig(r"%s" % (figure_filename))
-            utils.append_without_duplicate(self.figures_list, figure_filename)
-            self.figures_list = utils.check_figures_list(self.figures_list)
+            utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
             if show_plot:
                 plt.show()
             plt.close()
             end = timer()
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}
             print(r"%s" % (figure_filename), "created and saved in", str(end-start), "s.", show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
-            
-    def plot_pars_coverage(self, pars=None, loglik=True, show_plot=False, overwrite=False,verbose=None):
+    
+    def plot_tmu_sources_1d(self,
+                            sources=["model"],
+                            timestamp=None,
+                            show_plot=False, 
+                            overwrite=False, 
+                            verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        plt.style.use(mplstyle_path)
+        start = timer()
+        pars_dict = {}
+        tmu_dict = {}
+        for source in sources:
+            if source in ["train","val","test"]:
+                pars_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][source]["pars"]
+                tmu_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][source]["tmu"]
+            else:
+                pars_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_"+source][timestamp]["pars"]
+                tmu_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_"+source][timestamp]["tmu"]
+        tmp = list(pars_dict.values())
+        if tmp.count(tmp[0]) == len(tmp) and len(tmp[0]) == 1:
+            par=tmp[0][0]
+        else:
+            raise Exception("Parameters should be  should be the same for the different tmu sources.")
+        figure_filename = self.output_figures_base_file+"_tmu_"+str(par) +".pdf"
+        if not overwrite:
+            utils.check_rename_file(figure_filename)
+        for k, v in tmu_dict.items():
+            plt.plot(v[:,0],v[:,-1], label=r"%s"%k)
+        plt.title(r"%s" % self.fig_base_title, fontsize=10)
+        plt.xlabel(r"$t_{\mu}$(%s)"%(self.pars_labels[par]))
+        plt.ylabel(r"%s"%(self.pars_labels[par]))
+        plt.legend()
+        plt.tight_layout()
+        plt.savefig(r"%s" %figure_filename)
+        utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        self.log[timestamp] = {"action": "saved figure", 
+                               "file name": path.split(figure_filename)[-1], 
+                               "file path": figure_filename}
+        print(r"%s" % (figure_filename), "created and saved in", str(end-start), "s.", show=verbose)
+
+    def plot_pars_coverage(self, pars=None, loglik=True, show_plot=False, timestamp=None, overwrite=False, verbose=None):
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         if pars == None:
             pars = self.pars_pos_poi
@@ -2892,21 +2967,23 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             plt.legend()
             plt.tight_layout()
             plt.savefig(r"%s" %figure_filename)
-            utils.append_without_duplicate(self.figures_list, figure_filename)
-            self.figures_list = utils.check_figures_list(self.figures_list)
+            utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
             if show_plot:
                 plt.show()
             plt.close()
             end = timer()
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure",
                                    "file name": path.split(figure_filename)[-1],
                                    "file path": figure_filename}
             print(r"%s" %figure_filename,"created and saved in",str(end-start),"s.", show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
 
-    def plot_lik_distribution(self, loglik=True, show_plot=False, overwrite=False,verbose=None):
+    def plot_lik_distribution(self, loglik=True, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         start = timer()
         if loglik:
@@ -2951,13 +3028,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.yscale("log")
         plt.tight_layout()
         plt.savefig(r"%s" % figure_filename)
-        utils.append_without_duplicate(self.figures_list, figure_filename)
-        self.figures_list = utils.check_figures_list(self.figures_list)
+        utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
                                "file name": path.split(figure_filename)[-1],
                                "file path": figure_filename}
@@ -2971,7 +3048,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                            figure_filename=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         start = timer()
         linewidth = 1.3
@@ -2997,11 +3074,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if W is not None:
             W = W[rnd_idx]
         try:
-            HPDI = [[self.predictions["Bayesian inference"]['HPDI'][timestamp][str(par)][HPDI_dic["type"]][HPDI_dic["sample"]][interval]["Intervals"] for interval in intervals] for par in pars]
+            HPDI = [[self.predictions["Bayesian_inference"]['HPDI'][timestamp][par][HPDI_dic["type"]][HPDI_dic["sample"]][interval]["Intervals"] for interval in intervals] for par in pars]
             #print(np.shape(HPDI1),np.shape(HPDI2))
         except:
             print("HPDI not present in predictions. Computing them.")
-            HPDI = [[inference.HPDI(samp1[:,i], intervals = intervals, weights=W, nbins=nbins, print_hist=False, optimize_binning=True)[interval]["Intervals"] for i in range(nndims)] for interval in intervals]
+            HPDI = [[inference.HPDI(samp[:,i], intervals = intervals, weights=W, nbins=nbins, print_hist=False, optimize_binning=True)[interval]["Intervals"] for i in range(nndims)] for interval in intervals]
         levels = np.array([[np.sort(inference.HPD_quotas(samp[:,[i,j]], nbins=nbins, intervals = inference.CI_from_sigma([1, 2, 3]), weights=W)).tolist() for j in range(nndims)] for i in range(nndims)])
         fig, axes = plt.subplots(nndims, nndims, figsize=(3*nndims, 3*nndims))
         figure = corner(samp, bins=nbins, weights=W, labels=[r"%s" % s for s in labels], 
@@ -3064,8 +3141,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc=legend_loc, bbox_to_anchor=(0.95, 0.8))#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
         #plt.tight_layout()
         plt.savefig(figure_filename)#, dpi=200)  # ,dpi=200)
-        utils.append_without_duplicate(self.figures_list, figure_filename)
-        self.figures_list = utils.check_figures_list(self.figures_list)
+        utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
         plt.close()
@@ -3084,7 +3162,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                      figure_filename=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         start = timer()
         linewidth = 1.3
@@ -3117,8 +3195,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if W2 is not None:
             W2 = W2[rnd_idx_2]
         try:
-            HPDI1 = [[self.predictions["Bayesian inference"]['HPDI'][timestamp][str(par)][HPDI1_dic["type"]][HPDI1_dic["sample"]][interval]["Intervals"] for interval in intervals] for par in pars]
-            HPDI2 = [[self.predictions["Bayesian inference"]['HPDI'][timestamp][str(par)][HPDI2_dic["type"]][HPDI2_dic["sample"]][interval]["Intervals"] for interval in intervals] for par in pars]
+            HPDI1 = [[self.predictions["Bayesian_inference"]['HPDI'][timestamp][par][HPDI1_dic["type"]][HPDI1_dic["sample"]][interval]["Intervals"] for interval in intervals] for par in pars]
+            HPDI2 = [[self.predictions["Bayesian_inference"]['HPDI'][timestamp][par][HPDI2_dic["type"]][HPDI2_dic["sample"]][interval]["Intervals"] for interval in intervals] for par in pars]
             #print(np.shape(HPDI1),np.shape(HPDI2))
         except:
             print("HPDI not present in predictions. Computing them.")
@@ -3216,13 +3294,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             7+2*nndims), loc=legend_loc, bbox_to_anchor=(0.95, 0.8))
         #plt.tight_layout()
         plt.savefig(figure_filename, dpi=50)  # ,dpi=200)
-        utils.append_without_duplicate(self.figures_list, figure_filename)
-        self.figures_list = utils.check_figures_list(self.figures_list)
+        utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
                                "file name": path.split(figure_filename)[-1],
                                "file path": figure_filename}
@@ -3238,25 +3317,27 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             W = eval("W_"+string.split("_")[0])
         return [X, W]
 
-    def model_reset_predictions(self, verbose=None):
+    def reset_predictions(self, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
-        self.predictions = {"Model evaluation": {},
-                            "Bayesian inference": {},
-                            "Frequentist inference": {}}
+        self.predictions = {"Model_evaluation": {},
+                            "Bayesian_inference": {},
+                            "Frequentist_inference": {},
+                            "Figures": {}}
         print("All predictions have been deleted and the 'predictions' attribute has been initialized.")
 
     def model_compute_predictions(self, 
                                   CI=inference.CI_from_sigma([inference.sigma_from_CI(0.5), 1, 2, 3]), 
                                   pars=None,
                                   batch_size=None,
-                                  model_predictions={"Model evaluation": True, 
-                                                     "Bayesian inference": False, 
-                                                     "Frequentist inference": False},
+                                  model_predictions={"Model_evaluation": True, 
+                                                     "Bayesian_inference": False, 
+                                                     "Frequentist_inference": False},
                                   plots={"plot_training_history": True,
                                          "plot_pars_coverage": True,
                                          "plot_lik_distribution": True,
                                          "plot_corners_1samp": True, # ["train_true","train_pred","val_true","val_pred","test_true","test_pred"],
-                                         "plot_corners_2samp": True}, #[["train_true", "train_pred"], ["train_true", "test_pred"]]},
+                                         "plot_corners_2samp": True, #[["train_true", "train_pred"], ["train_true", "test_pred"]]},
+                                         "plot_tmu_sources_1d": True},
                                   model_predict_kwargs={}, # batch_size=None, steps=None, x_boundaries=False, y_boundaries=False, save_log=True, verbose=None
                                   HPDI_kwargs={}, # intervals=0.68, weights=None, nbins=25, print_hist=False, optimize_binning=True
                                   frequentist_inference_options={"input_likelihood_file": None,
@@ -3282,11 +3363,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                   # color1="green", color2="red", 
                                                                   # plot_title="Params contours", legend_labels=None, 
                                                                   # figure_filename=None, show_plot=False, overwrite=False, verbose=None
-                                  plot_frequentist_tmu_kwargs={},
+                                  # sources=None, timestamp=None, show_plot=False, overwrite=False, verbose=None
+                                  plot_tmu_sources_1d_kwargs={},  # sources=["likelihood","model","train","val","test"], timestamp=None, show_plot=False,overwrite=False, verbose=None
                                   overwrite=False,
                                   verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if not np.any(list(model_predictions.values())):
             print("No predictions to compute. Plese select one or more through the 'model_predictions' input argument.")
             return
@@ -3302,14 +3384,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if batch_size == None:
             batch_size = self.batch_size
         # Determine which predictions are requested
-        utils.check_set_dict_keys(model_predictions, ["Model evaluation",
-                                                      "Bayesian inference",
-                                                      "Frequentist inference"],
+        utils.check_set_dict_keys(model_predictions, ["Model_evaluation",
+                                                      "Bayesian_inference",
+                                                      "Frequentist_inference"],
                                                      [True,False,False],verbose=verbose_sub)
         # Save model for predictions
 
         # Metrics evaluation
-        if model_predictions["Model evaluation"]:
+        if model_predictions["Model_evaluation"]:
             print("Performing Model evaluation", show=verbose)
             if len(self.X_train) <= 1:
                 print("Generating train/val data", show=verbose)
@@ -3319,8 +3401,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 self.generate_test_data(verbose=verbose_sub)
                 self.save_data_indices(overwrite=True,verbose=verbose_sub)
             start = timer()
-            utils.check_set_dict_keys(self.predictions["Model evaluation"],
-                                      ["Metrics on scaled data","Prediction time","Metrics on unscaled data"], 
+            utils.check_set_dict_keys(self.predictions["Model_evaluation"],
+                                      ["Metrics_on_scaled_data","Prediction_time","Metrics_on_unscaled_data"], 
                                       [{},{},{}], verbose=verbose_sub)
             print("Evaluating all metrics on (scaled) train/val/test using best models", show=verbose)
             metrics_names = self.model.metrics_names
@@ -3331,12 +3413,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             metrics_val = self.model_evaluate(self.X_val, self.Y_val, batch_size=self.batch_size,verbose=verbose_sub)[0][0:len(metrics_names)]
             metrics_test = self.model_evaluate(self.X_test, self.Y_test, batch_size=self.batch_size,verbose=verbose_sub)[0][0:len(metrics_names)]
             metrics_true = {**dict(zip(metrics_names_train, metrics_train)), **dict(zip(metrics_names_val, metrics_val)), **dict(zip(metrics_names_test, metrics_test))}
-            self.predictions["Model evaluation"]["Metrics on scaled data"][timestamp] = metrics_true
+            self.predictions["Model_evaluation"]["Metrics_on_scaled_data"][timestamp] = metrics_true
             print("Predicting Y for train/val/test samples", show=verbose)
             Y_pred_train, prediction_time1 = model_predict_sub(self.X_train)
             Y_pred_val, prediction_time2 = model_predict_sub(self.X_val)
             Y_pred_test, prediction_time3 = model_predict_sub(self.X_test)
-            self.predictions["Model evaluation"]["Prediction time"][timestamp] = (prediction_time1+prediction_time2+prediction_time3)/3
+            self.predictions["Model_evaluation"]["Prediction_time"][timestamp] = (prediction_time1+prediction_time2+prediction_time3)/3
             print("Evaluating all metrics on (un-scaled) trai[timestamp]n/val/test using best models", show=verbose)
             metrics_names_train = [i+"_best_unscaled" for i in self.model.metrics_names]
             metrics_names_val = ["val_"+i+"_best_unscaled" for i in self.model.metrics_names]
@@ -3345,11 +3427,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             metrics_val_unscaled = [metric(self.Y_val,Y_pred_val).numpy() for metric in [self.loss]+self.metrics]
             metrics_test_unscaled = [metric(self.Y_test,Y_pred_test).numpy() for metric in [self.loss]+self.metrics]
             metrics_unscaled = {**dict(zip(metrics_names_train, metrics_train_unscaled)), **dict(zip(metrics_names_val, metrics_val_unscaled)), **dict(zip(metrics_names_test, metrics_test_unscaled))}
-            self.predictions["Model evaluation"]["Metrics on unscaled data"][timestamp] = metrics_unscaled
+            self.predictions["Model_evaluation"]["Metrics_on_unscaled_data"][timestamp] = metrics_unscaled
             end = timer()
             print("Prediction on ("+str(self.npoints_train)+","+str(self.npoints_val)+","+str(self.npoints_test)+")", "(train,val,test) points done in", str(end-start), "s.", show=verbose)
         # Bayesian inference
-        if model_predictions["Bayesian inference"]:
+        if model_predictions["Bayesian_inference"]:
             print("Computing Bayesian inference benchmarks", show=verbose)
             if len(self.X_train) <= 1:
                 print("Generating train/val data", show=verbose)
@@ -3359,18 +3441,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 self.generate_test_data(verbose=verbose_sub)
                 self.save_data_indices(overwrite=True, verbose=verbose_sub)
             start = timer()
-            self.predictions["Bayesian inference"][timestamp] = {}
+            self.predictions["Bayesian_inference"][timestamp] = {}
             try:
                 [Y_pred_train, Y_pred_val, Y_pred_test]
             except:
-                utils.check_set_dict_keys(self.predictions["Model evaluation"],
-                                          ["Prediction time"], 
+                utils.check_set_dict_keys(self.predictions["Model_evaluation"],
+                                          ["Prediction_time"], 
                                           [{}], verbose=verbose_sub)
                 print("Predicting Y for train/val/test samples", show=verbose)
                 Y_pred_train, prediction_time1 = model_predict_sub(self.X_train)
                 Y_pred_val, prediction_time2 = model_predict_sub(self.X_val)
                 Y_pred_test, prediction_time3 = model_predict_sub(self.X_test)
-                self.predictions["Model evaluation"]["Prediction time"][timestamp] = (prediction_time1+prediction_time2+prediction_time3)/3
+                self.predictions["Model_evaluation"]["Prediction_time"][timestamp] = (prediction_time1+prediction_time2+prediction_time3)/3
             print("Computing exp(Y_true) and exp(Y_pred) for train/val/test samples", show=verbose)
             [Y_train_exp, Y_val_exp, Y_test_exp, Y_pred_train_exp, Y_pred_val_exp, Y_pred_test_exp] = [np.exp(Y) for Y in [self.Y_train, self.Y_val, self.Y_test, Y_pred_train, Y_pred_val, Y_pred_test]]
             print("Computing weights (pred vs true) for reweighting of distributions", show=verbose)
@@ -3381,13 +3463,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             for par in pars:
                 [HPDI_train, HPDI_val, HPDI_test] = [HPDI_sub(X, CI) for X in [self.X_train[:, par], self.X_val[:, par], self.X_test[:, par]]]
                 [HPDI_pred_train, HPDI_pred_val, HPDI_pred_test] = [HPDI_sub(self.X_train[:, par], CI, W_train), HPDI_sub(self.X_val[:, par], CI, W_val), HPDI_sub(self.X_test[:, par], CI, W_test)]
-                HPDI_result[str(par)] = {"true": {"train": HPDI_train, "val": HPDI_val, "test": HPDI_test}, "pred":{"train": HPDI_pred_train, "val": HPDI_pred_val, "test": HPDI_pred_test}}
+                HPDI_result[par] = {"true": {"train": HPDI_train, "val": HPDI_val, "test": HPDI_test}, "pred":{"train": HPDI_pred_train, "val": HPDI_pred_val, "test": HPDI_pred_test}}
             HDPI_error = inference.HPDI_error(HPDI_result)
-            utils.check_set_dict_keys(self.predictions["Bayesian inference"], 
-                                      ["HPDI","HPDI_error","KS","KS medians"], 
+            utils.check_set_dict_keys(self.predictions["Bayesian_inference"], 
+                                      ["HPDI","HPDI_error","KS","KS_medians"], 
                                       [{},{},{},{}], verbose=verbose_sub)
-            self.predictions["Bayesian inference"]["HPDI"][timestamp] = HPDI_result
-            self.predictions["Bayesian inference"]["HPDI_error"][timestamp] = HDPI_error
+            self.predictions["Bayesian_inference"]["HPDI"][timestamp] = HPDI_result
+            self.predictions["Bayesian_inference"]["HPDI_error"][timestamp] = HDPI_error
             print("Computing KS test between one-dimensional distributions (pred vs true) using reweighted distributions", show=verbose)
             KS_test_pred_train = [inference.ks_w(self.X_test[:, q], self.X_train[:, q], np.ones(len(self.X_test)), W_train) for q in range(len(self.X_train[0]))]
             KS_test_pred_val = [inference.ks_w(self.X_test[:, q], self.X_val[:, q], np.ones(len(self.X_test)), W_val) for q in range(len(self.X_train[0]))]
@@ -3397,18 +3479,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             KS_test_pred_val_median = np.median(np.array(KS_test_pred_val)[:, 1]).tolist()
             KS_val_pred_test_median = np.median(np.array(KS_val_pred_test)[:, 1]).tolist()
             KS_train_pred_train_median = np.median(np.array(KS_train_pred_train)[:, 1]).tolist()
-            self.predictions["Bayesian inference"]["KS"][timestamp] = {"Test vs pred on train": KS_test_pred_train,
-                                                                       "Test vs pred on val": KS_test_pred_val,
-                                                                       "Val vs pred on test": KS_val_pred_test,
-                                                                       "Train vs pred on train": KS_train_pred_train}
-            self.predictions["Bayesian inference"]["KS medians"][timestamp] = {"Test vs pred on train": KS_test_pred_train_median,
-                                                                               "Test vs pred on val": KS_test_pred_val_median,
-                                                                               "Val vs pred on test": KS_val_pred_test_median,
-                                                                               "Train vs pred on train": KS_train_pred_train_median}                                          
+            self.predictions["Bayesian_inference"]["KS"][timestamp] = {"Test_vs_pred_on_train": KS_test_pred_train,
+                                                                       "Test_vs_pred_on_val": KS_test_pred_val,
+                                                                       "Val_vs_pred_on_test": KS_val_pred_test,
+                                                                       "Train_vs_pred_on_train": KS_train_pred_train}
+            self.predictions["Bayesian_inference"]["KS_medians"][timestamp] = {"Test_vs_pred_on_train": KS_test_pred_train_median,
+                                                                               "Test_vs_pred_on_val": KS_test_pred_val_median,
+                                                                               "Val_vs_pred_on_test": KS_val_pred_test_median,
+                                                                               "Train_vs_pred_on_train": KS_train_pred_train_median}                                          
             end = timer()
             print("Bayesian inference benchmarks computed in", str(end-start), "s.", show=verbose)
         # Frequentist inference
-        if model_predictions["Frequentist inference"]:
+        if model_predictions["Frequentist_inference"]:
             # Determine required frequentist inference
             utils.check_set_dict_keys(frequentist_inference_options, ["input_likelihood_file",
                                                                       "compute_maximum_likelihood_kwargs",
@@ -3462,10 +3544,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         string = str(string + ")").replace(", )", ")")
                         print(string)
                         eval(string)
-                        utils.check_set_dict_keys(self.predictions["Frequentist inference"],
+                        utils.check_set_dict_keys(self.predictions["Frequentist_inference"],
                                                   ["logpdf_max_likelihood"],
                                                   [{}],verbose=verbose_sub)
-                        self.predictions["Frequentist inference"]["logpdf_max_likelihood"] = self.likelihood.logpdf_max
+                        self.predictions["Frequentist_inference"]["logpdf_max_likelihood"] = self.likelihood.logpdf_max
                     if frequentist_inference_options["compute_profiled_maxima_likelihood_kwargs"] is not False:
                         print("Computing profiled maxima for reference Likelihood", show=verbose)
                         utils.check_set_dict_keys(frequentist_inference_options["compute_profiled_maxima_likelihood_kwargs"],
@@ -3489,10 +3571,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         string = str(string + ")").replace(", )", ")")
                         print(string)
                         eval(string)
-                        utils.check_set_dict_keys(self.predictions["Frequentist inference"],
+                        utils.check_set_dict_keys(self.predictions["Frequentist_inference"],
                                                   ["logpdf_profiled_max_likelihood"],
                                                   [{}],verbose=verbose_sub)
-                        self.predictions["Frequentist inference"]["logpdf_profiled_max_likelihood"]= self.likelihood.logpdf_profiled_max
+                        self.predictions["Frequentist_inference"]["logpdf_profiled_max_likelihood"]= self.likelihood.logpdf_profiled_max
             # Frequentist Inference from samples
             if frequentist_inference_options["compute_maximum_sample_kwargs"] is not False or frequentist_inference_options["compute_profiled_maxima_sample_kwargs"] is not False:
                 print("Computing Frequentist inference benchmarks from samples", show=verbose)
@@ -3587,72 +3669,83 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.generate_summary_text(model_predictions=model_predictions,timestamp=timestamp)
         self.generate_fig_base_title()
         if np.any(list(plots.values())):
-            print("Making plots.", show=verbose)
             start = timer()
             ## Check plots input arguments
             utils.check_set_dict_keys(plots, ["plot_training_history",
                                               "plot_pars_coverage",
                                               "plot_lik_distribution",
                                               "plot_corners_1samp",
-                                              "plot_corners_2samp"],
-                                             [True,True,True,True,True],verbose=verbose_sub)
-            # Make plots
-            if plots["plot_training_history"]:
-                self.plot_training_history(overwrite=overwrite, verbose=verbose_sub, **plot_training_history_kwargs)
-            if plots["plot_pars_coverage"]:
-                self.plot_pars_coverage(pars=pars, overwrite=overwrite, verbose=verbose_sub, **plot_pars_coverage_kwargs)
-            if plots["plot_lik_distribution"]:
-                self.plot_lik_distribution(overwrite=overwrite,verbose=verbose_sub, **plot_lik_distribution_kwargs)
-            #### 1sample corner plots
-            ## **corners_kwargs should include ranges_extend, max_points, nbins, show_plot, overwrite
-            if type(plots["plot_corners_1samp"]) == bool:
-                if plots["plot_corners_1samp"]:
-                    plots["plot_corners_1samp"] = ["train_true","train_pred","val_true","val_pred","test_true","test_pred"]
-                else:
-                    plots["plot_corners_1samp"] = []
-            if type(plots["plot_corners_2samp"]) == bool:
-                if plots["plot_corners_2samp"]:
-                    plots["plot_corners_2samp"] = [["train_true", "train_pred"],["test_true", "test_pred"], ["train_true", "test_pred"]]
-                else:
-                    plots["plot_corners_2samp"] = []
-            if len(plots["plot_corners_1samp"])>0:
-                for string in plots["plot_corners_1samp"]:
-                    [X, W] = self.corner_select_data(string,[W_train, W_val, W_test])
-                    self.plot_corners_1samp(X, W=W,
-                                            HPDI_dic={"sample": string.split("_")[0], "type": string.split("_")[1]},
-                                            pars = pars, pars_labels = "original",
-                                            title="$68\%$ HPDI - sample: "+string.split("_")[0], color="green",
-                                            plot_title="Sample: "+string,
-                                            legend_labels=["Sample: " + string + r" ($%s$ points)" % utils.latex_float(len(X)),
-                                                           r"$68.27\%$ HPDI", 
-                                                           r"$95.45\%$ HPDI", 
-                                                           r"$99.73\%$ HPDI"],
-                                            figure_filename=self.output_figures_base_file+"_corner_pars_"+string+".pdf",
-                                            timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_1samp_kwargs)
-            #### 2sample corner plots
-            if len(plots["plot_corners_2samp"])>0:
-                for strings in plots["plot_corners_2samp"]:
-                    string1=strings[0]
-                    string2=strings[1]
-                    [X1, W1] = self.corner_select_data(string1,[W_train, W_val, W_test])
-                    [X2, W2] = self.corner_select_data(string2,[W_train, W_val, W_test])
-                    self.plot_corners_2samp(X1, X2, W1=W1, W2=W2,
-                                            HPDI1_dic={"sample": string1.split("_")[0], "type": string1.split("_")[1]}, 
-                                            HPDI2_dic={"sample": string2.split("_")[0], "type": string2.split("_")[1]},
-                                            pars = pars, pars_labels = "original",
-                                            title1 = "$68\%$ HPDI - sample: "+string1.split("_")[0], 
-                                            title2 ="$68\%$ HPDI - sample: "+string2.split("_")[0],
-                                            color1 = "green", color2 = "red",
-                                            plot_title = "Samples: "+string1+" vs "+string2,
-                                            legend_labels = ["Sample: " + string1 + r" ($%s$ points)" % utils.latex_float(len(X1)),
-                                                             "Sample: " + string2 + r" ($%s$ points)" % utils.latex_float(len(X2)),
-                                                             r"$68.27\%$ HPDI", 
-                                                             r"$95.45\%$ HPDI", 
-                                                             r"$99.73\%$ HPDI"],
-                                            figure_filename=self.output_figures_base_file+"_corner_pars_"+string1+"_vs_"+string2+".pdf",
-                                            timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_2samp_kwargs)
+                                              "plot_corners_2samp",
+                                              "plot_tmu_sources_1d"],
+                                             [True,True,True,True,True,False],verbose=verbose_sub)
+            if model_predictions["Model_evaluation"]:
+                # Make plots for model evaluation
+                print("Making plots for model evaluation.", show=verbose)
+                if plots["plot_training_history"]:
+                    self.plot_training_history(timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_training_history_kwargs)
+                if plots["plot_pars_coverage"]:
+                    self.plot_pars_coverage(pars=pars, timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_pars_coverage_kwargs)
+                if plots["plot_lik_distribution"]:
+                    self.plot_lik_distribution(timestamp=timestamp, overwrite=overwrite,verbose=verbose_sub, **plot_lik_distribution_kwargs)
+            if model_predictions["Bayesian_inference"]:
+                # Make corner plots for Bayesian inference
+                print("Making corner plots for Bayesian inference.", show=verbose)
+                #### 1sample corner plots
+                ## **corners_kwargs should include ranges_extend, max_points, nbins, show_plot, overwrite
+                if type(plots["plot_corners_1samp"]) == bool:
+                    if plots["plot_corners_1samp"]:
+                        plots["plot_corners_1samp"] = ["train_true","train_pred","val_true","val_pred","test_true","test_pred"]
+                    else:
+                        plots["plot_corners_1samp"] = []
+                if type(plots["plot_corners_2samp"]) == bool:
+                    if plots["plot_corners_2samp"]:
+                        plots["plot_corners_2samp"] = [["train_true", "train_pred"],["test_true", "test_pred"], ["train_true", "test_pred"]]
+                    else:
+                        plots["plot_corners_2samp"] = []
+                if len(plots["plot_corners_1samp"])>0:
+                    for string in plots["plot_corners_1samp"]:
+                        [X, W] = self.corner_select_data(string,[W_train, W_val, W_test])
+                        self.plot_corners_1samp(X, W=W,
+                                                HPDI_dic={"sample": string.split("_")[0], "type": string.split("_")[1]},
+                                                pars = pars, pars_labels = "original",
+                                                title="$68\%$ HPDI - sample: "+string.split("_")[0], color="green",
+                                                plot_title="Sample: "+string,
+                                                legend_labels=["Sample: " + string + r" ($%s$ points)" % utils.latex_float(len(X)),
+                                                               r"$68.27\%$ HPDI", 
+                                                               r"$95.45\%$ HPDI", 
+                                                               r"$99.73\%$ HPDI"],
+                                                figure_filename=self.output_figures_base_file+"_corner_pars_"+string+".pdf",
+                                                timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_1samp_kwargs)
+                #### 2sample corner plots
+                if len(plots["plot_corners_2samp"])>0:
+                    for strings in plots["plot_corners_2samp"]:
+                        string1=strings[0]
+                        string2=strings[1]
+                        [X1, W1] = self.corner_select_data(string1,[W_train, W_val, W_test])
+                        [X2, W2] = self.corner_select_data(string2,[W_train, W_val, W_test])
+                        self.plot_corners_2samp(X1, X2, W1=W1, W2=W2,
+                                                HPDI1_dic={"sample": string1.split("_")[0], "type": string1.split("_")[1]}, 
+                                                HPDI2_dic={"sample": string2.split("_")[0], "type": string2.split("_")[1]},
+                                                pars = pars, pars_labels = "original",
+                                                title1 = "$68\%$ HPDI - sample: "+string1.split("_")[0], 
+                                                title2 ="$68\%$ HPDI - sample: "+string2.split("_")[0],
+                                                color1 = "green", color2 = "red",
+                                                plot_title = "Samples: "+string1+" vs "+string2,
+                                                legend_labels = ["Sample: " + string1 + r" ($%s$ points)" % utils.latex_float(len(X1)),
+                                                                 "Sample: " + string2 + r" ($%s$ points)" % utils.latex_float(len(X2)),
+                                                                 r"$68.27\%$ HPDI", 
+                                                                 r"$95.45\%$ HPDI", 
+                                                                 r"$99.73\%$ HPDI"],
+                                                figure_filename=self.output_figures_base_file+"_corner_pars_"+string1+"_vs_"+string2+".pdf",
+                                                timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_2samp_kwargs)
+            if model_predictions["Frequentist_inference"]:
+                # Make tmu plot for Frequentist inference
+                print("Making t_mu plot for Frequentist inference.", show=verbose)
+                if plots["plot_tmu_sources_1d"]:
+                    self.plot_tmu_sources_1d(timestamp=timestamp,overwrite=overwrite,verbose=verbose_sub,**plot_tmu_sources_1d_kwargs)
             end = timer()
             print("All plots done in", str(end-start), "s.", show=verbose)
+        self.predictions["Figures"] = self.predictions["Figures"]
         #self.save_summary_json(overwrite=overwrite, verbose=verbose_sub)
         end_global = timer()
         self.log[timestamp] = {"action": "computed predictions",
@@ -3669,7 +3762,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                "plot_lik_distribution_kwargs": plot_lik_distribution_kwargs,
                                "plot_corners_1samp_kwargs": plot_corners_1samp_kwargs,
                                "plot_corners_2samp_kwargs": plot_corners_2samp_kwargs,
-                               "plot_frequentist_tmu_kwargs": plot_frequentist_tmu_kwargs}
+                               "plot_tmu_sources_1d_kwargs": plot_tmu_sources_1d_kwargs}
         self.save(timestamp=timestamp,overwrite=overwrite, verbose=verbose_sub)
         print("All predictions done in",end_global-start_global,"s.", show=verbose)
         #[tmuexact, tmuDNN, tmusample001, tmusample005, tmusample01, tmusample02,
@@ -3702,7 +3795,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_log_file = self.output_log_file
             if not overwrite:
@@ -3727,7 +3820,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_idx_h5_file = self.output_idx_h5_file
             if not overwrite:
@@ -3762,7 +3855,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_tf_model_json_file = self.output_tf_model_json_file
             if not overwrite:
@@ -3796,7 +3889,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_tf_model_h5_file = self.output_tf_model_h5_file
             if not overwrite:
@@ -3827,7 +3920,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_tf_model_onnx_file = self.output_tf_model_onnx_file
             if not overwrite:
@@ -3859,7 +3952,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_history_json_file = self.output_history_json_file
             if not overwrite:
@@ -3890,7 +3983,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_summary_json_file = self.output_summary_json_file
             if not overwrite:
@@ -3927,10 +4020,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
     def generate_summary_text(self,model_predictions={},timestamp=None,verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        utils.check_set_dict_keys(model_predictions, ["Model evaluation",
-                                                      "Bayesian inference",
-                                                      "Frequentist inference"],
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        utils.check_set_dict_keys(model_predictions, ["Model_evaluation",
+                                                      "Bayesian_inference",
+                                                      "Frequentist_inference"],
                                   [False, False, False], verbose=verbose_sub)
         summary_text = "Sample file: " + str(path.split(self.input_data_file)[1].replace("_", r"$\_$")) + "\n"
         summary_text = summary_text + "Layers: " + utils.string_add_newline_at_char(str(self.hidden_layers),",") + "\n"
@@ -3945,38 +4038,38 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         summary_text = summary_text + "Batch size: " + str(self.batch_size) + "\n"
         summary_text = summary_text + "Epochs: " + str(self.epochs_available) + "\n"
         summary_text = summary_text + "GPU(s): " + utils.string_add_newline_at_char(str(self.training_device),",") + "\n"
-        if model_predictions["Model evaluation"]:
+        if model_predictions["Model_evaluation"]:
             try:
-                metrics_scaled = self.predictions["Model evaluation"]["Metrics on scaled data"][timestamp]
+                metrics_scaled = self.predictions["Model_evaluation"]["Metrics_on_scaled_data"][timestamp]
                 summary_text = summary_text + "Best losses: " + "[" + "{0:1.2e}".format(metrics_scaled["loss_best"]) + "," + \
                                                                       "{0:1.2e}".format(metrics_scaled["val_loss_best"]) + "," + \
                                                                       "{0:1.2e}".format(metrics_scaled["test_loss_best"]) + "]" + "\n"
             except:
                 pass
             try:
-                metrics_unscaled = self.predictions["Model evaluation"]["Metrics on unscaled data"][timestamp]
+                metrics_unscaled = self.predictions["Model_evaluation"]["Metrics_on_unscaled_data"][timestamp]
                 summary_text = summary_text + "Best losses scaled: " + "[" + "{0:1.2e}".format(metrics_unscaled["loss_best_unscaled"]) + "," + \
                                                                              "{0:1.2e}".format(metrics_unscaled["val_loss_best_unscaled"]) + "," + \
                                                                              "{0:1.2e}".format(metrics_unscaled["test_loss_best_unscaled"]) + "]" + "\n"
             except:
                 pass
-        if model_predictions["Bayesian inference"]:
+        if model_predictions["Bayesian_inference"]:
             try:
-                ks_medians = self.predictions["Bayesian inference"]["KS medians"][timestamp]
-                summary_text = summary_text + "KS $p$-median: " + "[" + "{0:1.2e}".format(ks_medians["Test vs pred on train"]) + "," + \
-                                                                    "{0:1.2e}".format(ks_medians["Test vs pred on val"]) + "," + \
-                                                                    "{0:1.2e}".format(ks_medians["Val vs pred on test"]) + "," + \
-                                                                    "{0:1.2e}".format(ks_medians["Train vs pred on train"]) + "]" + "\n"
+                ks_medians = self.predictions["Bayesian_inference"]["KS_medians"][timestamp]
+                summary_text = summary_text + "KS $p$-median: " + "[" + "{0:1.2e}".format(ks_medians["Test_vs_pred_on_train"]) + "," + \
+                                                                    "{0:1.2e}".format(ks_medians["Test_vs_pred_on_val"]) + "," + \
+                                                                    "{0:1.2e}".format(ks_medians["Val_vs_pred_on_test"]) + "," + \
+                                                                    "{0:1.2e}".format(ks_medians["Train_vs_pred_on_train"]) + "]" + "\n"
             except:
                 pass
-        if model_predictions["Frequentist inference"]:
+        if model_predictions["Frequentist_inference"]:
             summary_text = summary_text + "Average error on tmu: "
         #if FREQUENTISTS_RESULTS:
         #    summary_text = summary_text + "Mean error on tmu: "+ str(summary_log["Frequentist mean error on tmu"]) + "\n"
         summary_text = summary_text + "Train time per epoch: " + str(round(self.training_time,1)) + "s" + "\n"
-        if model_predictions["Model evaluation"] or model_predictions["Bayesian inference"]:
+        if model_predictions["Model_evaluation"] or model_predictions["Bayesian_inference"]:
             try:
-                summary_text = summary_text + "Pred time per point: " + str(round(self.predictions["Model evaluation"][timestamp]["Prediction time"],1)) + "s"
+                summary_text = summary_text + "Pred time per point: " + str(round(self.predictions["Model_evaluation"][timestamp]["Prediction_time"],1)) + "s"
             except:
                 pass
         self.summary_text = summary_text
@@ -3987,7 +4080,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_predictions_json_file = self.output_predictions_json_file
             if not overwrite:
@@ -4016,7 +4109,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_predictions_h5_file = self.output_predictions_h5_file
             if not overwrite:
@@ -4043,7 +4136,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.save_predictions_json(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
         self.save_predictions_h5(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
 
@@ -4054,7 +4147,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_scalers_pickle_file = self.output_scalers_pickle_file
             if not overwrite:
@@ -4084,7 +4177,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_tf_model_graph_pdf_file = self.output_tf_model_graph_pdf_file
             if not overwrite:
@@ -4131,7 +4224,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, _ = self.set_verbosity(verbose)
         if timestamp is None:
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.save_data_indices(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
         self.save_model_json(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
         self.save_model_h5(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
@@ -4217,7 +4310,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                            "ndims = dnnlik.ndims\n" +
                            "output_folder = dnnlik.output_folder"
                            )
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.script_file)[-1],
                                "file path": self.script_file}

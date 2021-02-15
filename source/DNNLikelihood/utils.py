@@ -183,8 +183,8 @@ def save_samples(allsamples, logpdf_values, data_sample_filename, name):
 #    return eval(par_name)
 
 def check_set_dict_keys(dic, keys, vals,verbose=None):
-    keys = np.array([keys]).flatten()
-    vals = np.array([vals]).flatten()
+    #keys = np.array([keys]).flatten()
+    #vals = np.array([vals]).flatten()
     if len(keys) != len(vals):
         raise Exception("Keys and values should have the same dimension.")
     for i in range(len(keys)):
@@ -219,6 +219,14 @@ def check_figures_list(fig_list):
         if os.path.exists(fig):
             new_fig_list.append(fig)
     return new_fig_list
+
+def check_figures_dic(fig_dic):
+    new_fig_dic = {}
+    for k in fig_dic.keys():
+        new_fig_dic[k] = check_figures_list(fig_dic[k])
+        if new_fig_dic[k] == {}:
+            del new_fig_dic[k]
+    return new_fig_dic
 
 def get_spaced_elements(array, numElems=5):
     out = array[np.round(np.linspace(0, len(array)-1, numElems)).astype(int)]
@@ -266,8 +274,18 @@ def convert_types_dict(d):
 #            d[k] = np.array(v).tolist()
 #    return d
 
-def sort_dict(item: dict):
-    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(item.items())}
+#def sort_dict(item: dict):
+#    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(item.items())}
+
+def sort_dict(dictionary):
+    new_dict={}
+    keys_sorted = sorted(list(dictionary.keys()),key=lambda v: (str(v).upper(), str(v)[0].islower()))
+    for k in keys_sorted:
+        if isinstance(dictionary[k], dict):
+            new_dict[k] = sort_dict(dictionary[k])
+        else:
+            new_dict[k] = dictionary[k]
+    return new_dict
 
 #def sort_dict(d):
 #    return json.loads(json.dumps(d,sort_keys=True))

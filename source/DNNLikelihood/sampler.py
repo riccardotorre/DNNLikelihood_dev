@@ -134,7 +134,7 @@ class Sampler(Verbosity):
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         # Setting all arguments
         if new_sampler == None:
             self.new_sampler=False
@@ -474,7 +474,7 @@ class Sampler(Verbosity):
             dictionary = json.load(json_file)
         self.log = dictionary
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_h5_file)[-1],
                                                 path.split(self.input_log_file)[-1]],
@@ -508,7 +508,7 @@ class Sampler(Verbosity):
                     - **default**: ``None``
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if not self.new_sampler:
             if not path.exists(self.backend_file):
                 print("The new_sampler flag was set to false but the backend file", self.backend_file,
@@ -610,7 +610,7 @@ class Sampler(Verbosity):
             except:
                 pass 
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "init sampler", 
                                "available steps": self.backend.iteration}
         print("Number of available steps: {0}.".format(self.backend.iteration),".",show=verbose)
@@ -782,7 +782,7 @@ class Sampler(Verbosity):
             self.sampler.run_mcmc(p0, nsteps_to_run, progress=progress, store=True, skip_initial_state_check=True)
         self.nsteps_available = self.backend.iteration
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "run sampler", 
                                "nsteps": nsteps_to_run, 
                                "available steps": self.nsteps_available,
@@ -916,7 +916,7 @@ class Sampler(Verbosity):
                                                           "pars_pos_nuis", "pars_pos_poi", "sampler", "verbose"])
         dd.io.save(self.output_h5_file, dictionary)
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_h5_file)[-1],
                                "file path": self.output_h5_file}
@@ -1124,7 +1124,7 @@ class Sampler(Verbosity):
                 Rc = np.sqrt((Vhat / W)*(df+3)/(df+1)) #correct Brooks-Gelman df
                 res.append([par, n, Rc, Vhat, W])
         end = timer()
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "computed Gelman-Rubin", 
                                "pars": pars, 
                                "nsteps": nsteps}
@@ -1220,7 +1220,7 @@ class Sampler(Verbosity):
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
             self.figures_list = utils.check_figures_list(self.figures_list)
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}
@@ -1239,7 +1239,7 @@ class Sampler(Verbosity):
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
             self.figures_list = utils.check_figures_list(self.figures_list)
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}
@@ -1258,7 +1258,7 @@ class Sampler(Verbosity):
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
             self.figures_list = utils.check_figures_list(self.figures_list)
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}
@@ -1350,7 +1350,7 @@ class Sampler(Verbosity):
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
             self.figures_list = utils.check_figures_list(self.figures_list)
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}
@@ -1510,7 +1510,7 @@ class Sampler(Verbosity):
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
             self.figures_list = utils.check_figures_list(self.figures_list)
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}
@@ -1609,7 +1609,7 @@ class Sampler(Verbosity):
             plt.savefig(figure_filename)
             utils.append_without_duplicate(self.figures_list, figure_filename)
             self.figures_list = utils.check_figures_list(self.figures_list)
-            timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_filename)[-1], 
                                    "file path": figure_filename}
@@ -1686,7 +1686,7 @@ class Sampler(Verbosity):
         plt.savefig(figure_filename)
         utils.append_without_duplicate(self.figures_list, figure_filename)
         self.figures_list = utils.check_figures_list(self.figures_list)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure", 
                                "file name": path.split(figure_filename)[-1], 
                                "file path": figure_filename}
@@ -1847,7 +1847,7 @@ class Sampler(Verbosity):
             print("There are non-numeric logpdf values.",show=verbose)
         end = timer()
         print(len(allsamples), "unique samples generated in", end-start, "s.",show=verbose)
-        data_sample_timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        data_sample_timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         ds = Data(name=self.name.replace("_sampler", "_data"),
                   data_X=allsamples,
                   data_Y=logpdf_values,
@@ -1862,7 +1862,7 @@ class Sampler(Verbosity):
                   output_folder=output_folder,
                   input_file=None,
                   verbose=self.verbose)
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "created data object", 
                                "files names": [path.split(ds.output_log_file)[-1],
                                                path.split(ds.output_object_h5_file)[-1],
