@@ -2833,6 +2833,20 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         title = title.replace("+", "") + "Loss: " + str(self.loss_string)
         self.fig_base_title = title
 
+    def update_figures(self,figure_filename=None,overwrite=False):
+        if figure_filename is None:
+            raise Exception("figure_filename input argument of update_figures method needs to be specified while it is None.")
+        else:
+            if not overwrite:
+                # search figure
+                timestamp=None
+                for k, v in self.predictions["Figures"].items():
+                    if figure_filename in v:
+                        timestamp = k
+                    old_figure_filename = utils.check_rename_file(figure_filename,timestamp=timestamp)
+                    if old_figure_filename is not None:
+                        self.predictions["Figures"][k] = [q.replace(figure_filename,old_figure_filename) for q in v]
+
     def plot_training_history(self, metrics=["loss"], yscale="log", show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
@@ -2844,8 +2858,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             metric = utils.metric_name_unabbreviate(metric)
             val_metric = "val_"+ metric
             figure_filename = self.output_figures_base_file+"_training_history_" + metric+".pdf"
-            if not overwrite:
-                utils.check_rename_file(figure_filename)
+            self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
             plt.plot(self.history[metric])
             plt.plot(self.history[val_metric])
             plt.yscale(yscale)
@@ -2900,8 +2913,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         else:
             raise Exception("Parameters should be  should be the same for the different tmu sources.")
         figure_filename = self.output_figures_base_file+"_tmu_"+str(par) +".pdf"
-        if not overwrite:
-            utils.check_rename_file(figure_filename)
+        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
         for k, v in tmu_dict.items():
             plt.plot(v[:,0],v[:,-1], label=r"%s"%k)
         plt.title(r"%s" % self.fig_base_title, fontsize=10)
@@ -2937,8 +2949,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 figure_filename = self.output_figures_base_file+"_par_loglik_coverage_" + str(par) +".pdf"
             else:
                 figure_filename = self.output_figures_base_file+"_par_lik_coverage_" + str(par) +".pdf"
-            if not overwrite:
-                utils.check_rename_file(figure_filename)
+            self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
             nnn = min(1000,len(self.X_train),len(self.X_test))
             rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
             rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
@@ -2990,8 +3001,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             figure_filename = self.output_figures_base_file+"_loglik_distribution.pdf"
         else:
             figure_filename = self.output_figures_base_file+"_lik_distribution.pdf"
-        if not overwrite:
-                utils.check_rename_file(figure_filename)
+        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
         nnn = min(10000, len(self.X_train), len(self.X_test))
         rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
         rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
@@ -3059,8 +3069,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ranges = extend_corner_range(X, X, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        if not overwrite:
-            utils.check_rename_file(figure_filename)
+        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -3173,8 +3182,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ranges = extend_corner_range(X1, X2, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        if not overwrite:
-            utils.check_rename_file(figure_filename)
+        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -3317,13 +3325,51 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             W = eval("W_"+string.split("_")[0])
         return [X, W]
 
-    def reset_predictions(self, verbose=None):
+    def reset_predictions(self, delete_figures=False, verbose=None):
+        """
+        Re-initializes the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary to
+
+         .. code-block:: python
+
+            predictions = {"Model_evaluation": {},
+                           "Bayesian_inference": {},
+                           "Frequentist_inference": {},
+                           "Figures": figs}
+
+        Where ``figs`` may be either an empty dictionary or the present value of the corresponding one,
+        depending on the value of the ``delete_figures`` argument.
+
+        - **Arguments**
+
+            - **delete_figures**
+            
+                If ``True`` all files in the :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>` 
+                folder are deleted and the ``"Figures"`` item is reset to an empty dictionary.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``True`` 
+            
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+
+        """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        if delete_figures:
+            utils.check_delete_all_files_in_path(self.output_figures_folder)
+            figs = {}
+            print("All predictions and figures have been deleted and the 'predictions' attribute has been initialized.")
+        else:
+            figs = utils.check_figures_dic(self.predictions["Figures"])
+            print("All predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.")
         self.predictions = {"Model_evaluation": {},
                             "Bayesian_inference": {},
                             "Frequentist_inference": {},
-                            "Figures": {}}
-        print("All predictions have been deleted and the 'predictions' attribute has been initialized.")
+                            "Figures": figs}
 
     def model_compute_predictions(self, 
                                   CI=inference.CI_from_sigma([inference.sigma_from_CI(0.5), 1, 2, 3]), 
@@ -3530,12 +3576,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         print("Computing global maximum for reference Likelihood", show=verbose)
                         utils.check_set_dict_keys(frequentist_inference_options["compute_maximum_likelihood_kwargs"], 
                                                   ["pars_init",
-                                                   "pars_bounds",
                                                    "optimizer",
                                                    "timestamp",
                                                    "save",
                                                    "verbose"],
-                                                  [None,None,{},timestamp,False,verbose_sub],verbose=verbose_sub)
+                                                  [None,{},timestamp,False,verbose_sub],verbose=verbose_sub)
                         string = "self.likelihood.compute_maximum_logpdf("
                         for key, value in frequentist_inference_options["compute_maximum_likelihood_kwargs"].items():
                             if type(value) == str:
@@ -3547,7 +3592,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         utils.check_set_dict_keys(self.predictions["Frequentist_inference"],
                                                   ["logpdf_max_likelihood"],
                                                   [{}],verbose=verbose_sub)
-                        self.predictions["Frequentist_inference"]["logpdf_max_likelihood"] = self.likelihood.logpdf_max
+                        utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_max_likelihood"],
+                                                  [timestamp],
+                                                  [{}], verbose=verbose_sub)
+                        self.predictions["Frequentist_inference"]["logpdf_max_likelihood"][timestamp] = self.likelihood.predictions["logpdf_max"][timestamp]
                     if frequentist_inference_options["compute_profiled_maxima_likelihood_kwargs"] is not False:
                         print("Computing profiled maxima for reference Likelihood", show=verbose)
                         utils.check_set_dict_keys(frequentist_inference_options["compute_profiled_maxima_likelihood_kwargs"],
@@ -3574,7 +3622,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         utils.check_set_dict_keys(self.predictions["Frequentist_inference"],
                                                   ["logpdf_profiled_max_likelihood"],
                                                   [{}],verbose=verbose_sub)
-                        self.predictions["Frequentist_inference"]["logpdf_profiled_max_likelihood"]= self.likelihood.logpdf_profiled_max
+                        utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_profiled_max_likelihood"],
+                                                  [timestamp],
+                                                  [{}],verbose=verbose_sub)
+                        self.predictions["Frequentist_inference"]["logpdf_profiled_max_likelihood"][timestamp] = self.likelihood.predictions["logpdf_profiled_max"][timestamp]
             # Frequentist Inference from samples
             if frequentist_inference_options["compute_maximum_sample_kwargs"] is not False or frequentist_inference_options["compute_profiled_maxima_sample_kwargs"] is not False:
                 print("Computing Frequentist inference benchmarks from samples", show=verbose)
@@ -3745,7 +3796,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     self.plot_tmu_sources_1d(timestamp=timestamp,overwrite=overwrite,verbose=verbose_sub,**plot_tmu_sources_1d_kwargs)
             end = timer()
             print("All plots done in", str(end-start), "s.", show=verbose)
-        self.predictions["Figures"] = self.predictions["Figures"]
+        self.predictions["Figures"] = utils.check_figures_dic(
+            self.predictions["Figures"])
         #self.save_summary_json(overwrite=overwrite, verbose=verbose_sub)
         end_global = timer()
         self.log[timestamp] = {"action": "computed predictions",
@@ -3828,7 +3880,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         elif overwrite == "dump":
             output_idx_h5_file = utils.generate_dump_file_path(self.output_idx_h5_file, timestamp=timestamp)
         #self.close_opened_dataset(verbose=verbose_sub)
-        utils.check_delete_file(output_idx_h5_file)
+        utils.check_delete_files(output_idx_h5_file)
         h5_out = h5py.File(output_idx_h5_file, "w")
         h5_out.require_group(self.name)
         data = h5_out.require_group("idx")

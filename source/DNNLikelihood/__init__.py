@@ -1,4 +1,5 @@
 import sys
+from os import path
 sys.dont_write_bytecode = True
 
 from .show_prints import Verbosity
@@ -14,6 +15,7 @@ from .sampler import Sampler
 from .data import Data
 from .dnn_likelihood_ensemble import DnnLikEnsemble
 from .dnn_likelihood import DnnLik
+mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
 #from .DNNLik import DNNLik
 #from . import files

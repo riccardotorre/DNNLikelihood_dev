@@ -35,6 +35,15 @@ Attributes
           
        - **type**: ``str`` or ``None``
 
+.. py:attribute:: Sampler.input_folder   
+
+    Absolute path corresponding to the folder containing the :argument:`input_file` file.
+    Whenever the :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` attribute is ``False``,
+    it is used to check the existence of a :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>` 
+    and copy it to the new :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`.
+          
+       - **type**: ``str`` or ``None``
+
 .. py:attribute:: Sampler.input_h5_file    
 
     Absolute path to the .h5 file containing a saved :class:`Sampler <DNNLikelihood.Sampler>` object (see
@@ -97,7 +106,7 @@ Attributes
             - *"files paths"* (value type: ``list`` of ``str``)
                List of paths of files involved in the action.
 
-.. py:attribute:: Sampler.logpdf:
+.. py:attribute:: Sampler.logpdf
 
     Callable function that could accept ``x_pars`` either as a single point in parameter space corresponding 
     to an array with shape ``(ndims,)`` or as a list of points corresponding to an array with 
@@ -185,9 +194,10 @@ Attributes
 
 .. py:attribute:: Sampler.ndims
 
-    Number of dimensions of the input vector (i.e. number of 
-    parameters entering in the logpdf). It is automatically set to the length of
-    the first vector in :attr:`Sampler.pars_init_vec <DNNLikelihood.Sampler.pars_init_vec>`.
+    Number of dimensions of the input vector (i.e. number of parameters entering in the logpdf). 
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
+    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
 
         - **type**: ``int``
 
@@ -229,9 +239,11 @@ Attributes
 
 .. py:attribute:: Sampler.nwalkers
 
-    Number of walkers (equivalent of chains 
-    for Ensamble Sampler MCMC). It is automatically set to the length of
-    :attr:`Sampler.pars_init_vec <DNNLikelihood.Sampler.pars_init_vec>` vector.
+    Number of walkers (or chains) of the sampler. 
+    It is set from the input argument :argument:`nwalkers`.
+    If the latter is ``None``, then it is automatically set to twice the number of dimensions of the
+    :attr:`Sampler.logpdf <DNNLikelihood.Sampler.logpdf>` function (given by the 
+    :attr:`Sampler.ndims <DNNLikelihood.Sampler.ndims>` attribute).
         
         - **type**: ``int``
 
@@ -301,9 +313,14 @@ Attributes
 
 .. py:attribute:: Sampler.pars_init_vec
 
-    Array of points with parameters initialization for each 
-    walker. 
-        
+    Array of points with parameters initialization for each walker. 
+    It is set by the
+    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method. This method tried to set
+    parameters initialization from profiled maxima information available in the :obj:`Likelihood <likelihood>` object.
+    If such information is not available or the number of local maxima is less than the required number points, then 
+    the missing points are generated with a standard normal smearing aroung the 
+    :attr:`Sampler.pars_central <DNNLikelihood.Sampler.pars_central>` value.
+
         - **type**: ``numpy.ndarray``
         - **shape**: ``(nwalkers,ndims)``
  

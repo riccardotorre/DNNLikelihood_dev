@@ -395,103 +395,6 @@ of the logpdf.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="DNNLikelihood.Lik.logpdf_max">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_max</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_max" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary containing the maximum of the logpdf function computed with the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> method.
-It contains x and y values at
-the maximum of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
-function.
-It is initialized to an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code> when the
-<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created.</p>
-<blockquote>
-<div><ul>
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
-<blockquote>
-<div><ul class="simple">
-<li><dl class="simple">
-<dt><em>“x”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the model maximum.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>Value of the model at its maximum</p>
-</dd>
-</dl>
-</li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="DNNLikelihood.Lik.logpdf_profiled_max">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_profiled_max</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_profiled_max" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dictionary containing profiled maxima of the logpdf function computed with the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method.
-It contains the X and Y arrays of x and y values of points at
-the profiled maxima of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
-function.
-It is initialized to an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code> when the
-<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created.</p>
-<blockquote>
-<div><ul>
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
-<blockquote>
-<div><ul class="simple">
-<li><dl class="simple">
-<dt><em>“X”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,ndims)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the profiled maxima.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“Y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,)</span></code>)</dt><dd><p>Value of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
-the profiled maxima.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="DNNLikelihood.Lik.logpdf_profiled_max_tmp">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_profiled_max_tmp</code><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_profiled_max_tmp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Same as <a class="reference internal" href="#DNNLikelihood.Lik.logpdf_profiled_max" title="DNNLikelihood.Lik.logpdf_profiled_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf_profiled_max</span></code></a>.
-It is assigned only when attempting to append newly
-generated profiled maxima to an incompatible existing
-<a class="reference internal" href="#DNNLikelihood.Lik.logpdf_profiled_max" title="DNNLikelihood.Lik.logpdf_profiled_max"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf_profiled_max</span></code></a>.
-This is a temporary attribute and it is not saved by the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a> method.
-It is initialized to an empty dictionary <code class="docutils literal notranslate"><span class="pre">{}</span></code> when the
-<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
-<ul>
-<li><dl class="simple">
-<dt><em>“X”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,ndims)</span></code>)</dt><dd><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with the values of parameters at the profiled maxima.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“Y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,)</span></code>)</dt><dd><p>Value of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>
-the profiled maxima.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py attribute">
 <dt id="DNNLikelihood.Lik.name">
 <code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">name</code><a class="headerlink" href="#DNNLikelihood.Lik.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object generated from
@@ -669,6 +572,195 @@ and can contain latex expressions that are properly compiled when making plots.<
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
 <li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_poi,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="DNNLikelihood.Lik.predictions">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">predictions</code><a class="headerlink" href="#DNNLikelihood.Lik.predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nested dictionary containing all predictions generated by the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> and
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> methods,
+and the list of figures generated by the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a> and
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_tmu_1d" title="DNNLikelihood.Lik.plot_tmu_1d"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_tmu_1d</span></code></a> methods.</p>
+<blockquote>
+<div><blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul>
+<li><p><em>“logpdf_max”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</p>
+<p>Dictionary containing information on global maximum. This dictionary has the following structure:</p>
+<blockquote>
+<div><ul>
+<li><p><em>“timestamp”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</p>
+<p>Dictionary containing information on global maximum computed at time <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.
+The key is a string of the form <code class="docutils literal notranslate"><span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]</span></code>.
+This dictionary has the following structure:</p>
+<blockquote>
+<div><ul>
+<li><dl class="simple">
+<dt><em>“x”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p>Value of the parameters at the maximum of <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>)</dt><dd><p>Maximum of <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_init”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p>Initial value of the parameters for the optimization.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><em>“optimizer”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</dt><dd><p>Dictionary containing information on the optimizer. This dictionary has the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“name”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>, default: <code class="docutils literal notranslate"><span class="pre">&quot;scipy&quot;</span></code>)</dt><dd><p>Optimizer name. Up to now only <code class="docutils literal notranslate"><span class="pre">&quot;scipy&quot;</span></code> is supported.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“method”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>, default: <code class="docutils literal notranslate"><span class="pre">&quot;Powell&quot;</span></code>)</dt><dd><p>Optimizer method.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“name”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</dt><dd><p>Optimizer options. Keys are options names and values are option values.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“optimization_time”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>Optimization time.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><em>“logpdf_profiled_max”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</p>
+<p>Dictionary containing information on global maxima (profiled maxima). This dictionary has the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>“timestamp”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</p></li>
+</ul>
+<blockquote>
+<div><p>Dictionary containing information on global maximum computed at time <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.
+The key is a string of the form <code class="docutils literal notranslate"><span class="pre">datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]</span></code>.
+This dictionary has the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“X”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,ndims)</span></code>)</dt><dd><p>Value of the parameters at the maxima of <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> for fixed values
+of <code class="docutils literal notranslate"><span class="pre">pars</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“Y”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npoints,)</span></code>)</dt><dd><p>Maxima of <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> for fixed values of <code class="docutils literal notranslate"><span class="pre">pars</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npars,)</span></code>)</dt><dd><p>Parameters that are kept fixed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_ranges”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(npars,3)</span></code>)</dt><dd><p>Ranges of parameters that are kept fixed. For each parameter the list has the form <code class="docutils literal notranslate"><span class="pre">[min,max,npoints]</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_init”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code>)</dt><dd><p>Same as in the <code class="docutils literal notranslate"><span class="pre">logpdf_max</span></code> dictionary above.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“pars_bounds”</em> (value type: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, shape: <code class="docutils literal notranslate"><span class="pre">(ndims,2)</span></code>)</dt><dd><p>Boundaries of the parameter space. For each of all parameters it has the form <code class="docutils literal notranslate"><span class="pre">[min,max]</span></code>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“optimizer”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</dt><dd><p>Same as in the <code class="docutils literal notranslate"><span class="pre">logpdf_max</span></code> dictionary above.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“optimization_times”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>List with optimization times for each of the minima.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“global_optimization_time”</em> (value type: <code class="docutils literal notranslate"><span class="pre">float</span></code>)</dt><dd><p>Total optimization time for <code class="docutils literal notranslate"><span class="pre">pars</span></code> in <code class="docutils literal notranslate"><span class="pre">pars_ranges</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><em>“Figures”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)
+Dictionary containing information on figures. This dictionary has the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>“timestamp”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>)
+Dictionary containing the list of absolute paths of the figures produced at time <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><strong>schematic example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;logpdf_max&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;timestamp1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                              <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
+                              <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                              <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                            <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                                        <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">},</span>
+                                            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span>
+                              <span class="s1">&#39;optimization_time&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">},</span>
+                <span class="s1">&#39;timestamp2&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">}</span>
+ <span class="s1">&#39;logpdf_profiled_max&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;timestamp1&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                       <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                       <span class="s1">&#39;tmu&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                       <span class="s1">&#39;pars&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                                       <span class="s1">&#39;pars_ranges&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                                       <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                       <span class="s1">&#39;pars_bounds&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+                                       <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                                                     <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                                                                 <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">},</span>
+                                                     <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">},</span>
+                                       <span class="s1">&#39;optimization_times&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                                       <span class="s1">&#39;global_optimization_time&#39;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">float64</span><span class="p">},</span>
+                         <span class="s1">&#39;timestamp2&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">},</span>
+ <span class="s1">&#39;Figures&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;timestamp1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+             <span class="s1">&#39;timestamp2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+             <span class="o">...</span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
 </ul>
 </div></blockquote>
 </dd></dl>

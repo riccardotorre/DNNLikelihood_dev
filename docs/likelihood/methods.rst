@@ -27,11 +27,17 @@ Methods
 
 .. automethod:: Lik.logpdf_fn
 
+.. automethod:: Lik.reset_predictions
+
 .. automethod:: Lik.compute_maximum_logpdf
 
 .. automethod:: Lik.compute_profiled_maxima_logpdf
 
+.. automethod:: Lik.update_figures
+
 .. automethod:: Lik.plot_logpdf_par
+
+.. automethod:: Lik.plot_tmu_1d
 
 .. py:method:: Lik.set_verbosity
 

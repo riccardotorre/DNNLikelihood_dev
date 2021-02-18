@@ -275,6 +275,20 @@ method for details).</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt id="DNNLikelihood.Sampler.input_folder">
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">input_folder</code><a class="headerlink" href="#DNNLikelihood.Sampler.input_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path corresponding to the folder containing the <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> file.
+Whenever the <a class="reference internal" href="#DNNLikelihood.Sampler.new_sampler" title="DNNLikelihood.Sampler.new_sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.new_sampler</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+it is used to check the existence of a <a class="reference internal" href="#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>
+and copy it to the new <a class="reference internal" href="#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.input_h5_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">input_h5_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.input_h5_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .h5 file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object (see
@@ -385,8 +399,8 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </dd></dl>
 
 <dl class="py attribute">
-<dt>
-<code class="sig-name descname">Sampler.logpdf:</code></dt>
+<dt id="DNNLikelihood.Sampler.logpdf">
+<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">logpdf</code><a class="headerlink" href="#DNNLikelihood.Sampler.logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Callable function that could accept <code class="docutils literal notranslate"><span class="pre">x_pars</span></code> either as a single point in parameter space corresponding
 to an array with shape <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code> or as a list of points corresponding to an array with
 shape <code class="docutils literal notranslate"><span class="pre">(n_points,ndims)</span></code> and that returns either a <code class="docutils literal notranslate"><span class="pre">float</span></code> or a list of computed logpdf values,
@@ -421,7 +435,7 @@ or a list of points corresponding to an array with shape <code class="docutils l
 <li><p><strong>args</strong></p>
 <blockquote>
 <div><p>List of additional arguments required
-by <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code> and passed through the
+by <a class="reference internal" href="#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> and passed through the
 <a class="reference internal" href="#DNNLikelihood.Sampler.logpdf_args" title="DNNLikelihood.Sampler.logpdf_args"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf_args</span></code></a> attribute.</p>
 <blockquote>
 <div><ul class="simple">
@@ -452,7 +466,7 @@ of the logpdf.</p>
 <dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.logpdf_args">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">logpdf_args</code><a class="headerlink" href="#DNNLikelihood.Sampler.logpdf_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute containing a list of optional arguments (<code class="docutils literal notranslate"><span class="pre">*args</span></code>) for the <code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code> function.</p>
+<dd><p>Attribute containing a list of optional arguments (<code class="docutils literal notranslate"><span class="pre">*args</span></code>) for the <a class="reference internal" href="#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
@@ -464,7 +478,7 @@ of the logpdf.</p>
 <dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.logpdf_kwargs">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">logpdf_kwargs</code><a class="headerlink" href="#DNNLikelihood.Sampler.logpdf_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute containing a dictionary of optional keyword arguments (<code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>) for the <code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code> function.</p>
+<dd><p>Attribute containing a dictionary of optional keyword arguments (<code class="docutils literal notranslate"><span class="pre">**kwargs</span></code>) for the <a class="reference internal" href="#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
@@ -523,9 +537,9 @@ by replacing the suffix “_likelihood” with the suffix “_sampler”</p>
 <dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.ndims">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">ndims</code><a class="headerlink" href="#DNNLikelihood.Sampler.ndims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number of dimensions of the input vector (i.e. number of
-parameters entering in the logpdf). It is automatically set to the length of
-the first vector in <a class="reference internal" href="#DNNLikelihood.Sampler.pars_init_vec" title="DNNLikelihood.Sampler.pars_init_vec"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_init_vec</span></code></a>.</p>
+<dd><p>Number of dimensions of the input vector (i.e. number of parameters entering in the logpdf).
+It is automatically set to the corresponding attribute of the <code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code> by the
+<a class="reference internal" href="methods.html#DNNLikelihood.Sampler._Sampler__init_likelihood" title="DNNLikelihood.Sampler._Sampler__init_likelihood"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init_likelihood</span></code></a> method.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
@@ -587,9 +601,11 @@ for a number of steps given by the difference between
 <dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.nwalkers">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">nwalkers</code><a class="headerlink" href="#DNNLikelihood.Sampler.nwalkers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Number of walkers (equivalent of chains
-for Ensamble Sampler MCMC). It is automatically set to the length of
-<a class="reference internal" href="#DNNLikelihood.Sampler.pars_init_vec" title="DNNLikelihood.Sampler.pars_init_vec"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_init_vec</span></code></a> vector.</p>
+<dd><p>Number of walkers (or chains) of the sampler.
+It is set from the input argument <a class="reference internal" href="arguments.html#Sampler.nwalkers" title="Sampler.nwalkers"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nwalkers</span></code></a>.
+If the latter is <code class="docutils literal notranslate"><span class="pre">None</span></code>, then it is automatically set to twice the number of dimensions of the
+<a class="reference internal" href="#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> function (given by the
+<a class="reference internal" href="#DNNLikelihood.Sampler.ndims" title="DNNLikelihood.Sampler.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.ndims</span></code></a> attribute).</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
@@ -693,8 +709,13 @@ It is automatically set to the corresponding attribute of the <code class="xref 
 <dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.pars_init_vec">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">pars_init_vec</code><a class="headerlink" href="#DNNLikelihood.Sampler.pars_init_vec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Array of points with parameters initialization for each
-walker.</p>
+<dd><p>Array of points with parameters initialization for each walker.
+It is set by the
+<a class="reference internal" href="methods.html#DNNLikelihood.Sampler._Sampler__init_likelihood" title="DNNLikelihood.Sampler._Sampler__init_likelihood"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init_likelihood</span></code></a> method. This method tried to set
+parameters initialization from profiled maxima information available in the <a class="reference internal" href="../likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object.
+If such information is not available or the number of local maxima is less than the required number points, then
+the missing points are generated with a standard normal smearing aroung the
+<a class="reference internal" href="#DNNLikelihood.Sampler.pars_central" title="DNNLikelihood.Sampler.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.pars_central</span></code></a> value.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
@@ -781,10 +802,10 @@ method.</p>
 <dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.vectorize">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">vectorize</code><a class="headerlink" href="#DNNLikelihood.Sampler.vectorize" title="Permalink to this definition">¶</a></dt>
-<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the function <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code> is expected to accept a list of
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the function <a class="reference internal" href="#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> is expected to accept a list of
 points and to return a list of logpdf values. When it is set to <code class="docutils literal notranslate"><span class="pre">True</span></code> the
 <a class="reference internal" href="methods.html#DNNLikelihood.Sampler._Sampler__check_vectorize" title="DNNLikelihood.Sampler._Sampler__check_vectorize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__check_vectorize</span></code></a> checks the consistency by
-calling <code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code> on an array of points and, in case it fails,
+calling <a class="reference internal" href="#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> on an array of points and, in case it fails,
 it sets <a class="reference internal" href="#DNNLikelihood.Sampler.vectorize" title="DNNLikelihood.Sampler.vectorize"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.vectorize</span></code></a> to <code class="docutils literal notranslate"><span class="pre">False</span></code>.
 When it is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the <a class="reference internal" href="#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a>
 attribute is automatically set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.

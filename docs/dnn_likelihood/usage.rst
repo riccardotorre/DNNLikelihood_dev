@@ -7,8 +7,8 @@ We give here a brief introduction to the use of the :class:`DnnLik <DNNLikelihoo
 full class documentation for more details. All examples will be referred to the toy likelihood introduced in 
 :ref:`the Likelihood object Usage <likelihood_usage>` section of the documentation.
 
-A :class:`DnnLik <DNNLikelihood.DnnLik>` object is defined through a series of dictionaries (or lists of dictionaries) describing data, 
-DNN input parameters, DNN optimizer, DNN compilation parameters, training callbacks parameters, and DNN training parameters. 
+A :class:`DnnLik <DNNLikelihood.DnnLik>` object is defined through a series of dictionaries (or lists of dictionaries) describing data and 
+DNN inputs, optimizer, compilation, callbacks, and training parameters.
 An example of the dictionaries defining the :class:`DnnLik <DNNLikelihood.DnnLik>` configurations is given by
 
 .. code-block:: python

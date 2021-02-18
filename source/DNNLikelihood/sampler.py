@@ -42,6 +42,7 @@ class Sampler(Verbosity):
                  new_sampler=None,
                  likelihood_script_file=None,
                  likelihood=None,
+                 nwalkers=None,
                  nsteps_required=None,
                  moves_str=None,
                  parallel_CPU=None,
@@ -73,6 +74,7 @@ class Sampler(Verbosity):
             - :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`
             - :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.new_sampler>`
             - :attr:`Sampler.moves_str <DNNLikelihood.Sampler.new_sampler>`
+            - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`
             - :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.new_sampler>`
             - :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>`
             - :attr:`Sampler.verbose <DNNLikelihood.Sampler.verbose>`
@@ -81,6 +83,9 @@ class Sampler(Verbosity):
         if ``new_sampler=False``:
 
             - :attr:`Sampler.name <DNNLikelihood.Sampler.name>`
+            - :attr:`Sampler.input_folder <DNNLikelihood.Sampler.input_folder>`
+            - :attr:`Sampler.input_h5_file <DNNLikelihood.Sampler.input_h5_file>`
+            - :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>`
             - :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
             - :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>` (if not given as input)
             - :attr:`Sampler.moves_str <DNNLikelihood.Sampler.moves_str>` (if not given as input)
@@ -88,11 +93,11 @@ class Sampler(Verbosity):
             - :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>` (if not given as input)
             - :attr:`Sampler.log <DNNLikelihood.Sampler.log>`
             - :attr:`Sampler.figures_list <DNNLikelihood.Sampler.figures_list>`
-            - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`
-            - :attr:`Sampler.output_h5_file <DNNLikelihood.Sampler.output_h5_file>`
-            - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
-            - :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
-            - :attr:`Sampler.output_figures_base_file <DNNLikelihood.Sampler.output_figures_base_file>`
+            - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` (if not given as input)
+            - :attr:`Sampler.output_h5_file <DNNLikelihood.Sampler.output_h5_file>` (same as :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`)
+            - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`(same as :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`)
+            - :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>` (same as :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`)
+            - :attr:`Sampler.output_figures_base_file <DNNLikelihood.Sampler.output_figures_base_file>`(same as :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`)
 
         Attributes that are set by :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>`:
 
@@ -142,6 +147,7 @@ class Sampler(Verbosity):
             self.new_sampler=new_sampler
         self.likelihood_script_file = likelihood_script_file
         self.likelihood = likelihood
+        self.nwalkers = nwalkers
         self.nsteps_required = nsteps_required
         if moves_str != None:
             self.moves_str = moves_str
@@ -170,7 +176,7 @@ class Sampler(Verbosity):
                 self.__init_likelihood()
                 if output_folder != None:
                     self.output_folder = path.abspath(output_folder)
-                    self.__check_define_output_files()
+                self.__check_define_output_files()
             except:
                 print("No sampler files have been found. Initializing a new Sampler object.",show=verbose)
                 self.new_sampler = True
@@ -180,8 +186,8 @@ class Sampler(Verbosity):
                 self.moves_str = "[(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode='random', factor=None), 0)]"
             self.log = {timestamp: {"action": "created"}}
             self.figures_list = []
-            self.output_folder = output_folder
             self.__init_likelihood()
+            self.output_folder = output_folder
             self.__check_define_output_files()
         self.moves = eval(self.moves_str)
         self.__check_vectorize(verbose=verbose_sub)
@@ -214,6 +220,10 @@ class Sampler(Verbosity):
         
             - :attr:`Sampler.input_h5_file <DNNLikelihood.Sampler.input_h5_file>`,
             - :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>`
+
+        and input folder 
+        
+            - :attr:`Sampler.input_folder <DNNLikelihood.Sampler.input_folder>`
 
         depending on the value of the 
         :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attribute.
@@ -263,9 +273,11 @@ class Sampler(Verbosity):
         try:
             self.input_h5_file = path.abspath(self.input_file+".h5")
             self.input_log_file = path.abspath(self.input_file+".log")
+            self.input_folder = path.split(self.input_file)[0]
         except:
             self.input_h5_file = None
             self.input_log_file = None
+            self.input_folder = None
         
     def __check_define_output_files(self):
         """
@@ -331,17 +343,20 @@ class Sampler(Verbosity):
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         tmp_likelihood = copy(self.likelihood)
-        tmp_likelihood.verbose = verbose
+        tmp_likelihood.verbose = verbose_sub
         tmp_likelihood_script_file = tmp_likelihood.script_file
         likelihood_script_file_name = path.split(tmp_likelihood_script_file)[-1]
         tmp_likelihood_script_file_new = path.join(self.output_folder,likelihood_script_file_name)
-        if path.exists(tmp_likelihood_script_file_new):
-            self.likelihood_script_file = tmp_likelihood_script_file_new
-            print("qui")
-        else:    
+        if not path.exists(tmp_likelihood_script_file_new):
+            if not path.exists(tmp_likelihood_script_file):
+                try:
+                    timestamp=list(tmp_likelihood.predictions["logpdf_profiled_max"].keys())[-1]
+                    tmp_likelihood.save_script(timestamp=timestamp,verbose=verbose_sub)
+                except:
+                    tmp_likelihood.save_script(verbose=verbose_sub)
             self.likelihood_script_file = tmp_likelihood_script_file
-            tmp_likelihood.save_script(verbose=verbose_sub)
-            print("qua")
+            #copyfile(tmp_likelihood_script_file,tmp_likelihood_script_file_new)
+        
 
     def __get_input_file_from_likelihood_script_file(self):
         """
@@ -415,7 +430,7 @@ class Sampler(Verbosity):
                     - **type**: ``bool``
                     - **default**: ``None`` 
         """
-        _, verbose_sub = self.set_verbosity(verbose)
+        verbose, verbose_sub = self.set_verbosity(verbose)
         in_folder, in_file = path.split(self.likelihood_script_file)
         in_file = path.splitext(in_file)[0]
         sys.path.insert(0, in_folder)
@@ -427,14 +442,29 @@ class Sampler(Verbosity):
         self.logpdf = lik.logpdf
         self.logpdf_args = lik.logpdf_args
         self.logpdf_kwargs = lik.logpdf_kwargs
+        self.ndims = lik.ndims
+        if self.nwalkers is None:
+            self.nwalkers = 2*self.ndims
+            print("The 'nwalkers' input argument was set to None. 'nwalkers' attribute has been set to twice the number of dimensions.", show=verbose)
         self.pars_central = lik.pars_central
         self.pars_pos_poi = lik.pars_pos_poi
         self.pars_pos_nuis = lik.pars_pos_nuis
-        self.pars_init_vec = lik.pars_init_vec # lik.X_prof_logpdf_max  #
+        if lik.pars_init_vec is None:
+            self.pars_init_vec = np.array([np.random.normal(lik.pars_central) for i in range(self.nwalkers)])
+            print("No profiled maxima information were find in the Likelihood object. \
+                   The vector of parameters initialization of walkers has been generated with gaussian smooth of the central parameters values.",show=verbose)
+        else:
+            if len(lik.pars_init_vec) >= self.nwalkers:
+                print("The vector of parameters initialization of walkers has been generated from profiled maxima information available in the Likelihood object.",show=verbose)
+                self.pars_init_vec = lik.pars_init_vec[:self.nwalkers]
+            else:
+                print("Profiled maxima information found in the Likelihood object. However, the number of maxima is less than the number of walkers.\
+                       The vector of parameters initialization of walkers has been generated from profiled maxima information available in the Likelihood object \
+                       and, for the missing walkers, with gaussian smooth of the central parameters values.", show=verbose)
+                self.pars_init_vec = np.concatenate([lik.pars_init_vec, np.array([np.random.normal(lik.pars_central) for i in range(self.nwalkers-len(lik.pars_init_vec))])])
         self.pars_labels = lik.pars_labels
         self.pars_bounds = lik.pars_bounds
         self.pars_labels_auto = utils.define_pars_labels_auto(self.pars_pos_poi, self.pars_pos_nuis)
-        self.ndims = lik.ndims
         if self.output_folder == None:
             self.output_folder = lik.output_folder
         self.nwalkers = len(self.pars_init_vec)
@@ -485,8 +515,7 @@ class Sampler(Verbosity):
     def __init_backend(self, verbose=None):
         """
         Private method used by the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` one 
-        to create a backend file 
-        :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
+        to create a backend file :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
         when :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``True`` or
         to load an existig backend file :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
         when :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``False``.
@@ -496,6 +525,11 @@ class Sampler(Verbosity):
         The method creates or loads the backend by calling the :meth:`Sampler.__init_sampler <DNNLikelihood.Sampler._Sampler__init_sampler>`
         private method, which creates and runs the sampler for zero steps. This is done to properly sets both attributes 
         :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>` and :attr:`Sampler.sampler <DNNLikelihood.Sampler.sampler>`.
+        Notice that when the object is loaded with :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`
+        set to ``False``, but a new :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` is specified,
+        then the function attemts to copy an existing backend file from
+        :attr:`Sampler.input_folder <DNNLikelihood.Sampler.input_folder>` to
+        :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`.
 
         - **Arguments**
 
@@ -510,6 +544,13 @@ class Sampler(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if not self.new_sampler:
+            # Try to copy backend file in input directory to new backend file self.backend_file
+            old_backend_file = path.join(self.input_folder, self.name+"_backend.h5")
+            if self.input_folder is not None:
+                if self.input_folder != self.output_folder:
+                    if path.exists(old_backend_file):
+                        copyfile(old_backend_file, self.backend_file)
+                        print("A backend file has been found in the input folder and has been copied to the new output folder.")
             if not path.exists(self.backend_file):
                 print("The new_sampler flag was set to false but the backend file", self.backend_file,
                       "does not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.",show=verbose)
@@ -1053,7 +1094,7 @@ class Sampler(Verbosity):
         
         In order to be able to monitor not only the :math:`R_{c}` ratio, but also the values of :math:`\\hat{V}` 
         and :math:`W` independently, the method also computes these quantities. Usually a reasonable convergence 
-        condition is :math:`R_{c}<1.1`, together with stability of both :math:`\hat{V}` and :math:`W` :cite:`Brooks_1998`.
+        condition is :math:`R_{c}<1.1`, together with stability of both :math:`\\hat{V}` and :math:`W` :cite:`Brooks_1998`.
 
         - **Arguments**
 

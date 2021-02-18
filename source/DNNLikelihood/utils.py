@@ -96,6 +96,11 @@ def check_create_folder(path):
         #print("Folder",path,"has been created.")
     return path
 
+def get_parent_path(path, level):
+    for i in range(level):
+        path = os.path.abspath(os.path.join(os.path.abspath(path), os.pardir))
+    return path
+
 def filename_without_datetime(name):
     file, extension = os.path.splitext(name)
     try:
@@ -131,14 +136,22 @@ def check_rename_file(path,timestamp=None,verbose=True):
         if match != "":
             new_path = file.replace(match,now)+extension
         else:
-            new_path = os.path.join(filepath,"old_"+filename+"_"+now+extension)
-        shutil.move(path, new_path)
+            new_path = os.path.join(filepath,"old_"+now+"_"+filename+extension)
+        shutil.move("\\\\?\\" + path, "\\\\?\\" + new_path)
+        return new_path
         #print("New file name set to", path)
     #return path
 
-def check_delete_file(path):
-    if os.path.exists(path):
-        os.remove(path)
+def check_delete_files(paths):
+    paths = np.array([paths]).flatten()
+    for path in paths:
+        path = os.path.abspath(path)
+        if os.path.exists(path):
+            os.remove(path)
+
+def check_delete_all_files_in_path(path):
+    paths=[os.path.join(path, q) for q in os.listdir(path)]
+    check_delete_files(paths)
 
 def check_rename_folder(path, timestamp=None):
     if os.path.exists(path):

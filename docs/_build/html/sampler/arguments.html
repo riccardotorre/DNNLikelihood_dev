@@ -270,6 +270,21 @@ method).</p>
 </dd></dl>
 
 <dl class="py argument">
+<dt id="Sampler.nwalkers">
+<code class="sig-name descname">nwalkers</code><a class="headerlink" href="#Sampler.nwalkers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of walkers (or chains) of the <a class="reference internal" href="index.html#module-sampler" title="sampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.
+If it is <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is automatically set to twice the number of dimensions of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> function (given by the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.ndims" title="DNNLikelihood.Sampler.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.ndims</span></code></a> attribute).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
 <dt id="Sampler.nsteps_required">
 <code class="sig-name descname">nsteps_required</code><a class="headerlink" href="#Sampler.nsteps_required" title="Permalink to this definition">¶</a></dt>
 <dd><p>Final number of MCMC steps. When the object is initialized with the <a class="reference internal" href="#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a> argument set to <code class="docutils literal notranslate"><span class="pre">False</span></code>
@@ -321,7 +336,7 @@ It is used to set the <a class="reference internal" href="attributes.html#DNNLik
 <dl class="py argument">
 <dt id="Sampler.vectorize">
 <code class="sig-name descname">vectorize</code><a class="headerlink" href="#Sampler.vectorize" title="Permalink to this definition">¶</a></dt>
-<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code> is expected to accept a list of
+<dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the method <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> is expected to accept a list of
 points and to return a list of logpdf values, and <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a>
 is automatically set to <code class="docutils literal notranslate"><span class="pre">False</span></code>. See the <a href="https://emcee.readthedocs.io/en/stable/user/sampler/#emcee.EnsembleSampler"  target="_blank"> emcee.EnsembleSampler</a> documentation for more details.
 It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.vectorize" title="DNNLikelihood.Sampler.vectorize"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.vectorize</span></code></a> attribute.</p>

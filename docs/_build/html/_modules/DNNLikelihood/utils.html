@@ -260,6 +260,11 @@
         <span class="c1">#print(&quot;Folder&quot;,path,&quot;has been created.&quot;)</span>
     <span class="k">return</span> <span class="n">path</span></div>
 
+<span class="k">def</span> <span class="nf">get_parent_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">level</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">path</span>
+
 <span class="k">def</span> <span class="nf">filename_without_datetime</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="n">file</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -271,10 +276,18 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">file</span> <span class="o">=</span> <span class="n">file</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">extension</span>
 
+<span class="k">def</span> <span class="nf">generate_dump_file_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">file</span><span class="p">,</span> <span class="n">extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">filepath</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="n">dump_file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="s2">&quot;dump_&quot;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">timestamp</span><span class="o">+</span><span class="n">extension</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dump_file_path</span>
+
 <div class="viewcode-block" id="check_rename_file"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.check_rename_file">[docs]</a><span class="k">def</span> <span class="nf">check_rename_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S&quot;</span><span class="p">)</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">now</span> <span class="o">=</span> <span class="n">timestamp</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The file&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;already exists. Renaming the old file.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -287,19 +300,27 @@
         <span class="k">if</span> <span class="n">match</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
             <span class="n">new_path</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">match</span><span class="p">,</span><span class="n">now</span><span class="p">)</span><span class="o">+</span><span class="n">extension</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span><span class="s2">&quot;old_&quot;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="n">extension</span><span class="p">)</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">new_path</span><span class="p">)</span></div>
+            <span class="n">new_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span><span class="s2">&quot;old_&quot;</span><span class="o">+</span><span class="n">now</span><span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span><span class="n">filename</span><span class="o">+</span><span class="n">extension</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\\\\</span><span class="s2">?</span><span class="se">\\</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">new_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_path</span></div>
         <span class="c1">#print(&quot;New file name set to&quot;, path)</span>
     <span class="c1">#return path</span>
 
-<span class="k">def</span> <span class="nf">check_delete_file</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">check_delete_files</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">paths</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">check_delete_all_files_in_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">paths</span><span class="o">=</span><span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">)]</span>
+    <span class="n">check_delete_files</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span>
 
 <div class="viewcode-block" id="check_rename_folder"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.check_rename_folder">[docs]</a><span class="k">def</span> <span class="nf">check_rename_folder</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">-%H-%M-%S&quot;</span><span class="p">)</span>
+            <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">now</span> <span class="o">=</span> <span class="n">timestamp</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The folder&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;already exists.&quot;</span><span class="p">)</span>
@@ -319,7 +340,7 @@
     <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
     <span class="n">data_sample_filename</span> <span class="o">=</span> <span class="n">check_rename_file</span><span class="p">(</span><span class="n">data_sample_filename</span><span class="p">)</span>
     <span class="n">data_sample_shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">allsamples</span><span class="p">)</span>
-    <span class="c1">#data_sample_timestamp = datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S&quot;)</span>
+    <span class="c1">#data_sample_timestamp = datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]</span>
     <span class="c1">#data_sample_name = name+&quot;_&quot;+data_sample_timestamp</span>
     <span class="n">h5_out</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">data_sample_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
     <span class="n">grp</span> <span class="o">=</span> <span class="n">h5_out</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -337,6 +358,18 @@
 <span class="c1">#    else:</span>
 <span class="c1">#        setattr(eval(obj_name), par_name, eval(par_name))</span>
 <span class="c1">#    return eval(par_name)</span>
+
+<span class="k">def</span> <span class="nf">check_set_dict_keys</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1">#keys = np.array([keys]).flatten()</span>
+    <span class="c1">#vals = np.array([vals]).flatten()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Keys and values should have the same dimension.&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The key&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">keys</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="s2">&quot;was not specified and has been set to the default value&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
 <div class="viewcode-block" id="check_repeated_elements_at_start"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.check_repeated_elements_at_start">[docs]</a><span class="k">def</span> <span class="nf">check_repeated_elements_at_start</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
     <span class="n">x0</span> <span class="o">=</span> <span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -357,6 +390,21 @@
         <span class="k">except</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">,</span><span class="n">fig</span><span class="p">,</span><span class="s1">&#39;not found.&#39;</span><span class="p">)</span></div>
 
+<span class="k">def</span> <span class="nf">check_figures_list</span><span class="p">(</span><span class="n">fig_list</span><span class="p">):</span>
+    <span class="n">new_fig_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">fig</span> <span class="ow">in</span> <span class="n">fig_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fig</span><span class="p">):</span>
+            <span class="n">new_fig_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_fig_list</span>
+
+<span class="k">def</span> <span class="nf">check_figures_dic</span><span class="p">(</span><span class="n">fig_dic</span><span class="p">):</span>
+    <span class="n">new_fig_dic</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">fig_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">new_fig_dic</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_figures_list</span><span class="p">(</span><span class="n">fig_dic</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">new_fig_dic</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="p">{}:</span>
+            <span class="k">del</span> <span class="n">new_fig_dic</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">new_fig_dic</span>
+
 <div class="viewcode-block" id="get_spaced_elements"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.get_spaced_elements">[docs]</a><span class="k">def</span> <span class="nf">get_spaced_elements</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">numElems</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">numElems</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">out</span></div>
@@ -372,22 +420,52 @@
     <span class="k">return</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="convert_types_dict"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.convert_types_dict">[docs]</a><span class="k">def</span> <span class="nf">convert_types_dict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="n">dd</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">convert_types_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">dd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">convert_types_dict</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+            <span class="n">dd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">str</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">type</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">flatten_list</span><span class="p">(</span><span class="n">v</span><span class="p">)]:</span>
-                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">dd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">dd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">d</span></div>
+            <span class="n">dd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">dd</span></div>
 
-<div class="viewcode-block" id="sort_dict"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.sort_dict">[docs]</a><span class="k">def</span> <span class="nf">sort_dict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">d</span><span class="p">,</span><span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span></div>
+<span class="c1">#def convert_types_dict(dictionary):</span>
+<span class="c1">#    d = dict(dictionary)</span>
+<span class="c1">#    for k, v in d.items():</span>
+<span class="c1">#        if isinstance(v, dict):</span>
+<span class="c1">#            convert_types_dict(v)</span>
+<span class="c1">#        elif type(v) == np.ndarray:</span>
+<span class="c1">#            d[k] = v.tolist()</span>
+<span class="c1">#        elif type(v) == list:</span>
+<span class="c1">#            if str in [type(q) for q in flatten_list(v)]:</span>
+<span class="c1">#                d[k] = np.array(v, dtype=object).tolist()</span>
+<span class="c1">#            else:</span>
+<span class="c1">#                d[k] = np.array(v).tolist()</span>
+<span class="c1">#        else:</span>
+<span class="c1">#            d[k] = np.array(v).tolist()</span>
+<span class="c1">#    return d</span>
+
+<span class="c1">#def sort_dict(item: dict):</span>
+<span class="c1">#    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(item.items())}</span>
+
+<div class="viewcode-block" id="sort_dict"><a class="viewcode-back" href="../../utils.html#DNNLikelihood.utils.sort_dict">[docs]</a><span class="k">def</span> <span class="nf">sort_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">):</span>
+    <span class="n">new_dict</span><span class="o">=</span><span class="p">{}</span>
+    <span class="n">keys_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">islower</span><span class="p">()))</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys_sorted</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sort_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">new_dict</span></div>
+
+<span class="c1">#def sort_dict(d):</span>
+<span class="c1">#    return json.loads(json.dumps(d,sort_keys=True))</span>
 
 <span class="c1">#def convert_types_dic(dic):</span>
 <span class="c1">#    new_dic = {}</span>

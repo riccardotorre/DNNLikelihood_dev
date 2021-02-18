@@ -37,6 +37,16 @@ Arguments
         - **type**: :py:class:`Lik <DNNLikelihood.Lik>` object or ``None``
         - **default**: ``None``
 
+.. argument:: nwalkers
+
+    Number of walkers (or chains) of the :obj:`Sampler <sampler>` object.
+    If it is ``None``, it is automatically set to twice the number of dimensions of the
+    :attr:`Sampler.logpdf <DNNLikelihood.Sampler.logpdf>` function (given by the 
+    :attr:`Sampler.ndims <DNNLikelihood.Sampler.ndims>` attribute).
+
+        - **type**: ``int``
+        - **default**: ``None``
+
 .. argument:: nsteps_required
 
     Final number of MCMC steps. When the object is initialized with the :argument:`new_sampler` argument set to ``False``

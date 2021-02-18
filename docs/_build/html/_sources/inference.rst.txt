@@ -38,7 +38,7 @@ Functions
 
 .. autofunction:: DNNLikelihood.inference.compute_maximum_logpdf
 
-.. autofunction:: DNNLikelihood.inference.compute_profiled_maxima_logpdf
+.. autofunction:: DNNLikelihood.inference.compute_profiled_maximum_logpdf
 
 .. include:: external_links.rst
 
