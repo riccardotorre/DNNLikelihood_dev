@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>DNNLikelihood.histfactory &mdash; DNNLikelihood</title>
   
@@ -19,7 +19,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -36,7 +39,7 @@
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -57,7 +60,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+            <a href="../../index.html" class="icon icon-home"> DNNLikelihood
           
 
           
@@ -123,6 +126,8 @@
         <div class="rst-content">
         
           
+
+
 
 
 
@@ -518,11 +523,14 @@
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name</span>
-<span class="sd">                already exists, then the old file gets renamed with the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` </span>
-<span class="sd">                function.</span>
+<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
+<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
+<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
+<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
+<span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -539,16 +547,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span><span class="n">verbose_sub</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">output_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">output_log_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="n">output_log_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory log file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span><span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory log file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory log file&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory log file&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory log file dump&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Histfactory.save"><a class="viewcode-back" href="../../histfactory/methods.html#DNNLikelihood.Histfactory.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_numbers_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -583,11 +598,14 @@
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name</span>
-<span class="sd">                already exists, then the old file gets renamed with the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` </span>
-<span class="sd">                function.</span>
+<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
+<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
+<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
+<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
+<span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -605,8 +623,12 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">output_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">output_h5_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">lik_numbers_list</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">lik_numbers_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;input_file&quot;</span><span class="p">,</span> <span class="s2">&quot;input_h5_file&quot;</span><span class="p">,</span>
@@ -628,7 +650,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved&quot;</span><span class="p">,</span>
                                <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">}</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory object saved to file&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory h5 file&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory h5 file&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Histfactory h5 file dump&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="Histfactory.get_likelihood_object"><a class="viewcode-back" href="../../histfactory/methods.html#DNNLikelihood.Histfactory.get_likelihood_object">[docs]</a>    <span class="k">def</span> <span class="nf">get_likelihood_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lik_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -718,28 +746,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

@@ -40,7 +40,7 @@ from .show_prints import print
 try:
     from livelossplot import PlotLossesKerasTF as PlotLossesKeras
 except:
-    print("No module named 'livelossplot's. Continuing without.\nIf you wish to plot the loss in real time please install 'liveflossplot'.")
+    print("No module named 'livelossplot's. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.")
 
 sns.set()
 kubehelix = sns.color_palette("cubehelix", 30)
@@ -2833,20 +2833,53 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         title = title.replace("+", "") + "Loss: " + str(self.loss_string)
         self.fig_base_title = title
 
-    def update_figures(self,figure_filename=None,overwrite=False):
-        if figure_filename is None:
-            raise Exception("figure_filename input argument of update_figures method needs to be specified while it is None.")
-        else:
-            if not overwrite:
-                # search figure
-                timestamp=None
-                for k, v in self.predictions["Figures"].items():
-                    if figure_filename in v:
-                        timestamp = k
-                    old_figure_filename = utils.check_rename_file(figure_filename,timestamp=timestamp)
-                    if old_figure_filename is not None:
-                        self.predictions["Figures"][k] = [q.replace(figure_filename,old_figure_filename) for q in v]
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False):
+        """
+        Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
+        When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 
+        ``figure_file`` already existed in the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then it
+        updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp 
+        (that is the key of the :attr:`Lik.predictions["Figures"] <DNNLikelihood.Lik.predictions>` dictionary).
+        When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function
+        to generate the dump file name.
+        It returns the new figure_file.
 
+        - **Arguments**
+
+            - **figure_file**
+
+                Figure file path. If the figure already exists in the 
+                :meth:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then its name is updated with the corresponding timestamp.
+
+            - **overwrite**
+
+                The method updates file names and :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary only if
+                ``overwrite=False``. If ``overwrite="dump"`` the method generates and returns the dump file path. 
+                If ``overwrite=True`` the method does nothing.
+        
+        - **Creates/updates files**
+
+            - Updates ``figure_file`` file name.
+        """
+        if figure_file is None:
+            raise Exception("figure_file input argument of update_figures method needs to be specified while it is None.")
+        else:
+            figure_file = path.abspath(figure_file)
+            new_figure_file = figure_file
+            if type(overwrite) == bool:
+                if not overwrite:
+                    # search figure
+                    timestamp=None
+                    for k, v in self.predictions["Figures"].items():
+                        if figure_file in v:
+                            timestamp = k
+                        old_figure_file = utils.check_rename_file(figure_file,timestamp=timestamp)
+                        if old_figure_file is not None:
+                            self.predictions["Figures"][k] = [q.replace(figure_file,old_figure_file) for q in v]
+            elif overwrite == "dump":
+                new_figure_file = utils.generate_dump_file_path(figure_file, timestamp=timestamp)
+        return new_figure_file
+    
     def plot_training_history(self, metrics=["loss"], yscale="log", show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
@@ -2857,8 +2890,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             start = timer()
             metric = utils.metric_name_unabbreviate(metric)
             val_metric = "val_"+ metric
-            figure_filename = self.output_figures_base_file+"_training_history_" + metric+".pdf"
-            self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
+            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_training_history_" + metric+".pdf",timestamp=timestamp,overwrite=overwrite)
             plt.plot(self.history[metric])
             plt.plot(self.history[val_metric])
             plt.yscale(yscale)
@@ -2873,18 +2905,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             #x1, x2, y1, y2 = plt.axis()
             plt.text(0.967, 0.2, r"%s" % self.summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
                                                                               edgecolor="black", boxstyle="round,pad=0.5"), ha="right", ma="left", transform=ax.transAxes)
-            plt.savefig(r"%s" % (figure_filename))
+            plt.savefig(r"%s" % (figure_file))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
             self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
             if show_plot:
                 plt.show()
             plt.close()
             end = timer()
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_filename)[-1], 
-                                   "file path": figure_filename}
-            print(r"%s" % (figure_filename), "created and saved in", str(end-start), "s.", show=verbose)
+                                   "file name": path.split(figure_file)[-1], 
+                                   "file path": figure_file}
+            print(r"%s" % (figure_file), "created and saved in", str(end-start), "s.", show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
     
     def plot_tmu_sources_1d(self,
@@ -2912,8 +2944,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             par=tmp[0][0]
         else:
             raise Exception("Parameters should be  should be the same for the different tmu sources.")
-        figure_filename = self.output_figures_base_file+"_tmu_"+str(par) +".pdf"
-        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
+        figure_file = self.output_figures_base_file+"_tmu_"+str(par) +".pdf"
+        self.update_figures(figure_file=figure_file,overwrite=overwrite)
         for k, v in tmu_dict.items():
             plt.plot(v[:,0],v[:,-1], label=r"%s"%k)
         plt.title(r"%s" % self.fig_base_title, fontsize=10)
@@ -2921,18 +2953,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.ylabel(r"%s"%(self.pars_labels[par]))
         plt.legend()
         plt.tight_layout()
-        plt.savefig(r"%s" %figure_filename)
+        plt.savefig(r"%s" %figure_file)
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
         self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         self.log[timestamp] = {"action": "saved figure", 
-                               "file name": path.split(figure_filename)[-1], 
-                               "file path": figure_filename}
-        print(r"%s" % (figure_filename), "created and saved in", str(end-start), "s.", show=verbose)
+                               "file name": path.split(figure_file)[-1], 
+                               "file path": figure_file}
+        print(r"%s" % (figure_file), "created and saved in", str(end-start), "s.", show=verbose)
 
     def plot_pars_coverage(self, pars=None, loglik=True, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -2946,10 +2978,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         for par in pars:
             start=timer()
             if loglik:
-                figure_filename = self.output_figures_base_file+"_par_loglik_coverage_" + str(par) +".pdf"
+                figure_file = self.output_figures_base_file+"_par_loglik_coverage_" + str(par) +".pdf"
             else:
-                figure_filename = self.output_figures_base_file+"_par_lik_coverage_" + str(par) +".pdf"
-            self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
+                figure_file = self.output_figures_base_file+"_par_lik_coverage_" + str(par) +".pdf"
+            figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
             nnn = min(1000,len(self.X_train),len(self.X_test))
             rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
             rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
@@ -2977,18 +3009,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 plt.ylabel(r"prob ($\mathcal{L}\cdot\mathcal{P}$)")
             plt.legend()
             plt.tight_layout()
-            plt.savefig(r"%s" %figure_filename)
+            plt.savefig(r"%s" %figure_file)
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
             self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
             if show_plot:
                 plt.show()
             plt.close()
             end = timer()
             self.log[timestamp] = {"action": "saved figure",
-                                   "file name": path.split(figure_filename)[-1],
-                                   "file path": figure_filename}
-            print(r"%s" %figure_filename,"created and saved in",str(end-start),"s.", show=verbose)
+                                   "file name": path.split(figure_file)[-1],
+                                   "file path": figure_file}
+            print(r"%s" %figure_file,"created and saved in",str(end-start),"s.", show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
 
     def plot_lik_distribution(self, loglik=True, show_plot=False, timestamp=None, overwrite=False, verbose=None):
@@ -2998,10 +3030,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.style.use(mplstyle_path)
         start = timer()
         if loglik:
-            figure_filename = self.output_figures_base_file+"_loglik_distribution.pdf"
+            figure_file = self.output_figures_base_file+"_loglik_distribution.pdf"
         else:
-            figure_filename = self.output_figures_base_file+"_lik_distribution.pdf"
-        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
+            figure_file = self.output_figures_base_file+"_lik_distribution.pdf"
+        figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
         nnn = min(10000, len(self.X_train), len(self.X_test))
         rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
         rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
@@ -3037,25 +3069,25 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.legend()
         plt.yscale("log")
         plt.tight_layout()
-        plt.savefig(r"%s" % figure_filename)
+        plt.savefig(r"%s" % figure_file)
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
         self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_filename)[-1],
-                               "file path": figure_filename}
+                               "file name": path.split(figure_file)[-1],
+                               "file path": figure_file}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
-        print(r"%s" %figure_filename,"created and saved in",str(end-start),"s.", show=verbose)
+        print(r"%s" %figure_file,"created and saved in",str(end-start),"s.", show=verbose)
 
     def plot_corners_1samp(self, X, W=None, pars=None, max_points=None, nbins=50, pars_labels="original",
                            HPDI_dic={"sample": "train", "type": "true"},
                            ranges_extend=None, title = None, color="green",
                            plot_title="Params contours", legend_labels=None, legend_loc="upper right",
-                           figure_filename=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
+                           figure_file=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -3069,7 +3101,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ranges = extend_corner_range(X, X, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
+        figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -3149,18 +3181,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         lines = [line1, line2, line3, line4]
         fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc=legend_loc, bbox_to_anchor=(0.95, 0.8))#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
         #plt.tight_layout()
-        plt.savefig(figure_filename)#, dpi=200)  # ,dpi=200)
+        plt.savefig(figure_file)#, dpi=200)  # ,dpi=200)
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
         self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_filename)[-1],
-                               "file path": figure_filename}
-        print(r"%s" % figure_filename, "created and saved in", str(end-start), "s.", show=verbose)
+                               "file name": path.split(figure_file)[-1],
+                               "file path": figure_file}
+        print(r"%s" % figure_file, "created and saved in", str(end-start), "s.", show=verbose)
         print("Plot done and saved in", end-start, "s.", show=verbose)
 
     def plot_corners_2samp(self, X1, X2, W1=None, W2=None, pars=None, max_points=None, nbins=50, pars_labels=None,
@@ -3168,7 +3200,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                      ranges_extend=None, title1 = None, title2 = None,
                      color1="green", color2="red", 
                      plot_title="Params contours", legend_labels=None, legend_loc="upper right",
-                     figure_filename=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
+                     figure_file=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -3182,7 +3214,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ranges = extend_corner_range(X1, X2, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
+        figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -3301,9 +3333,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         fig.legend(lines, legend_labels, fontsize=int(
             7+2*nndims), loc=legend_loc, bbox_to_anchor=(0.95, 0.8))
         #plt.tight_layout()
-        plt.savefig(figure_filename, dpi=50)  # ,dpi=200)
+        plt.savefig(figure_file, dpi=50)  # ,dpi=200)
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
         self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
@@ -3311,9 +3343,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_filename)[-1],
-                               "file path": figure_filename}
-        print(r"%s" % figure_filename, "created and saved in", str(end-start), "s.", show=verbose)
+                               "file name": path.split(figure_file)[-1],
+                               "file path": figure_file}
+        print(r"%s" % figure_file, "created and saved in", str(end-start), "s.", show=verbose)
         print("Plot done and saved in", end-start, "s.", show=verbose)
 
     def corner_select_data(self,string, weights):
@@ -3402,13 +3434,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                   # HPDI_dic={"sample": "train", "type": "true"},
                                                                   # ranges_extend=None, title = None, color="green",
                                                                   # plot_title="Params contours", legend_labels=None, 
-                                                                  # figure_filename=None, show_plot=False, overwrite=False, verbose=None
+                                                                  # figure_file=None, show_plot=False, overwrite=False, verbose=None
                                   plot_corners_2samp_kwargs={},   # W1=None, W2=None, pars=None, max_points=None, nbins=50, pars_labels=None,
                                                                   # HPDI1_dic={"sample": "train", "type": "true"}, HPDI2_dic={"sample": "test", "type": "true"},
                                                                   # ranges_extend=None, title1 = None, title2 = None,
                                                                   # color1="green", color2="red", 
                                                                   # plot_title="Params contours", legend_labels=None, 
-                                                                  # figure_filename=None, show_plot=False, overwrite=False, verbose=None
+                                                                  # figure_file=None, show_plot=False, overwrite=False, verbose=None
                                   # sources=None, timestamp=None, show_plot=False, overwrite=False, verbose=None
                                   plot_tmu_sources_1d_kwargs={},  # sources=["likelihood","model","train","val","test"], timestamp=None, show_plot=False,overwrite=False, verbose=None
                                   overwrite=False,
@@ -3765,7 +3797,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                r"$68.27\%$ HPDI", 
                                                                r"$95.45\%$ HPDI", 
                                                                r"$99.73\%$ HPDI"],
-                                                figure_filename=self.output_figures_base_file+"_corner_pars_"+string+".pdf",
+                                                figure_file=self.output_figures_base_file+"_corner_pars_"+string+".pdf",
                                                 timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_1samp_kwargs)
                 #### 2sample corner plots
                 if len(plots["plot_corners_2samp"])>0:
@@ -3787,7 +3819,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                  r"$68.27\%$ HPDI", 
                                                                  r"$95.45\%$ HPDI", 
                                                                  r"$99.73\%$ HPDI"],
-                                                figure_filename=self.output_figures_base_file+"_corner_pars_"+string1+"_vs_"+string2+".pdf",
+                                                figure_file=self.output_figures_base_file+"_corner_pars_"+string1+"_vs_"+string2+".pdf",
                                                 timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_2samp_kwargs)
             if model_predictions["Frequentist_inference"]:
                 # Make tmu plot for Frequentist inference

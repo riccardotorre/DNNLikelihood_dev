@@ -112,7 +112,8 @@ class Lik(Verbosity):
         to set the attributes corresponding to input files
         
             - :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`,
-            - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
+            - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`,
+            - :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>`
 
         depending on the value of the 
         :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>` attribute.
@@ -120,10 +121,12 @@ class Lik(Verbosity):
         if self.input_file == None:
             self.input_h5_file = None
             self.input_log_file = None
+            self.input_folder = None
         else:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
             self.input_h5_file = self.input_file+".h5"
             self.input_log_file = self.input_file+".log"
+            self.input_folder = path.split(self.input_file)[0]
 
     def __check_define_output_files(self):
         """
@@ -138,6 +141,7 @@ class Lik(Verbosity):
             - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>`
             - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>`
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
+            - :attr:`Lik.output_predictions_json_file <DNNLikelihood.Lik.output_predictions_json_file>`
             - :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`
 
         depending on the value of the
@@ -153,6 +157,7 @@ class Lik(Verbosity):
         self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
+        self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         self.script_file = path.join(self.output_folder, self.name+"_script.py")
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
 
@@ -371,7 +376,8 @@ class Lik(Verbosity):
                 If ``"dump"``, a dump of the file is saved through the 
                 :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
                     
-                    - **type**: ``bool``
+                    - **type**: ``bool`` or ``str``
+                    - **allowed str**: ``"dump"``
                     - **default**: ``False``
 
             - **verbose**
@@ -408,6 +414,35 @@ class Lik(Verbosity):
         elif overwrite == "dump":
             print("Likelihood log file dump", output_log_file, "saved in", str(end-start), "s.", show=verbose)
 
+    def save_predictions_json(self, timestamp=None,overwrite=False, verbose=None):
+        """ Save predictions json
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        if type(overwrite) == bool:
+            output_predictions_json_file = self.output_predictions_json_file
+            if not overwrite:
+                utils.check_rename_file(output_predictions_json_file, verbose=verbose_sub)
+        elif overwrite == "dump":
+            output_predictions_json_file = utils.generate_dump_file_path(self.output_predictions_json_file, timestamp=timestamp)
+        dictionary = utils.convert_types_dict(self.predictions)
+        with codecs.open(output_predictions_json_file, "w", encoding="utf-8") as f:
+            json.dump(dictionary, f, separators=(",", ":"), indent=4)
+        end = timer()
+        self.log[timestamp] = {"action": "saved predictions json",
+                               "file name": path.split(output_predictions_json_file)[-1],
+                               "file path": output_predictions_json_file}
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
+        if type(overwrite) == bool:
+            if overwrite:
+                print("Predictions json file", output_predictions_json_file, "updated in", str(end-start), "s.", show=verbose)
+            else:
+                print("Predictions json file", output_predictions_json_file, "saved in", str(end-start), "s.", show=verbose)
+        elif overwrite == "dump":
+            print("Predictions json file dump", output_predictions_json_file, "saved in", str(end-start), "s.", show=verbose)
+
     def save(self, timestamp=None, overwrite=False, verbose=None):
         """
         The :class:`Lik <DNNLikelihood.Lik>` object is saved to the HDF5 file
@@ -425,6 +460,7 @@ class Lik(Verbosity):
             - :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>`
             - :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`
             - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
+            - :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>`
             - :attr:`Lik.log <DNNLikelihood.Lik.log>` (saved to the file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`)
             - :attr:`Lik.verbose <DNNLikelihood.Lik.verbose>`
 
@@ -449,7 +485,8 @@ class Lik(Verbosity):
                 If ``"dump"``, a dump of the file is saved through the 
                 :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
                     
-                    - **type**: ``bool``
+                    - **type**: ``bool`` or ``str``
+                    - **allowed str**: ``"dump"``
                     - **default**: ``False``
 
             - **verbose**
@@ -476,8 +513,8 @@ class Lik(Verbosity):
         elif overwrite == "dump":
             output_h5_file = utils.generate_dump_file_path(self.output_h5_file, timestamp=timestamp)
         dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", "input_h5_file",
-                                                          "input_log_file", "logpdf",
-                                                          "log", "verbose"])
+                                                          "input_log_file", "input_folder",
+                                                          "logpdf", "log", "verbose"])
         dump = np.void(cloudpickle.dumps(self.logpdf))
         dictionary = {**dictionary, **{"logpdf_dump": dump}}
         dd.io.save(output_h5_file, dictionary)
@@ -485,7 +522,8 @@ class Lik(Verbosity):
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(output_h5_file)[-1],
                                "file path": output_h5_file}
-        self.save_log(overwrite=overwrite, verbose=verbose)
+        self.save_predictions_json(timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub)
+        self.save_log(overwrite=overwrite, verbose=verbose_sub)
         if type(overwrite) == bool:
             if overwrite:
                 print("Likelihood h5 file", output_h5_file, "updated in", str(end-start), "s.", show=verbose)
@@ -519,7 +557,8 @@ class Lik(Verbosity):
                 If ``"dump"``, a dump of the file is saved through the 
                 :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
                     
-                    - **type**: ``bool``
+                    - **type**: ``bool`` or ``str``
+                    - **allowed str**: ``"dump"``
                     - **default**: ``False``
                     
             - **verbose**
@@ -778,7 +817,8 @@ class Lik(Verbosity):
                 If ``"dump"``, a dump of the file is saved through the 
                 :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
                     
-                    - **type**: ``bool``
+                    - **type**: ``bool`` or ``str``
+                    - **allowed str**: ``"dump"``
                     - **default**: ``False``
 
             - **verbose**
@@ -976,7 +1016,8 @@ class Lik(Verbosity):
                 If ``"dump"``, a dump of the file is saved through the 
                 :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
                     
-                    - **type**: ``bool``
+                    - **type**: ``bool`` or ``str``
+                    - **allowed str**: ``"dump"``
                     - **default**: ``False``
 
             - **verbose**
@@ -1071,7 +1112,8 @@ class Lik(Verbosity):
         self.compute_maximum_logpdf(pars_init=pars_init,
                                     optimizer=optimizer,
                                     timestamp=timestamp,
-                                    save=True,
+                                    save=False,
+                                    overwrite=False,
                                     verbose=verbose_sub)
         self.predictions["logpdf_profiled_max"][timestamp]["tmu"] = np.array(list(zip(X_tmp[:, pars].flatten(), -2*(Y_tmp-self.predictions["logpdf_max"][timestamp]["y"]))))
         self.predictions["logpdf_profiled_max"][timestamp]["pars"] = pars
@@ -1093,43 +1135,51 @@ class Lik(Verbosity):
         print("Log-pdf values lie in the range [", np.min(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), ",", np.max(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), "]", show=verbose)
         print(len(pars_vals_bounded),"local maxima computed in", end-start, "s.",show=verbose)
 
-    def update_figures(self,figure_filename=None,overwrite=False):
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False):
         """
-        Method that renames old figure files when new ones are produced with the argument ``overwrite=False``. It calls the 
-        :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if the
-        renamed figure already existed in the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then it
+        Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
+        When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 
+        ``figure_file`` already existed in the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then it
         updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp 
         (that is the key of the :attr:`Lik.predictions["Figures"] <DNNLikelihood.Lik.predictions>` dictionary).
+        When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function
+        to generate the dump file name.
+        It returns the new figure_file.
 
         - **Arguments**
 
-            - **figure_filename**
+            - **figure_file**
 
-                Name of the newly generated figure. that is being saved with ``overwrite=False``. If the figure already exists in the 
-                :meth:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then its name is updated 
-                accoding to the new file name).
+                Figure file path. If the figure already exists in the 
+                :meth:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then its name is updated with the corresponding timestamp.
 
             - **overwrite**
 
                 The method updates file names and :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary only if
-                ``overwrite=False``. If ``overwrite=True`` the method does nothing.
+                ``overwrite=False``. If ``overwrite="dump"`` the method generates and returns the dump file path. 
+                If ``overwrite=True`` the method does nothing.
         
         - **Creates/updates files**
 
-            - Updates ``figure_filename`` file name.
+            - Updates ``figure_file`` file name.
         """
-        if figure_filename is None:
-            raise Exception("figure_filename input argument of update_figures method needs to be specified while it is None.")
+        if figure_file is None:
+            raise Exception("figure_file input argument of update_figures method needs to be specified while it is None.")
         else:
-            if not overwrite:
-                # search figure
-                timestamp=None
-                for k, v in self.predictions["Figures"].items():
-                    if figure_filename in v:
-                        timestamp = k
-                    old_figure_filename = utils.check_rename_file(figure_filename,timestamp=timestamp)
-                    if old_figure_filename is not None:
-                        self.predictions["Figures"][k] = [q.replace(figure_filename,old_figure_filename) for q in v]
+            new_figure_file = figure_file
+            if type(overwrite) == bool:
+                if not overwrite:
+                    # search figure
+                    timestamp=None
+                    for k, v in self.predictions["Figures"].items():
+                        if figure_file in v:
+                            timestamp = k
+                        old_figure_file = utils.check_rename_file(figure_file,timestamp=timestamp)
+                        if old_figure_file is not None:
+                            self.predictions["Figures"][k] = [q.replace(figure_file,old_figure_file) for q in v]
+            elif overwrite == "dump":
+                new_figure_file = utils.generate_dump_file_path(figure_file, timestamp=timestamp)
+        return new_figure_file
 
     def plot_logpdf_par(self, 
                         pars=[[0,0,1]], 
@@ -1222,7 +1272,8 @@ class Lik(Verbosity):
                 If ``"dump"``, a dump of the file is saved through the 
                 :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
                     
-                    - **type**: ``bool``
+                    - **type**: ``bool`` or ``str``
+                    - **allowed str**: ``"dump"``
                     - **default**: ``False``
 
             - **verbose**
@@ -1259,19 +1310,18 @@ class Lik(Verbosity):
             plt.xlabel(r"%s" % pars_labels[par_number])
             plt.ylabel(r"logpdf")
             plt.tight_layout()
-            figure_filename = self.output_figures_base_file + "_par_"+str(par[0])+".pdf"
-            self.update_figures(figure_filename=figure_filename,overwrite=overwrite)
-            plt.savefig(figure_filename)
+            figure_file = self.update_figures(figure_file=self.output_figures_base_file + "_par_"+str(par[0])+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            plt.savefig(figure_file)
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
             if show_plot:
                 plt.show()
             plt.close()
             end = timer()
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_filename)[-1], 
-                                   "file path": figure_filename}
-            print(r"%s" % (figure_filename), "created and saved in",str(end-start), "s.", show=verbose)
+                                   "file name": path.split(figure_file)[-1], 
+                                   "file path": figure_file}
+            print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
         self.save_log(overwrite=True, verbose=verbose_sub)
         
     def plot_tmu_1d(self,
@@ -1332,7 +1382,8 @@ class Lik(Verbosity):
                 If ``"dump"``, a dump of the file is saved through the 
                 :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
                     
-                    - **type**: ``bool``
+                    - **type**: ``bool`` or ``str``
+                    - **allowed str**: ``"dump"``
                     - **default**: ``False``
 
             - **verbose**
@@ -1360,26 +1411,25 @@ class Lik(Verbosity):
             par = pars_list[0]
         else:
             raise Exception("Parameters should be  should be the same for the different tmu sources.")
-        figure_filename = self.output_figures_base_file+ "_tmu_"+str(par) + ".pdf"
-        self.update_figures(figure_filename=figure_filename, overwrite=overwrite)
+        figure_file = self.update_figures(figure_file=self.output_figures_base_file+ "_tmu_"+str(par) + ".pdf",timestamp=timestamp,overwrite=overwrite)
         plt.plot(tmu_list[:, 0], tmu_list[:,-1], label="Likelihood")
         plt.title(r"%s" % self.name, fontsize=title_fontsize)
         plt.xlabel(r"$t_{\mu}$(%s)" % (self.pars_labels[par]))
         plt.ylabel(r"%s" % (self.pars_labels[par]))
         plt.legend()
         plt.tight_layout()
-        plt.savefig(r"%s" % figure_filename)
+        plt.savefig(r"%s" % figure_file)
         utils.check_set_dict_keys(self.predictions["Figures"], [timestamp], [[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_filename)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
         self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_filename)[-1],
-                               "file path": figure_filename}
+                               "file name": path.split(figure_file)[-1],
+                               "file path": figure_file}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print(r"%s" % (figure_filename), "created and saved in",str(end-start), "s.", show=verbose)
+        print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
 
             

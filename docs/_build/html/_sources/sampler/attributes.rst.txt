@@ -19,12 +19,6 @@ Attributes
 
         - **type**: ``str``
 
-.. py:attribute:: Sampler.figures_list
-
-    List of absolute paths to the generated figures.
-
-       - **type**: ``list`` of ``str`` 
-
 .. py:attribute:: Sampler.input_file   
 
     Absolute path corresponding to the input argument :argument:`input_file`.
@@ -195,7 +189,7 @@ Attributes
 .. py:attribute:: Sampler.ndims
 
     Number of dimensions of the input vector (i.e. number of parameters entering in the logpdf). 
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
     object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
     :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
 
@@ -249,17 +243,27 @@ Attributes
 
 .. py:attribute:: Sampler.output_figures_base_file
 
-    Absolute path to the saved figures. It includes the base figure name and is 
-    automatically generated from the
-    :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
-    :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
+   Absolute path to the saved figures. It includes the base figure name and is 
+   automatically generated from the
+   :attr:`Sampler.output_figures_folder <DNNLikelihood.Sampler.output_figures_folder>` and 
+   :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
 
-       - **type**: ``str``
+      - **type**: ``str`` 
+
+.. py:attribute:: Lik.output_figures_folder
+
+   Absolute path to the folder where figures are saved. It is 
+   automatically generated (and created by the 
+   :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
+   if not present) from the
+   :attr:`Sampler.output_folder <DNNLikelihood.Lik.output_folder>` attribute.
+
+      - **type**: ``str`` 
 
 .. py:attribute:: Sampler.output_folder
 
     Absolute path to the folder where all output files are saved.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
     object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
     :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
 
@@ -284,6 +288,22 @@ Attributes
     :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
     :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
 
+.. py:attribute:: Sampler.output_predictions_json_file
+
+    Absolute path to the .json file where the 
+    :attr:`Sampler.predictions <DNNLikelihood.Lik.predictions>`
+    dictionary is saved (see the :meth:`Sampler.save_predictions <DNNLikelihood.Sampler.save_predictions>`
+    method for details).
+    It is automatically generated from the
+    :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
+    :attr:`Sampler.name <DNNLikelihood.Lik.name>` attributes.
+    Notice that the file is only saved to provide human readable predictions. The 
+    :attr:`Sampler.predictions <DNNLikelihood.Sampler.predictions>` attribute is saved
+    and restored together with the other attributes in the 
+    :attr:`Sampler.output_h5_file <DNNLikelihood.Sampler.output_h5_file>` h5 file.
+
+      - **type**: ``str``
+
 .. py:attribute:: Sampler.parallel_CPU
 
     Attribute corresponding to the input argument :argument:`parallel_CPU`.
@@ -294,7 +314,7 @@ Attributes
 .. py:attribute:: Sampler.pars_bounds   
 
     |Numpy_link| array containing the parameters bounds.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
     object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
     :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
 
@@ -304,7 +324,7 @@ Attributes
 .. py:attribute:: Sampler.pars_central   
 
     |Numpy_link| array containing central values of the parameters.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
     object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
     :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
         
@@ -327,7 +347,7 @@ Attributes
 .. py:attribute:: Sampler.pars_labels   
 
     List containing parameters names as strings.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
     object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
     :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
     Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
@@ -352,7 +372,7 @@ Attributes
 .. py:attribute:: Sampler.pars_pos_nuis   
 
     |Numpy_link| array containing the positions in the parameters list of the nuisance parameters.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
     object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
     :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
 
@@ -362,12 +382,98 @@ Attributes
 .. py:attribute:: Sampler.pars_pos_poi   
 
     |Numpy_link| array containing the positions in the parameters list of the parameters of interest.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>
+    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
     object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
     :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
 
         - **type**: ``numpy.ndarray``
         - **shape**: ``(n_poi,)``
+
+.. py:attribute:: Sampler.predictions   
+
+    Nested dictionary containing predictions computed with the 
+    :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method,
+    and the list of figures generated by the
+    :meth:`Sampler.plot_gelman_rubin <DNNLikelihood.Sampler.plot_gelman_rubin>`,
+    :meth:`Sampler.plot_dist <DNNLikelihood.Sampler.plot_dist>`,
+    :meth:`Sampler.plot_chains <DNNLikelihood.Sampler.plot_chains>`, and
+    :meth:`Sampler.plot_chains_logpdf <DNNLikelihood.Sampler.plot_chains_logpdf>` methods.   
+
+        - **type**: ``dict`` with the following structure:
+
+            - *"gelman_rubin"* (value type: ``dict``)
+                Dictionary containing information on Gelman-Rubin convergernce metrics. This dictionary has the following structure:
+
+                - *"timestamp"* (value type: ``dict``)
+                    Dictionary containing information on Gelman-Rubin convergernce metrics computed at time ``timestamp``. 
+                    The key is a string of the form ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``.
+                    This dictionary has the following structure:
+
+                    - *"pars"* (value type: ``numpy.ndarray``, shape: ``(npars,)``)
+                        |Numpy_link| array of parameters for which the Gelman-Rubin metrics are computed.
+                        It corresponds to the ``pars`` input argument of the 
+                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
+                    - *"pars_vals"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+                        |Numpy_link| array of values of parameters for each point for which the Gelman-Rubin metrics are computed.
+                        The number of points corresponds to the product of the lengths of the ``pars`` and ``nsteps``
+                        input arguments of the 
+                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
+                    - *"nsteps"* (value type: ``numpy.ndarray``, shape: ``(len(nsteps),)``)
+                        |Numpy_link| array of number of steps for which the Gelman-Rubin metrics are computed.
+                    - *"Rc"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+                        |Numpy_link| array with :math:`R_{c}` values (see the 
+                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
+                        the definition)
+                    - *"Vhat"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+                        |Numpy_link| array with :math:`\\hat{V}` values (see the 
+                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
+                        the definition)
+                    - *"W"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+                        |Numpy_link| array with :math:`W` values (see the 
+                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
+                        the definition)
+                    - *"evaluation_times"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+                        Evaluation time for each point for which the Gelman-Rubin metrics are computed.
+                    - *"global_evaluation_time"* (value type: ``numpy.ndarray``, shape: ``(ndims,)``)
+                        Total evaluation time for the Gelman-Rubin metrics evaluated in the current call to the 
+                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
+
+        - *"Figures"* (value type: ``dict``)
+            Dictionary containing information on figures. This dictionary has the following structure:
+
+            - *"timestamp"* (value type: ``list``)
+                Dictionary containing the list of absolute paths of the figures produced at time ``timestamp``.
+
+      - **schematic example**:
+
+         .. code-block:: python
+
+            {'logpdf_max': {'timestamp1': {'x': numpy.ndarray,
+                                          'y': numpy.float64,
+                                          'pars_init': numpy.ndarray,
+                                          'optimizer': {'method': str,
+                                                        'options': {'maxiter': int, 
+                                                                    'ftol': float},
+                                                        'name': str},
+                                          'optimization_time': float},
+                            'timestamp2': ...}
+             'logpdf_profiled_max': {'timestamp1': {'X': numpy.ndarray,
+                                                   'Y': numpy.ndarray,
+                                                   'tmu': numpy.ndarray,
+                                                   'pars': list,
+                                                   'pars_ranges': list,
+                                                   'pars_init': numpy.ndarray,
+                                                   'pars_bounds': numpy.ndarray,
+                                                   'optimizer': {'method': str,
+                                                                 'options': {'maxiter': int, 
+                                                                             'ftol': float},
+                                                                 'name': str},
+                                                   'optimization_times': list,
+                                                   'global_optimization_time': numpy.float64},
+                                     'timestamp2': ...},
+             'Figures': {'timestamp1': [str, ...],
+                         'timestamp2': [str, ...],
+                         ...}
 
 .. py:attribute:: Sampler.sampler
 

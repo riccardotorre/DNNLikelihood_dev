@@ -120,6 +120,28 @@ def generate_dump_file_path(path, timestamp=None):
     dump_file_path = os.path.join(filepath, "dump_"+filename+"_"+timestamp+extension)
     return dump_file_path
 
+def replace_strings_in_file(filename, old_strings, new_string):
+    # Safely read the input filename using 'with'
+    with open(filename) as f:
+        found_any = []
+        s = f.read()
+        for old_string in old_strings:
+            if old_string not in s:
+                found_any.append(False)
+                #print('"{old_string}" not found in {filename}.'.format(**locals()))
+            else:
+                found_any.append(True)
+                #print('"{old_string}" found in {filename}.'.format(**locals()))
+        found_any = np.any(found_any)
+        if not found_any:
+            return
+    # Safely write the changed content, if found in the file
+    with open(filename, 'w') as f:
+        #print('Changing "{old_string}" to "{new_string}" in {filename}'.format(**locals()))
+        for old_string in old_strings:
+            s = s.replace(old_string, new_string)
+        f.write(s)
+
 def check_rename_file(path,timestamp=None,verbose=True):
     if os.path.exists(path):
         if timestamp == None:
@@ -137,7 +159,10 @@ def check_rename_file(path,timestamp=None,verbose=True):
             new_path = file.replace(match,now)+extension
         else:
             new_path = os.path.join(filepath,"old_"+now+"_"+filename+extension)
-        shutil.move("\\\\?\\" + path, "\\\\?\\" + new_path)
+        if 'win32' in sys.platform:
+            shutil.move("\\\\?\\" + path, "\\\\?\\" + new_path)
+        else:
+            shutil.move(path, new_path)
         return new_path
         #print("New file name set to", path)
     #return path

@@ -1158,7 +1158,7 @@ class Data(Verbosity):
                            weights=None, pars=None, max_points=None, nbins=50, pars_labels="original",
                            ranges_extend=None, title = "", color="green",
                            plot_title="Corner plot", legend_labels=None, 
-                           figure_filename=None, show_plot=False, overwrite=False, verbose=None):
+                           figure_file=None, show_plot=False, overwrite=False, verbose=None):
         """
         Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters ``pars`` in the ``X`` array.
 
@@ -1267,7 +1267,7 @@ class Data(Verbosity):
                     - **type**: ``str`` or ``None``
                     - **default**: ``None``
 
-            - **figure_filename**
+            - **figure_file**
 
                 File name for the saved figure.
                 If ``None`` file name is automatically generated.
@@ -1322,13 +1322,13 @@ class Data(Verbosity):
             ranges = extend_corner_range(X, X, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        if figure_filename == None:
-            figure_filename = self.output_figures_base_file+"_corner_posterior_pars_" + "_".join([str(i) for i in pars]) +".pdf"
+        if figure_file == None:
+            figure_file = self.output_figures_base_file+"_corner_posterior_pars_" + "_".join([str(i) for i in pars]) +".pdf"
         else:
-            figpath, figname, figext = [path.split(figure_filename)[0]]+list(path.splitext(path.split(figure_filename)[1]))
-            figure_filename = self.output_figures_base_file +"_"+ figname + ".pdf"
+            figpath, figname, figext = [path.split(figure_file)[0]]+list(path.splitext(path.split(figure_file)[1]))
+            figure_file = self.output_figures_base_file +"_"+ figname + ".pdf"
         if not overwrite:
-            utils.check_rename_file(figure_filename)
+            utils.check_rename_file(figure_file)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -1394,8 +1394,8 @@ class Data(Verbosity):
             legend_labels = [intervals_str[i] for i in range(len(intervals))]
         fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc="upper right")#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
         #plt.tight_layout()
-        plt.savefig(figure_filename)#, dpi=200)  # ,dpi=200)
-        utils.append_without_duplicate(self.figures_list, figure_filename)
+        plt.savefig(figure_file)#, dpi=200)  # ,dpi=200)
+        utils.append_without_duplicate(self.figures_list, figure_file)
         self.figures_list = utils.check_figures_list(self.figures_list)
         if show_plot:
             plt.show()
@@ -1403,7 +1403,7 @@ class Data(Verbosity):
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_filename)[-1],
-                               "file path": figure_filename}
-        print(r"%s" % figure_filename, "created and saved in", str(end-start), "s.", show=verbose)
+                               "file name": path.split(figure_file)[-1],
+                               "file path": figure_file}
+        print(r"%s" % figure_file, "created and saved in", str(end-start), "s.", show=verbose)
         print("Plot done and saved in", end-start, "s.", show=verbose)

@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>DNNLikelihood.data &mdash; DNNLikelihood</title>
   
@@ -19,7 +19,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -36,7 +39,7 @@
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
@@ -57,7 +60,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+            <a href="../../index.html" class="icon icon-home"> DNNLikelihood
           
 
           
@@ -123,6 +126,8 @@
         <div class="rst-content">
         
           
+
+
 
 
 
@@ -1322,7 +1327,7 @@
                            <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">pars_labels</span><span class="o">=</span><span class="s2">&quot;original&quot;</span><span class="p">,</span>
                            <span class="n">ranges_extend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
                            <span class="n">plot_title</span><span class="o">=</span><span class="s2">&quot;Corner plot&quot;</span><span class="p">,</span> <span class="n">legend_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                           <span class="n">figure_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                           <span class="n">figure_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters ``pars`` in the ``X`` array.</span>
 
@@ -1431,7 +1436,7 @@
 <span class="sd">                    - **type**: ``str`` or ``None``</span>
 <span class="sd">                    - **default**: ``None``</span>
 
-<span class="sd">            - **figure_filename**</span>
+<span class="sd">            - **figure_file**</span>
 
 <span class="sd">                File name for the saved figure.</span>
 <span class="sd">                If ``None`` file name is automatically generated.</span>
@@ -1486,13 +1491,13 @@
             <span class="n">ranges</span> <span class="o">=</span> <span class="n">extend_corner_range</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">ranges_extend</span><span class="p">)</span>
         <span class="n">pars_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_pars_labels</span><span class="p">(</span><span class="n">pars_labels</span><span class="p">)</span>
         <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pars_labels</span><span class="p">)[</span><span class="n">pars</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">figure_filename</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">figure_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span><span class="o">+</span><span class="s2">&quot;_corner_posterior_pars_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">])</span> <span class="o">+</span><span class="s2">&quot;.pdf&quot;</span>
+        <span class="k">if</span> <span class="n">figure_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">figure_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span><span class="o">+</span><span class="s2">&quot;_corner_posterior_pars_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">])</span> <span class="o">+</span><span class="s2">&quot;.pdf&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">figpath</span><span class="p">,</span> <span class="n">figname</span><span class="p">,</span> <span class="n">figext</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="nb">list</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
-            <span class="n">figure_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span> <span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span> <span class="n">figname</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
+            <span class="n">figpath</span><span class="p">,</span> <span class="n">figname</span><span class="p">,</span> <span class="n">figext</span> <span class="o">=</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span><span class="o">+</span><span class="nb">list</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">figure_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span> <span class="o">+</span><span class="s2">&quot;_&quot;</span><span class="o">+</span> <span class="n">figname</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)</span>
         <span class="n">nndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">max_points</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">max_points</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
@@ -1558,8 +1563,8 @@
             <span class="n">legend_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">intervals_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intervals</span><span class="p">))]</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">legend_labels</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">7</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">nndims</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span><span class="c1">#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))</span>
         <span class="c1">#plt.tight_layout()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)</span><span class="c1">#, dpi=200)  # ,dpi=200)</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">append_without_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figures_list</span><span class="p">,</span> <span class="n">figure_filename</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)</span><span class="c1">#, dpi=200)  # ,dpi=200)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">append_without_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figures_list</span><span class="p">,</span> <span class="n">figure_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figures_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figures_list</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -1567,9 +1572,9 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved figure&quot;</span><span class="p">,</span>
-                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">figure_filename</span><span class="p">}</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">figure_filename</span><span class="p">,</span> <span class="s2">&quot;created and saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">figure_file</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">figure_file</span><span class="p">,</span> <span class="s2">&quot;created and saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Plot done and saved in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div></div>
 </pre></div>
 
@@ -1577,28 +1582,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

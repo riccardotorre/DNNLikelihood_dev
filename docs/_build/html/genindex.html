@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Index &mdash; DNNLikelihood</title>
   
@@ -19,7 +19,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -32,12 +35,9 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -57,7 +57,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+            <a href="index.html" class="icon icon-home"> DNNLikelihood
           
 
           
@@ -143,6 +143,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -154,7 +156,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
         
       </li>
     
@@ -446,6 +448,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="sampler/methods.html#DNNLikelihood.Sampler.compute_gelman_rubin">compute_gelman_rubin() (Sampler method)</a>
+</li>
       <li><a href="inference.html#DNNLikelihood.inference.compute_maximum_logpdf">compute_maximum_logpdf() (in module DNNLikelihood.inference)</a>
 
       <ul>
@@ -592,16 +596,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.fig_base_title">fig_base_title (DnnLik attribute)</a>
 </li>
-      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.figures_list">figures_list (DnnLik attribute)</a>
-
-      <ul>
-        <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.figures_list">(Lik attribute)</a>
-</li>
-        <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.figures_list">(Sampler attribute)</a>
-</li>
-      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.figures_list">figures_list (DnnLik attribute)</a>
+</li>
       <li><a href="utils.html#DNNLikelihood.utils.flatten_list">flatten_list() (in module DNNLikelihood.utils)</a>
 </li>
   </ul></td>
@@ -610,8 +608,6 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sampler/methods.html#DNNLikelihood.Sampler.gelman_rubin">gelman_rubin() (Sampler method)</a>
-</li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.generate_fig_base_title">generate_fig_base_title() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.generate_summary_text">generate_summary_text() (DnnLik method)</a>
@@ -632,14 +628,14 @@
       </ul></li>
       <li><a href="data/methods.html#DNNLikelihood.Data.generate_train_indices">generate_train_indices() (Data method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DNNLikelihood.DnnLik.get_available_cpu">get_available_cpu() (DNNLikelihood.DnnLik method)</a>
 
       <ul>
         <li><a href="resources/methods.html#DNNLikelihood.Resources.get_available_cpu">(Resources method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DNNLikelihood.DnnLik.get_available_gpus">get_available_gpus() (DNNLikelihood.DnnLik method)</a>
 
       <ul>
@@ -740,8 +736,12 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.input_folder">input_folder (Sampler attribute)</a>
+      <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.input_folder">input_folder (Lik attribute)</a>
+
+      <ul>
+        <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.input_folder">(Sampler attribute)</a>
 </li>
+      </ul></li>
       <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.input_h5_file">input_h5_file (Histfactory attribute)</a>
 
       <ul>
@@ -1063,7 +1063,11 @@
 </li>
       </ul></li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_figures_folder">output_figures_folder (DnnLik attribute)</a>
+
+      <ul>
+        <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_figures_folder">(Lik attribute)</a>, <a href="sampler/attributes.html#DNNLikelihood.Lik.output_figures_folder">[1]</a>
 </li>
+      </ul></li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_files_base_name">output_files_base_name (DnnLik attribute)</a>
 </li>
       <li><a href="data/arguments.html#Data.output_folder">output_folder (Data argument)</a>
@@ -1118,6 +1122,12 @@
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_predictions_h5_file">output_predictions_h5_file (DnnLik attribute)</a>
 </li>
+      <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_predictions_json_file">output_predictions_json_file (Lik attribute)</a>
+
+      <ul>
+        <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.output_predictions_json_file">(Sampler attribute)</a>
+</li>
+      </ul></li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.output_samples_h5_file">output_samples_h5_file (Data attribute)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_scalers_pickle_file">output_scalers_pickle_file (DnnLik attribute)</a>
@@ -1270,6 +1280,8 @@
 
       <ul>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.predictions">(Lik attribute)</a>
+</li>
+        <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.predictions">(Sampler attribute)</a>
 </li>
       </ul></li>
       <li><a href="show_prints.html#DNNLikelihood.print">print() (in module DNNLikelihood)</a>
@@ -1603,28 +1615,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

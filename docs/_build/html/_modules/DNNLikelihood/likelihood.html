@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>DNNLikelihood.likelihood &mdash; DNNLikelihood</title>
   
@@ -19,7 +19,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -32,12 +35,9 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script src="../../_static/language_data.js"></script>
         <script src="../../_static/clipboard.min.js"></script>
         <script src="../../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -57,7 +57,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+            <a href="../../index.html" class="icon icon-home"> DNNLikelihood
           
 
           
@@ -123,6 +123,8 @@
         <div class="rst-content">
         
           
+
+
 
 
 
@@ -276,7 +278,8 @@
 <span class="sd">        to set the attributes corresponding to input files</span>
 <span class="sd">        </span>
 <span class="sd">            - :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;`,</span>
-<span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`,</span>
+<span class="sd">            - :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;`</span>
 
 <span class="sd">        depending on the value of the </span>
 <span class="sd">        :attr:`Lik.input_file &lt;DNNLikelihood.Lik.input_file&gt;` attribute.</span>
@@ -284,10 +287,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_h5_file</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">input_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__check_define_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -302,6 +307,7 @@
 <span class="sd">            - :attr:`Lik.output_figures_base_file &lt;DNNLikelihood.Lik.output_figures_base_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_predictions_json_file &lt;DNNLikelihood.Lik.output_predictions_json_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.script_file &lt;DNNLikelihood.Lik.script_file&gt;`</span>
 
 <span class="sd">        depending on the value of the</span>
@@ -317,6 +323,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span> <span class="o">=</span>  <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;figures&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_predictions_json_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_predictions.json&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_script.py&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_figure&quot;</span><span class="p">)</span>
 
@@ -535,7 +542,8 @@
 <span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
 <span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -572,6 +580,35 @@
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Likelihood log file dump&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
+    <span class="k">def</span> <span class="nf">save_predictions_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Save predictions json</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">output_predictions_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_predictions_json_file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="n">output_predictions_json_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved predictions json&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">output_predictions_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">output_predictions_json_file</span><span class="p">}</span>
+        <span class="c1">#self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predictions json file&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predictions json file&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Predictions json file dump&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Lik.save"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The :class:`Lik &lt;DNNLikelihood.Lik&gt;` object is saved to the HDF5 file</span>
@@ -589,6 +626,7 @@
 <span class="sd">            - :attr:`Lik.input_file &lt;DNNLikelihood.Lik.input_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;`</span>
 <span class="sd">            - :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` (saved to the file :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`)</span>
 <span class="sd">            - :attr:`Lik.verbose &lt;DNNLikelihood.Lik.verbose&gt;`</span>
 
@@ -613,7 +651,8 @@
 <span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
 <span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -640,8 +679,8 @@
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
             <span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;input_file&quot;</span><span class="p">,</span> <span class="s2">&quot;input_h5_file&quot;</span><span class="p">,</span>
-                                                          <span class="s2">&quot;input_log_file&quot;</span><span class="p">,</span> <span class="s2">&quot;logpdf&quot;</span><span class="p">,</span>
-                                                          <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
+                                                          <span class="s2">&quot;input_log_file&quot;</span><span class="p">,</span> <span class="s2">&quot;input_folder&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;logpdf&quot;</span><span class="p">,</span> <span class="s2">&quot;log&quot;</span><span class="p">,</span> <span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
         <span class="n">dump</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">void</span><span class="p">(</span><span class="n">cloudpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">))</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">dictionary</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;logpdf_dump&quot;</span><span class="p">:</span> <span class="n">dump</span><span class="p">}}</span>
         <span class="n">dd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output_h5_file</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">)</span>
@@ -649,7 +688,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved&quot;</span><span class="p">,</span>
                                <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">output_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">output_h5_file</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_predictions_json</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Likelihood h5 file&quot;</span><span class="p">,</span> <span class="n">output_h5_file</span><span class="p">,</span> <span class="s2">&quot;updated in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -683,7 +723,8 @@
 <span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
 <span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 <span class="sd">                    </span>
 <span class="sd">            - **verbose**</span>
@@ -942,7 +983,8 @@
 <span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
 <span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -1140,7 +1182,8 @@
 <span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
 <span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -1235,7 +1278,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">compute_maximum_logpdf</span><span class="p">(</span><span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
                                     <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
                                     <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
-                                    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;tmu&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">X_tmp</span><span class="p">[:,</span> <span class="n">pars</span><span class="p">]</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">Y_tmp</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">]))))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars</span>
@@ -1257,43 +1301,51 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Log-pdf values lie in the range [&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">]),</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">]),</span> <span class="s2">&quot;]&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals_bounded</span><span class="p">),</span><span class="s2">&quot;local maxima computed in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Lik.update_figures"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.update_figures">[docs]</a>    <span class="k">def</span> <span class="nf">update_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">figure_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Lik.update_figures"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.update_figures">[docs]</a>    <span class="k">def</span> <span class="nf">update_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">figure_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Method that renames old figure files when new ones are produced with the argument ``overwrite=False``. It calls the </span>
-<span class="sd">        :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function and, if the</span>
-<span class="sd">        renamed figure already existed in the :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary, then it</span>
+<span class="sd">        Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. </span>
+<span class="sd">        When ``overwrite=False`` it calls the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function and, if </span>
+<span class="sd">        ``figure_file`` already existed in the :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary, then it</span>
 <span class="sd">        updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp </span>
 <span class="sd">        (that is the key of the :attr:`Lik.predictions[&quot;Figures&quot;] &lt;DNNLikelihood.Lik.predictions&gt;` dictionary).</span>
+<span class="sd">        When ``overwrite=&quot;dump&quot;`` it calls the :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function</span>
+<span class="sd">        to generate the dump file name.</span>
+<span class="sd">        It returns the new figure_file.</span>
 
 <span class="sd">        - **Arguments**</span>
 
-<span class="sd">            - **figure_filename**</span>
+<span class="sd">            - **figure_file**</span>
 
-<span class="sd">                Name of the newly generated figure. that is being saved with ``overwrite=False``. If the figure already exists in the </span>
-<span class="sd">                :meth:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary, then its name is updated </span>
-<span class="sd">                accoding to the new file name).</span>
+<span class="sd">                Figure file path. If the figure already exists in the </span>
+<span class="sd">                :meth:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary, then its name is updated with the corresponding timestamp.</span>
 
 <span class="sd">            - **overwrite**</span>
 
 <span class="sd">                The method updates file names and :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary only if</span>
-<span class="sd">                ``overwrite=False``. If ``overwrite=True`` the method does nothing.</span>
+<span class="sd">                ``overwrite=False``. If ``overwrite=&quot;dump&quot;`` the method generates and returns the dump file path. </span>
+<span class="sd">                If ``overwrite=True`` the method does nothing.</span>
 <span class="sd">        </span>
 <span class="sd">        - **Creates/updates files**</span>
 
-<span class="sd">            - Updates ``figure_filename`` file name.</span>
+<span class="sd">            - Updates ``figure_file`` file name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">figure_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;figure_filename input argument of update_figures method needs to be specified while it is None.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">figure_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;figure_file input argument of update_figures method needs to be specified while it is None.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
-                <span class="c1"># search figure</span>
-                <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span>
-                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="n">figure_filename</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
-                        <span class="n">timestamp</span> <span class="o">=</span> <span class="n">k</span>
-                    <span class="n">old_figure_filename</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">old_figure_filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">,</span><span class="n">old_figure_filename</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span></div>
+            <span class="n">new_figure_file</span> <span class="o">=</span> <span class="n">figure_file</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                    <span class="c1"># search figure</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">figure_file</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                            <span class="n">timestamp</span> <span class="o">=</span> <span class="n">k</span>
+                        <span class="n">old_figure_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">old_figure_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span><span class="n">old_figure_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+                <span class="n">new_figure_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_path</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_figure_file</span></div>
 
 <div class="viewcode-block" id="Lik.plot_logpdf_par"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.plot_logpdf_par">[docs]</a>    <span class="k">def</span> <span class="nf">plot_logpdf_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                         <span class="n">pars</span><span class="o">=</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span> 
@@ -1386,7 +1438,8 @@
 <span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
 <span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -1423,19 +1476,18 @@
             <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">pars_labels</span><span class="p">[</span><span class="n">par_number</span><span class="p">])</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;logpdf&quot;</span><span class="p">)</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-            <span class="n">figure_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span> <span class="o">+</span> <span class="s2">&quot;_par_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;.pdf&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_figures</span><span class="p">(</span><span class="n">figure_filename</span><span class="o">=</span><span class="n">figure_filename</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)</span>
+            <span class="n">figure_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_figures</span><span class="p">(</span><span class="n">figure_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span> <span class="o">+</span> <span class="s2">&quot;_par_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">par</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;.pdf&quot;</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span> 
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">check_set_dict_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],[</span><span class="n">timestamp</span><span class="p">],[[]],</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">utils</span><span class="o">.</span><span class="n">append_without_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">],</span> <span class="n">figure_filename</span><span class="p">)</span>
+            <span class="n">utils</span><span class="o">.</span><span class="n">append_without_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">],</span> <span class="n">figure_file</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved figure&quot;</span><span class="p">,</span> 
-                                   <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> 
-                                   <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">figure_filename</span><span class="p">}</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figure_filename</span><span class="p">),</span> <span class="s2">&quot;created and saved in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                                   <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> 
+                                   <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">figure_file</span><span class="p">}</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figure_file</span><span class="p">),</span> <span class="s2">&quot;created and saved in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="Lik.plot_tmu_1d"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.plot_tmu_1d">[docs]</a>    <span class="k">def</span> <span class="nf">plot_tmu_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -1496,7 +1548,8 @@
 <span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
 <span class="sd">                :func:`utils.generate_dump_file_path &lt;DNNLikelihood.utils.generate_dump_file_path&gt;` function.</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **type**: ``bool`` or ``str``</span>
+<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
 <span class="sd">                    - **default**: ``False``</span>
 
 <span class="sd">            - **verbose**</span>
@@ -1524,27 +1577,26 @@
             <span class="n">par</span> <span class="o">=</span> <span class="n">pars_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Parameters should be  should be the same for the different tmu sources.&quot;</span><span class="p">)</span>
-        <span class="n">figure_filename</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span><span class="o">+</span> <span class="s2">&quot;_tmu_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">par</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">update_figures</span><span class="p">(</span><span class="n">figure_filename</span><span class="o">=</span><span class="n">figure_filename</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+        <span class="n">figure_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_figures</span><span class="p">(</span><span class="n">figure_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file</span><span class="o">+</span> <span class="s2">&quot;_tmu_&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">par</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.pdf&quot;</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tmu_list</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">tmu_list</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Likelihood&quot;</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">title_fontsize</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$t_{\mu}$(</span><span class="si">%s</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span><span class="p">[</span><span class="n">par</span><span class="p">]))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_labels</span><span class="p">[</span><span class="n">par</span><span class="p">]))</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">figure_filename</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">figure_file</span><span class="p">)</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">check_set_dict_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],</span> <span class="p">[</span><span class="n">timestamp</span><span class="p">],</span> <span class="p">[[]],</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">utils</span><span class="o">.</span><span class="n">append_without_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">],</span> <span class="n">figure_filename</span><span class="p">)</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">append_without_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">],</span> <span class="n">figure_file</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved figure&quot;</span><span class="p">,</span>
-                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_filename</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">figure_filename</span><span class="p">}</span>
+                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">figure_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                               <span class="s2">&quot;file path&quot;</span><span class="p">:</span> <span class="n">figure_file</span><span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figure_filename</span><span class="p">),</span> <span class="s2">&quot;created and saved in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div></div>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">figure_file</span><span class="p">),</span> <span class="s2">&quot;created and saved in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div></div>
 
             
 </pre></div>
@@ -1553,28 +1605,25 @@
            
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

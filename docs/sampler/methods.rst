@@ -49,7 +49,7 @@ Methods
 
 .. automethod:: Sampler.autocorr_ml
 
-.. automethod:: Sampler.gelman_rubin
+.. automethod:: Sampler.compute_gelman_rubin
 
 .. automethod:: Sampler.plot_gelman_rubin
 

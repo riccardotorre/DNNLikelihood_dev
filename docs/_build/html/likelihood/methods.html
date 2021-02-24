@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Methods &mdash; DNNLikelihood</title>
   
@@ -19,7 +19,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -32,7 +35,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -59,7 +61,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+            <a href="../index.html" class="icon icon-home"> DNNLikelihood
           
 
           
@@ -164,6 +166,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -181,7 +185,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/likelihood/methods.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -223,7 +227,7 @@
 <h1>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.__init__">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logpdf_args</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">logpdf_kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_central</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_pos_poi</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_pos_nuis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logpdf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logpdf_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logpdf_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_central</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_pos_poi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_pos_nuis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object can be initialized in two different ways, depending on the value of
 the <a class="reference internal" href="arguments.html#Lik.input_file" title="Lik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> argument.</p>
 <ul>
@@ -261,13 +265,14 @@ is set from the input file, otherwise it is set to the input argument.</p>
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik._Lik__check_define_input_files">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">_Lik__check_define_input_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_input_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">_Lik__check_define_input_files</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_input_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a> one
 to set the attributes corresponding to input files</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_h5_file" title="DNNLikelihood.Lik.input_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_h5_file</span></code></a>,</p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_log_file" title="DNNLikelihood.Lik.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_log_file" title="DNNLikelihood.Lik.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_log_file</span></code></a>,</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_folder" title="DNNLikelihood.Lik.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_folder</span></code></a></p></li>
 </ul>
 </div></blockquote>
 <p>depending on the value of the
@@ -276,12 +281,12 @@ to set the attributes corresponding to input files</p>
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik._Lik__check_define_output_files">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">_Lik__check_define_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_output_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">_Lik__check_define_output_files</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_output_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a> one
 to set the attributes corresponding to output folders</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a></p></li>
 </ul>
 </div></blockquote>
@@ -291,6 +296,7 @@ to set the attributes corresponding to output folders</p>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_base_file" title="DNNLikelihood.Lik.output_figures_base_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_h5_file" title="DNNLikelihood.Lik.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_predictions_json_file" title="DNNLikelihood.Lik.output_predictions_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_predictions_json_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.script_file" title="DNNLikelihood.Lik.script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.script_file</span></code></a></p></li>
 </ul>
 </div></blockquote>
@@ -298,13 +304,13 @@ to set the attributes corresponding to output folders</p>
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> attribute.
 It also creates the folders
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a>
-and <code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code> if
+and <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a> if
 they do not exist.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik._Lik__check_define_name">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">_Lik__check_define_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">_Lik__check_define_name</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a> one
 to define the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attribute.
 If it is <code class="docutils literal notranslate"><span class="pre">None</span></code> it replaces it with
@@ -314,7 +320,7 @@ otherwise it appends the suffix “_likelihood” (preventing duplication if it 
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik._Lik__check_define_ndims">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">_Lik__check_define_ndims</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_ndims" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">_Lik__check_define_ndims</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_ndims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Lik._Lik__check_define_pars" title="DNNLikelihood.Lik._Lik__check_define_pars"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__check_define_pars</span></code></a> one
 to define the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.ndims" title="DNNLikelihood.Lik.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.ndims</span></code></a> attribute.
 To determine the number of dimensions it computes the logpdf, by calling the
@@ -324,7 +330,7 @@ until it does not generate an error.</p>
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik._Lik__check_define_pars">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">_Lik__check_define_pars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_pars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">_Lik__check_define_pars</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__check_define_pars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a> one
 to check the consistency and set the attributes</p>
 <blockquote>
@@ -356,7 +362,7 @@ does not match <a class="reference internal" href="attributes.html#DNNLikelihood
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik._Lik__load">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">_Lik__load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__load" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">_Lik__load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a> one
 to load a previously saved
 <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object from the files</p>
@@ -400,7 +406,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik._Lik__set_pars_labels">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">_Lik__set_pars_labels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars_labels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__set_pars_labels" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">_Lik__set_pars_labels</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars_labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik._Lik__set_pars_labels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method that returns the <code class="docutils literal notranslate"><span class="pre">pars_labels</span></code> choice based on the <code class="docutils literal notranslate"><span class="pre">pars_labels</span></code> input.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -430,7 +436,7 @@ while if <code class="docutils literal notranslate"><span class="pre">pars_label
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.save_log">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">save_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.save_log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.save_log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">save_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.save_log"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.save_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the content of the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a> attribute in the file
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>.</p>
 <p>This method is called by the methods</p>
@@ -468,7 +474,8 @@ If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed str</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -501,7 +508,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.save">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.save" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is saved to the HDF5 file
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_h5_file" title="DNNLikelihood.Lik.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_h5_file</span></code></a> and the object log is saved
 to the json file <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>.
@@ -518,6 +525,7 @@ dictionary:</p>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_file" title="DNNLikelihood.Lik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_h5_file" title="DNNLikelihood.Lik.input_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_log_file" title="DNNLikelihood.Lik.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_folder" title="DNNLikelihood.Lik.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_folder</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a> (saved to the file <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>)</p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.verbose" title="DNNLikelihood.Lik.verbose"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.verbose</span></code></a></p></li>
 </ul>
@@ -550,7 +558,8 @@ If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed str</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -584,7 +593,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.save_script">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">save_script</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.save_script"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.save_script" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">save_script</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.save_script"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.save_script" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves the file <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.script_file" title="DNNLikelihood.Lik.script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.script_file</span></code></a>.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -614,7 +623,8 @@ If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed str</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -647,7 +657,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.logpdf_fn">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">logpdf_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pars</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.logpdf_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_fn" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">logpdf_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pars</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.logpdf_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.logpdf_fn" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function is used to add constraints and standardize input/output of
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.logpdf" title="DNNLikelihood.Lik.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf</span></code></a>.
 It is constructed from the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.logpdf" title="DNNLikelihood.Lik.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf</span></code></a> and
@@ -719,7 +729,7 @@ of the logpdf.</p>
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.reset_predictions">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">reset_predictions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">delete_figures</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.reset_predictions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.reset_predictions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">reset_predictions</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delete_figures</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.reset_predictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.reset_predictions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Re-initializes the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary to</p>
 <blockquote>
 <div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">predictions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">:</span> <span class="p">{},</span>
@@ -736,7 +746,7 @@ depending on the value of the <code class="docutils literal notranslate"><span c
 <div><ul>
 <li><p><strong>delete_figures</strong></p>
 <blockquote>
-<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> all files in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> all files in the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a>
 folder are deleted and the <code class="docutils literal notranslate"><span class="pre">&quot;Figures&quot;</span></code> item is reset to an empty dictionary.</p>
 <blockquote>
 <div><ul class="simple">
@@ -766,7 +776,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.compute_maximum_logpdf">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">compute_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">compute_maximum_logpdf</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_maximum_logpdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the maximum of <a class="reference internal" href="#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a>.
 All information on the maximum, including parameters initialization, parameters bounds, and optimizer,
 are stored in the <code class="docutils literal notranslate"><span class="pre">&quot;logpdf_max&quot;</span></code> item of the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary.
@@ -864,7 +874,8 @@ If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed str</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -898,7 +909,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.compute_profiled_maxima_logpdf">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">compute_profiled_maxima_logpdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_ranges</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">spacing</span><span class="o">=</span><span class="default_value">'grid'</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">progressbar</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_profiled_maxima_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">compute_profiled_maxima_logpdf</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_ranges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'grid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progressbar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.compute_profiled_maxima_logpdf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes logal maxima of the logpdf for different values of the parameter <code class="docutils literal notranslate"><span class="pre">pars</span></code>.
 For the list of prameters <code class="docutils literal notranslate"><span class="pre">pars</span></code>, ranges are passed as <code class="docutils literal notranslate"><span class="pre">pars_ranges</span></code> in the form <code class="docutils literal notranslate"><span class="pre">(par_min,par_max,n_points)</span></code>
 and an array of points is generated according to the argument <code class="docutils literal notranslate"><span class="pre">spacing</span></code> (either a grid or a random
@@ -1074,7 +1085,8 @@ If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed str</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -1108,27 +1120,30 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.update_figures">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">update_figures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">figure_filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.update_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.update_figures" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that renames old figure files when new ones are produced with the argument <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>. It calls the
-<a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function and, if the
-renamed figure already existed in the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary, then it
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">update_figures</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">figure_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.update_figures"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.update_figures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that generates new file names and renames old figure files when new ones are produced with the argument <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>.
+When <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code> it calls the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function and, if
+<code class="docutils literal notranslate"><span class="pre">figure_file</span></code> already existed in the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary, then it
 updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp
-(that is the key of the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions[&quot;Figures&quot;]</span></code></a> dictionary).</p>
+(that is the key of the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions[&quot;Figures&quot;]</span></code></a> dictionary).
+When <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> it calls the <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function
+to generate the dump file name.
+It returns the new figure_file.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
 <blockquote>
 <div><ul>
-<li><p><strong>figure_filename</strong></p>
+<li><p><strong>figure_file</strong></p>
 <blockquote>
-<div><p>Name of the newly generated figure. that is being saved with <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>. If the figure already exists in the
-<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary, then its name is updated
-accoding to the new file name).</p>
+<div><p>Figure file path. If the figure already exists in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary, then its name is updated with the corresponding timestamp.</p>
 </div></blockquote>
 </li>
 <li><p><strong>overwrite</strong></p>
 <blockquote>
 <div><p>The method updates file names and <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary only if
-<code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>. If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the method does nothing.</p>
+<code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>. If <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> the method generates and returns the dump file path.
+If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the method does nothing.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1137,7 +1152,7 @@ accoding to the new file name).</p>
 <li><p><strong>Creates/updates files</strong></p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Updates <code class="docutils literal notranslate"><span class="pre">figure_filename</span></code> file name.</p></li>
+<li><p>Updates <code class="docutils literal notranslate"><span class="pre">figure_file</span></code> file name.</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -1146,7 +1161,7 @@ accoding to the new file name).</p>
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.plot_logpdf_par">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">plot_logpdf_par</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">[[0, 0, 1]]</span></em>, <em class="sig-param"><span class="n">npoints</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">title_fontsize</span><span class="o">=</span><span class="default_value">12</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.plot_logpdf_par"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.plot_logpdf_par" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">plot_logpdf_par</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[[0,</span> <span class="pre">0,</span> <span class="pre">1]]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'original'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title_fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.plot_logpdf_par"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.plot_logpdf_par" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the logpdf as a function of of the parameter <code class="docutils literal notranslate"><span class="pre">par</span></code> in the range <code class="docutils literal notranslate"><span class="pre">(min,max)</span></code>
 using a number <code class="docutils literal notranslate"><span class="pre">npoints</span></code> of points. Only the parameter <code class="docutils literal notranslate"><span class="pre">par</span></code> is veried, while all other parameters are kept
 fixed to their value given in <code class="docutils literal notranslate"><span class="pre">pars_init</span></code>. The function used for the plot is provided by the
@@ -1257,7 +1272,8 @@ If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed str</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -1291,7 +1307,7 @@ The plots are shown in the interactive console calling <code class="docutils lit
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.plot_tmu_1d">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">plot_tmu_1d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">title_fontsize</span><span class="o">=</span><span class="default_value">12</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.plot_tmu_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.plot_tmu_1d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">plot_tmu_1d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars_labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'original'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title_fontsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timestamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.plot_tmu_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#DNNLikelihood.Lik.plot_tmu_1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the 1-dimensional <span class="math notranslate nohighlight">\(t_{\mu}\)</span> stored in
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions[&quot;logpdf_profiled_max&quot;][timestamp][&quot;tmu&quot;]</span></code></a>.</p>
 <ul>
@@ -1360,7 +1376,8 @@ If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>allowed str</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
 </ul>
 </div></blockquote>
@@ -1394,7 +1411,7 @@ The plots are shown in the interactive console calling <code class="docutils lit
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.set_verbosity">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik.set_verbosity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">set_verbosity</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.Lik.set_verbosity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method inherited from the <a class="reference internal" href="../show_prints.html#DNNLikelihood.Verbosity" title="DNNLikelihood.Verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Verbosity</span></code></a> object.
 See the documentation of <a class="reference internal" href="../show_prints.html#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a>.</p>
 </dd></dl>
@@ -1406,37 +1423,29 @@ See the documentation of <a class="reference internal" href="../show_prints.html
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../sampler/index.html" class="btn btn-neutral float-right" title="The Sampler object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="attributes.html" class="btn btn-neutral float-left" title="Attributes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="../sampler/index.html" class="btn btn-neutral float-right" title="The Sampler object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="attributes.html" class="btn btn-neutral float-left" title="Attributes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
