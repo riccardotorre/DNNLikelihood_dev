@@ -29,6 +29,9 @@ blues = sns.color_palette("Blues", 30)
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
+header_string = "=============================="
+footer_string = "------------------------------"
+
 class Data(Verbosity):
     """
     This class contains the ``Data`` object representing the dataset used for training, validating and testing

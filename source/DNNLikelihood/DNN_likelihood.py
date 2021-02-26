@@ -50,6 +50,9 @@ blues = sns.color_palette("Blues", 30)
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
+header_string = "=============================="
+footer_string = "------------------------------"
+
 class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resources
     """
     This class contains the ``DnnLik`` object, that is the core object of the DNNLikelihood package.

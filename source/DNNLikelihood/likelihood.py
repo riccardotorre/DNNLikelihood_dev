@@ -21,6 +21,8 @@ from .utils import _FunctionWrapper
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
+header_string = "=============================="
+footer_string = "------------------------------"
 
 class Lik(Verbosity):
     """

@@ -27,6 +27,8 @@ from .show_prints import Verbosity, print
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
 
+header_string = "=============================="
+footer_string = "------------------------------"
 
 class Sampler(Verbosity):
     """
