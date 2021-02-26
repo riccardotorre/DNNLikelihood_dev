@@ -49,7 +49,7 @@ Attributes
 
          - *"action"* (value type: ``str``)
             Short description of the action.
-            **possible values**: ``"computed maximum logpdf"``, ``"computed profiled maxima"``, ``"created"``, ``"loaded"``, ``"saved"``, ``"saved figure"``
+            **possible values**: ``"changed_output_folder"``, ``"computed maximum logpdf"``, ``"computed profiled maxima"``, ``"created"``, ``"loaded"``, ``"saved"``, ``"saved figure"``
          - *"pars"* (value type: ``list`` of ``int``)
             Input argument of the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method.
          - *"pars_ranges"* (value type: ``list`` of ``list``)
@@ -64,6 +64,10 @@ Attributes
             List of file names of files involved in the action.
          - *"files paths"* (value type: ``list`` of ``str``)
             List of paths of files involved in the action.
+         - *"old folder"* (value type: ``str``)
+            Previous path.
+         - *"new folder"* (value type: ``str``)
+            New path.
 
 .. py:attribute:: Lik.logpdf
 

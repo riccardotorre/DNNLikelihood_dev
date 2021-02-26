@@ -292,7 +292,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 <div><ul class="simple">
 <li><dl class="simple">
 <dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.
-<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">maximum</span> <span class="pre">logpdf&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">profiled</span> <span class="pre">maxima&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">figure&quot;</span></code></p>
+<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;changed_output_folder&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">maximum</span> <span class="pre">logpdf&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">profiled</span> <span class="pre">maxima&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">figure&quot;</span></code></p>
 </dd>
 </dl>
 </li>
@@ -328,6 +328,16 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </li>
 <li><dl class="simple">
 <dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“old folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Previous path.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“new folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>New path.</p>
 </dd>
 </dl>
 </li>
@@ -430,7 +440,7 @@ It is set equal to the length of the array
 <code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">output_figures_base_file</span></code><a class="headerlink" href="#DNNLikelihood.Lik.output_figures_base_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the saved figures. It includes the base figure name and is
 automatically generated from the
-<a class="reference internal" href="#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a> and
+<a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a> and
 <a class="reference internal" href="#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attributes.</p>
 <blockquote>
 <div><ul class="simple">

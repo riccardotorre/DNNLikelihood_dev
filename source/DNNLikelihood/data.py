@@ -66,9 +66,19 @@ class Data(Verbosity):
             :meth:`Data.__load <DNNLikelihood.Data._Data__load>`.
             If the :argument:`load_on_RAM` argument is ``True``, then all samples are loaded into RAM, otherwise the dataset is
             kept open and data are retrieved on demand.
-            If the input argument :argument:`output_folder` is ``None`` (default), the attribute
-            :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`
-            is set from the input file, otherwise it is set to the input argument.
+            Depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method behaves as follows:
+
+                - If :argument:`output_folder` is ``None`` (default)
+                    
+                    The attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
+                    is set from the :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` does not exists, then the content of the path :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.
 
         - **Arguments**
 
@@ -120,8 +130,19 @@ class Data(Verbosity):
             self.__load(verbose=verbose_sub)
             self.__define_test_fraction()
             if output_folder != None:
-                self.output_folder = path.abspath(output_folder)
-                self.__check_define_output_files()
+                old_output_folder = self.output_folder
+                if old_output_folder != path.abspath(output_folder):
+                    self.output_folder = path.abspath(output_folder)
+                    try:
+                        utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                    except:
+                        utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                    self.__check_define_output_files()
+                    self.log[timestamp] = {"action": "changed_output_folder", 
+                                           "old folder": old_output_folder,
+                                           "new folder": self.output_folder}
             self.figures_list = utils.check_figures_list(self.figures_list)
             self.save_log(overwrite=True, verbose=verbose_sub)
 

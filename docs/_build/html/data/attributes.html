@@ -454,7 +454,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 <div><ul class="simple">
 <li><dl class="simple">
 <dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.
-<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>,
+<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;changed_output_folder&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;updated</span> <span class="pre">data</span> <span class="pre">dictionary&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">sample</span> <span class="pre">weights&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;defines</span> <span class="pre">scalers&quot;</span></code>.</p>
 </dd>
 </dl>
@@ -510,6 +510,16 @@ dictionary corresponding to values (data) that have been updated.</p>
 </li>
 <li><dl class="simple">
 <dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“old folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Previous path.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“new folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>New path.</p>
 </dd>
 </dl>
 </li>

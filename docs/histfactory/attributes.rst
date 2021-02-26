@@ -20,6 +20,12 @@ Attributess
          
       - **type**: ``str`` or ``None``
 
+.. py:attribute:: Histfactory.input_folder   
+
+   Absolute path corresponding to the folder containing the :argument:`input_file` file.
+          
+      - **type**: ``str`` or ``None``
+
 .. py:attribute:: Histfactory.input_h5_file    
 
    Absolute path to the .h5 file containing a saved :class:`Histfactory <DNNLikelihood.Histfactory>` object (see
@@ -103,7 +109,7 @@ Attributess
          - *"action"* (value type: ``str``)
             Short description of the action.
             
-            **possible values**: ``"created"``, ``"created likelihood object"``, ``"imported histfactory"``, ``"imported likelihoods"``, ``"loaded"``, ``"saved"``, and ``"saved likelihood object"``
+            **possible values**: ``"changed_output_folder"``. ``"created"``, ``"created likelihood object"``, ``"imported histfactory"``, ``"imported likelihoods"``, ``"loaded"``, ``"saved"``, and ``"saved likelihood object"``
          - *"likelihoods numbers"* (value type: ``list`` of ``int``)
             When an operation involving several likelihoods has been performed this value is the list of involved likelihoods .
          - *"likelihood number"* (value type: ``int``)
@@ -116,6 +122,10 @@ Attributess
             List of file names of files involved in the action.
          - *"files paths"* (value type: ``list`` of ``str``)
             List of paths of files involved in the action.
+         - *"old folder"* (value type: ``str``)
+            Previous path.
+         - *"new folder"* (value type: ``str``)
+            New path.
 
 .. py:attribute:: Histfactory.name
 

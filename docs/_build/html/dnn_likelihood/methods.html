@@ -245,7 +245,7 @@ The full object is saved through the
 <div><p>The object is reconstructed from the input files. First the log and summary_json files are loaded through
 the private method
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_summary_json_and_log</span></code>,
-then, if the input arguments <a class="reference internal" href="arguments.html#DnnLik.dtype" title="DnnLik.dtype"><code class="xref py py-argument docutils literal notranslate"><span class="pre">dtype</span></code></a>, <a class="reference internal" href="arguments.html#DnnLik.seed" title="DnnLik.seed"><code class="xref py py-argument docutils literal notranslate"><span class="pre">seed</span></code></a>, and <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> are provided,
+then, if the input arguments <a class="reference internal" href="arguments.html#DnnLik.dtype" title="DnnLik.dtype"><code class="xref py py-argument docutils literal notranslate"><span class="pre">dtype</span></code></a> and/or <a class="reference internal" href="arguments.html#DnnLik.seed" title="DnnLik.seed"><code class="xref py py-argument docutils literal notranslate"><span class="pre">seed</span></code></a> are provided,
 the corresponding attributes are set to their values (overwriting the values imported from files), and finally
 all other attributes are loaded through the private methods:</p>
 <blockquote>
@@ -255,6 +255,30 @@ all other attributes are loaded through the private methods:</p>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_model</span></code></p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_predictions</span></code></p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_scalers_and_log</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Moreover, depending on the value of the input argument <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> the <a class="reference internal" href="../histfactory/methods.html#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> method behaves as follows:</p>
+<blockquote>
+<div><ul>
+<li><p>If <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
+<blockquote>
+<div><p>The attribute <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>
+is set from the <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a> one.</p>
+</div></blockquote>
+</li>
+<li><p>If <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> corresponds to a path different from that stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>if path stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute exists, then its content is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code> (if the new <code class="docutils literal notranslate"><span class="pre">output_foler</span></code> already exists it is renamed by adding a timestamp);</p></li>
+<li><p>if path stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> does not exists, then the content of the path <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a> is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>If <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> corresponds to the same path stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute</p>
+<blockquote>
+<div><p>Output folder, files, and path attributes are not updated and everything is read from the loaded object.</p>
+</div></blockquote>
+</li>
 </ul>
 </div></blockquote>
 <p>Only the json summary and log files are saved (overwriting the old ones) through the methods:</p>
@@ -550,7 +574,7 @@ object from file.
 Once the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object has been set, the
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.ndims" title="DNNLikelihood.DnnLik.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.ndims</span></code></a> attribute == set from the same attribute of the
 <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object, and the two private methods
-<a class="reference internal" href="#id0" title="DNNLikelihood.DnnLik._DnnLik__check_npoints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__check_npoints</span></code></a> and
+<a class="reference internal" href="#DNNLikelihood.DnnLik._DnnLik__check_npoints" title="DNNLikelihood.DnnLik._DnnLik__check_npoints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__check_npoints</span></code></a> and
 <a class="reference internal" href="#DNNLikelihood.DnnLik._DnnLik__set_pars_info" title="DNNLikelihood.DnnLik._DnnLik__set_pars_info"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__set_pars_info</span></code></a>
 are called.</p>
 <ul>
@@ -573,14 +597,6 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </div></blockquote>
 </li>
 </ul>
-</dd></dl>
-
-<dl class="py method">
-<dt id="id0">
-<code class="sig-prename descclassname"><span class="pre">DnnLik.</span></code><code class="sig-name descname"><span class="pre">_DnnLik__check_npoints</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
-<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.DnnLik._DnnLik__set_data" title="DNNLikelihood.DnnLik._DnnLik__set_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__set_data</span></code></a> one
-to check that the required number of points for train/val/test is less than the total number
-of available points in the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a> object.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1754,7 +1770,7 @@ In the latter case it can be input in the same way as <a class="reference intern
 <li><p><strong>scipy_options</strong></p>
 <blockquote>
 <div><p>Arguments passed as additional <code class="docutils literal notranslate"><span class="pre">&quot;options&quot;</span></code> (dictionary) to the
-<a href="#id1"><span class="problematic" id="id2">|scipy_optimize_link|</span></a> method.</p>
+<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.minimize.html"  target="_blank"> scipy.optimize.minimize</a> method.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code></p></li>

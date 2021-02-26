@@ -21,6 +21,8 @@ from . import utils
 from .likelihood import Lik
 from .show_prints import Verbosity, print
 
+header_string = "=============================="
+footer_string = "------------------------------"
 
 class Histfactory(Verbosity):
     """
@@ -54,8 +56,19 @@ class Histfactory(Verbosity):
 
             The object is reconstructed from the input files through the private method
             :meth:`Histfactory.__load <DNNLikelihood.Histfactory._Histfactory__load>`
-            If the input argument :argument:`output_folder` is ``None`` (default), the attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
-            is set from the input file, otherwise it is set to the input argument.
+            Depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method behaves as follows:
+
+                - If :argument:`output_folder` is ``None`` (default)
+                    
+                    The attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
+                    is set from the :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` does not exists, then the content of the path :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.
         
         - **Arguments**
 
@@ -89,8 +102,19 @@ class Histfactory(Verbosity):
         else:
             self.__load(verbose=verbose_sub)
             if output_folder != None:
-                self.output_folder = path.abspath(output_folder)
-                self.__check_define_output_files()
+                old_output_folder = self.output_folder
+                if old_output_folder != path.abspath(output_folder):
+                    self.output_folder = path.abspath(output_folder)
+                    try:
+                        utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                    except:
+                        utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                    self.__check_define_output_files()
+                    self.log[timestamp] = {"action": "changed_output_folder", 
+                                           "old folder": old_output_folder,
+                                           "new folder": self.output_folder}
             self.save_log(overwrite=True, verbose=verbose_sub)
 
     def __check_define_input_files(self):
@@ -100,6 +124,7 @@ class Histfactory(Verbosity):
         
             - :attr:`Histfactory.input_h5_file <DNNLikelihood.Histfactory.input_h5_file>`
             - :attr:`Histfactory.input_log_file <DNNLikelihood.Histfactory.input_log_file>`
+            - :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>`
 
         depending on the value of the 
         :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>` attribute.
@@ -107,10 +132,12 @@ class Histfactory(Verbosity):
         if self.input_file == None:
             self.input_h5_file = None
             self.input_log_file = None
+            self.input_folder = None
         else:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
             self.input_h5_file = self.input_file+".h5"
             self.input_log_file = self.input_file+".log"
+            self.input_folder = path.split(self.input_file)[0]
 
     def __check_define_output_files(self):
         """
@@ -385,16 +412,16 @@ class Histfactory(Verbosity):
         elif overwrite == "dump":
             output_log_file = utils.generate_dump_file_path(self.output_log_file, timestamp=timestamp)
         dictionary = utils.convert_types_dict(self.log)
-        with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
+        with codecs.open(output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         if type(overwrite) == bool:
             if overwrite:
-                print("Histfactory log file", output_log_file, "updated in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nupdated in", str(end-start), "s.", show=verbose)
             else:
-                print("Histfactory log file", output_log_file, "saved in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.", show=verbose)
         elif overwrite == "dump":
-            print("Histfactory log file dump", output_log_file, "saved in", str(end-start), "s.", show=verbose)
+            print(header_string,"\nHistfactory log file dump\n\t", output_log_file, "\nsaved in", str(end-start), "s.", show=verbose)
 
     def save(self, lik_numbers_list=None, overwrite=False, verbose=None):
         """
@@ -475,19 +502,19 @@ class Histfactory(Verbosity):
         sub_dict = {**tmp1, **tmp2}
         sub_dict = dict(sorted(sub_dict.items()))
         dictionary = {**dictionary, **{"likelihoods_dict": sub_dict}}
-        dd.io.save(self.output_h5_file, dictionary)
+        dd.io.save(output_h5_file, dictionary)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.output_h5_file)[-1],
-                               "file path": self.output_h5_file}
+                               "file name": path.split(output_h5_file)[-1],
+                               "file path": output_h5_file}
         if type(overwrite) == bool:
             if overwrite:
-                print("Histfactory h5 file", output_log_file, "updated in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nupdated in", str(end-start), "s.", show=verbose)
             else:
-                print("Histfactory h5 file", output_log_file, "saved in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.", show=verbose)
         elif overwrite == "dump":
-            print("Histfactory h5 file dump", output_log_file, "saved in", str(end-start), "s.", show=verbose)
+            print(header_string,"\nHistfactory h5 file dump\n\t", output_h5_file, "\nsaved in", str(end-start), "s.", show=verbose)
         self.save_log(overwrite=overwrite, verbose=verbose)
     
     def get_likelihood_object(self, lik_number=0, output_folder=None, verbose=None):

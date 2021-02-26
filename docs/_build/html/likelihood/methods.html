@@ -242,9 +242,30 @@ The object is saved upon creation through the <a class="reference internal" href
 <blockquote>
 <div><p>The object is reconstructed from the input files through the private method
 <a class="reference internal" href="#DNNLikelihood.Lik._Lik__load" title="DNNLikelihood.Lik._Lik__load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__load</span></code></a>
-If the input argument <a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), the attribute
-<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a>
-is set from the input file, otherwise it is set to the input argument.</p>
+Depending on the value of the input argument <a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> the <a class="reference internal" href="../histfactory/methods.html#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> method behaves as follows:</p>
+<blockquote>
+<div><ul>
+<li><p>If <a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
+<blockquote>
+<div><p>The attribute <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>
+is set from the <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a> one.</p>
+</div></blockquote>
+</li>
+<li><p>If <a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> corresponds to a path different from that stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>if path stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute exists, then its content is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code> (if the new <code class="docutils literal notranslate"><span class="pre">output_foler</span></code> already exists it is renamed by adding a timestamp);</p></li>
+<li><p>if path stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> does not exists, then the content of the path <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a> is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>If <a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> corresponds to the same path stored in the loaded <a class="reference internal" href="../histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute</p>
+<blockquote>
+<div><p>Output folder, files, and path attributes are not updated and everything is read from the loaded object.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
 </div></blockquote>
 </li>
 <li><p><strong>Arguments</strong></p>
@@ -286,7 +307,7 @@ to set the attributes corresponding to input files</p>
 to set the attributes corresponding to output folders</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a></p></li>
+<li><p><a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a></p></li>
 </ul>
 </div></blockquote>
@@ -304,7 +325,7 @@ to set the attributes corresponding to output folders</p>
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> attribute.
 It also creates the folders
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a>
-and <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a> if
+and <a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a> if
 they do not exist.</p>
 </dd></dl>
 
@@ -746,7 +767,7 @@ depending on the value of the <code class="docutils literal notranslate"><span c
 <div><ul>
 <li><p><strong>delete_figures</strong></p>
 <blockquote>
-<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> all files in the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a>
+<div><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> all files in the <a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a>
 folder are deleted and the <code class="docutils literal notranslate"><span class="pre">&quot;Figures&quot;</span></code> item is reset to an empty dictionary.</p>
 <blockquote>
 <div><ul class="simple">

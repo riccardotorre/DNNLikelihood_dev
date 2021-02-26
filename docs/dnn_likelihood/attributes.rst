@@ -475,7 +475,7 @@ Attributes
 
          - *"action"* (value type: ``str``)
             Short description of the action.
-            **possible values**: ``"created"``, ``""loaded summary json""``, ``"loaded history json"``, ``"loaded tf model h5"``, 
+            **possible values**: ``"changed_output_folder"``, ``"created"``, ``""loaded summary json""``, ``"loaded history json"``, ``"loaded tf model h5"``, 
             ``"loaded scalers h5"``, ``"loaded data indices h5"``, ``"loaded predictions json"``, ``"optimizer set"``,
             ``"loss set"``, ``"metrics set"``, ``"callbacks set"``, ``"computed sample weights"``, ``"defined scalers"``,
             ``"generated train data"``, ``"generated test data"``, ``"defined tf model"``, ``"compiled tf model"``, ``"built tf model"``, 
@@ -545,6 +545,10 @@ Attributes
             Probability intervals used for predictions.
          - *"pars"* (value type: ``list``)
             Parameters involved in predictions.
+         - *"old folder"* (value type: ``str``)
+            Previous path.
+         - *"new folder"* (value type: ``str``)
+            New path.
                      
 .. py:attribute:: DnnLik.loss
 
@@ -913,7 +917,7 @@ Attributes
       - **type**: ``numpy.ndarray``
       - **shape**: ``(ndims,2)``
 
-.. py:attribute:: Lik.pars_central   
+.. py:attribute:: DnnLik.pars_central   
 
    Copy of the :attr:`DnnLik.data.pars_central <DNNLikelihood.Data.pars_central>`
    attribute of the :mod:`Data <data>` object used for data management.

@@ -343,7 +343,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 <div><ul class="simple">
 <li><dl class="simple">
 <dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.
-<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">backend&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">backend&quot;</span></code>,
+<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;changed_output_folder&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">backend&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">backend&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;init</span> <span class="pre">sampler&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;run</span> <span class="pre">sampler&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">Gelman-Rubin&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">figure&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">data</span> <span class="pre">object&quot;</span></code>.</p>
 </dd>
@@ -381,6 +381,16 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </li>
 <li><dl class="simple">
 <dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“old folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Previous path.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“new folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>New path.</p>
 </dd>
 </dl>
 </li>
@@ -612,7 +622,7 @@ If the latter is <code class="docutils literal notranslate"><span class="pre">No
 <code class="sig-prename descclassname"><span class="pre">Sampler.</span></code><code class="sig-name descname"><span class="pre">output_figures_base_file</span></code><a class="headerlink" href="#DNNLikelihood.Sampler.output_figures_base_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the saved figures. It includes the base figure name and is
 automatically generated from the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_figures_folder</span></code> and
+<a class="reference internal" href="#DNNLikelihood.Sampler.output_figures_folder" title="DNNLikelihood.Sampler.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_figures_folder</span></code></a> and
 <a class="reference internal" href="#DNNLikelihood.Sampler.name" title="DNNLikelihood.Sampler.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.name</span></code></a> attributes.</p>
 <blockquote>
 <div><ul class="simple">
@@ -622,13 +632,13 @@ automatically generated from the
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="DNNLikelihood.Lik.output_figures_folder">
-<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">output_figures_folder</span></code><a class="headerlink" href="#DNNLikelihood.Lik.output_figures_folder" title="Permalink to this definition">¶</a></dt>
+<dt id="DNNLikelihood.Sampler.output_figures_folder">
+<code class="sig-prename descclassname"><span class="pre">Sampler.</span></code><code class="sig-name descname"><span class="pre">output_figures_folder</span></code><a class="headerlink" href="#DNNLikelihood.Sampler.output_figures_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the folder where figures are saved. It is
 automatically generated (and created by the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_create_folder" title="DNNLikelihood.utils.check_create_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_create_folder</span></code></a>
 if not present) from the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code> attribute.</p>
+<a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> attribute.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -680,12 +690,12 @@ It is automatically generated from the
 <dt id="DNNLikelihood.Sampler.output_predictions_json_file">
 <code class="sig-prename descclassname"><span class="pre">Sampler.</span></code><code class="sig-name descname"><span class="pre">output_predictions_json_file</span></code><a class="headerlink" href="#DNNLikelihood.Sampler.output_predictions_json_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .json file where the
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.predictions</span></code>
+<a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.predictions</span></code></a>
 dictionary is saved (see the <code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.save_predictions</span></code>
 method for details).
 It is automatically generated from the
 <a class="reference internal" href="#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> and
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.name</span></code> attributes.
+<a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.name</span></code></a> attributes.
 Notice that the file is only saved to provide human readable predictions. The
 <a class="reference internal" href="#DNNLikelihood.Sampler.predictions" title="DNNLikelihood.Sampler.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.predictions</span></code></a> attribute is saved
 and restored together with the other attributes in the

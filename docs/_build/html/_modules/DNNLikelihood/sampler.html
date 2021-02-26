@@ -221,19 +221,36 @@
 <span class="sd">        The :class:`Sampler &lt;DNNLikelihood.Sampler&gt;` object can be initialized in two different ways, depending on the value of </span>
 <span class="sd">        the :argument:`new_sampler` argument.</span>
 <span class="sd">        </span>
-<span class="sd">        1. ``new_sampler=True``: all attributes are set from input arguments. The </span>
-<span class="sd">        :attr:`Sampler.likelihood_script_file &lt;DNNLikelihood.Sampler.likelihood_script_file&gt;` attribute is set from</span>
-<span class="sd">        from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from</span>
-<span class="sd">        ``input_file``. Afterwards the :meth:`Sampler.__init_likelihood &lt;DNNLikelihood.Sampler._Sampler__init_likelihood&gt;` </span>
-<span class="sd">        method is called.</span>
+<span class="sd">        - :argument:`new_sampler` is ``True`` (default)</span>
+<span class="sd">            </span>
+<span class="sd">            All attributes are set from input arguments. The </span>
+<span class="sd">            :attr:`Sampler.likelihood_script_file &lt;DNNLikelihood.Sampler.likelihood_script_file&gt;` attribute is set from</span>
+<span class="sd">            from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from</span>
+<span class="sd">            ``input_file``. Afterwards the :meth:`Sampler.__init_likelihood &lt;DNNLikelihood.Sampler._Sampler__init_likelihood&gt;` </span>
+<span class="sd">            method is called.</span>
+
+<span class="sd">        - :argument:`new_sampler` is ``False``</span>
 <span class="sd">        </span>
-<span class="sd">        2. ``new_sampler=False``: the :attr:`Sampler.input_file &lt;DNNLikelihood.Sampler.input_file&gt;`</span>
-<span class="sd">        attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, </span>
-<span class="sd">        otherwise from ``likelihood``. Arguments are set from </span>
-<span class="sd">        :attr:`Sampler.input_file &lt;DNNLikelihood.Sampler.input_file&gt;`. Afterwards the </span>
-<span class="sd">        :meth:`Sampler.__init_likelihood &lt;DNNLikelihood.Sampler._Sampler__init_likelihood&gt;` </span>
-<span class="sd">        method is called. If the import fails :meth:`Sampler.__init__ &lt;DNNLikelihood.Sampler.__init__&gt;` </span>
-<span class="sd">        proceeds with ``new_sampler=True`` (see 1.).</span>
+<span class="sd">            The :attr:`Sampler.input_file &lt;DNNLikelihood.Sampler.input_file&gt;`</span>
+<span class="sd">            attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, </span>
+<span class="sd">            otherwise from ``likelihood``. Arguments are set from </span>
+<span class="sd">            :attr:`Sampler.input_file &lt;DNNLikelihood.Sampler.input_file&gt;`. Afterwards the </span>
+<span class="sd">            :meth:`Sampler.__init_likelihood &lt;DNNLikelihood.Sampler._Sampler__init_likelihood&gt;` </span>
+<span class="sd">            method is called. If the import fails :meth:`Sampler.__init__ &lt;DNNLikelihood.Sampler.__init__&gt;` </span>
+<span class="sd">            proceeds with ``new_sampler=True`` (see 1.).</span>
+<span class="sd">            Depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ &lt;DNNLikelihood.Histfactory.__init__&gt;` method behaves as follows:</span>
+
+<span class="sd">                - If :argument:`output_folder` is ``None`` (default)</span>
+<span class="sd">                    </span>
+<span class="sd">                    The attribute :attr:`Histfactory.output_folder &lt;DNNLikelihood.Histfactory.output_folder&gt;`</span>
+<span class="sd">                    is set from the :attr:`Histfactory.input_folder &lt;DNNLikelihood.Histfactory.input_folder&gt;` one.</span>
+<span class="sd">                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder &lt;DNNLikelihood.Histfactory.output_folder&gt;` attribute</span>
+<span class="sd">                    </span>
+<span class="sd">                    - if path stored in the loaded :attr:`Histfactory.output_folder &lt;DNNLikelihood.Histfactory.output_folder&gt;` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);</span>
+<span class="sd">                    - if path stored in the loaded :attr:`Histfactory.output_folder &lt;DNNLikelihood.Histfactory.output_folder&gt;` does not exists, then the content of the path :attr:`Histfactory.input_folder &lt;DNNLikelihood.Histfactory.input_folder&gt;` is copied to the new ``output_folder``.</span>
+<span class="sd">                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder &lt;DNNLikelihood.Histfactory.output_folder&gt;` attribute</span>
+<span class="sd">                    </span>
+<span class="sd">                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.</span>
 
 <span class="sd">        Attributes that are always set from input arguments (if they are not ``None``)</span>
 
@@ -342,8 +359,19 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">vectorize</span> <span class="o">=</span> <span class="n">vectorize</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__init_likelihood</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">output_folder</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+                    <span class="n">old_output_folder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span>
+                    <span class="k">if</span> <span class="n">old_output_folder</span> <span class="o">!=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">utils</span><span class="o">.</span><span class="n">copy_and_save_folder</span><span class="p">(</span><span class="n">old_output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The output folder was changed from</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">old_output_folder</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">to</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                        <span class="k">except</span><span class="p">:</span>
+                            <span class="n">utils</span><span class="o">.</span><span class="n">copy_and_save_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The output folder was changed from</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">old_output_folder</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">to</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;changed_output_folder&quot;</span><span class="p">,</span> 
+                                               <span class="s2">&quot;old folder&quot;</span><span class="p">:</span> <span class="n">old_output_folder</span><span class="p">,</span>
+                                               <span class="s2">&quot;new folder&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">}</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;gelman_rubin&quot;</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span>
@@ -366,7 +394,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_vectorize</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__init_backend</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_params_backend</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],</span><span class="n">output_figures_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">)</span>
         <span class="k">del</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">:</span>
@@ -1269,7 +1297,7 @@
             <span class="n">figs</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All predictions and figures have been deleted and the &#39;predictions&#39; attribute has been initialized.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">figs</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">])</span>
+            <span class="n">figs</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],</span><span class="n">output_figures_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;All predictions have been deleted and the &#39;predictions&#39; attribute has been initialized. No figure file has been deleted.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gelman_rubin&quot;</span><span class="p">:</span> <span class="p">{},</span>
                             <span class="s2">&quot;Figures&quot;</span><span class="p">:</span> <span class="n">figs</span><span class="p">}</span>

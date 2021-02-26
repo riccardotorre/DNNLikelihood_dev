@@ -440,7 +440,8 @@ devoted to a comprehensive evaluation of the model performances. It can be used 
                                                                          "nbins": 60, 
                                                                          "show_plot": True},
                                             frequentist_inference = {},
-                                            overwrite=True,verbose=2)
+                                            overwrite = True,
+                                            verbose = 2)
 
     >>> Compute predictions
         Generating test data

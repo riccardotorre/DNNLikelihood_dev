@@ -82,7 +82,7 @@ Attributes
 
             - *"action"* (value type: ``str``)
                Short description of the action.
-               **possible values**: ``"created"``, ``"loaded"``, ``"created backend"``, ``"loaded backend"``, 
+               **possible values**: ``"changed_output_folder"``, ``"created"``, ``"loaded"``, ``"created backend"``, ``"loaded backend"``, 
                ``"init sampler"``, ``"run sampler"``, ``"saved"``, ``"computed Gelman-Rubin"``, ``"saved figure"``,
                ``"created data object"``.
             - *"pars"* (value type: ``list`` of ``int``)
@@ -99,6 +99,10 @@ Attributes
                List of file names of files involved in the action.
             - *"files paths"* (value type: ``list`` of ``str``)
                List of paths of files involved in the action.
+            - *"old folder"* (value type: ``str``)
+               Previous path.
+            - *"new folder"* (value type: ``str``)
+               New path.
 
 .. py:attribute:: Sampler.logpdf
 
@@ -250,7 +254,7 @@ Attributes
 
       - **type**: ``str`` 
 
-.. py:attribute:: Lik.output_figures_folder
+.. py:attribute:: Sampler.output_figures_folder
 
    Absolute path to the folder where figures are saved. It is 
    automatically generated (and created by the 

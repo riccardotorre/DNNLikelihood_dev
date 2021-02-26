@@ -145,7 +145,7 @@ Attributes
 
             - *"action"* (value type: ``str``)
                Short description of the action.
-               **possible values**: ``"created"``, ``"loaded"``, ``"saved"``, 
+               **possible values**: ``"changed_output_folder"``, ``"created"``, ``"loaded"``, ``"saved"``, 
                ``"updated data dictionary"``, ``"computed sample weights"``, ``"defines scalers"``.
             - *"data"* (value type: ``list`` of ``str``)
                List of keys of the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`
@@ -171,6 +171,10 @@ Attributes
                List of file names of files involved in the action.
             - *"files paths"* (value type: ``list`` of ``str``)
                List of paths of files involved in the action.
+            - *"old folder"* (value type: ``str``)
+               Previous path.
+            - *"new folder"* (value type: ``str``)
+               New path.
 
 .. py:attribute:: Data.name
 

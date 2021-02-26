@@ -242,8 +242,30 @@ See the documentation of the aforementioned methods for more details.</p>
 <blockquote>
 <div><p>The object is reconstructed from the input files through the private method
 <a class="reference internal" href="#DNNLikelihood.Histfactory._Histfactory__load" title="DNNLikelihood.Histfactory._Histfactory__load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__load</span></code></a>
-If the input argument <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), the attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>
-is set from the input file, otherwise it is set to the input argument.</p>
+Depending on the value of the input argument <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> the <a class="reference internal" href="#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a> method behaves as follows:</p>
+<blockquote>
+<div><ul>
+<li><p>If <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
+<blockquote>
+<div><p>The attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>
+is set from the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a> one.</p>
+</div></blockquote>
+</li>
+<li><p>If <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> corresponds to a path different from that stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>if path stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute exists, then its content is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code> (if the new <code class="docutils literal notranslate"><span class="pre">output_foler</span></code> already exists it is renamed by adding a timestamp);</p></li>
+<li><p>if path stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> does not exists, then the content of the path <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a> is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>If <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> corresponds to the same path stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute</p>
+<blockquote>
+<div><p>Output folder, files, and path attributes are not updated and everything is read from the loaded object.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
 </div></blockquote>
 </li>
 <li><p><strong>Arguments</strong></p>
@@ -271,6 +293,7 @@ to set the attributes corresponding to input files</p>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.input_h5_file" title="DNNLikelihood.Histfactory.input_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.input_log_file" title="DNNLikelihood.Histfactory.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_log_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a></p></li>
 </ul>
 </div></blockquote>
 <p>depending on the value of the

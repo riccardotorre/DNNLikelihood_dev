@@ -928,7 +928,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 <div><ul class="simple">
 <li><dl class="simple">
 <dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.
-<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;loaded</span> <span class="pre">summary</span> <span class="pre">json&quot;&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">history</span> <span class="pre">json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">tf</span> <span class="pre">model</span> <span class="pre">h5&quot;</span></code>,
+<strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;changed_output_folder&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;&quot;loaded</span> <span class="pre">summary</span> <span class="pre">json&quot;&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">history</span> <span class="pre">json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">tf</span> <span class="pre">model</span> <span class="pre">h5&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">scalers</span> <span class="pre">h5&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">data</span> <span class="pre">indices</span> <span class="pre">h5&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded</span> <span class="pre">predictions</span> <span class="pre">json&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;optimizer</span> <span class="pre">set&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;loss</span> <span class="pre">set&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;metrics</span> <span class="pre">set&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;callbacks</span> <span class="pre">set&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;computed</span> <span class="pre">sample</span> <span class="pre">weights&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;defined</span> <span class="pre">scalers&quot;</span></code>,
 <code class="docutils literal notranslate"><span class="pre">&quot;generated</span> <span class="pre">train</span> <span class="pre">data&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;generated</span> <span class="pre">test</span> <span class="pre">data&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;defined</span> <span class="pre">tf</span> <span class="pre">model&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;compiled</span> <span class="pre">tf</span> <span class="pre">model&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;built</span> <span class="pre">tf</span> <span class="pre">model&quot;</span></code>,
@@ -1082,6 +1082,16 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </li>
 <li><dl class="simple">
 <dt><em>“pars”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>)</dt><dd><p>Parameters involved in predictions.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“old folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Previous path.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“new folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>New path.</p>
 </dd>
 </dl>
 </li>
@@ -1652,8 +1662,8 @@ method for details.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="DNNLikelihood.Lik.pars_central">
-<code class="sig-prename descclassname"><span class="pre">Lik.</span></code><code class="sig-name descname"><span class="pre">pars_central</span></code><a class="headerlink" href="#DNNLikelihood.Lik.pars_central" title="Permalink to this definition">¶</a></dt>
+<dt id="DNNLikelihood.DnnLik.pars_central">
+<code class="sig-prename descclassname"><span class="pre">DnnLik.</span></code><code class="sig-name descname"><span class="pre">pars_central</span></code><a class="headerlink" href="#DNNLikelihood.DnnLik.pars_central" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy of the <a class="reference internal" href="../data/attributes.html#DNNLikelihood.Data.pars_central" title="DNNLikelihood.Data.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data.pars_central</span></code></a>
 attribute of the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object used for data management.</p>
 <blockquote>

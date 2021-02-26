@@ -55,9 +55,19 @@ class Lik(Verbosity):
 
             The object is reconstructed from the input files through the private method
             :meth:`Lik.__load <DNNLikelihood.Lik._Lik__load>`
-            If the input argument :argument:`output_folder` is ``None`` (default), the attribute 
-            :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>`
-            is set from the input file, otherwise it is set to the input argument.
+            Depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method behaves as follows:
+
+                - If :argument:`output_folder` is ``None`` (default)
+                    
+                    The attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
+                    is set from the :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` does not exists, then the content of the path :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.
         
         - **Arguments**
 
@@ -93,8 +103,19 @@ class Lik(Verbosity):
         else:
             self.__load(verbose=verbose_sub)
             if output_folder != None:
-                self.output_folder = path.abspath(output_folder)
-                self.__check_define_output_files()
+                old_output_folder = self.output_folder
+                if old_output_folder != path.abspath(output_folder):
+                    self.output_folder = path.abspath(output_folder)
+                    try:
+                        utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                    except:
+                        utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                    self.__check_define_output_files()
+                    self.log[timestamp] = {"action": "changed_output_folder", 
+                                           "old folder": old_output_folder,
+                                           "new folder": self.output_folder}
                 self.save(overwrite=False, verbose=verbose_sub)
             else:
                 self.save_log(overwrite=True, verbose=verbose_sub)
@@ -104,7 +125,7 @@ class Lik(Verbosity):
                 self.predictions["Figures"]
             except:
                 self.reset_predictions(delete_figures=True, verbose=verbose_sub)
-            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
+            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
 
     def __check_define_input_files(self):
         """
@@ -729,7 +750,7 @@ class Lik(Verbosity):
             figs = {}
             print("All predictions and figures have been deleted and the 'predictions' attribute has been initialized.")
         else:
-            figs = utils.check_figures_dic(self.predictions["Figures"])
+            figs = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
             print("All predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.")
         self.predictions = {"logpdf_max": {},
                             "logpdf_profiled_max": {},
@@ -1421,7 +1442,7 @@ class Lik(Verbosity):
         plt.savefig(r"%s" % figure_file)
         utils.check_set_dict_keys(self.predictions["Figures"], [timestamp], [[]],verbose=False)
         utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
+        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
         if show_plot:
             plt.show()
         plt.close()

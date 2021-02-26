@@ -33,8 +33,6 @@ Methods
 
 .. automethod:: DnnLik._DnnLik__set_data
 
-.. automethod:: DnnLik._DnnLik__check_npoints
-
 .. automethod:: DnnLik._DnnLik__set_pars_info
 
 .. automethod:: DnnLik._DnnLik__set_model_hyperparameters

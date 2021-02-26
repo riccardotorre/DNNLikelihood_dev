@@ -251,6 +251,17 @@ method for details).</p>
 </dd></dl>
 
 <dl class="py attribute">
+<dt id="DNNLikelihood.Histfactory.input_folder">
+<code class="sig-prename descclassname"><span class="pre">Histfactory.</span></code><code class="sig-name descname"><span class="pre">input_folder</span></code><a class="headerlink" href="#DNNLikelihood.Histfactory.input_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path corresponding to the folder containing the <a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> file.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="DNNLikelihood.Histfactory.input_h5_file">
 <code class="sig-prename descclassname"><span class="pre">Histfactory.</span></code><code class="sig-name descname"><span class="pre">input_h5_file</span></code><a class="headerlink" href="#DNNLikelihood.Histfactory.input_h5_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path to the .h5 file containing a saved <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object (see
@@ -389,7 +400,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 <div><ul>
 <li><dl>
 <dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.</p>
-<p><strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">histfactory&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">likelihoods&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code></p>
+<p><strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;changed_output_folder&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">histfactory&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">likelihoods&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code></p>
 </dd>
 </dl>
 </li>
@@ -420,6 +431,16 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </li>
 <li><dl class="simple">
 <dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“old folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Previous path.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><em>“new folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>New path.</p>
 </dd>
 </dl>
 </li>

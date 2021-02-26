@@ -1,3 +1,4 @@
+from distutils import dir_util
 import inspect
 import itertools
 import json
@@ -15,6 +16,9 @@ from timeit import default_timer as timer
 
 from . import show_prints
 from .show_prints import print
+
+header_string = "=============================="
+footer_string = "------------------------------"
 
 class _FunctionWrapper(object):
     """
@@ -178,15 +182,14 @@ def check_delete_all_files_in_path(path):
     paths=[os.path.join(path, q) for q in os.listdir(path)]
     check_delete_files(paths)
 
-def check_rename_folder(path, timestamp=None):
+def check_rename_folder(path, timestamp=None,verbose=None):
     if os.path.exists(path):
         if timestamp == None:
             now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         else:
-            now = timestamp
-        print("The folder", path, "already exists.")
+            now = timestamp.replace("datetime_","")
         try:
-            match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', path).group()
+            match = re.search(r'\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}_\d{4}', path).group()
         except:
             match = ""
         if match != "":
@@ -194,8 +197,13 @@ def check_rename_folder(path, timestamp=None):
         else:
             new_path = path+"_"+now
         shutil.move(path, new_path)
-        #print("New folder name set to", path)
+        print(header_string,"\nThe folder\n\t",path,"\nalready exists and has been moved to\n\t",new_path,"\n",show=verbose)
     #return path
+
+def copy_and_save_folder(from_path, to_path, timestamp=None,verbose=None):
+    check_rename_folder(to_path, timestamp=timestamp,verbose=verbose)
+    shutil.copytree(os.path.abspath(from_path), os.path.abspath(to_path))
+    #print("Content of folder\n\t",from_path,"\ncopied to folder\n\t",to_path,".",show=verbose)
 
 def save_samples(allsamples, logpdf_values, data_sample_filename, name):
     start = timer()
@@ -251,17 +259,24 @@ def show_figures(fig_list):
         except:
             print('File',fig,'not found.')
 
-def check_figures_list(fig_list):
+def check_figures_list(fig_list,output_figures_folder=None):
     new_fig_list = []
+    new_fig_path = output_figures_folder
     for fig in fig_list:
+        old_fig_path = os.path.split(os.path.abspath(fig))[0]
+        #print("Old figures path",old_fig_path)
+        #print("New figures path",new_fig_path)
+        if new_fig_path is not None:
+            if old_fig_path != new_fig_path:
+                fig = fig.replace(old_fig_path,new_fig_path)
         if os.path.exists(fig):
             new_fig_list.append(fig)
     return new_fig_list
 
-def check_figures_dic(fig_dic):
+def check_figures_dic(fig_dic,output_figures_folder=None):
     new_fig_dic = {}
     for k in fig_dic.keys():
-        new_fig_dic[k] = check_figures_list(fig_dic[k])
+        new_fig_dic[k] = check_figures_list(fig_dic[k],output_figures_folder)
         if new_fig_dic[k] == {}:
             del new_fig_dic[k]
     return new_fig_dic

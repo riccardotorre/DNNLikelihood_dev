@@ -55,19 +55,36 @@ class Sampler(Verbosity):
         The :class:`Sampler <DNNLikelihood.Sampler>` object can be initialized in two different ways, depending on the value of 
         the :argument:`new_sampler` argument.
         
-        1. ``new_sampler=True``: all attributes are set from input arguments. The 
-        :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
-        from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from
-        ``input_file``. Afterwards the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
-        method is called.
+        - :argument:`new_sampler` is ``True`` (default)
+            
+            All attributes are set from input arguments. The 
+            :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
+            from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from
+            ``input_file``. Afterwards the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
+            method is called.
+
+        - :argument:`new_sampler` is ``False``
         
-        2. ``new_sampler=False``: the :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
-        attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
-        otherwise from ``likelihood``. Arguments are set from 
-        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`. Afterwards the 
-        :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
-        method is called. If the import fails :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` 
-        proceeds with ``new_sampler=True`` (see 1.).
+            The :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
+            attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
+            otherwise from ``likelihood``. Arguments are set from 
+            :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`. Afterwards the 
+            :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
+            method is called. If the import fails :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` 
+            proceeds with ``new_sampler=True`` (see 1.).
+            Depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method behaves as follows:
+
+                - If :argument:`output_folder` is ``None`` (default)
+                    
+                    The attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
+                    is set from the :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` does not exists, then the content of the path :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    
+                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.
 
         Attributes that are always set from input arguments (if they are not ``None``)
 
@@ -176,8 +193,19 @@ class Sampler(Verbosity):
                     self.vectorize = vectorize
                 self.__init_likelihood(verbose=verbose_sub)
                 if output_folder != None:
-                    self.output_folder = path.abspath(output_folder)
-                self.__check_define_output_files(verbose=verbose_sub)
+                    old_output_folder = self.output_folder
+                    if old_output_folder != path.abspath(output_folder):
+                        self.output_folder = path.abspath(output_folder)
+                        try:
+                            utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                            print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                        except:
+                            utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
+                            print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
+                        self.__check_define_output_files()
+                        self.log[timestamp] = {"action": "changed_output_folder", 
+                                               "old folder": old_output_folder,
+                                               "new folder": self.output_folder}
                 try:
                     self.predictions["gelman_rubin"]
                     self.predictions["Figures"]
@@ -200,7 +228,7 @@ class Sampler(Verbosity):
         self.__check_vectorize(verbose=verbose_sub)
         self.__init_backend(verbose=verbose_sub)
         self.__check_params_backend(verbose=verbose_sub)
-        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"])
+        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
         del(self.likelihood)
         self.save(overwrite=True, verbose=verbose_sub)
         if path.split(self.likelihood_script_file)[0] != self.output_folder:
@@ -1103,7 +1131,7 @@ class Sampler(Verbosity):
             figs = {}
             print("All predictions and figures have been deleted and the 'predictions' attribute has been initialized.")
         else:
-            figs = utils.check_figures_dic(self.predictions["Figures"])
+            figs = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
             print("All predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.")
         self.predictions = {"gelman_rubin": {},
                             "Figures": figs}
