@@ -152,7 +152,6 @@ def check_rename_file(path,timestamp=None,verbose=True):
             now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         else:
             now = timestamp
-        print("The file", path, "already exists. Renaming the old file.",show=verbose)
         file, extension = os.path.splitext(path)
         filepath, filename = os.path.split(file)
         try:
@@ -167,6 +166,7 @@ def check_rename_file(path,timestamp=None,verbose=True):
             shutil.move("\\\\?\\" + path, "\\\\?\\" + new_path)
         else:
             shutil.move(path, new_path)
+        print(header_string,"\nThe file\n\t",path,"\nalready exists and has been moved to\n\t",new_path,"\n",show=verbose)
         return new_path
         #print("New file name set to", path)
     #return path
@@ -219,7 +219,7 @@ def save_samples(allsamples, logpdf_values, data_sample_filename, name):
     h5_out.close()
     statinfo = os.stat(data_sample_filename)
     end = timer()
-    print("File saved in", end-start,"seconds.\nFile size is", statinfo.st_size, ".")
+    print(header_string,"\nFile\n\t",data_sample_filename,"\nsaved in", end-start,"seconds.\nFile size is", statinfo.st_size, ".\n")
 
 #def set_param(obj_name, par_name):
 #    if eval(par_name) == None:
@@ -238,7 +238,7 @@ def check_set_dict_keys(dic, keys, vals,verbose=None):
             dic[keys[i]]
         except:
             dic[keys[i]] = vals[i]
-            print("The key", str(keys[i]), "was not specified and has been set to the default value",str(vals[i]),".",show=verbose)
+            print(header_string,"\nThe key", str(keys[i]), "was not specified and has been set to the default value",str(vals[i]),".\n",show=verbose)
 
 def check_repeated_elements_at_start(lst):
     x0 = lst[0]
@@ -255,17 +255,15 @@ def show_figures(fig_list):
     for fig in fig_list:
         try:
             os.startfile(r'%s'%fig)
-            print('File', fig, 'opened.')
+            print(header_string,"\nFile\n\t", fig, "\nopened.\n")
         except:
-            print('File',fig,'not found.')
+            print(header_string,"\nFile\n\t", fig, "\nnot found.\n")
 
 def check_figures_list(fig_list,output_figures_folder=None):
     new_fig_list = []
     new_fig_path = output_figures_folder
     for fig in fig_list:
         old_fig_path = os.path.split(os.path.abspath(fig))[0]
-        #print("Old figures path",old_fig_path)
-        #print("New figures path",new_fig_path)
         if new_fig_path is not None:
             if old_fig_path != new_fig_path:
                 fig = fig.replace(old_fig_path,new_fig_path)
@@ -311,25 +309,6 @@ def convert_types_dict(d):
             dd[k] = np.array(v).tolist()
     return dd
 
-#def convert_types_dict(dictionary):
-#    d = dict(dictionary)
-#    for k, v in d.items():
-#        if isinstance(v, dict):
-#            convert_types_dict(v)
-#        elif type(v) == np.ndarray:
-#            d[k] = v.tolist()
-#        elif type(v) == list:
-#            if str in [type(q) for q in flatten_list(v)]:
-#                d[k] = np.array(v, dtype=object).tolist()
-#            else:
-#                d[k] = np.array(v).tolist()
-#        else:
-#            d[k] = np.array(v).tolist()
-#    return d
-
-#def sort_dict(item: dict):
-#    return {k: sort_dict(v) if isinstance(v, dict) else v for k, v in sorted(item.items())}
-
 def sort_dict(dictionary):
     new_dict={}
     keys_sorted = sorted(list(dictionary.keys()),key=lambda v: (str(v).upper(), str(v)[0].islower()))
@@ -339,30 +318,6 @@ def sort_dict(dictionary):
         else:
             new_dict[k] = dictionary[k]
     return new_dict
-
-#def sort_dict(d):
-#    return json.loads(json.dumps(d,sort_keys=True))
-
-#def convert_types_dic(dic):
-#    new_dic = {}
-#    for key in list(dic.keys()):
-#        if type(dic[key]) == np.ndarray:
-#            new_dic[key] == dic[key].tolist()
-#        elif type(dic[key]) == list:
-#            #"float" in str(
-#            if "numpy.float" in str(type(dic[key][0])):
-#                new_dic[key] = list(map(float, dic[key]))
-#            if "numpy.int" in str(type(dic[key][0])):
-#                new_dic[key] = list(map(int, dic[key]))
-#            else:
-#                new_dic[key] = dic[key]
-#        elif "numpy.float" in str(type(dic[key])):
-#            new_dic[key] = float(dic[key])
-#        elif "numpy.int" in str(type(dic[key])):
-#            new_dic[key] = int(dic[key])
-#        else:
-#            new_dic[key] = dic[key]
-#    return new_dic
 
 def normalize_weights(w):
     return w/np.sum(w)*len(w)
@@ -448,7 +403,7 @@ def get_sorted_grid(pars_ranges, spacing="grid"):
     elif spacing == "grid":
         grid = [np.linspace(*par) for par in pars_ranges]
     else:
-        print("Invalid spacing argument. It should be one of: 'random' and 'grid'. Continuing with 'grid'.")
+        print(header_string,"\nInvalid spacing argument. It should be one of: 'random' and 'grid'. Continuing with 'grid'.\n")
         grid = [np.linspace(*par) for par in pars_ranges]
     #np.meshgrid(*grid)
     #np.vstack(np.meshgrid(*grid)).reshape(npoints**len(pars),-1).T
@@ -604,10 +559,6 @@ def compare_lists_arrays_tuple(list1,list2,string="",verbose=False):
     diffs = []
     arequal = False
     try:
-        #arr1 = np.array(list1)
-        #arr2 = np.array(list2)
-        #min_dtype = np.min([arr1.dtype,arr2.dtype])
-        #arequal = np.all(np.equal(list1,list2, dtype=min_dtype))
         arr1 = np.array(list1, dtype=object)
         arr2 = np.array(list2, dtype=object)
         arequal = np.all(np.equal(arr1, arr2))

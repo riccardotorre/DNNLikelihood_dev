@@ -69,17 +69,17 @@ class Data(Verbosity):
             :meth:`Data.__load <DNNLikelihood.Data._Data__load>`.
             If the :argument:`load_on_RAM` argument is ``True``, then all samples are loaded into RAM, otherwise the dataset is
             kept open and data are retrieved on demand.
-            Depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method behaves as follows:
+            Depending on the value of the input argument :argument:`output_folder` the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` method behaves as follows:
 
                 - If :argument:`output_folder` is ``None`` (default)
                     
-                    The attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
-                    is set from the :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` one.
-                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    The attribute :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`
+                    is set from the :attr:`Data.input_folder <DNNLikelihood.Data.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute
                     
-                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
-                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` does not exists, then the content of the path :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` is copied to the new ``output_folder``.
-                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    - if path stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` does not exists, then the content of the path :attr:`Data.input_folder <DNNLikelihood.Data.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute
                     
                     Output folder, files, and path attributes are not updated and everything is read from the loaded object.
 
@@ -293,8 +293,8 @@ class Data(Verbosity):
                 raise Exception("The length of the parameters central values array does not match the number of dimensions.")
         else:
             self.pars_central = np.zeros(self.ndims)
-            print("No central values for the parameters 'pars_central' has been specified. They have been set to zero for all\
-                parameters. If they are known it == better to build the object providing parameters central values.", show=verbose)
+            print(header_string,"\nNo central values for the parameters 'pars_central' has been specified. They have been set to zero for all\
+                parameters. If they are known it == better to build the object providing parameters central values.\n", show=verbose)
         if self.pars_pos_nuis is not None and self.pars_pos_poi is not None:
             if len(self.pars_pos_poi)+len(self.pars_pos_nuis) == self.ndims:
                 self.pars_pos_nuis = np.array(self.pars_pos_nuis)
@@ -302,14 +302,14 @@ class Data(Verbosity):
             else:
                 raise Exception("The number of parameters positions do not match the number of dimensions.")
         elif self.pars_pos_nuis is None and self.pars_pos_poi is None:
-            print("The positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified. Assuming all parameters are parameters of interest.", show=verbose)
+            print(header_string,"\nThe positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified. Assuming all parameters are parameters of interest.\n", show=verbose)
             self.pars_pos_nuis = np.array([])
             self.pars_pos_poi = np.array(list(range(self.ndims)))
         elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
-            print("Only the positions of the nuisance parameters have been specified. Assuming all other parameters are parameters of interest.", show=verbose)
+            print(header_string,"\nOnly the positions of the nuisance parameters have been specified. Assuming all other parameters are parameters of interest.\n", show=verbose)
             self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_nuis))
         elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
-            print("Only the positions of the parameters of interest have been specified. Assuming all other parameters are nuisance parameters.", show=verbose)
+            print(header_string,"\nOnly the positions of the parameters of interest have been specified. Assuming all other parameters are nuisance parameters.\n", show=verbose)
             self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_poi))
         self.pars_labels_auto = utils.define_pars_labels_auto(self.pars_pos_poi, self.pars_pos_nuis)
         if self.pars_labels is None:
@@ -370,9 +370,9 @@ class Data(Verbosity):
                                "files paths": [self.input_samples_h5_file,
                                                self.input_log_file,
                                                self.input_object_h5_file]}
-        print("Data object loaded in", str(end-start), ".",show=verbose)
+        print(header_string,"\nData object loaded in", str(end-start), ".\n",show=verbose)
         if self.load_on_RAM:
-            print("Samples loaded on RAM.", show=verbose)
+            print(header_string,"\nSamples loaded on RAM.\n", show=verbose)
 
     def __define_test_fraction(self):
         """ 
@@ -408,15 +408,15 @@ class Data(Verbosity):
         if len(self.data_dictionary["idx_train"]) != 0 and len(self.data_dictionary["idx_train"]) != len(self.data_dictionary["X_train"]):
             self.data_dictionary["X_train"] = self.data_X[self.data_dictionary["idx_train"]].astype(self.dtype_required)
             self.data_dictionary["Y_train"] = self.data_Y[self.data_dictionary["idx_train"]].astype(self.dtype_required)
-            print("Loaded train data corresponding to existing indices.")
+            print(header_string,"\nLoaded train data corresponding to existing indices.\n")
         if len(self.data_dictionary["idx_val"]) != 0 and len(self.data_dictionary["idx_val"]) != len(self.data_dictionary["X_val"]):
             self.data_dictionary["X_val"] = self.data_X[self.data_dictionary["idx_val"]].astype(self.dtype_required)
             self.data_dictionary["Y_val"] = self.data_Y[self.data_dictionary["idx_val"]].astype(self.dtype_required)
-            print("Loaded val data corresponding to existing indices.")
+            print(header_string,"\nLoaded val data corresponding to existing indices.\n")
         if len(self.data_dictionary["idx_test"]) != 0 and len(self.data_dictionary["idx_test"]) != len(self.data_dictionary["X_test"]):
             self.data_dictionary["X_test"] = self.data_X[self.data_dictionary["idx_test"]].astype(self.dtype_required)
             self.data_dictionary["Y_test"] = self.data_Y[self.data_dictionary["idx_test"]].astype(self.dtype_required)
-            print("Loaded test data corresponding to existing indices.")
+            print(header_string,"\nLoaded test data corresponding to existing indices.\n")
 
     def __set_pars_labels(self, pars_labels):
         """
@@ -492,9 +492,9 @@ class Data(Verbosity):
         try:
             self.opened_dataset.close()
             del(self.opened_dataset)
-            print("Closed", self.input_file,".",show=verbose)
+            print(header_string,"\nClosed", self.input_file,".\n",show=verbose)
         except:
-            print("No dataset to close.", show=verbose)
+            print(header_string,"\nNo dataset to close.\n", show=verbose)
 
     def save_log(self, overwrite=False, verbose=None):
         """
@@ -549,9 +549,9 @@ class Data(Verbosity):
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         if overwrite:
-            print("Data log file", self.output_log_file,"updated in", str(end-start), "s.",show=verbose)
+            print(header_string,"\nData log file\n\t", self.output_log_file,"\nupdated in", str(end-start), "s.\n",show=verbose)
         else:
-            print("Data log file", self.output_log_file, "saved in", str(end-start), "s.", show=verbose)
+            print(header_string,"\nData log file\n\t", self.output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save_object_h5(self, overwrite=False, verbose=True):
         """
@@ -622,7 +622,7 @@ class Data(Verbosity):
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_object_h5_file)[-1],
                                "file path": self.output_object_h5_file}
-        print("Data object saved to file", self.output_object_h5_file,"in", str(end-start), "s.",show=verbose)
+        print(header_string,"\nData object saved to file\n\t", self.output_object_h5_file,"in", str(end-start), "s.\n",show=verbose)
 
     def save_samples_h5(self, overwrite=False, verbose=None):
         """
@@ -678,7 +678,7 @@ class Data(Verbosity):
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_samples_h5_file)[-1],
                                "file path": self.output_samples_h5_file}
-        print(str(self.npoints), "data samples (data_X, data_Y) saved to file", self.output_samples_h5_file,"in", end-start, "s.",show=verbose)
+        print(header_string,"\n"+str(self.npoints), "data samples (data_X, data_Y) saved to file\n\t", self.output_samples_h5_file,"\nin", end-start, "s.\n",show=verbose)
 
     def save(self, overwrite=False, verbose=None):
         """
@@ -820,7 +820,7 @@ class Data(Verbosity):
                                "npoints train": npoints_train,
                                "npoints val": npoints_val}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Generated", str(npoints_train), "(X_train, Y_train) samples and ", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.",show=verbose)
+        print(header_string,"\nGenerated", str(npoints_train), "(X_train, Y_train) samples and ", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.\n",show=verbose)
 
     def update_train_indices(self, npoints_train, npoints_val, seed, verbose=None):
         """
@@ -945,7 +945,7 @@ class Data(Verbosity):
                                "npoints train": npoints_train,
                                "npoints val": npoints_val}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Added", str(npoints_train), "(X_train, Y_train) samples and", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.",show=verbose)
+        print(header_string,"\nAdded", str(npoints_train), "(X_train, Y_train) samples and", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.\n",show=verbose)
 
     def generate_test_indices(self, npoints_test, verbose=None):
         """
@@ -1035,7 +1035,7 @@ class Data(Verbosity):
                                "data": ["X_train", "Y_train", "X_val", "Y_val"],
                                "npoints train": npoints_test}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Added", str(npoints_test), "(X_test, Y_test) samples in", end-start, "s.",show=verbose)
+        print(header_string,"\nAdded", str(npoints_test), "(X_test, Y_test) samples in", end-start, "s.\n",show=verbose)
 
     def compute_sample_weights(self, sample, nbins=100, power=1, verbose=None):
         """
@@ -1097,7 +1097,7 @@ class Data(Verbosity):
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "computed sample weights"}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Sample weights computed in", end-start, "s.",show=verbose)
+        print(header_string,"\nSample weights computed in", end-start, "s.\n",show=verbose)
         return W
 
     def define_scalers(self, data_X, data_Y, scalerX_bool, scalerY_bool, verbose=None):
@@ -1175,7 +1175,7 @@ class Data(Verbosity):
                                "scaler X": scalerX_bool,
                                "scaler Y": scalerY_bool}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Standard scalers defined in", end-start, "s.", show=verbose)
+        print(header_string,"\nStandard scalers defined in", end-start, "s.\n", show=verbose)
         return [scalerX, scalerY]
 
     def plot_corners_1samp(self, X, intervals=inference.CI_from_sigma([1, 2, 3]), 
@@ -1365,7 +1365,7 @@ class Data(Verbosity):
         samp = X[rnd_idx][:,pars]
         if weights is not None:
             weights = weights[rnd_idx]
-        print("Computing HPDIs.", show=verbose)
+        print(header_string,"\nComputing HPDIs.\n", show=verbose)
         HPDI = [inference.HPDI(samp[:,i], intervals = intervals, weights=weights, nbins=nbins, print_hist=False, optimize_binning=False) for i in range(nndims)]
         levels = np.array([[np.sort(inference.HPD_quotas(samp[:,[i,j]], nbins=nbins, intervals = intervals, weights=weights)).tolist() for j in range(nndims)] for i in range(nndims)])
         fig, axes = plt.subplots(nndims, nndims, figsize=(3*nndims, 3*nndims))
@@ -1429,5 +1429,5 @@ class Data(Verbosity):
         self.log[timestamp] = {"action": "saved figure",
                                "file name": path.split(figure_file)[-1],
                                "file path": figure_file}
-        print(r"%s" % figure_file, "created and saved in", str(end-start), "s.", show=verbose)
-        print("Plot done and saved in", end-start, "s.", show=verbose)
+        print(header_string,r"\n\t%s" % figure_file, "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+        print(header_string,"\nPlot done and saved in", end-start, "s.\n", show=verbose)

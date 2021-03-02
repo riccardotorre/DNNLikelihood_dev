@@ -74,17 +74,17 @@ class Sampler(Verbosity):
             :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
             method is called. If the import fails :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` 
             proceeds with ``new_sampler=True`` (see 1.).
-            Depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method behaves as follows:
+            Depending on the value of the input argument :argument:`output_folder` the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` method behaves as follows:
 
                 - If :argument:`output_folder` is ``None`` (default)
                     
-                    The attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
-                    is set from the :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` one.
-                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    The attribute :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`
+                    is set from the :attr:`Sampler.input_folder <DNNLikelihood.Sampler.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute
                     
-                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
-                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` does not exists, then the content of the path :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` is copied to the new ``output_folder``.
-                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    - if path stored in the loaded :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` does not exists, then the content of the path :attr:`Sampler.input_folder <DNNLikelihood.Sampler.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute
                     
                     Output folder, files, and path attributes are not updated and everything is read from the loaded object.
 
@@ -185,7 +185,6 @@ class Sampler(Verbosity):
             #self.__load(verbose=verbose_sub)
             try:
                 self.__load(verbose=verbose_sub)
-                print(self.nwalkers)
                 self.nsteps_required = nsteps_required
                 if moves_str != None:
                     self.moves_str = moves_str
@@ -214,11 +213,11 @@ class Sampler(Verbosity):
                 except:
                     self.reset_predictions(delete_figures=True, verbose=verbose_sub)
             except:
-                print("No sampler files have been found. Initializing a new Sampler object.",show=verbose)
+                print(header_string,"\nNo sampler files have been found. Initializing a new Sampler object.\n",show=verbose)
                 self.new_sampler = True
         if self.new_sampler:
             if moves_str == None:
-                print("No 'moves_str' argument specified: the 'moves_str' attribute has been set to the emcee default 'StretchMove()'.", show=verbose)
+                print(header_string,"\nNo 'moves_str' argument specified: the 'moves_str' attribute has been set to the emcee default 'StretchMove()'.\n", show=verbose)
                 self.moves_str = "[(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode='random', factor=None), 0)]"
             self.log = {timestamp: {"action": "created"}}
             self.predictions = {"gelman_rubin": {}, 
@@ -308,12 +307,12 @@ class Sampler(Verbosity):
             self.input_h5_file = path.abspath(self.input_file+".h5")
             self.input_log_file = path.abspath(self.input_file+".log")
             self.input_folder = path.split(self.input_file)[0]
-            print("Input folder set to:", self.input_folder,show=verbose)
+            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
         except:
             self.input_h5_file = None
             self.input_log_file = None
             self.input_folder = None
-            print("No input files and folders specified.",show=verbose)
+            print(header_string,"\nNo input files and folders specified.",show=verbose)
                 
     def __check_define_output_files(self,verbose=None):
         """
@@ -368,7 +367,7 @@ class Sampler(Verbosity):
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
         utils.check_create_folder(self.output_folder)
         utils.check_create_folder(self.output_figures_folder)
-        print("Output folder set to:", self.output_folder, show=verbose)
+        print(header_string,"\nOutput folder set to\n\t", self.output_folder, ".\n",show=verbose)
 
     def __get_likelihood_script_file_from_input_file(self):
         """
@@ -422,7 +421,6 @@ class Sampler(Verbosity):
         attribute.
         """
         self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
-        print(self.likelihood_script_file)
         folder, file = path.split(self.likelihood_script_file)
         file = path.splitext(file)[0]
         input_file = path.join(self.output_folder, file.replace("likelihood_script", "sampler"))
@@ -503,22 +501,22 @@ class Sampler(Verbosity):
         self.ndims = lik.ndims
         if self.nwalkers is None:
             self.nwalkers = 2*self.ndims
-            print("The 'nwalkers' input argument was set to None. 'nwalkers' attribute has been set to twice the number of dimensions (",self.nwalkers,").", show=verbose)
+            print(header_string,"\nThe 'nwalkers' input argument was set to None. 'nwalkers' attribute has been set to twice the number of dimensions (",self.nwalkers,").\n", show=verbose)
         self.pars_central = lik.pars_central
         self.pars_pos_poi = lik.pars_pos_poi
         self.pars_pos_nuis = lik.pars_pos_nuis
         if lik.pars_init_vec is None:
             self.pars_init_vec = np.array([np.random.normal(lik.pars_central) for i in range(self.nwalkers)])
-            print("No profiled maxima information were find in the Likelihood object. \
-                   The vector of parameters initialization of walkers has been generated with gaussian smooth of the central parameters values.",show=verbose)
+            print(header_string,"\nNo profiled maxima information were find in the Likelihood object. \
+                   The vector of parameters initialization of walkers has been generated with gaussian smooth of the central parameters values.\n",show=verbose)
         else:
             if len(lik.pars_init_vec) >= self.nwalkers:
-                print("The vector of parameters initialization of walkers has been generated from profiled maxima information available in the Likelihood object.",show=verbose)
+                print(header_string,"\nThe vector of parameters initialization of walkers has been generated from profiled maxima information available in the Likelihood object.\n",show=verbose)
                 self.pars_init_vec = lik.pars_init_vec[:self.nwalkers]
             else:
-                print("Profiled maxima information found in the Likelihood object. However, the number of maxima is less than the number of walkers.\
+                print(header_string,"\nProfiled maxima information found in the Likelihood object. However, the number of maxima is less than the number of walkers.\
                        The vector of parameters initialization of walkers has been generated from profiled maxima information available in the Likelihood object \
-                       and, for the missing walkers, with gaussian smooth of the central parameters values.", show=verbose)
+                       and, for the missing walkers, with gaussian smooth of the central parameters values.\n", show=verbose)
                 self.pars_init_vec = np.concatenate([lik.pars_init_vec, np.array([np.random.normal(lik.pars_central) for i in range(self.nwalkers-len(lik.pars_init_vec))])])
         self.pars_labels = lik.pars_labels
         self.pars_bounds = lik.pars_bounds
@@ -568,7 +566,7 @@ class Sampler(Verbosity):
                                                 path.split(self.input_log_file)[-1]],
                                "files paths": [self.input_h5_file,
                                                 self.input_log_file]}
-        print("Sampler object loaded in", str(end-start), ".",show=verbose)
+        print(header_string,"\nSampler object loaded in", str(end-start), ".\n",show=verbose)
 
     def __init_backend(self, verbose=None):
         """
@@ -608,13 +606,12 @@ class Sampler(Verbosity):
                 if self.input_folder != self.output_folder:
                     if path.exists(old_backend_file):
                         copyfile(old_backend_file, self.backend_file)
-                        print("A backend file has been found in the input folder and has been copied to the new output folder.")
+                        print(header_string,"\nA backend file has been found in the input folder and has been copied to the new output folder.\n")
             if not path.exists(self.backend_file):
-                print("The new_sampler flag was set to false but the backend file", self.backend_file,
-                      "does not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.",show=verbose)
+                print(header_string,"\nThe new_sampler flag was set to false but the backend file\n\t", self.backend_file,
+                      "\ndoes not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.\n",show=verbose)
                 self.new_sampler = True
         if self.new_sampler:
-            #print("Creating sampler in backend file", self.backend_file)
             utils.check_rename_file(self.backend_file,verbose=verbose_sub)
             nsteps_tmp = self.nsteps_required
             self.nsteps_required = 0
@@ -625,9 +622,8 @@ class Sampler(Verbosity):
             self.log[timestamp] = {"action": "created backend", 
                                    "file name": path.split(self.backend_file)[-1], 
                                    "file path": self.backend_file}
-            print("Created backend", self.backend_file, "for chains", self.name, "in", end-start, "s.",show=verbose)
+            print(header_string,"\nCreated backend\n\t", self.backend_file, "\nfor chains", self.name, "in", end-start, "s.\n",show=verbose)
         else:
-            #print("Loading existing sampler from backend file", self.backend_file)
             nsteps_tmp = self.nsteps_required
             self.nsteps_required = 0
             self.backend = None
@@ -639,8 +635,7 @@ class Sampler(Verbosity):
             self.log[timestamp] = {"action": "loaded backend", 
                                    "file name": path.split(self.backend_file)[-1], 
                                    "file path": self.backend_file}
-            print("Loaded backend", self.backend_file, "for chains",self.name, "in", end-start, "s.",show=verbose)
-            #print("Available number of steps: {0}.".format(self.backend.iteration),".",show=verbose)
+            print(header_string,"\nLoaded backend\n\t", self.backend_file, "\nfor chains",self.name, "in", end-start, "s.\n",show=verbose)
 
     def __init_sampler(self, verbose=None):
         """
@@ -673,14 +668,14 @@ class Sampler(Verbosity):
         # Initializes backend (either connecting to existing one or generating new one)
         # Initilized p0 (chains initial state)
         if self.new_sampler:
-            print("Initialize backend in file", self.backend_file,".",show=verbose)
+            print(header_string,"\nInitialize backend in file\n\t", self.backend_file,"\n",show=verbose)
             self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
             self.backend.reset(self.nwalkers, self.ndims)
             p0 = self.pars_init_vec
         else:
             if self.backend == None:
                 try:
-                    print("Initialize backend from file", self.backend_file,".",show=verbose)
+                    print(header_string,"\nInitialize backend from file\n\t", self.backend_file,"\n",show=verbose)
                     self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
                 except:
                     raise Exception("Backend file does not exist. Please either change the filename or run with new_sampler=True.")
@@ -712,7 +707,7 @@ class Sampler(Verbosity):
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "init sampler", 
                                "available steps": self.backend.iteration}
-        print("Number of available steps: {0}.".format(self.backend.iteration),".",show=verbose)
+        print(header_string,"\nNumber of available steps: {0}.".format(self.backend.iteration),".\n",show=verbose)
 
     def __check_vectorize(self, verbose=None):
         """
@@ -740,12 +735,11 @@ class Sampler(Verbosity):
             try:
                 self.logpdf(self.pars_init_vec[0:2], *self.logpdf_args)
             except:
-                print("vectorize has been set to True, but logpdf does not seem to be vectorized. Please check your input if you want to use a vectorized logpdf. Continuing with vectorize=False.", show=verbose)
+                print(header_string,"\n'vectorize' has been set to True, but logpdf does not seem to be vectorized. Please check your input if you want to use a vectorized logpdf. Continuing with vectorize=False.\n", show=verbose)
                 self.vectorize = False
         if self.vectorize:
             self.parallel_CPU = False
-            print(
-                "Since vectorize=True the parameter parallel_CPU has been set to False.", show=verbose)
+            print(header_string,"\nSince 'vectorize' has been set to True, the parameter 'parallel_CPU' has been automatically set to False.\n", show=verbose)
 
     def __check_params_backend(self,verbose=None):
         """
@@ -777,7 +771,7 @@ class Sampler(Verbosity):
         if self.nsteps_required == None:
             self.nsteps_required = self.nsteps_available
         elif self.nsteps_available > self.nsteps_required:
-            print("Specified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",self.nsteps_available, ".",show=verbose)
+            print(header_string,"\nSpecified number of steps nsteps is inconsitent with loaded backend. nsteps has been set to",self.nsteps_available, ".\n",show=verbose)
             self.nsteps_required = self.nsteps_available
 
     def __set_steps_to_run(self):
@@ -858,11 +852,10 @@ class Sampler(Verbosity):
             p0 = self.backend.get_last_sample()
         except:
             p0 = self.pars_init_vec
-        print("Initial number of steps: {0}".format(self.backend.iteration), ".", show=verbose)
+        print(header_string,"\nInitial number of steps: {0}".format(self.backend.iteration), ".", show=verbose)
         # Defines sampler and runs the chains
         start = timer()
         nsteps_to_run = self.__set_steps_to_run()
-        #print(nsteps_to_run)
         if nsteps_to_run == 0:
             progress = False
             print("Please increase nsteps to run for more steps.", show=verbose)
@@ -960,11 +953,11 @@ class Sampler(Verbosity):
         end = timer()
         if type(overwrite) == bool:
             if overwrite:
-                print("Likelihood log file", output_log_file, "updated in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
             else:
-                print("Likelihood log file", output_log_file, "saved in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print("Likelihood log file dump", output_log_file, "saved in", str(end-start), "s.", show=verbose)
+            print(header_string,"\nLikelihood log file dump\n\t", output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save_predictions_json(self, timestamp=None,overwrite=False, verbose=None):
         """ Save predictions json
@@ -989,11 +982,11 @@ class Sampler(Verbosity):
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print("Predictions json file", output_predictions_json_file, "updated in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
             else:
-                print("Predictions json file", output_predictions_json_file, "saved in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print("Predictions json file dump", output_predictions_json_file, "saved in", str(end-start), "s.", show=verbose)
+            print(header_string,"\nPredictions json file dump\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save(self, timestamp=None, overwrite=False, verbose=None):
         """
@@ -1084,13 +1077,20 @@ class Sampler(Verbosity):
                                                           "new_sampler", "nsteps_available",
                                                           "pars_init_vec", "pars_labels", "pars_labels_auto",
                                                           "pars_pos_nuis", "pars_pos_poi", "sampler", "verbose"])
-        dd.io.save(self.output_h5_file, dictionary)
+        dd.io.save(output_h5_file, dictionary)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.output_h5_file)[-1],
-                               "file path": self.output_h5_file}
-        print("Sampler object saved to file", self.output_h5_file, "in", str(end-start), "s.", show=verbose)
+                               "file name": path.split(output_h5_file)[-1],
+                               "file path": output_h5_file}
+
+        if type(overwrite) == bool:
+            if overwrite:
+                print(header_string,"\nSampler h5 file\n\t", output_h5_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+            else:
+                print(header_string,"\nSampler h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+        elif overwrite == "dump":
+            print(header_string,"\nSampler h5 file dump\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         self.save_predictions_json(timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub)
         self.save_log(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
     
@@ -1131,10 +1131,10 @@ class Sampler(Verbosity):
         if delete_figures:
             utils.check_delete_all_files_in_path(self.output_figures_folder)
             figs = {}
-            print("All predictions and figures have been deleted and the 'predictions' attribute has been initialized.")
+            print(header_string,"\nAll predictions and figures have been deleted and the 'predictions' attribute has been initialized.\n")
         else:
             figs = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
-            print("All predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.")
+            print(header_string,"\nAll predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.\n")
         self.predictions = {"gelman_rubin": {},
                             "Figures": figs}
 
@@ -1150,7 +1150,7 @@ class Sampler(Verbosity):
         if len(x.shape) != 1:
             raise ValueError( "invalid dimensions for 1D autocorrelation function")
         if len(np.unique(x)) == 1:
-            print("Chain does not change in "+str(len(x))+" steps. Autocorrelation for this chain may return nan.",show=verbose)
+            print(header_string,"\nChain does not change in "+str(len(x))+" steps. Autocorrelation for this chain may return nan.\n",show=verbose)
         n = utils.next_power_of_two(len(x))
         # Compute the FFT and then (from that) the auto-correlation function
         f = np.fft.fft(x - np.mean(x), n=2*n)
@@ -1195,7 +1195,7 @@ class Sampler(Verbosity):
         for yy in y:
             fp = self.autocorr_func_1d(yy, verbose=verbose_sub)
             if np.isnan(np.sum(fp)):
-                print("Chain",counter,"returned nan. Values changed to 0 to proceed.",show=verbose)
+                print(header_string,"\nChain",counter,"returned nan. Values changed to 0 to proceed.\n",show=verbose)
                 fp = np.full(len(fp),0)
             f += fp
             counter += 1
@@ -1380,7 +1380,7 @@ class Sampler(Verbosity):
                                "pars": pars, 
                                "nsteps": nsteps}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Gelman-Rubin statistics for parameters", pars,"computed in",str(end-start),"s.",show=verbose)
+        print(header_string,"\nGelman-Rubin statistics for parameters", pars,"computed in",str(end-start),"s.\n",show=verbose)
         #return np.array(res)
 
     def update_figures(self,figure_file=None,timestamp=None,overwrite=False):
@@ -1550,7 +1550,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
+            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1569,7 +1569,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
+            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1588,7 +1588,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
+            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1701,7 +1701,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
+            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1814,8 +1814,8 @@ class Sampler(Verbosity):
                 n_dupl.append(utils.check_repeated_elements_at_start(c))
             n_start = max(n_dupl)+10
             if n_start > 100:
-                print("There is at least one chain starting with", str(
-                    n_start-10), "duplicate steps. Autocorrelation will be computer starting at", str(n_start), "steps.", show=verbose)
+                print(header_string,"\nThere is at least one chain starting with", str(
+                    n_start-10), "duplicate steps. Autocorrelation will be computer starting at", str(n_start), "steps.\n", show=verbose)
             else:
                 n_start = 100
             N = np.exp(np.linspace(np.log(n_start), np.log(chain.shape[1]), 10)).astype(int)
@@ -1850,11 +1850,11 @@ class Sampler(Verbosity):
                             ml[k] = self.autocorr_ml(chain[:, :n], thin=thin, bound=bound,verbose=verbose_sub)
                         succeed = True
                         if bound > 5.0:
-                            print("Succeeded with bounds (", str(-(bound)),
-                                  ",", str(bound), ").", show=verbose)
+                            print(header_string,"\nSucceeded with bounds (", str(-(bound)),
+                                  ",", str(bound), ").\n", show=verbose)
                     except:
-                        print("Bounds (", str(-(bound)), ",", str(bound), ") delivered non-finite log-prior. Increasing bound to (",
-                              str(-(bound+5)), ",", str(bound+5), ") and retrying.", show=verbose)
+                        print(header_string,"\nBounds (", str(-(bound)), ",", str(bound), ") delivered non-finite log-prior. Increasing bound to (",
+                              str(-(bound+5)), ",", str(bound+5), ") and retrying.\n", show=verbose)
                         bound = bound+5
             # Plot the comparisons
             plt.plot(N, N / 50.0, "--k", label=r"$\tau = S/50$")
@@ -1882,7 +1882,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
+            print(header_string,"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1981,7 +1981,7 @@ class Sampler(Verbosity):
         pars_labels = self.__set_pars_labels(pars_labels)
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
-            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
+            print(header_string,"\nn_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.\n",show=verbose)
         rnd_chains = np.sort(np.random.choice(np.arange(
             self.nwalkers), n_chains, replace=False))
         for par in pars:
@@ -2002,7 +2002,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(r"%s" % (figure_file), "created and saved in",str(end-start), "s.", show=verbose)
+            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -2079,7 +2079,7 @@ class Sampler(Verbosity):
         start = timer()
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
-            print("n_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
+            print(header_string,"\nn_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.\n",show=verbose)
         rnd_chains = np.sort(np.random.choice(np.arange(
             self.nwalkers), n_chains, replace=False))
         chain_lp = self.sampler.get_log_prob()
@@ -2098,7 +2098,7 @@ class Sampler(Verbosity):
                                "file name": path.split(figure_file)[-1], 
                                "file path": figure_file}
         end = timer()
-        print(r"%s" % (figure_file), "created and saved in", str(end-start), "s.", show=verbose)
+        print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
         if show_plot:
             plt.show()
         plt.close()
@@ -2211,32 +2211,32 @@ class Sampler(Verbosity):
         ### Compute available samples
         if burnin == "auto":
             try:
-                print("Estimating autocorrelation time to optimize burnin. For very large chains this could take a while.",show=verbose)
+                print(header_string,"\nEstimating autocorrelation time to optimize burnin. For very large chains this could take a while.\n",show=verbose)
                 autocorr_max = int(np.max(self.sampler.get_autocorr_time()))
             except:
                 raise Exception("Could not automatically determine optimal 'burnin'. You must manually specify the 'burnin' input.")
             burnin=int(np.min([5*autocorr_max,self.nsteps_available/2]))
-            print("Maximum estimated autocorrelation time of all parameters is:",autocorr_max,".",show=verbose)
-            print("Burning automatically set to:", burnin, ".", show=verbose)
+            print(header_string,"\nMaximum estimated autocorrelation time of all parameters is:",autocorr_max,".\n",show=verbose)
+            print(header_string,"\nBurning automatically set to:", burnin, ".\n", show=verbose)
         else:
-            print("Warning: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.", show=verbose)
+            print(header_string,"\nWarning: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.\n", show=verbose)
         if thin == "auto":
             try:
                 autocorr_max
             except:
                 autocorr_max = None
             try:
-                print("Estimating optimal 'thin'. For very large chains this could take a while.", show=verbose)
+                print(header_string,"\nEstimating optimal 'thin'. For very large chains this could take a while.\n", show=verbose)
                 thin=int((self.nsteps_available-burnin)*self.nwalkers/nsamples)
                 while len(np.unique(self.sampler.get_log_prob(discard=burnin,thin=thin, flat=True),return_index=False)) < nsamples and thin>1:
                     thin=thin-1
                 if autocorr_max != None:
                     if thin < autocorr_max:
-                        print("The required number of samples does not allow a thin value larger than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".",show=verbose)
+                        print(header_string,"\nThe required number of samples does not allow a thin value larger than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".\n",show=verbose)
                     else:
-                        print("Thin automatically set to:",thin,".",show=verbose)
+                        print(header_string,"\nThin automatically set to:",thin,".\n",show=verbose)
                 else:
-                    print("Thin automatically set to:",thin,".",show=verbose)
+                    print(header_string,"\nThin automatically set to:",thin,".\n",show=verbose)
             except:
                 raise Exception("Could not automatically determine optimal 'thin'. You must manually specify the 'thin' input.")
         logpdf_values=self.sampler.get_log_prob(discard = burnin, thin = thin, flat = True)
@@ -2248,13 +2248,13 @@ class Sampler(Verbosity):
         elif nsamples <= available_samples:
             unique_indices = unique_indices[-nsamples:]
         else:
-            print("Less unique samples (", available_samples, ") than requested samples (", nsamples, "). Returning all available samples.\nYou may try to reduce burnin and/or thin to get more samples.", show=verbose)
+            print(header_string,"\nLess unique samples (", available_samples, ") than requested samples (", nsamples, "). Returning all available samples.\nYou may try to reduce burnin and/or thin to get more samples.\n", show=verbose)
         logpdf_values = logpdf_values[unique_indices]
         allsamples = allsamples[unique_indices]
         if np.count_nonzero(np.isfinite(logpdf_values)) < len(logpdf_values):
-            print("There are non-numeric logpdf values.",show=verbose)
+            print(header_string,"\nThere are non-numeric logpdf values.\n",show=verbose)
         end = timer()
-        print(len(allsamples), "unique samples generated in", end-start, "s.",show=verbose)
+        print(header_string,"\n"+str(len(allsamples)), "unique samples generated in", end-start, "s.\n",show=verbose)
         data_sample_timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         ds = Data(name=self.name.replace("_sampler", "_data"),
                   data_X=allsamples,

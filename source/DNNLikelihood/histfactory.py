@@ -208,14 +208,14 @@ class Histfactory(Verbosity):
                                                        "model_loaded": False} for x in signal_patch_files]))
                 likelihoods_dict = {**likelihoods_dict, **dict_region}
             else:
-                print("Liks import from folder",self.regions[region]," failed. Please check background and patch files base name.", show=verbose)
+                print(header_string,"\nLikelihoods import from folder",self.regions[region]," failed. Please check background and patch files base name.\n", show=verbose)
         for n in list(likelihoods_dict.keys()):
             likelihoods_dict[n]["name"] = self.name+"_" + str(n)+"_"+likelihoods_dict[n]["name"]+"_likelihood"
         self.likelihoods_dict = likelihoods_dict
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "import histfactory",
                                "folder": self.workspace_folder}
-        print("Successfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.",show=verbose)
+        print(header_string,"\nSuccessfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.\n",show=verbose)
 
     def __load(self,verbose=None):
         """
@@ -257,7 +257,7 @@ class Histfactory(Verbosity):
                                                path.split(self.input_log_file)[-1]],
                                "files paths": [self.input_h5_file,
                                                self.input_log_file]}
-        print('Histfactory object loaded in', str(end-start), '.', show=verbose)
+        print(header_string,"\nHistfactory object loaded in", str(end-start), ".\n", show=verbose)
 
     def import_likelihoods(self,lik_numbers_list=None, progressbar=True, verbose=None):
         """
@@ -308,7 +308,7 @@ class Histfactory(Verbosity):
                 import ipywidgets as widgets
             except:
                 progressbar = False
-                print("If you want to show a progress bar please install the ipywidgets package.",show=verbose)
+                print(header_string,"\nIf you want to show a progress bar please install the ipywidgets package.\n",show=verbose)
         if len(lik_numbers_list) == 1:
             progressbar = False
         start = timer()
@@ -322,7 +322,7 @@ class Histfactory(Verbosity):
             iterator = 0
         for n in lik_numbers_list:
             if self.likelihoods_dict[n]["model_loaded"]:
-                print(self.likelihoods_dict[n]["patch_file"], "already loaded.",show=verbose)
+                print(header_string,"\nFile\n\t",self.likelihoods_dict[n]["patch_file"], "\nis already loaded.\n",show=verbose)
             else:
                 start_patch = timer()
                 with open(self.likelihoods_dict[n]["bg_only_file"]) as json_file:
@@ -353,7 +353,7 @@ class Histfactory(Verbosity):
                 schema = requests.get("https://scikit-hep.org/pyhf/schemas/1.0.0/workspace.json").json()
                 jsonschema.validate(instance=spec, schema=schema)
                 end_patch = timer()
-                print(self.likelihoods_dict[n]["patch_file"], "processed in", str(end_patch-start_patch), "s.",show=verbose)
+                print(header_string,"\nFile\n\t", self.likelihoods_dict[n]["patch_file"], "\nprocessed in", str(end_patch-start_patch), "s.\n",show=verbose)
             if progressbar:
                 iterator = iterator + 1
                 overall_progress.value = float(iterator)/(len(lik_numbers_list))
@@ -363,7 +363,7 @@ class Histfactory(Verbosity):
                                "likelihoods numbers": lik_numbers_list}
         self.save_log(overwrite=True, verbose=verbose_sub)
         self.set_verbosity(verbose)
-        print("Imported",len(lik_numbers_list),"likelihoods in ", str(end-start), "s.",show=verbose)
+        print(header_string,"\nImported",len(lik_numbers_list),"likelihoods in ", str(end-start), "s.\n",show=verbose)
 
     def save_log(self, overwrite=False, verbose=None):
         """
@@ -572,7 +572,7 @@ class Histfactory(Verbosity):
         start = timer()
         lik = dict(self.likelihoods_dict[lik_number])
         if not lik["model_loaded"]:
-            print("Model for likelihood",lik_number,"not loaded. Attempting to load it.")
+            print(header_string,"\nModel for likelihood",lik_number,"not loaded. Attempting to load it.")
             self.import_likelihoods(lik_numbers_list=[lik_number], verbose=True)
         lik_obj = Lik(name=lik["name"].replace("_histfactory", ""),
                       logpdf=lik["model"].logpdf,
@@ -594,7 +594,7 @@ class Histfactory(Verbosity):
                                               path.split(lik_obj.output_log_file)[-1]], 
                                "files paths": [lik_obj.output_h5_file, 
                                                lik_obj.output_log_file]}
-        print("Likelihood object for likelihood", lik_number, "created and saved to files", lik_obj.output_h5_file, 
-              " and", lik_obj.output_log_file, "in", str(end-start), "s.", show=verbose)
+        print(header_string,"\nLikelihood object for likelihood", lik_number, "created and saved to files\n\t", lik_obj.output_h5_file, 
+              "\n\t", lik_obj.output_log_file, "\nin", str(end-start), "s.\n", show=verbose)
         self.save_log(overwrite=True, verbose=verbose_sub)
         return lik_obj
