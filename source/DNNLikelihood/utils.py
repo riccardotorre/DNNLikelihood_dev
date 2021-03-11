@@ -201,8 +201,11 @@ def check_rename_folder(path, timestamp=None,verbose=None):
     #return path
 
 def copy_and_save_folder(from_path, to_path, timestamp=None,verbose=None):
+    if not os.path.exists(from_path):
+        raise Exception("The source folder does not exist")
     check_rename_folder(to_path, timestamp=timestamp,verbose=verbose)
     shutil.copytree(os.path.abspath(from_path), os.path.abspath(to_path))
+
     #print("Content of folder\n\t",from_path,"\ncopied to folder\n\t",to_path,".",show=verbose)
 
 def save_samples(allsamples, logpdf_values, data_sample_filename, name):
@@ -238,7 +241,7 @@ def check_set_dict_keys(dic, keys, vals,verbose=None):
             dic[keys[i]]
         except:
             dic[keys[i]] = vals[i]
-            print(header_string,"\nThe key", str(keys[i]), "was not specified and has been set to the default value",str(vals[i]),".\n",show=verbose)
+            print("The key '"+str(keys[i])+"' was not specified and has been set to the default value '"+str(vals[i])+"'.",show=verbose)
 
 def check_repeated_elements_at_start(lst):
     x0 = lst[0]

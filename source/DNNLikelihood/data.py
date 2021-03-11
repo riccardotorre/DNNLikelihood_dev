@@ -102,6 +102,7 @@ class Data(Verbosity):
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.dtype = dtype
             self.data_X = data_X
             self.data_Y = data_Y
@@ -116,8 +117,6 @@ class Data(Verbosity):
             self.__check_define_pars(verbose=verbose_sub)
             self.test_fraction = test_fraction
             self.__define_test_fraction()
-            self.output_folder = output_folder
-            self.__check_define_output_files()
             self.load_on_RAM = load_on_RAM
             self.figures_list = []
             self.save(overwrite=False, verbose=verbose_sub)
@@ -131,21 +130,8 @@ class Data(Verbosity):
             else:
                 self.dtype_required = "float64"
             self.__load(verbose=verbose_sub)
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.__define_test_fraction()
-            if output_folder != None:
-                old_output_folder = self.output_folder
-                if old_output_folder != path.abspath(output_folder):
-                    self.output_folder = path.abspath(output_folder)
-                    try:
-                        utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    except:
-                        utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    self.__check_define_output_files()
-                    self.log[timestamp] = {"action": "changed_output_folder", 
-                                           "old folder": old_output_folder,
-                                           "new folder": self.output_folder}
             self.figures_list = utils.check_figures_list(self.figures_list)
             self.save_log(overwrite=True, verbose=verbose_sub)
 
@@ -154,7 +140,7 @@ class Data(Verbosity):
                                 "X_test": np.array([[]], dtype=self.dtype_required), "Y_test": np.array([], dtype=self.dtype_required),
                                 "idx_train": np.array([], dtype="int"), "idx_val": np.array([], dtype="int"), "idx_test": np.array([], dtype="int")}
 
-    def __check_define_input_files(self):
+    def __check_define_input_files(self,verbose=False):
         """
         Private method used by the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` one
         to set the attributes corresponding to input files:
@@ -166,18 +152,22 @@ class Data(Verbosity):
         depending on the value of the 
         :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute.
         """
+        verbose, verbose_sub = self.set_verbosity(verbose)
         if self.input_file == None:
             self.input_object_h5_file = None
             self.input_samples_h5_file = None
             self.input_log_file = None
+            self.input_folder = None
         else:
             self.input_file = self.input_file.replace("_object","")
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
             self.input_object_h5_file = self.input_file+"_object.h5"
             self.input_samples_h5_file = self.input_file+"_samples.h5"
             self.input_log_file = self.input_file+".log"
+            self.input_folder = path.split(self.input_file)[0]
+            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
 
-    def __check_define_output_files(self):
+    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` one
         to set the attributes corresponding to output folders
@@ -198,16 +188,23 @@ class Data(Verbosity):
         :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` if 
         it does not exist.
         """
-        if self.output_folder == None:
-            self.output_folder = ""
-        self.output_folder = path.abspath(self.output_folder)
-        self.output_figures_folder = path.join(self.output_folder, "figures")
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if output_folder is not None:
+            self.output_folder = path.abspath(output_folder)
+            if self.input_folder is not None and self.output_folder != self.input_folder:
+                utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
+        else:
+            if self.input_folder is not None:
+                self.output_folder = self.input_folder
+            else:
+                self.output_folder = path.abspath("")
+        self.output_folder = utils.check_create_folder(self.output_folder)
+        self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
         self.output_object_h5_file = path.join(self.output_folder, self.name+"_object.h5")
         self.output_samples_h5_file = path.join(self.output_folder, self.name+"_samples.h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
-        utils.check_create_folder(self.output_folder)
-        utils.check_create_folder(self.output_figures_folder)
+        print(header_string,"\nOutput folder set to\n\t", self.output_folder,".\n",show=verbose)
         
     def __check_define_name(self):
         """
@@ -549,7 +546,7 @@ class Data(Verbosity):
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         if overwrite:
-            print(header_string,"\nData log file\n\t", self.output_log_file,"\nupdated in", str(end-start), "s.\n",show=verbose)
+            print(header_string,"\nData log file\n\t", self.output_log_file,"\nupdated (or saved if it did not exist) in", str(end-start), "s.\n",show=verbose)
         else:
             print(header_string,"\nData log file\n\t", self.output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
@@ -611,11 +608,25 @@ class Data(Verbosity):
         start = timer()
         if not overwrite:
             utils.check_rename_file(self.output_object_h5_file, verbose=verbose_sub)
-        dictionary = utils.dic_minus_keys(self.__dict__, ["data_dictionary","data_X","data_Y",
-                                                          "dtype_required","input_file","input_samples_h5_file",
-                                                          "input_object_h5_file","input_log_file","load_on_RAM",
-                                                          "log","opened_dataset","test_range",
-                                                          "train_range","verbose"])
+        dictionary = utils.dic_minus_keys(self.__dict__, ["data_dictionary",
+                                                          "data_X","data_Y",
+                                                          "dtype_required",
+                                                          "input_file",
+                                                          "input_samples_h5_file",
+                                                          "input_object_h5_file",
+                                                          "input_log_file",
+                                                          "load_on_RAM",
+                                                          "log",
+                                                          "opened_dataset",
+                                                          "output_folder",
+                                                          "output_figures_folder",
+                                                          "output_figures_base_file",
+                                                          "output_object_h5_file",
+                                                          "output_samples_h5_file",
+                                                          "output_log_file",
+                                                          "test_range",
+                                                          "train_range",
+                                                          "verbose"])
         dd.io.save(self.output_object_h5_file, dictionary)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]

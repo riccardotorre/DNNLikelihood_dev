@@ -89,11 +89,10 @@ class Histfactory(Verbosity):
             self.workspace_folder = path.abspath(workspace_folder)
             self.name = name
             self.__check_define_name()
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.regions_folders_base_name = regions_folders_base_name
             self.bkg_files_base_name = path.splitext(bkg_files_base_name)[0]
             self.patch_files_base_name = patch_files_base_name
-            self.output_folder = output_folder
-            self.__check_define_output_files()
             subfolders = [path.join(self.workspace_folder,f) for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder,f))]
             regions = [f.replace(regions_folders_base_name, "") for f in listdir(self.workspace_folder) if path.isdir(path.join(self.workspace_folder, f))]
             self.regions = dict(zip(regions,subfolders))
@@ -101,23 +100,10 @@ class Histfactory(Verbosity):
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.__load(verbose=verbose_sub)
-            if output_folder != None:
-                old_output_folder = self.output_folder
-                if old_output_folder != path.abspath(output_folder):
-                    self.output_folder = path.abspath(output_folder)
-                    try:
-                        utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    except:
-                        utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    self.__check_define_output_files()
-                    self.log[timestamp] = {"action": "changed_output_folder", 
-                                           "old folder": old_output_folder,
-                                           "new folder": self.output_folder}
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.save_log(overwrite=True, verbose=verbose_sub)
 
-    def __check_define_input_files(self):
+    def __check_define_input_files(self,verbose=None):
         """
         Private method used by the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` one
         to set the attributes corresponding to input files
@@ -129,6 +115,7 @@ class Histfactory(Verbosity):
         depending on the value of the 
         :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>` attribute.
         """
+        verbose, verbose_sub = self.set_verbosity(verbose)
         if self.input_file == None:
             self.input_h5_file = None
             self.input_log_file = None
@@ -138,8 +125,9 @@ class Histfactory(Verbosity):
             self.input_h5_file = self.input_file+".h5"
             self.input_log_file = self.input_file+".log"
             self.input_folder = path.split(self.input_file)[0]
+            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
 
-    def __check_define_output_files(self):
+    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` one
         to set the attributes corresponding to output files
@@ -153,11 +141,20 @@ class Histfactory(Verbosity):
         :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` if 
         it does not exist.
         """
-        if self.output_folder == None:
-            self.output_folder = ""
-        self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if output_folder is not None:
+            self.output_folder = path.abspath(output_folder)
+            if self.input_folder is not None and self.output_folder != self.input_folder:
+                utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
+        else:
+            if self.input_folder is not None:
+                self.output_folder = self.input_folder
+            else:
+                self.output_folder = path.abspath("")
+        self.output_folder = utils.check_create_folder(self.output_folder)
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
+        print(header_string,"\nOutput folder set to\n\t", self.output_folder,".\n",show=verbose)
 
     def __check_define_name(self):
         """
@@ -417,7 +414,7 @@ class Histfactory(Verbosity):
         end = timer()
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nupdated in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.", show=verbose)
             else:
                 print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.", show=verbose)
         elif overwrite == "dump":
@@ -489,8 +486,16 @@ class Histfactory(Verbosity):
             output_h5_file = utils.generate_dump_file_path(self.output_h5_file, timestamp=timestamp)
         if lik_numbers_list == None:
             lik_numbers_list = list(self.likelihoods_dict.keys())
-        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", "input_h5_file",
-                                                          "input_log_file", "likelihoods_dict", "log", "verbose"])
+        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", 
+                                                          "input_folder",
+                                                          "input_h5_file",
+                                                          "input_log_file",
+                                                          "output_folder",
+                                                          "output_h5_file",
+                                                          "output_log_file",
+                                                          "likelihoods_dict", 
+                                                          "log", 
+                                                          "verbose"])
         tmp1 = {i: self.likelihoods_dict[i] for i in lik_numbers_list}
         tmp2 = utils.dic_minus_keys(self.likelihoods_dict,lik_numbers_list)
         for key in tmp2.keys():
@@ -510,7 +515,7 @@ class Histfactory(Verbosity):
                                "file path": output_h5_file}
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nupdated in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.", show=verbose)
             else:
                 print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.", show=verbose)
         elif overwrite == "dump":

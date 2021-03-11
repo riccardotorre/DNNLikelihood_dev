@@ -192,21 +192,8 @@ class Sampler(Verbosity):
                     self.parallel_CPU = parallel_CPU
                 if vectorize != None:
                     self.vectorize = vectorize
-                self.__init_likelihood(verbose=verbose_sub)
-                if output_folder != None:
-                    old_output_folder = self.output_folder
-                    if old_output_folder != path.abspath(output_folder):
-                        self.output_folder = path.abspath(output_folder)
-                        try:
-                            utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                            print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                        except:
-                            utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                            print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                        self.__check_define_output_files()
-                        self.log[timestamp] = {"action": "changed_output_folder", 
-                                               "old folder": old_output_folder,
-                                               "new folder": self.output_folder}
+                self.__init_likelihood(verbose=verbose_sub) # Also sets self.name
+                self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
                 try:
                     self.predictions["gelman_rubin"]
                     self.predictions["Figures"]
@@ -222,9 +209,8 @@ class Sampler(Verbosity):
             self.log = {timestamp: {"action": "created"}}
             self.predictions = {"gelman_rubin": {}, 
                                 "Figures": {}}
-            self.__init_likelihood(verbose=verbose_sub)
-            self.output_folder = output_folder
-            self.__check_define_output_files(verbose=verbose_sub)
+            self.__init_likelihood(verbose=verbose_sub) # Also sets self.name
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
         self.moves = eval(self.moves_str)
         self.__check_vectorize(verbose=verbose_sub)
         self.__init_backend(verbose=verbose_sub)
@@ -273,48 +259,54 @@ class Sampler(Verbosity):
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         ### Sets output folder if needed to find existing files
-        if self.output_folder == None:
-            self.output_folder = ""
-        self.output_folder = path.abspath(self.output_folder)
-        if self.input_file != None:
+        if self.input_file is not None:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
+        else:
+            self.input_file = None
         if not self.new_sampler:
             ### Tries to determine self.input_file from input arguements
             if self.input_file == None:
                 if self.likelihood_script_file != None:
                     ### Try to detemine input_file from likelihood_script_file
+                    print("2. new_sampler=False Option 2: determine input_file from likelihood_script_file")
                     self.__get_input_file_from_likelihood_script_file()
                 else:
-                    if self.likelihood != None:
+                    if self.likelihood is not None:
                         ### Try to detemine input_file from likelihood
+                        print("3. new_sampler=False Option 3: determine input_file from likelihood")
                         self.__get_input_file_from_likelihood(verbose=verbose_sub)
                     else:
                         raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
-        if self.new_sampler:
-            ### Tries to determine self.likelihood_script_file from input arguements
-            if self.likelihood_script_file != None:
-                self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
             else:
-                if self.likelihood != None:
-                    ### Try to detemine input_file from likelihood
-                    self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
-                else:
-                    if self.input_file != None:
-                        self.__get_likelihood_script_file_from_input_file()
-                    else:
-                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
+                print("1. new_sampler=False Option 1: input_file given as input")
         try:
             self.input_h5_file = path.abspath(self.input_file+".h5")
             self.input_log_file = path.abspath(self.input_file+".log")
             self.input_folder = path.split(self.input_file)[0]
-            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
+            print(header_string,"\nNo input files and folders specified.\n",show=verbose)
         except:
             self.input_h5_file = None
             self.input_log_file = None
             self.input_folder = None
-            print(header_string,"\nNo input files and folders specified.",show=verbose)
+        if self.new_sampler:
+            ### Tries to determine self.likelihood_script_file from input arguements
+            if self.likelihood_script_file is not None:
+                self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
+                print("4. new_sampler=True Option 1: likelihood_script_file given as input")
+            else:
+                if self.likelihood is not None:
+                    ### Try to detemine likelihood_script_file from likelihood
+                    print("5. new_sampler=True Option 2: determine likelihood_script_file from likelihood")
+                    self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
+                else:
+                    if self.input_file is not None:
+                        ### Try to detemine likelihood_script_file from input_file
+                        print("6. new_sampler=True Option 3: determine likelihood_script_file from input_file")
+                        self.__get_likelihood_script_file_from_input_file()
+                    else:
+                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
                 
-    def __check_define_output_files(self,verbose=None):
+    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` one
         to set the attributes corresponding to the output folder
@@ -356,17 +348,22 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_figures_folder <DNNLikelihood.Sampler.output_figures_folder>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if self.output_folder == None:
-            self.output_folder = ""
-        self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
-        self.output_figures_folder = path.join(self.output_folder, "figures")
+        if output_folder is not None:
+            self.output_folder = path.abspath(output_folder)
+            if self.input_folder is not None and self.output_folder != self.input_folder:
+                utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
+        else:
+            if self.input_folder is not None:
+                self.output_folder = self.input_folder
+            else:
+                self.output_folder = path.abspath("")
+        self.output_folder = utils.check_create_folder(self.output_folder)
+        self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
         self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         self.backend_file = path.join(self.output_folder, self.name+"_backend.h5")
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
-        utils.check_create_folder(self.output_folder)
-        utils.check_create_folder(self.output_figures_folder)
         print(header_string,"\nOutput folder set to\n\t", self.output_folder, ".\n",show=verbose)
 
     def __get_likelihood_script_file_from_input_file(self):
@@ -508,14 +505,14 @@ class Sampler(Verbosity):
         if lik.pars_init_vec is None:
             self.pars_init_vec = np.array([np.random.normal(lik.pars_central) for i in range(self.nwalkers)])
             print(header_string,"\nNo profiled maxima information were find in the Likelihood object. \
-                   The vector of parameters initialization of walkers has been generated with gaussian smooth of the central parameters values.\n",show=verbose)
+                   The walkers initialization has been generated with gaussian smooth of the central parameters values.\n",show=verbose)
         else:
             if len(lik.pars_init_vec) >= self.nwalkers:
-                print(header_string,"\nThe vector of parameters initialization of walkers has been generated from profiled maxima information available in the Likelihood object.\n",show=verbose)
+                print(header_string,"\nThe walkers initialization has been generated from profiled maxima information available in the Likelihood object.\n",show=verbose)
                 self.pars_init_vec = lik.pars_init_vec[:self.nwalkers]
             else:
                 print(header_string,"\nProfiled maxima information found in the Likelihood object. However, the number of maxima is less than the number of walkers.\
-                       The vector of parameters initialization of walkers has been generated from profiled maxima information available in the Likelihood object \
+                       The walkers initialization has been generated from profiled maxima information available in the Likelihood object \
                        and, for the missing walkers, with gaussian smooth of the central parameters values.\n", show=verbose)
                 self.pars_init_vec = np.concatenate([lik.pars_init_vec, np.array([np.random.normal(lik.pars_central) for i in range(self.nwalkers-len(lik.pars_init_vec))])])
         self.pars_labels = lik.pars_labels
@@ -846,13 +843,14 @@ class Sampler(Verbosity):
                     - **default**: ``None``
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nRunning sampler", show=verbose)
         # Initializes backend (either connecting to existing one or generating new one)
         # Initilized p0 (chains initial state)
         try:
             p0 = self.backend.get_last_sample()
         except:
             p0 = self.pars_init_vec
-        print(header_string,"\nInitial number of steps: {0}".format(self.backend.iteration), ".", show=verbose)
+        print("Initial number of steps: {0}".format(self.backend.iteration), ".", show=verbose)
         # Defines sampler and runs the chains
         start = timer()
         nsteps_to_run = self.__set_steps_to_run()
@@ -881,7 +879,7 @@ class Sampler(Verbosity):
                                "file name": path.split(self.backend_file)[-1],
                                "file path": self.backend_file}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print("Done in", end-start, "seconds.", show=verbose)
+        print(header_string,"\nDone in", end-start, "seconds.", show=verbose)
         print("Final number of steps: {0}.".format(self.backend.iteration), ".", show=verbose)
 
     def save_log(self, timestamp=None, overwrite=False, verbose=None):
@@ -953,7 +951,7 @@ class Sampler(Verbosity):
         end = timer()
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -982,7 +980,7 @@ class Sampler(Verbosity):
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -1071,12 +1069,32 @@ class Sampler(Verbosity):
                 utils.check_rename_file(output_h5_file, verbose=verbose_sub)
         elif overwrite == "dump":
             output_h5_file = utils.generate_dump_file_path(self.output_h5_file, timestamp=timestamp)
-        dictionary = utils.dic_minus_keys(self.__dict__, ["backend", "input_folder", "input_file", "input_h5_file", 
-                                                          "input_log_file", "log", "logpdf",
-                                                          "logpdf_args", "moves", "ndims",
-                                                          "new_sampler", "nsteps_available",
-                                                          "pars_init_vec", "pars_labels", "pars_labels_auto",
-                                                          "pars_pos_nuis", "pars_pos_poi", "sampler", "verbose"])
+        dictionary = utils.dic_minus_keys(self.__dict__, ["backend", 
+                                                          "backend_file",
+                                                          "input_file", 
+                                                          "input_folder", 
+                                                          "input_h5_file", 
+                                                          "input_log_file", 
+                                                          "log", 
+                                                          "logpdf",
+                                                          "logpdf_args", 
+                                                          "moves", 
+                                                          "ndims",
+                                                          "new_sampler", 
+                                                          "nsteps_available",
+                                                          "output_figures_base_file",
+                                                          "output_figures_folder",
+                                                          "output_folder",
+                                                          "output_h5_file",
+                                                          "output_log_file",
+                                                          "output_predictions_json_file",
+                                                          "pars_init_vec", 
+                                                          "pars_labels", 
+                                                          "pars_labels_auto",
+                                                          "pars_pos_nuis", 
+                                                          "pars_pos_poi", 
+                                                          "sampler", 
+                                                          "verbose"])
         dd.io.save(output_h5_file, dictionary)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -1086,7 +1104,7 @@ class Sampler(Verbosity):
 
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nSampler h5 file\n\t", output_h5_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nSampler h5 file\n\t", output_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nSampler h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -1331,6 +1349,7 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nComputing Gelman-Rubin convergence metric", show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         start = timer()
@@ -1517,6 +1536,7 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting Gelman-Rubin convergence metric", show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
@@ -1550,7 +1570,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1569,7 +1589,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print(header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1588,7 +1608,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print(header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1677,6 +1697,7 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting distribution of parameters", show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
@@ -1701,7 +1722,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1800,6 +1821,7 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting autocorrelation time", show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
@@ -1814,8 +1836,8 @@ class Sampler(Verbosity):
                 n_dupl.append(utils.check_repeated_elements_at_start(c))
             n_start = max(n_dupl)+10
             if n_start > 100:
-                print(header_string,"\nThere is at least one chain starting with", str(
-                    n_start-10), "duplicate steps. Autocorrelation will be computer starting at", str(n_start), "steps.\n", show=verbose)
+                print("There is at least one chain starting with", str(
+                    n_start-10), "duplicate steps. Autocorrelation will be computer starting at", str(n_start), "steps.", show=verbose)
             else:
                 n_start = 100
             N = np.exp(np.linspace(np.log(n_start), np.log(chain.shape[1]), 10)).astype(int)
@@ -1850,11 +1872,11 @@ class Sampler(Verbosity):
                             ml[k] = self.autocorr_ml(chain[:, :n], thin=thin, bound=bound,verbose=verbose_sub)
                         succeed = True
                         if bound > 5.0:
-                            print(header_string,"\nSucceeded with bounds (", str(-(bound)),
-                                  ",", str(bound), ").\n", show=verbose)
+                            print("Succeeded with bounds (", str(-(bound)),
+                                  ",", str(bound), ").", show=verbose)
                     except:
-                        print(header_string,"\nBounds (", str(-(bound)), ",", str(bound), ") delivered non-finite log-prior. Increasing bound to (",
-                              str(-(bound+5)), ",", str(bound+5), ") and retrying.\n", show=verbose)
+                        print("Bounds (", str(-(bound)), ",", str(bound), ") delivered non-finite log-prior. Increasing bound to (",
+                              str(-(bound+5)), ",", str(bound+5), ") and retrying.", show=verbose)
                         bound = bound+5
             # Plot the comparisons
             plt.plot(N, N / 50.0, "--k", label=r"$\tau = S/50$")
@@ -1882,7 +1904,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(header_string,"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string,"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1974,6 +1996,7 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting chains evolution with number of steps", show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
@@ -1981,7 +2004,7 @@ class Sampler(Verbosity):
         pars_labels = self.__set_pars_labels(pars_labels)
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
-            print(header_string,"\nn_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.\n",show=verbose)
+            print("'n_chains' larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
         rnd_chains = np.sort(np.random.choice(np.arange(
             self.nwalkers), n_chains, replace=False))
         for par in pars:
@@ -2002,7 +2025,7 @@ class Sampler(Verbosity):
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
             end = timer()
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -2074,12 +2097,13 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting chains logpdf evolution with number of steps", show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         start = timer()
         if n_chains > self.nwalkers:
             n_chains = np.min([n_chains, self.nwalkers])
-            print(header_string,"\nn_chains larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.\n",show=verbose)
+            print("'n_chains' larger than the available number of walkers. Plotting all",self.nwalkers,"available chains.",show=verbose)
         rnd_chains = np.sort(np.random.choice(np.arange(
             self.nwalkers), n_chains, replace=False))
         chain_lp = self.sampler.get_log_prob()
@@ -2098,7 +2122,7 @@ class Sampler(Verbosity):
                                "file name": path.split(figure_file)[-1], 
                                "file path": figure_file}
         end = timer()
-        print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+        print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
         if show_plot:
             plt.show()
         plt.close()
@@ -2205,38 +2229,39 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nCreating 'Data' object", show=verbose)
         if output_folder == None:
             output_folder = self.output_folder
         start = timer()
         ### Compute available samples
         if burnin == "auto":
             try:
-                print(header_string,"\nEstimating autocorrelation time to optimize burnin. For very large chains this could take a while.\n",show=verbose)
+                print("Estimating autocorrelation time to optimize burnin. For very large chains this could take a while.",show=verbose)
                 autocorr_max = int(np.max(self.sampler.get_autocorr_time()))
             except:
                 raise Exception("Could not automatically determine optimal 'burnin'. You must manually specify the 'burnin' input.")
             burnin=int(np.min([5*autocorr_max,self.nsteps_available/2]))
-            print(header_string,"\nMaximum estimated autocorrelation time of all parameters is:",autocorr_max,".\n",show=verbose)
-            print(header_string,"\nBurning automatically set to:", burnin, ".\n", show=verbose)
+            print("Maximum estimated autocorrelation time of all parameters is:",autocorr_max,".",show=verbose)
+            print("Burning automatically set to:", burnin, ".", show=verbose)
         else:
-            print(header_string,"\nWarning: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.\n", show=verbose)
+            print("Warning: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.", show=verbose)
         if thin == "auto":
             try:
                 autocorr_max
             except:
                 autocorr_max = None
             try:
-                print(header_string,"\nEstimating optimal 'thin'. For very large chains this could take a while.\n", show=verbose)
+                print("Estimating optimal 'thin'. For very large chains this could take a while.", show=verbose)
                 thin=int((self.nsteps_available-burnin)*self.nwalkers/nsamples)
                 while len(np.unique(self.sampler.get_log_prob(discard=burnin,thin=thin, flat=True),return_index=False)) < nsamples and thin>1:
                     thin=thin-1
                 if autocorr_max != None:
                     if thin < autocorr_max:
-                        print(header_string,"\nThe required number of samples does not allow a thin value larger than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".\n",show=verbose)
+                        print("The required number of samples does not allow a thin value larger than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".",show=verbose)
                     else:
-                        print(header_string,"\nThin automatically set to:",thin,".\n",show=verbose)
+                        print("Thin automatically set to:",thin,".",show=verbose)
                 else:
-                    print(header_string,"\nThin automatically set to:",thin,".\n",show=verbose)
+                    print("Thin automatically set to:",thin,".",show=verbose)
             except:
                 raise Exception("Could not automatically determine optimal 'thin'. You must manually specify the 'thin' input.")
         logpdf_values=self.sampler.get_log_prob(discard = burnin, thin = thin, flat = True)
@@ -2248,13 +2273,13 @@ class Sampler(Verbosity):
         elif nsamples <= available_samples:
             unique_indices = unique_indices[-nsamples:]
         else:
-            print(header_string,"\nLess unique samples (", available_samples, ") than requested samples (", nsamples, "). Returning all available samples.\nYou may try to reduce burnin and/or thin to get more samples.\n", show=verbose)
+            print("There are less unique samples (", available_samples, ") than requested samples (", nsamples, "). Returning all available samples.\nYou may try to reduce burnin and/or thin to get more samples.\n", show=verbose)
         logpdf_values = logpdf_values[unique_indices]
         allsamples = allsamples[unique_indices]
         if np.count_nonzero(np.isfinite(logpdf_values)) < len(logpdf_values):
-            print(header_string,"\nThere are non-numeric logpdf values.\n",show=verbose)
+            print("There are non-numeric logpdf values.",show=verbose)
         end = timer()
-        print(header_string,"\n"+str(len(allsamples)), "unique samples generated in", end-start, "s.\n",show=verbose)
+        print(str(len(allsamples)), "unique samples generated in", end-start, "s.",show=verbose)
         data_sample_timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         ds = Data(name=self.name.replace("_sampler", "_data"),
                   data_X=allsamples,

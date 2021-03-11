@@ -89,6 +89,7 @@ class Lik(Verbosity):
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.logpdf = _FunctionWrapper(logpdf, logpdf_args, logpdf_kwargs)
             self.pars_pos_poi = pars_pos_poi
             self.pars_pos_nuis = pars_pos_nuis
@@ -96,31 +97,14 @@ class Lik(Verbosity):
             self.pars_labels = pars_labels
             self.pars_bounds = pars_bounds
             self.__check_define_pars()
-            self.output_folder = output_folder
-            self.__check_define_output_files()
             self.predictions = {"logpdf_max": {}, 
                                 "logpdf_profiled_max": {},
                                 "Figures": {}}
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.__load(verbose=verbose_sub)
-            if output_folder != None:
-                old_output_folder = self.output_folder
-                if old_output_folder != path.abspath(output_folder):
-                    self.output_folder = path.abspath(output_folder)
-                    try:
-                        utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    except:
-                        utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    self.__check_define_output_files()
-                    self.log[timestamp] = {"action": "changed_output_folder", 
-                                           "old folder": old_output_folder,
-                                           "new folder": self.output_folder}
-                self.save(overwrite=False, verbose=verbose_sub)
-            else:
-                self.save_log(overwrite=True, verbose=verbose_sub)
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
+            self.save_log(overwrite=True, verbose=verbose_sub)
             try:
                 self.predictions["logpdf_max"]
                 self.predictions["logpdf_profiled_max"]
@@ -129,7 +113,7 @@ class Lik(Verbosity):
                 self.reset_predictions(delete_figures=True, verbose=verbose_sub)
             self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
 
-    def __check_define_input_files(self):
+    def __check_define_input_files(self,verbose=False):
         """
         Private method used by the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` one
         to set the attributes corresponding to input files
@@ -141,6 +125,7 @@ class Lik(Verbosity):
         depending on the value of the 
         :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>` attribute.
         """
+        verbose, verbose_sub = self.set_verbosity(verbose)
         if self.input_file == None:
             self.input_h5_file = None
             self.input_log_file = None
@@ -150,8 +135,9 @@ class Lik(Verbosity):
             self.input_h5_file = self.input_file+".h5"
             self.input_log_file = self.input_file+".log"
             self.input_folder = path.split(self.input_file)[0]
+            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
 
-    def __check_define_output_files(self):
+    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` one
         to set the attributes corresponding to output folders
@@ -174,15 +160,24 @@ class Lik(Verbosity):
         and :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>` if 
         they do not exist.
         """
-        if self.output_folder == None:
-            self.output_folder = ""
-        self.output_folder = utils.check_create_folder(path.abspath(self.output_folder))
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if output_folder is not None:
+            self.output_folder = path.abspath(output_folder)
+            if self.input_folder is not None and self.output_folder != self.input_folder:
+                utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
+        else:
+            if self.input_folder is not None:
+                self.output_folder = self.input_folder
+            else:
+                self.output_folder = path.abspath("")
+        self.output_folder = utils.check_create_folder(self.output_folder)
         self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
         self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         self.script_file = path.join(self.output_folder, self.name+"_script.py")
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
+        print(header_string,"\nOutput folder set to\n\t", self.output_folder,".\n",show=verbose)
 
     def __check_define_name(self):
         """
@@ -431,7 +426,7 @@ class Lik(Verbosity):
         end = timer()
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nLikelihood log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -460,7 +455,7 @@ class Lik(Verbosity):
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -535,9 +530,20 @@ class Lik(Verbosity):
                 utils.check_rename_file(output_h5_file, verbose=verbose_sub)
         elif overwrite == "dump":
             output_h5_file = utils.generate_dump_file_path(self.output_h5_file, timestamp=timestamp)
-        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", "input_h5_file",
-                                                          "input_log_file", "input_folder",
-                                                          "logpdf", "log", "verbose"])
+        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", 
+                                                          "input_folder",
+                                                          "input_h5_file",
+                                                          "input_log_file", 
+                                                          "output_figures_folder",
+                                                          "output_folder",
+                                                          "output_h5_file",
+                                                          "output_log_file",
+                                                          "output_predictions_json_file",
+                                                          "script_file",
+                                                          "output_figures_base_file",
+                                                          "logpdf", 
+                                                          "log", 
+                                                          "verbose"])
         dump = np.void(cloudpickle.dumps(self.logpdf))
         dictionary = {**dictionary, **{"logpdf_dump": dump}}
         dd.io.save(output_h5_file, dictionary)
@@ -549,13 +555,13 @@ class Lik(Verbosity):
         self.save_log(overwrite=overwrite, verbose=verbose_sub)
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nLikelihood h5 file\n\t", output_h5_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nLikelihood h5 file\n\t", output_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nLikelihood h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
             print(header_string,"\nLikelihood h5 file dump\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
-    def save_script(self, timestamp=None, overwrite=True, verbose=True):
+    def save_script(self, timestamp=None, overwrite=False, verbose=True):
         """
         Saves the file :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`. 
 
@@ -637,7 +643,7 @@ class Lik(Verbosity):
         self.save_log(overwrite=True, verbose=verbose_sub)
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nLikelihood script file\n\t", output_script_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nLikelihood script file\n\t", output_script_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nLikelihood script file\n\t", output_script_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -858,12 +864,13 @@ class Lik(Verbosity):
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>` (always)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nComputing absolute maximum",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         utils.check_set_dict_keys(optimizer, ["name",
                                               "method",
                                               "options"],
-                                             ["scipy", "Powell", {}], verbose=True)
+                                             ["scipy", "Powell", {}], verbose=verbose_sub)
         if pars_init is None:
             pars_init = np.array(self.pars_central)
         else:
@@ -882,7 +889,7 @@ class Lik(Verbosity):
         self.predictions["logpdf_max"][timestamp]["pars_init"] = pars_init
         self.predictions["logpdf_max"][timestamp]["optimizer"] = optimizer
         self.predictions["logpdf_max"][timestamp]["optimization_time"] = end-start
-        print(header_string,"\nMaximum logpdf computed in",end-start,"s.\n")
+        print("Maximum logpdf computed in",end-start,"s.\n")
         self.log[timestamp] = {"action": "computed maximum logpdf"}
         if save:
             self.save(overwrite=overwrite, verbose=verbose_sub)
@@ -1057,6 +1064,7 @@ class Lik(Verbosity):
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>` (always)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nComputing profiled maxima",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if pars is None:
@@ -1071,7 +1079,7 @@ class Lik(Verbosity):
                 import ipywidgets as widgets
             except:
                 progressbar = False
-                print(header_string,"\nIf you want to show a progress bar please install the ipywidgets package.\n",show=verbose)
+                print("\nIf you want to show a progress bar please install the ipywidgets package.\n",show=True)
         start = timer()
         if progressbar:
             overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
@@ -1081,7 +1089,7 @@ class Lik(Verbosity):
             iterator = 0
         utils.check_set_dict_keys(self.predictions["logpdf_profiled_max"],
                                   [timestamp],
-                                  [{}], verbose=False)
+                                  [{}], verbose=verbose_sub)
         utils.check_set_dict_keys(optimizer, ["name",
                                               "method",
                                               "options"],
@@ -1091,7 +1099,7 @@ class Lik(Verbosity):
         else:
             pars_init = np.array(pars_init)
         pars_vals = utils.get_sorted_grid(pars_ranges=pars_ranges, spacing=spacing)
-        print(header_string,"\nTotal number of points:", len(pars_vals),".\n",show=verbose)
+        print("Total number of points:", len(pars_vals),".",show=verbose)
         pars_vals_bounded = []
         if pars_bounds is None:
             for i in range(len(pars_vals)):
@@ -1105,14 +1113,14 @@ class Lik(Verbosity):
                 if (np.all(pars_vals[i] >= pars_bounds[pars, 0]) and np.all(pars_vals[i] <= pars_bounds[pars, 1])):
                     pars_vals_bounded.append(pars_vals[i])
         if len(pars_vals) != len(pars_vals_bounded):
-            print(header_string,"\nDeleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.\n",show=verbose)
+            print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.",show=verbose)
         res = []
         try:
             optimization_times = self.predictions["logpdf_profiled_max"][timestamp]["optimization_times"]
         except:
             optimization_times = []
         for pars_val in pars_vals_bounded:
-            print(header_string,"\nOptimizing for parameters:",pars," - values:",pars_val.tolist(),".\n",show=verbose)
+            print("Optimizing for parameters:",pars," - values:",pars_val.tolist(),".",show=verbose)
             start_sub = timer()
             res.append(inference.compute_profiled_maximum_logpdf(logpdf=lambda x: self.logpdf_fn(x, *self.logpdf.args,*self.logpdf.kwargs),
                                                                  pars=pars, 
@@ -1137,7 +1145,7 @@ class Lik(Verbosity):
                                     timestamp=timestamp,
                                     save=False,
                                     overwrite=False,
-                                    verbose=verbose_sub)
+                                    verbose=False)
         self.predictions["logpdf_profiled_max"][timestamp]["tmu"] = np.array(list(zip(X_tmp[:, pars].flatten(), -2*(Y_tmp-self.predictions["logpdf_max"][timestamp]["y"]))))
         self.predictions["logpdf_profiled_max"][timestamp]["pars"] = pars
         self.predictions["logpdf_profiled_max"][timestamp]["pars_ranges"] = pars_ranges
@@ -1155,8 +1163,9 @@ class Lik(Verbosity):
             self.save(overwrite=overwrite, verbose=verbose_sub)
         else:
             self.save_log(overwrite=True, verbose=verbose_sub)
-        print(header_string,"\nLog-pdf values lie in the range [", np.min(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), ",", np.max(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), "].\n", show=verbose)
-        print(header_string,"\n"+str(len(pars_vals_bounded)),"local maxima computed in", end-start, "s.\n",show=verbose)
+        print(header_string,"\n"+str(len(pars_vals_bounded)),"local maxima computed in", end-start, "s.",show=verbose)
+        print("Log-pdf values lie in the range [", np.min(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), ",", np.max(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), "].\n", show=verbose)
+        
 
     def update_figures(self,figure_file=None,timestamp=None,overwrite=False):
         """
@@ -1313,6 +1322,7 @@ class Lik(Verbosity):
             - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>` ``+ "_par_" + str(par[0]) + ".pdf"`` for each ``par`` in ``pars``.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nMaking plot of logpdf as function of paramerers",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
@@ -1344,7 +1354,7 @@ class Lik(Verbosity):
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print(header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
         self.save_log(overwrite=True, verbose=verbose_sub)
         
     def plot_tmu_1d(self,
@@ -1423,6 +1433,7 @@ class Lik(Verbosity):
             - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>` ``+ "_tmu_" + str(par) + ".pdf"``.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nMaking plot of t_mu test statistics as function of paramerers",show=verbose)
         if timestamp is None:
             timestamp = "datetime_" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
@@ -1453,6 +1464,6 @@ class Lik(Verbosity):
                                "file name": path.split(figure_file)[-1],
                                "file path": figure_file}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+        print(header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
 
             

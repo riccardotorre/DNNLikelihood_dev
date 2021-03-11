@@ -110,17 +110,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 - :meth:`DnnLik.__load_predictions <DNNLikelihood.DnnLik._Lik__load_predictions>`
                 - :meth:`DnnLik.__load_scalers_and_log <DNNLikelihood.DnnLik._Lik__load_scalers>`
 
-            Moreover, depending on the value of the input argument :argument:`output_folder` the :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` method behaves as follows:
+            Moreover, depending on the value of the input argument :argument:`output_folder` the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` method behaves as follows:
 
                 - If :argument:`output_folder` is ``None`` (default)
                     
-                    The attribute :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`
-                    is set from the :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` one.
-                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    The attribute :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>`
+                    is set from the :attr:`DnnLik.input_folder <DNNLikelihood.DnnLik.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` attribute
                     
-                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
-                    - if path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` does not exists, then the content of the path :attr:`Histfactory.input_folder <DNNLikelihood.Histfactory.input_folder>` is copied to the new ``output_folder``.
-                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>` attribute
+                    - if path stored in the loaded :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` does not exists, then the content of the path :attr:`DnnLik.input_folder <DNNLikelihood.DnnLik.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` attribute
                     
                     Output folder, files, and path attributes are not updated and everything is read from the loaded object.
 
@@ -3903,7 +3903,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nDnnLik log file\n\t", output_log_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nDnnLik log file\n\t", output_log_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nDnnLik log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -3938,7 +3938,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nIdx h5 file\n\t", output_idx_h5_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nIdx h5 file\n\t", output_idx_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nIdx h5 file\n\t", output_idx_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -3972,7 +3972,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode json file\n\t", output_tf_model_json_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nMode json file\n\t", output_tf_model_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nMode json file\n\t", output_tf_model_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4003,7 +4003,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode h5 file\n\t", output_tf_model_h5_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nMode h5 file\n\t", output_tf_model_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nMode h5 file\n\t", output_tf_model_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4035,7 +4035,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode onnx file\n\t", output_tf_model_onnx_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nMode onnx file\n\t", output_tf_model_onnx_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nMode onnx file\n\t", output_tf_model_onnx_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4066,7 +4066,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode history file\n\t", output_history_json_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nMode history file\n\t", output_history_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nMode history file\n\t", output_history_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4106,7 +4106,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nSummary json file\n\t", output_summary_json_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nSummary json file\n\t", output_summary_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nSummary json file\n\t", output_summary_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4192,7 +4192,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4220,7 +4220,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nPredictions h5 file\n\t", output_predictions_h5_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nPredictions h5 file\n\t", output_predictions_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nPredictions h5 file\n\t", output_predictions_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4260,7 +4260,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nScalers pickle file\n\t", output_scalers_pickle_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nScalers pickle file\n\t", output_scalers_pickle_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nScalers pickle file\n\t", output_scalers_pickle_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
@@ -4301,7 +4301,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nModel graph pdf file\n\t", output_tf_model_graph_pdf_file, "\nupdated in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel graph pdf file\n\t", output_tf_model_graph_pdf_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
                 print(header_string,"\nModel graph pdf file\n\t", output_tf_model_graph_pdf_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
