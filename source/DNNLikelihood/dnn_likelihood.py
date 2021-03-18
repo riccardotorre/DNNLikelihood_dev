@@ -14,11 +14,11 @@ from timeit import default_timer as timer
 
 import deepdish as dd
 import h5py
+import onnx
 import keras2onnx
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import onnx
 import scipy
 import seaborn as sns
 import tensorflow as tf
