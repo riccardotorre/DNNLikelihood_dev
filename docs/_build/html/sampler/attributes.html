@@ -252,8 +252,7 @@ See the <a href="https://emcee.readthedocs.io/en/stable/user/backends/"  target=
 <dt id="DNNLikelihood.Sampler.input_file">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">input_file</code><a class="headerlink" href="#DNNLikelihood.Sampler.input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>.
-Whenever the <a class="reference internal" href="#DNNLikelihood.Sampler.new_sampler" title="DNNLikelihood.Sampler.new_sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.new_sampler</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
-it is used to reconstructed the object from input files
+It is used to reconstructed the object from input files
 (see the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.__init__</span></code></a>
 method for details).</p>
 <blockquote>
@@ -267,7 +266,6 @@ method for details).</p>
 <dt id="DNNLikelihood.Sampler.input_folder">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">input_folder</code><a class="headerlink" href="#DNNLikelihood.Sampler.input_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Absolute path corresponding to the folder containing the <a class="reference internal" href="arguments.html#Sampler.input_file" title="Sampler.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> file.
-Whenever the <a class="reference internal" href="#DNNLikelihood.Sampler.new_sampler" title="DNNLikelihood.Sampler.new_sampler"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.new_sampler</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
 it is used to check the existence of a <a class="reference internal" href="#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a>
 and copy it to the new <a class="reference internal" href="#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a>.</p>
 <blockquote>
@@ -548,27 +546,11 @@ object used to initialize the <a class="reference internal" href="class.html#DNN
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="DNNLikelihood.Sampler.new_sampler">
-<code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">new_sampler</code><a class="headerlink" href="#DNNLikelihood.Sampler.new_sampler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a>.
-If it is <code class="docutils literal notranslate"><span class="pre">True</span></code> a new <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object, corresponding to a new
-<a class="reference internal" href="#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a> is generated.
-If it is <code class="docutils literal notranslate"><span class="pre">False</span></code> the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object
-is loaded from saved files, or, if a backend file is not found <code class="docutils literal notranslate"><span class="pre">new_sampler</span></code> is automatically set to <code class="docutils literal notranslate"><span class="pre">True</span></code>
-and a new one is created.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-</ul>
-</div></blockquote>
-</dd></dl>
-
-<dl class="py attribute">
 <dt id="DNNLikelihood.Sampler.nsteps_available">
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">nsteps_available</code><a class="headerlink" href="#DNNLikelihood.Sampler.nsteps_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of MCMC steps available in the current <a class="reference internal" href="#DNNLikelihood.Sampler.backend" title="DNNLikelihood.Sampler.backend"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend</span></code></a>.
-When the object is initialized with the <a class="reference internal" href="arguments.html#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a> argument set to <code class="docutils literal notranslate"><span class="pre">False</span></code>
-then, if <a class="reference internal" href="arguments.html#Sampler.nsteps_required" title="Sampler.nsteps_required"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nsteps_required</span></code></a> is larger than <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a>,
+When the object is loaded from files then, if <a class="reference internal" href="arguments.html#Sampler.nsteps_required" title="Sampler.nsteps_required"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nsteps_required</span></code></a> is larger than
+<a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a>,
 then the <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a> attribute is set equal to
 <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a>.</p>
 <blockquote>
@@ -583,8 +565,8 @@ then the <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_requi
 <code class="sig-prename descclassname">Sampler.</code><code class="sig-name descname">nsteps_required</code><a class="headerlink" href="#DNNLikelihood.Sampler.nsteps_required" title="Permalink to this definition">¶</a></dt>
 <dd><p>Attribute corresponding to the input argument <a class="reference internal" href="arguments.html#Sampler.nsteps_required" title="Sampler.nsteps_required"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nsteps_required</span></code></a> and representing the
 final number of MCMC steps to run.
-When the object is initialized with the <a class="reference internal" href="arguments.html#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a> argument set to <code class="docutils literal notranslate"><span class="pre">False</span></code>
-then, if <a class="reference internal" href="arguments.html#Sampler.nsteps_required" title="Sampler.nsteps_required"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nsteps_required</span></code></a> is larger than <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a>,
+When the object is loaded from files then, if <a class="reference internal" href="arguments.html#Sampler.nsteps_required" title="Sampler.nsteps_required"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nsteps_required</span></code></a> is larger than
+<a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a>,
 then the <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a> attribute is set equal to
 <a class="reference internal" href="#DNNLikelihood.Sampler.nsteps_available" title="DNNLikelihood.Sampler.nsteps_available"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_available</span></code></a>.
 The attribute always represents the final number of steps, meaning that the sampling will always run

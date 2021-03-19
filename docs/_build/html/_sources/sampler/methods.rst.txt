@@ -13,10 +13,6 @@ Methods
 
 .. automethod:: Sampler._Sampler__get_likelihood_script_file_from_likelihood
 
-.. automethod:: Sampler._Sampler__get_input_file_from_likelihood_script_file
-
-.. automethod:: Sampler._Sampler__get_input_file_from_likelihood
-
 .. automethod:: Sampler._Sampler__init_likelihood
 
 .. automethod:: Sampler._Sampler__load

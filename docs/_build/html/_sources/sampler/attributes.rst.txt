@@ -22,8 +22,7 @@ Attributes
 .. py:attribute:: Sampler.input_file   
 
     Absolute path corresponding to the input argument :argument:`input_file`.
-    Whenever the :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` attribute is ``False``,
-    it is used to reconstructed the object from input files 
+    It is used to reconstructed the object from input files 
     (see the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>`
     method for details).
           
@@ -32,7 +31,6 @@ Attributes
 .. py:attribute:: Sampler.input_folder   
 
     Absolute path corresponding to the folder containing the :argument:`input_file` file.
-    Whenever the :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` attribute is ``False``,
     it is used to check the existence of a :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>` 
     and copy it to the new :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`.
           
@@ -199,22 +197,11 @@ Attributes
 
         - **type**: ``int``
 
-.. py:attribute:: Sampler.new_sampler
-
-    Attribute corresponding to the input argument :argument:`new_sampler`.
-    If it is ``True`` a new :class:`Sampler <DNNLikelihood.Sampler>` object, corresponding to a new 
-    :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>` is generated. 
-    If it is ``False`` the :class:`Sampler <DNNLikelihood.Sampler>` object
-    is loaded from saved files, or, if a backend file is not found ``new_sampler`` is automatically set to ``True``
-    and a new one is created.
-        
-        - **type**: ``bool``
-
 .. py:attribute:: Sampler.nsteps_available
 
     Number of MCMC steps available in the current :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>`. 
-    When the object is initialized with the :argument:`new_sampler` argument set to ``False``
-    then, if :argument:`nsteps_required` is larger than :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`,
+    When the object is loaded from files then, if :argument:`nsteps_required` is larger than 
+    :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`,
     then the :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>` attribute is set equal to
     :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`.
 
@@ -224,8 +211,8 @@ Attributes
 
     Attribute corresponding to the input argument :argument:`nsteps_required` and representing the
     final number of MCMC steps to run. 
-    When the object is initialized with the :argument:`new_sampler` argument set to ``False``
-    then, if :argument:`nsteps_required` is larger than :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`,
+    When the object is loaded from files then, if :argument:`nsteps_required` is larger than 
+    :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`,
     then the :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>` attribute is set equal to
     :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`.
     The attribute always represents the final number of steps, meaning that the sampling will always run 

@@ -5,16 +5,6 @@ Arguments
 
 .. currentmodule:: Sampler
 
-.. argument:: new_sampler
-
-    If ``True`` a new :class:`Sampler <DNNLikelihood.Sampler>` object is created from input arguments, while if 
-    ``False`` the object is reconstructed from saved files (see the :meth:`__init__ <DNNLikelihood.Sampler.__init__>`
-    method).
-    It is used to build the :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` attribute.
-
-        - **type**: ``bool``
-        - **default**: ``None``
-
 .. argument:: likelihood_script_file
 
     File name (either relative to the code execution folder or absolute) of a ``likelihood_script_file`` 
@@ -49,7 +39,7 @@ Arguments
 
 .. argument:: nsteps_required
 
-    Final number of MCMC steps. When the object is initialized with the :argument:`new_sampler` argument set to ``False``
+    Final number of MCMC steps. When the object is loaded from files
     then, if :argument:`nsteps_required` is larger than the number of steps available in the backend, it is saved in the 
     :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>`, otherwise the latter is set equal to the number of steps available
     in the backend.
@@ -91,8 +81,8 @@ Arguments
     Path (either relative to the code execution folder or absolute) where output files are saved.
     It is used to set the :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
     The :argument:`output_folder <Sampler.output_folder>` argument is also used
-    when importing and existing :class:`Sampler <DNNLikelihood.Sampler>` object with the 
-    ``new_sampler=False`` input. In this case if it is ``None`` (default), 
+    when importing and existing :class:`Sampler <DNNLikelihood.Sampler>` object. 
+    In this case if it is ``None`` (default), 
     then the input files are searched for in the same directory of the 
     :attr:`likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` file,
     otherwise, input files are searched for in the :argument:`output_folder <Sampler.output_folder>` folder.
