@@ -19,17 +19,15 @@ The procedure of passing the :class:`Lik <DNNLikelihood.Lik>` object through a s
 passing it directly may seem redundant. However, this is needed to ensure that MCMC properly runs in parallel also on
 Windows machines, where the |multiprocessing_link| package may have unexpected behavior.
 
-To create a new :class:`Sampler <DNNLikelihood.Sampler>` object, the input argument :argument:`new_sampler <Sampler.new_sampler>` 
-shoule be set to ``True``. 
-One can proceed in three different ways, by giving as input one of the three arguments
-:argument:`likelihood_script_file <Sampler.likelihood_script_file>`, :argument:`likelihood <Sampler.likelihood>`, and, 
-in case one has previously saved a :class:`Sampler <DNNLikelihood.Sampler>` object, and is interested in creating a new 
-sampler with the same parameters, the argument :argument:`input_file <Sampler.input_file>`. Each of these arguments is used to 
-determine the attribute :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
-which is then used to import the likelihood related attributes. If more than one of these inputs is give, only one is used,
-with priority in the order :argument:`likelihood_script_file <Sampler.likelihood_script_file>`, 
-argument:`likelihood <Sampler.likelihood>`, and :argument:`input_file <Sampler.input_file`. 
-The code corresponding to these three options is:
+When the input argument :argument:`input_file <Sampler.input_file>` is ``None`` (default) a new 
+:class:`Sampler <DNNLikelihood.Sampler>` object is created. 
+One can proceed in two different ways, by giving as input one of the two arguments
+:argument:`likelihood_script_file <Sampler.likelihood_script_file>` or :argument:`likelihood <Sampler.likelihood>`. 
+Any of these arguments can be used to determine the attribute 
+:attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
+which is then used to import the likelihood related attributes. If both these arguments are specified, then priority is
+given to :argument:`likelihood_script_file <Sampler.likelihood_script_file>`. 
+The code corresponding to these two options is:
 
     - Initialization from :argument:`likelihood_script_file <Sampler.likelihood_script_file>`
 
@@ -40,8 +38,7 @@ The code corresponding to these three options is:
 
             import DNNLikelihood
 
-            sampler = DNNLikelihood.Sampler(new_sampler=True,
-                                            likelihood_script_file=<my_output_folder>/toy_likelihood_script,
+            sampler = DNNLikelihood.Sampler(likelihood_script_file=<my_output_folder>/toy_likelihood_script,
                                             nsteps_required=50000)
                                             
         This initializes the object with a required number of steps ``nsteps_required=50000`` (this could then be changed to run for more steps). 
@@ -68,71 +65,24 @@ The code corresponding to these three options is:
 
             likelihood = DNNLikelihood.Lik(input_file="<my_output_folder>/toy_likelihood")
 
-            sampler = DNNLikelihood.Sampler(new_sampler=True,
-                                            likelihood=likelihood,
+            sampler = DNNLikelihood.Sampler(likelihood=likelihood,
                                             nsteps_required=50000)
 
-    - Initialization from :argument:`input_file <Sampler.input_file>`
-
-        Finally, in the case the object has been initialized in the past, and the output files are available, a new object can be initialized
-        with the same parameters by passing the :argument:`input_file <Sampler.input_file>` input. In this case, again, the 
-        :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` method uses the argument to determine or create the
-        :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` and then proceeds as above.
-        The following code produces an object identical to the previous ones:
-
-        .. code-block:: python
-
-            import DNNLikelihood
-
-            sampler = DNNLikelihood.Sampler(new_sampler=True,
-                                            nsteps_required=50000,
-                                            input_file=<my_output_folder>/toy_sampler)
-
-
 In one is interested in importing a previously saved :class:`Sampler <DNNLikelihood.Sampler>`, instead of generating a new one, then the input 
-argument :argument:`new_sampler <Sampler.new_sampler>` should be set to ``False``. 
-Again, one could provide one of the three arguments :argument:`likelihood_script_file <Sampler.likelihood_script_file>`, 
-:argument:`likelihood <Sampler.likelihood>`, and :argument:`input_file <Sampler.input_file>`. This time, each of these
-arguments is used to determine the :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` and
-:attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attributes, used to reconstruct the object. If more than 
-one of these inputs is give, only one is used, with priority in the order :argument:`input_file <Sampler.input_file>`, 
-:argument:`likelihood_script_file <Sampler.likelihood_script_file>`, and :argument:`likelihood <Sampler.likelihood>`. Obviously, 
-independently on the passed input arguments, the files corresponding to :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` 
-should exist (i.e. a saved :class:`Sampler <DNNLikelihood.Sampler>` object should be available). Notice that the 
-:argument:`output_folder <Sampler.output_folder>` argument plays the following role in this procedure: if it is ``None`` (default), 
-then the input files are searched for in the same directory as the likelihood_script_file file (as in the examples below), 
-otherwise, input files are searched for in the :argument:`output_folder <Sampler.output_folder>` folder.
+argument :argument:`input_file <Sampler.input_file>` should be specified. The 
+:argument:`input_file <Sampler.input_file>`, 
+:argument:`likelihood_script_file <Sampler.likelihood_script_file>` are set from this argument and the object is loaded. Obviously, 
+the files corresponding to :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` 
+should exist (i.e. a saved :class:`Sampler <DNNLikelihood.Sampler>` object should be available). 
 
-The following three code options produce the same result, importing the object saved before:
+The following code shows how to import a previously saved object:
 
-    - Import from :argument:`input_file <Sampler.input_file>`
+    .. code-block:: python
 
-        .. code-block:: python
+        import DNNLikelihood
 
-            import DNNLikelihood
-
-            sampler = DNNLikelihood.Sampler(new_sampler=False,
-                                            input_file=<my_output_folder>/toy_sampler)
-
-    - Import from :argument:`likelihood_script_file <Sampler.likelihood_script_file>`
-
-        .. code-block:: python
-
-            import DNNLikelihood
-
-            sampler = DNNLikelihood.Sampler(new_sampler=False,
-                                            likelihood_script_file=<my_output_folder>/toy_likelihood_script)
-
-    - Import from :argument:`likelihood <Sampler.likelihood>`
-
-        .. code-block:: python
-
-            import DNNLikelihood
-
-            likelihood = DNNLikelihood.Lik(input_file="<my_output_folder>/toy_likelihood")
-
-            sampler = DNNLikelihood.Sampler(new_sampler=False,
-                                            likelihood=likelihood)
+        sampler = DNNLikelihood.Sampler(new_sampler=False,
+                                        input_file=<my_output_folder>/toy_sampler)
 
 When the object is imported, the :attr:`Sampler.log <DNNLikelihood.Sampler.log>` attribute is updated, as well as the corresponding file
 <my_output_folder>/toy_sampler.log. If a new ``nsteps_required`` input, larger than the number of steps available in the existing backend is passed,

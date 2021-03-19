@@ -41,7 +41,6 @@ class Sampler(Verbosity):
     with the ``Lik.save_script`` method.
     """
     def __init__(self,
-                 new_sampler=None,
                  likelihood_script_file=None,
                  likelihood=None,
                  nwalkers=None,
@@ -55,25 +54,18 @@ class Sampler(Verbosity):
                  ):
         """
         The :class:`Sampler <DNNLikelihood.Sampler>` object can be initialized in two different ways, depending on the value of 
-        the :argument:`new_sampler` argument.
-        
-        - :argument:`new_sampler` is ``True`` (default)
-            
-            All attributes are set from input arguments. The 
-            :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
-            from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from
-            ``input_file``. Afterwards the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
-            method is called.
+        the local variable ``new_sampler``, which is set to ``True`` if ``input_file`` is ``None`` and to ``False`` if ``input_file``
+        is not ``None``. Depending on its value the object is initialized as follows:
 
-        - :argument:`new_sampler` is ``False``
+        1. ``new_sampler`` is ``False``
         
             The :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
-            attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
-            otherwise from ``likelihood``. Arguments are set from 
-            :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`. Afterwards the 
+            attribute is set from :argument:`input_file`. Attributes are set from 
+            :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` through the 
+            :meth:`Sampler.__load__ <DNNLikelihood.Sampler.__init__>` method. Afterwards the 
             :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
             method is called. If the import fails :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` 
-            proceeds with ``new_sampler=True`` (see 1.).
+            proceeds with ``new_sampler=True`` (see below).
             Depending on the value of the input argument :argument:`output_folder` the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` method behaves as follows:
 
                 - If :argument:`output_folder` is ``None`` (default)
@@ -87,14 +79,21 @@ class Sampler(Verbosity):
                 - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute
                     
                     Output folder, files, and path attributes are not updated and everything is read from the loaded object.
+        
+        2. ``new_sampler`` is ``True`` (default)
+            
+            All attributes are set from input arguments. The 
+            :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
+            from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input. 
+            Afterwards the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` 
+            method is called.
 
         Attributes that are always set from input arguments (if they are not ``None``)
 
-            - :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`
-            - :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.new_sampler>`
-            - :attr:`Sampler.moves_str <DNNLikelihood.Sampler.new_sampler>`
+            - :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>`
+            - :attr:`Sampler.moves_str <DNNLikelihood.Sampler.moves_str>`
             - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`
-            - :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.new_sampler>`
+            - :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.parallel_CPU>`
             - :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>`
             - :attr:`Sampler.verbose <DNNLikelihood.Sampler.verbose>`
 
@@ -160,12 +159,13 @@ class Sampler(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         # Setting all arguments
-        if new_sampler == None:
-            self.new_sampler=False
-        else:
-            self.new_sampler=new_sampler
         self.likelihood_script_file = likelihood_script_file
         self.likelihood = likelihood
+        self.input_file = input_file
+        if self.input_file is None:
+            new_sampler=True
+        else:
+            new_sampler=False
         self.nwalkers = nwalkers
         self.nsteps_required = nsteps_required
         if moves_str != None:
@@ -178,10 +178,10 @@ class Sampler(Verbosity):
             self.vectorize = False
         else:
             self.vectorize = vectorize
-        self.input_file = input_file
+        
         self.output_folder = output_folder
         self.__check_define_input_files(verbose=verbose_sub)
-        if not self.new_sampler:
+        if not new_sampler:
             #self.__load(verbose=verbose_sub)
             try:
                 self.__load(verbose=verbose_sub)
@@ -201,8 +201,8 @@ class Sampler(Verbosity):
                     self.reset_predictions(delete_figures=True, verbose=verbose_sub)
             except:
                 print(header_string,"\nNo sampler files have been found. Initializing a new Sampler object.\n",show=verbose)
-                self.new_sampler = True
-        if self.new_sampler:
+                new_sampler = True
+        if new_sampler:
             if moves_str == None:
                 print(header_string,"\nNo 'moves_str' argument specified: the 'moves_str' attribute has been set to the emcee default 'StretchMove()'.\n", show=verbose)
                 self.moves_str = "[(emcee.moves.StretchMove(), 1), (emcee.moves.GaussianMove(0.0005, mode='random', factor=None), 0)]"
@@ -226,15 +226,19 @@ class Sampler(Verbosity):
     def __check_define_input_files(self,verbose=None):
         """
         Private method used by the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` one
-        to set the input files attributes.
-        If :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler` is ``True``, the 
-        :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
-        from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input if given, otherwise from
-        ``input_file``.
-        If :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler` is ``False`` the 
-        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`
-        attribute is set from ``input_file`` if given, otherwise from ``likelihood_script_file`` input if given, 
-        otherwise from ``likelihood``.
+        to set the input files attributes. The local variable ``new_sampler`` is set to ``True`` if ``input_file`` 
+        is ``None`` and to ``False`` if ``input_file`` is not ``None``. Depending on its value input files are set
+        as follows:
+
+        1. ``new_sampler=True``: the 
+            :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` attribute is set from
+            from ``likelihood_script_file`` input if given, otherwise from ``likelihood`` input.
+
+        2. ``new_sampler=False``:  both the 
+            :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` and
+            :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
+            attributes are set from ``input_file``.
+
         The method also sets the attributes corresponding to input files
         
             - :attr:`Sampler.input_h5_file <DNNLikelihood.Sampler.input_h5_file>`,
@@ -259,52 +263,33 @@ class Sampler(Verbosity):
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         ### Sets output folder if needed to find existing files
-        if self.input_file is not None:
-            self.input_file = path.abspath(path.splitext(self.input_file)[0])
+        if self.input_file is None:
+            new_sampler = True
         else:
-            self.input_file = None
-        if not self.new_sampler:
-            ### Tries to determine self.input_file from input arguements
-            if self.input_file == None:
-                if self.likelihood_script_file != None:
-                    ### Try to detemine input_file from likelihood_script_file
-                    print("2. new_sampler=False Option 2: determine input_file from likelihood_script_file")
-                    self.__get_input_file_from_likelihood_script_file()
-                else:
-                    if self.likelihood is not None:
-                        ### Try to detemine input_file from likelihood
-                        print("3. new_sampler=False Option 3: determine input_file from likelihood")
-                        self.__get_input_file_from_likelihood(verbose=verbose_sub)
-                    else:
-                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
+            new_sampler = False
+        if new_sampler:
+            if self.likelihood_script_file is not None:
+                self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
+                print("Option 1: 'likelihood_script_file' is given as input")
             else:
-                print("1. new_sampler=False Option 1: input_file given as input")
+                if self.likelihood is not None:
+                    ### Try to detemine likelihood_script_file from likelihood
+                    print("Option 2: 'likelihood' is given as input")
+                    self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
+                else:
+                    raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
+        else:
+            self.input_file = path.abspath(path.splitext(self.input_file)[0])
+            self.__get_likelihood_script_file_from_input_file()
         try:
             self.input_h5_file = path.abspath(self.input_file+".h5")
             self.input_log_file = path.abspath(self.input_file+".log")
             self.input_folder = path.split(self.input_file)[0]
-            print(header_string,"\nNo input files and folders specified.\n",show=verbose)
+            print(header_string,"\nNo input files and folders specified.\n", show=verbose)
         except:
             self.input_h5_file = None
             self.input_log_file = None
             self.input_folder = None
-        if self.new_sampler:
-            ### Tries to determine self.likelihood_script_file from input arguements
-            if self.likelihood_script_file is not None:
-                self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
-                print("4. new_sampler=True Option 1: likelihood_script_file given as input")
-            else:
-                if self.likelihood is not None:
-                    ### Try to detemine likelihood_script_file from likelihood
-                    print("5. new_sampler=True Option 2: determine likelihood_script_file from likelihood")
-                    self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
-                else:
-                    if self.input_file is not None:
-                        ### Try to detemine likelihood_script_file from input_file
-                        print("6. new_sampler=True Option 3: determine likelihood_script_file from input_file")
-                        self.__get_likelihood_script_file_from_input_file()
-                    else:
-                        raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
                 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
@@ -409,45 +394,6 @@ class Sampler(Verbosity):
         else:
             self.likelihood_script_file = tmp_likelihood_script_file_new
             #copyfile(tmp_likelihood_script_file,tmp_likelihood_script_file_new)
-        
-    def __get_input_file_from_likelihood_script_file(self):
-        """
-        Private method that attempts to determine the 
-        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attribute
-        from the :attr:`Sampler.likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>`
-        attribute.
-        """
-        self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
-        folder, file = path.split(self.likelihood_script_file)
-        file = path.splitext(file)[0]
-        input_file = path.join(self.output_folder, file.replace("likelihood_script", "sampler"))
-        if path.exists(input_file+".h5"):
-            self.input_file = input_file
-        else:
-            self.input_file = path.join(folder, file.replace("likelihood_script","sampler"))
-
-    def __get_input_file_from_likelihood(self, verbose=None):
-        """
-        Private method that attempts to determine the
-        :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>` attribute
-        from the :attr:`Sampler.likelihood <DNNLikelihood.Sampler.likelihood>`
-        attribute through the :meth:`Sampler.__get_likelihood_script_file_from_likelihood <DNNLikelihood.Sampler._Sampler__get_likelihood_script_file_from_likelihood>`
-        and :meth:`Sampler.__get_input_file_from_likelihood_script_file <DNNLikelihood.Sampler._Sampler__get_input_file_from_likelihood_script_file>`
-        methods.
-
-        - **Arguments**
-
-            - **verbose**
-            
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
-        """
-        _, verbose_sub = self.set_verbosity(verbose)
-        self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
-        self.__get_input_file_from_likelihood_script_file()
 
     def __init_likelihood(self,verbose=None):
         """
@@ -568,18 +514,24 @@ class Sampler(Verbosity):
     def __init_backend(self, verbose=None):
         """
         Private method used by the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` one 
-        to create a backend file :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
-        when :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``True`` or
-        to load an existig backend file :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
-        when :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``False``.
-        In case :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is set to ``False`` but the backend file
+        to initialize the backend. The local variable ``new_sampler`` is set to ``True`` if ``input_file`` 
+        is ``None`` and to ``False`` if ``input_file`` is not ``None``.
+        Depending on its value the backend is initialized as follows:
+
+        1. ``new_sampler=True``: the backend is initialized in the file
+        :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`
+        
+        2. ``new_sampler`` is ``False``: the backend is loaded from the existing backend file 
+        :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>`.
+
+        In case ``new_sampler`` is ``False`` but the backend file
         :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>` does not exist, then
-        :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>` is automatically set to ``True`` and a new backend is created.
+        ``new_sampler`` is automatically set to ``True`` and a new backend is created.
         The method creates or loads the backend by calling the :meth:`Sampler.__init_sampler <DNNLikelihood.Sampler._Sampler__init_sampler>`
         private method, which creates and runs the sampler for zero steps. This is done to properly sets both attributes 
         :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>` and :attr:`Sampler.sampler <DNNLikelihood.Sampler.sampler>`.
-        Notice that when the object is loaded with :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`
-        set to ``False``, but a new :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` is specified,
+        Notice that when the object is loaded from input files, 
+        but a new :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` is specified,
         then the function attemts to copy an existing backend file from
         :attr:`Sampler.input_folder <DNNLikelihood.Sampler.input_folder>` to
         :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`.
@@ -596,7 +548,11 @@ class Sampler(Verbosity):
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        if not self.new_sampler:
+        if self.input_file is None:
+            new_sampler = True
+        else:
+            new_sampler = False
+        if not new_sampler:
             # Try to copy backend file in input directory to new backend file self.backend_file
             if self.input_folder is not None:
                 old_backend_file = path.join(self.input_folder, self.name+"_backend.h5")
@@ -605,10 +561,10 @@ class Sampler(Verbosity):
                         copyfile(old_backend_file, self.backend_file)
                         print(header_string,"\nA backend file has been found in the input folder and has been copied to the new output folder.\n")
             if not path.exists(self.backend_file):
-                print(header_string,"\nThe new_sampler flag was set to false but the backend file\n\t", self.backend_file,
-                      "\ndoes not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with new_sampler=True.\n",show=verbose)
-                self.new_sampler = True
-        if self.new_sampler:
+                print(header_string,"\nAn input_file has been specified but the corresponding backend file\n\t", self.backend_file,
+                      "\ndoes not exists.\nPlease change filename if you meant to import an existing backend.\nContinuing with a new sampler.\n",show=verbose)
+                new_sampler = True
+        if new_sampler:
             utils.check_rename_file(self.backend_file,verbose=verbose_sub)
             nsteps_tmp = self.nsteps_required
             self.nsteps_required = 0
@@ -638,8 +594,10 @@ class Sampler(Verbosity):
         """
         Private method used by the :meth:`Sampler.__init_backend <DNNLikelihood.Sampler._Sampler__init_backend>` one 
         to initialize :attr:`Sampler.backend <DNNLikelihood.Sampler.backend>` and 
-        :attr:`Sampler.sampler <DNNLikelihood.Sampler.sampler>` attributes depending on the value of 
-        :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`.
+        :attr:`Sampler.sampler <DNNLikelihood.Sampler.sampler>` attributes. 
+        The local variable ``new_sampler`` is set to ``True`` if ``input_file`` 
+        is ``None`` and to ``False`` if ``input_file`` is not ``None``. Depending on its value the sampler is initialized
+        as follows:
 
         1. ``new_sampler=True``: a new backend is created,
         walkers are initialized to :attr:`Sampler.pars_init <DNNLikelihood.Sampler.pars_init>`, and MCMC is run for zero
@@ -662,9 +620,13 @@ class Sampler(Verbosity):
                     - **default**: ``None``
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        if self.input_file is None:
+            new_sampler = True
+        else:
+            new_sampler = False
         # Initializes backend (either connecting to existing one or generating new one)
         # Initilized p0 (chains initial state)
-        if self.new_sampler:
+        if new_sampler:
             print(header_string,"\nInitialize backend in file\n\t", self.backend_file,"\n",show=verbose)
             self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
             self.backend.reset(self.nwalkers, self.ndims)
@@ -675,7 +637,7 @@ class Sampler(Verbosity):
                     print(header_string,"\nInitialize backend from file\n\t", self.backend_file,"\n",show=verbose)
                     self.backend = emcee.backends.HDFBackend(self.backend_file, name=self.name)
                 except:
-                    raise Exception("Backend file does not exist. Please either change the filename or run with new_sampler=True.")
+                    raise Exception("Backend file does not exist. Please either change the filename or generate a new sampler.")
             try:
                 p0 = self.backend.get_last_sample()
             except:
@@ -1002,7 +964,6 @@ class Sampler(Verbosity):
             - :attr:`Sampler.input_h5_file <DNNLikelihood.Sampler.input_h5_file>`
             - :attr:`Sampler.input_log_file <DNNLikelihood.Sampler.input_log_file>`
             - :attr:`Sampler.log <DNNLikelihood.Sampler.log>` (saved to the file :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`)
-            - :attr:`Sampler.new_sampler <DNNLikelihood.Sampler.new_sampler>`
             - :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`
             - :attr:`Sampler.moves <DNNLikelihood.Sampler.moves>`
             - :attr:`Sampler.sampler <DNNLikelihood.Sampler.sampler>`
@@ -1080,7 +1041,6 @@ class Sampler(Verbosity):
                                                           "logpdf_args", 
                                                           "moves", 
                                                           "ndims",
-                                                          "new_sampler", 
                                                           "nsteps_available",
                                                           "output_figures_base_file",
                                                           "output_figures_folder",

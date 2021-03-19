@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Arguments &mdash; DNNLikelihood</title>
   
@@ -19,10 +19,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -35,9 +32,12 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> DNNLikelihood
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
           
 
           
@@ -165,8 +165,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -184,7 +182,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/sampler/arguments.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -226,7 +224,7 @@
 <span id="sampler-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
 <dl class="py argument">
 <dt id="Sampler.new_sampler">
-<code class="sig-name descname"><span class="pre">new_sampler</span></code><a class="headerlink" href="#Sampler.new_sampler" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">new_sampler</code><a class="headerlink" href="#Sampler.new_sampler" title="Permalink to this definition">¶</a></dt>
 <dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> a new <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object is created from input arguments, while if
 <code class="docutils literal notranslate"><span class="pre">False</span></code> the object is reconstructed from saved files (see the <a class="reference internal" href="methods.html#DNNLikelihood.Sampler.__init__" title="DNNLikelihood.Sampler.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">__init__</span></code></a>
 method).
@@ -241,7 +239,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 
 <dl class="py argument">
 <dt id="Sampler.likelihood_script_file">
-<code class="sig-name descname"><span class="pre">likelihood_script_file</span></code><a class="headerlink" href="#Sampler.likelihood_script_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">likelihood_script_file</code><a class="headerlink" href="#Sampler.likelihood_script_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name (either relative to the code execution folder or absolute) of a <code class="docutils literal notranslate"><span class="pre">likelihood_script_file</span></code>
 genetated by the <a class="reference internal" href="../likelihood/methods.html#DNNLikelihood.Lik.save_script" title="DNNLikelihood.Lik.save_script"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_script</span></code></a> method.
 It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.likelihood_script_file</span></code></a> attribute.</p>
@@ -255,7 +253,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 
 <dl class="py argument">
 <dt id="Sampler.likelihood">
-<code class="sig-name descname"><span class="pre">likelihood</span></code><a class="headerlink" href="#Sampler.likelihood" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">likelihood</code><a class="headerlink" href="#Sampler.likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>A <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object.
 It is used to initialize the <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object directly from the
 <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> one. This argument is not saved into an attribute:
@@ -273,7 +271,7 @@ method).</p>
 
 <dl class="py argument">
 <dt id="Sampler.nwalkers">
-<code class="sig-name descname"><span class="pre">nwalkers</span></code><a class="headerlink" href="#Sampler.nwalkers" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nwalkers</code><a class="headerlink" href="#Sampler.nwalkers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of walkers (or chains) of the <a class="reference internal" href="index.html#module-sampler" title="sampler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.
 If it is <code class="docutils literal notranslate"><span class="pre">None</span></code>, it is automatically set to twice the number of dimensions of the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> function (given by the
@@ -288,7 +286,7 @@ If it is <code class="docutils literal notranslate"><span class="pre">None</span
 
 <dl class="py argument">
 <dt id="Sampler.nsteps_required">
-<code class="sig-name descname"><span class="pre">nsteps_required</span></code><a class="headerlink" href="#Sampler.nsteps_required" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">nsteps_required</code><a class="headerlink" href="#Sampler.nsteps_required" title="Permalink to this definition">¶</a></dt>
 <dd><p>Final number of MCMC steps. When the object is initialized with the <a class="reference internal" href="#Sampler.new_sampler" title="Sampler.new_sampler"><code class="xref py py-argument docutils literal notranslate"><span class="pre">new_sampler</span></code></a> argument set to <code class="docutils literal notranslate"><span class="pre">False</span></code>
 then, if <a class="reference internal" href="#Sampler.nsteps_required" title="Sampler.nsteps_required"><code class="xref py py-argument docutils literal notranslate"><span class="pre">nsteps_required</span></code></a> is larger than the number of steps available in the backend, it is saved in the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a>, otherwise the latter is set equal to the number of steps available
@@ -303,7 +301,7 @@ in the backend.</p>
 
 <dl class="py argument">
 <dt id="Sampler.moves_str">
-<code class="sig-name descname"><span class="pre">moves_str</span></code><a class="headerlink" href="#Sampler.moves_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">moves_str</code><a class="headerlink" href="#Sampler.moves_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>String containing an <a href="https://emcee.readthedocs.io/en/stable/user/moves/"  target="_blank"> emcee.moves</a> object. If <code class="docutils literal notranslate"><span class="pre">None</span></code> is passed, the default <code class="docutils literal notranslate"><span class="pre">emcee.moves.StretchMove()</span></code> is passed.
 It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.moves_str" title="DNNLikelihood.Sampler.moves_str"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.moves_str</span></code></a> attribute.</p>
 <blockquote>
@@ -323,7 +321,7 @@ See the <a href="https://emcee.readthedocs.io/en/stable/user/moves/"  target="_b
 
 <dl class="py argument">
 <dt id="Sampler.parallel_CPU">
-<code class="sig-name descname"><span class="pre">parallel_CPU</span></code><a class="headerlink" href="#Sampler.parallel_CPU" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">parallel_CPU</code><a class="headerlink" href="#Sampler.parallel_CPU" title="Permalink to this definition">¶</a></dt>
 <dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> the MCMC is run in
 parallel on the available CPU cores, otherwise only a single core is used.
 It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a> attribute.</p>
@@ -337,7 +335,7 @@ It is used to set the <a class="reference internal" href="attributes.html#DNNLik
 
 <dl class="py argument">
 <dt id="Sampler.vectorize">
-<code class="sig-name descname"><span class="pre">vectorize</span></code><a class="headerlink" href="#Sampler.vectorize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">vectorize</code><a class="headerlink" href="#Sampler.vectorize" title="Permalink to this definition">¶</a></dt>
 <dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the method <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.logpdf" title="DNNLikelihood.Sampler.logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Sampler.logpdf</span></code></a> is expected to accept a list of
 points and to return a list of logpdf values, and <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a>
 is automatically set to <code class="docutils literal notranslate"><span class="pre">False</span></code>. See the <a href="https://emcee.readthedocs.io/en/stable/user/sampler/#emcee.EnsembleSampler"  target="_blank"> emcee.EnsembleSampler</a> documentation for more details.
@@ -346,7 +344,7 @@ It is used to set the <a class="reference internal" href="attributes.html#DNNLik
 
 <dl class="py argument">
 <dt id="Sampler.output_folder">
-<code class="sig-name descname"><span class="pre">output_folder</span></code><a class="headerlink" href="#Sampler.output_folder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">output_folder</code><a class="headerlink" href="#Sampler.output_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
 It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> attribute.
 The <a class="reference internal" href="#Sampler.output_folder" title="Sampler.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> argument is also used
@@ -365,7 +363,7 @@ otherwise, input files are searched for in the <a class="reference internal" hre
 
 <dl class="py argument">
 <dt id="Sampler.input_file">
-<code class="sig-name descname"><span class="pre">input_file</span></code><a class="headerlink" href="#Sampler.input_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">input_file</code><a class="headerlink" href="#Sampler.input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name (either relative to the code execution folder or absolute, with or without extension)
 of a saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.
 It is used to set the <a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.input_file" title="DNNLikelihood.Lik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_file</span></code></a>
@@ -380,7 +378,7 @@ attribute.</p>
 
 <dl class="py argument">
 <dt id="Sampler.verbose">
-<code class="sig-name descname"><span class="pre">verbose</span></code><a class="headerlink" href="#Sampler.verbose" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">verbose</code><a class="headerlink" href="#Sampler.verbose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argument used to set the verbosity mode of the <a class="reference internal" href="../likelihood/methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a>
 method and the default verbosity mode of all class methods that accept a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
 See <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a>.</p>
@@ -399,29 +397,37 @@ See <a class="reference internal" href="../show_prints.html#verbosity-mode"><spa
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="attributes.html" class="btn btn-neutral float-right" title="Attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="class.html" class="btn btn-neutral float-left" title="Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="attributes.html" class="btn btn-neutral float-right" title="Attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="class.html" class="btn btn-neutral float-left" title="Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
+        
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

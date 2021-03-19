@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Arguments &mdash; DNNLikelihood</title>
   
@@ -19,10 +19,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -35,9 +32,12 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> DNNLikelihood
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
           
 
           
@@ -164,8 +164,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -183,7 +181,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/histfactory/arguments.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -225,7 +223,7 @@
 <span id="histfactory-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
 <dl class="py argument">
 <dt id="Histfactory.workspace_folder">
-<code class="sig-name descname"><span class="pre">workspace_folder</span></code><em class="property"><span class="pre">:</span> <span class="pre">str</span></em><a class="headerlink" href="#Histfactory.workspace_folder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">workspace_folder</code><em class="property">: str</em><a class="headerlink" href="#Histfactory.workspace_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path (either relative to the code execution folder or absolute)
 containing the ATLAS histfactory workspace (containing the “Regions” subfolders).
 It is saved in the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.workspace_folder" title="DNNLikelihood.Histfactory.workspace_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.workspace_folder</span></code></a> attribute.</p>
@@ -239,7 +237,7 @@ It is saved in the <a class="reference internal" href="attributes.html#DNNLikeli
 
 <dl class="py argument">
 <dt id="Histfactory.name">
-<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#Histfactory.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><a class="headerlink" href="#Histfactory.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object.
 It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.name" title="DNNLikelihood.Histfactory.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.name</span></code></a> attribute.</p>
 <blockquote>
@@ -252,7 +250,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 
 <dl class="py argument">
 <dt id="Histfactory.regions_folders_base_name">
-<code class="sig-name descname"><span class="pre">regions_folders_base_name</span></code><a class="headerlink" href="#Histfactory.regions_folders_base_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">regions_folders_base_name</code><a class="headerlink" href="#Histfactory.regions_folders_base_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Common folder name of the “Region” folders contained in the
 <a class="reference internal" href="#Histfactory.workspace_folder" title="Histfactory.workspace_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code></a> (these folders are usually named “RegionA”, “RegionB”, etc.).
 It is used to set the
@@ -268,7 +266,7 @@ attribute.</p>
 
 <dl class="py argument">
 <dt id="Histfactory.bkg_files_base_name">
-<code class="sig-name descname"><span class="pre">bkg_files_base_name</span></code><a class="headerlink" href="#Histfactory.bkg_files_base_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">bkg_files_base_name</code><a class="headerlink" href="#Histfactory.bkg_files_base_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name (with or without the .json extension) of the “background” json files
 in the “Region” folders (e.g. “BkgOnly”).
 It is used to set the
@@ -284,7 +282,7 @@ attribute.</p>
 
 <dl class="py argument">
 <dt id="Histfactory.patch_files_base_name">
-<code class="sig-name descname"><span class="pre">patch_files_base_name</span></code><a class="headerlink" href="#Histfactory.patch_files_base_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">patch_files_base_name</code><a class="headerlink" href="#Histfactory.patch_files_base_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base name (without the .json extension) of the “signal” patch
 json files in the “Region” folders (e.g. “patch”).
 It is used to set the
@@ -300,7 +298,7 @@ attribute.</p>
 
 <dl class="py argument">
 <dt id="Histfactory.output_folder">
-<code class="sig-name descname"><span class="pre">output_folder</span></code><a class="headerlink" href="#Histfactory.output_folder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">output_folder</code><a class="headerlink" href="#Histfactory.output_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
 It is used to set the <a class="reference internal" href="../sampler/attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> attribute.</p>
 <blockquote>
@@ -313,7 +311,7 @@ It is used to set the <a class="reference internal" href="../sampler/attributes.
 
 <dl class="py argument">
 <dt id="Histfactory.input_file">
-<code class="sig-name descname"><span class="pre">input_file</span></code><a class="headerlink" href="#Histfactory.input_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">input_file</code><a class="headerlink" href="#Histfactory.input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name (either relative to the code execution folder or absolute, with or without extension)
 of a saved <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object.
 It is used to set the
@@ -329,7 +327,7 @@ attribute.</p>
 
 <dl class="py argument">
 <dt id="Histfactory.verbose">
-<code class="sig-name descname"><span class="pre">verbose</span></code><a class="headerlink" href="#Histfactory.verbose" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">verbose</code><a class="headerlink" href="#Histfactory.verbose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argument used to set the verbosity mode of the
 <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.__init__" title="DNNLikelihood.Histfactory.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.__init__</span></code></a>
 method and the default verbosity mode of all class methods that accept a
@@ -350,29 +348,37 @@ See <a class="reference internal" href="../show_prints.html#verbosity-mode"><spa
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="attributes.html" class="btn btn-neutral float-right" title="Attributess" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="class.html" class="btn btn-neutral float-left" title="Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="attributes.html" class="btn btn-neutral float-right" title="Attributess" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="class.html" class="btn btn-neutral float-left" title="Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
+        
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 

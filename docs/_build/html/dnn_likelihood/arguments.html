@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8">
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Arguments &mdash; DNNLikelihood</title>
   
@@ -19,10 +19,7 @@
 
   
   
-
   
-  
-
   
 
   
@@ -35,9 +32,12 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script src="../_static/clipboard.min.js"></script>
         <script src="../_static/copybutton.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -59,7 +59,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> DNNLikelihood
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
           
 
           
@@ -164,8 +164,6 @@
 
 
 
-
-
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -183,7 +181,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-          
+            
             <a href="../_sources/dnn_likelihood/arguments.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -225,7 +223,7 @@
 <span id="dnnlik-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
 <dl class="py argument">
 <dt id="DnnLik.name">
-<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#DnnLik.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">name</code><a class="headerlink" href="#DnnLik.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object.
 It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.name" title="DNNLikelihood.DnnLik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.name</span></code></a> attribute.</p>
 <blockquote>
@@ -238,7 +236,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 
 <dl class="py argument">
 <dt id="DnnLik.data">
-<code class="sig-name descname"><span class="pre">data</span></code><a class="headerlink" href="#DnnLik.data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">data</code><a class="headerlink" href="#DnnLik.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Input <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.
 Either this or the <a class="reference internal" href="#DnnLik.input_data_file" title="DnnLik.input_data_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_data_file</span></code></a> input argument should be provided to initialize a
 <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object and to set the
@@ -253,7 +251,7 @@ Either this or the <a class="reference internal" href="#DnnLik.input_data_file" 
 
 <dl class="py argument">
 <dt id="DnnLik.input_data_file">
-<code class="sig-name descname"><span class="pre">input_data_file</span></code><a class="headerlink" href="#DnnLik.input_data_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">input_data_file</code><a class="headerlink" href="#DnnLik.input_data_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name (either relative to the code execution folder or absolute, with or without any of the
 .json or .h5 extensions) of a saved <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.
 Either this or the <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-argument docutils literal notranslate"><span class="pre">data</span></code></a> input argument should be provided to initialize a
@@ -269,7 +267,7 @@ Either this or the <a class="reference internal" href="../data/index.html#module
 
 <dl class="py argument">
 <dt id="DnnLik.load_on_RAM">
-<code class="sig-name descname"><span class="pre">load_on_RAM</span></code><a class="headerlink" href="#DnnLik.load_on_RAM" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">load_on_RAM</code><a class="headerlink" href="#DnnLik.load_on_RAM" title="Permalink to this definition">¶</a></dt>
 <dd><p>If <code class="docutils literal notranslate"><span class="pre">True</span></code> all data available in the dataset corresponding to the <a class="reference internal" href="#DnnLik.input_data_file" title="DnnLik.input_data_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_data_file</span></code></a> input
 are loaded into the RAM for faster generation of train/validation/test data. If <code class="docutils literal notranslate"><span class="pre">False</span></code> the HDF5
 dataset file is open in read mode and train/validation/test data are generated on demand.
@@ -284,7 +282,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 
 <dl class="py argument">
 <dt id="DnnLik.seed">
-<code class="sig-name descname"><span class="pre">seed</span></code><a class="headerlink" href="#DnnLik.seed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">seed</code><a class="headerlink" href="#DnnLik.seed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Seed of the random number generator. It is used to initialize the <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> and <a href="https://www.tensorflow.org/"  target="_blank"> TensorFlow</a> random state.
 It is used to ste the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.seed" title="DNNLikelihood.DnnLik.seed"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.seed</span></code></a> attribute.</p>
 <blockquote>
@@ -297,7 +295,7 @@ It is used to ste the <a class="reference internal" href="attributes.html#DNNLik
 
 <dl class="py argument">
 <dt id="DnnLik.dtype">
-<code class="sig-name descname"><span class="pre">dtype</span></code><a class="headerlink" href="#DnnLik.dtype" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dtype</code><a class="headerlink" href="#DnnLik.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>It represents the data type into which train/val/test data are converted.
 It is used to ste the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.dtype" title="DNNLikelihood.DnnLik.dtype"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.dtype</span></code></a> attribute.</p>
 <blockquote>
@@ -310,7 +308,7 @@ It is used to ste the <a class="reference internal" href="attributes.html#DNNLik
 
 <dl class="py argument">
 <dt id="DnnLik.same_data">
-<code class="sig-name descname"><span class="pre">same_data</span></code><a class="headerlink" href="#DnnLik.same_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">same_data</code><a class="headerlink" href="#DnnLik.same_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This option is passed to the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object by the
 <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object to specify if the same
 train/val data are used for the different <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLiks</span></code></a> in the
@@ -327,7 +325,7 @@ It is used to ste the <a class="reference internal" href="attributes.html#DNNLik
 
 <dl class="py argument">
 <dt id="DnnLik.model_data_inputs">
-<code class="sig-name descname"><span class="pre">model_data_inputs</span></code><a class="headerlink" href="#DnnLik.model_data_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">model_data_inputs</code><a class="headerlink" href="#DnnLik.model_data_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary specifying inputs related to data.
 It is used to set the private attribute
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_data_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_data_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_data_inputs</span></code></a>.</p>
@@ -382,7 +380,7 @@ method). If not given it is automatically set to <code class="docutils literal n
 
 <dl class="py argument">
 <dt id="DnnLik.model_define_inputs">
-<code class="sig-name descname"><span class="pre">model_define_inputs</span></code><a class="headerlink" href="#DnnLik.model_define_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">model_define_inputs</code><a class="headerlink" href="#DnnLik.model_define_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model"  target="_blank"> tf.keras.Model</a> specifications, including the structure of hidden
 <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers"  target="_blank"> layers</a> with their <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a> and <a href="https://www.tensorflow.org/api_docs/python/tf/keras/initializers"  target="_blank"> kerner initializers</a>,
 <a href="https://www.tensorflow.org/api_docs/python/tf/keras/activations"  target="_blank"> activation functions</a> in the output layer, <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout"  target="_blank"> Dropout</a> rate, and <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization"  target="_blank"> batch normalization</a>.
@@ -446,7 +444,7 @@ each pair of hidden layers. If not specified it is automatically set to <code cl
 
 <dl class="py argument">
 <dt id="DnnLik.model_optimizer_inputs">
-<code class="sig-name descname"><span class="pre">model_optimizer_inputs</span></code><a class="headerlink" href="#DnnLik.model_optimizer_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">model_optimizer_inputs</code><a class="headerlink" href="#DnnLik.model_optimizer_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>String or dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> tf.keras.optimizers</a> specifications.
 It is used to set the private attribute
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_optimizer_inputs</span></code></a>.
@@ -491,7 +489,7 @@ For all unspecified inputs default values will be used.</p>
 
 <dl class="py argument">
 <dt id="DnnLik.model_compile_inputs">
-<code class="sig-name descname"><span class="pre">model_compile_inputs</span></code><a class="headerlink" href="#DnnLik.model_compile_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">model_compile_inputs</code><a class="headerlink" href="#DnnLik.model_compile_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#compile"  target="_blank"> tf.keras.Model.compile</a> specifications, including <a href="https://www.tensorflow.org/api_docs/python/tf/keras/losses"  target="_blank"> loss</a>
 and <a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics"  target="_blank"> metrics</a>.
 It is used to set the private attribute
@@ -533,7 +531,7 @@ If not specified it will be automatically set to <code class="docutils literal n
 
 <dl class="py argument">
 <dt id="DnnLik.model_callbacks_inputs">
-<code class="sig-name descname"><span class="pre">model_callbacks_inputs</span></code><a class="headerlink" href="#DnnLik.model_callbacks_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">model_callbacks_inputs</code><a class="headerlink" href="#DnnLik.model_callbacks_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of strings and/or dictionaries specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks"  target="_blank"> tf.keras.callbacks</a> specifications.
 It is used to set the private attribute
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_callbacks_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_callbacks_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_callbacks_inputs</span></code></a>.
@@ -599,7 +597,7 @@ For all unspecified inputs default values will be used.</p>
 
 <dl class="py argument">
 <dt id="DnnLik.model_train_inputs">
-<code class="sig-name descname"><span class="pre">model_train_inputs</span></code><a class="headerlink" href="#DnnLik.model_train_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">model_train_inputs</code><a class="headerlink" href="#DnnLik.model_train_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary specifying inputs related to the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit"  target="_blank"> tf.keras.Model.fit</a> specifications, including number of epochs
 and batch size.
 It is used to set the private attribute
@@ -639,7 +637,7 @@ are allowed).</p>
 
 <dl class="py argument">
 <dt id="DnnLik.resources_inputs">
-<code class="sig-name descname"><span class="pre">resources_inputs</span></code><a class="headerlink" href="#DnnLik.resources_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">resources_inputs</code><a class="headerlink" href="#DnnLik.resources_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dictionary specifying available resources. This input argument is assumed to be specified automatically when the
 <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object is created from within the
 <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> one in order to sync resources between the
@@ -678,7 +676,7 @@ different <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" t
 
 <dl class="py argument">
 <dt id="DnnLik.output_folder">
-<code class="sig-name descname"><span class="pre">output_folder</span></code><a class="headerlink" href="#DnnLik.output_folder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">output_folder</code><a class="headerlink" href="#DnnLik.output_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
 It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a> attribute.</p>
 <blockquote>
@@ -691,7 +689,7 @@ It is used to set the <a class="reference internal" href="attributes.html#DNNLik
 
 <dl class="py argument">
 <dt id="DnnLik.ensemble_name">
-<code class="sig-name descname"><span class="pre">ensemble_name</span></code><a class="headerlink" href="#DnnLik.ensemble_name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ensemble_name</code><a class="headerlink" href="#DnnLik.ensemble_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Name of the <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object
 of which the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object is a member. This input argument
 is automatically passed by the generating <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object.
@@ -709,7 +707,7 @@ and <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.ens
 
 <dl class="py argument">
 <dt id="DnnLik.input_summary_json_file">
-<code class="sig-name descname"><span class="pre">input_summary_json_file</span></code><a class="headerlink" href="#DnnLik.input_summary_json_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">input_summary_json_file</code><a class="headerlink" href="#DnnLik.input_summary_json_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>File name (either relative to the code execution folder or absolute, with or without the
 .json extensions) of a saved <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object.
 It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_summary_json_file" title="DNNLikelihood.DnnLik.input_summary_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_summary_json_file</span></code></a> attribute.</p>
@@ -723,7 +721,7 @@ It is used to set the <a class="reference internal" href="attributes.html#DNNLik
 
 <dl class="py argument">
 <dt id="DnnLik.verbose">
-<code class="sig-name descname"><span class="pre">verbose</span></code><a class="headerlink" href="#DnnLik.verbose" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">verbose</code><a class="headerlink" href="#DnnLik.verbose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Argument used to set the verbosity mode of the <a class="reference internal" href="methods.html#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a>
 method and the default verbosity mode of all class methods that accept a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
 See <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a>.</p>
@@ -742,29 +740,37 @@ See <a class="reference internal" href="../show_prints.html#verbosity-mode"><spa
            
           </div>
           <footer>
+  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="attributes.html" class="btn btn-neutral float-right" title="Attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="class.html" class="btn btn-neutral float-left" title="Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+        <a href="attributes.html" class="btn btn-neutral float-right" title="Attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="class.html" class="btn btn-neutral float-left" title="Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
     </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre.
+        
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
 
     </p>
   </div>
     
     
     
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
+
         </div>
       </div>
 
