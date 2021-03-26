@@ -1511,7 +1511,7 @@ class Sampler(Verbosity):
             try:
                 self.predictions["gelman_rubin"][timestamp]
             except:
-                self.gelman_rubin(par, nsteps=idx, timestamp=timestamp)
+                self.compute_gelman_rubin(par, nsteps=idx, timestamp=timestamp)
             gr_pars = self.predictions["gelman_rubin"][timestamp]["pars_vals"]
             gr_nsteps = self.predictions["gelman_rubin"][timestamp]["nsteps"]
             gr_Rc = self.predictions["gelman_rubin"][timestamp]["Rc"]
