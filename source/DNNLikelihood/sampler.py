@@ -108,9 +108,9 @@ class Sampler(Verbosity):
             - :attr:`Sampler.nsteps_required <DNNLikelihood.Sampler.nsteps_required>` (if not given as input)
             - :attr:`Sampler.moves_str <DNNLikelihood.Sampler.moves_str>` (if not given as input)
             - :attr:`Sampler.parallel_CPU <DNNLikelihood.Sampler.parallel_CPU>` (if not given as input)
+            - :attr:`Sampler.predictions <DNNLikelihood.Sampler.predictions>`
             - :attr:`Sampler.vectorize <DNNLikelihood.Sampler.vectorize>` (if not given as input)
             - :attr:`Sampler.log <DNNLikelihood.Sampler.log>`
-            - :attr:`Sampler.figures_list <DNNLikelihood.Sampler.figures_list>`
             - :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` (if not given as input)
             - :attr:`Sampler.output_h5_file <DNNLikelihood.Sampler.output_h5_file>` (same as :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`)
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`(same as :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`)
@@ -285,11 +285,11 @@ class Sampler(Verbosity):
             self.input_h5_file = path.abspath(self.input_file+".h5")
             self.input_log_file = path.abspath(self.input_file+".log")
             self.input_folder = path.split(self.input_file)[0]
-            print(header_string,"\nNo input files and folders specified.\n", show=verbose)
         except:
             self.input_h5_file = None
             self.input_log_file = None
             self.input_folder = None
+            print(header_string,"\nNo input files and folders specified.\n", show=verbose)
                 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
@@ -1544,7 +1544,6 @@ class Sampler(Verbosity):
             plt.savefig(figure_file)
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
             utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-            self.figures_list = utils.check_figures_list(self.figures_list)
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
@@ -1563,7 +1562,6 @@ class Sampler(Verbosity):
             plt.savefig(figure_file)
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
             utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-            self.figures_list = utils.check_figures_list(self.figures_list)
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": path.split(figure_file)[-1], 
                                    "file path": figure_file}
