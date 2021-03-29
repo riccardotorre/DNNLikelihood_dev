@@ -154,7 +154,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.input_summary_json_file = input_summary_json_file
         self.input_data_file = input_data_file
         self.input_likelihood_file = input_likelihood_file
-        self.__check_define_input_files()  
+        self.__check_define_input_files(verbose=verbose_sub)
         ############ Check wheather to create a new DNNLik object from inputs or from files
         if self.input_files_base_name == None:
             ############ Initialize input parameters from arguments
@@ -181,7 +181,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.npoints_train, self.npoints_val, self.npoints_test = self.__model_data_inputs["npoints"]
             #### Set output folder and files
             self.output_folder = output_folder
-            self.__check_define_output_files()
+            self.__check_define_output_files(output_folder=output_folder, timestamp=timestamp, verbose=verbose_sub)
             #### Set ensemble attributes if the DNNLikelihood is part of an ensemble
             self.ensemble_name = ensemble_name
             self.__check_define_ensemble_folder(verbose=verbose_sub)
@@ -203,20 +203,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if seed != None:
                 self.seed = seed
             ### Set name, folders and files names
-            if output_folder != None:
-                old_output_folder = self.output_folder
-                if old_output_folder != path.abspath(output_folder):
-                    self.output_folder = path.abspath(output_folder)
-                    try:
-                        utils.copy_and_save_folder(old_output_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has been found, all its content has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    except:
-                        utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp,verbose=verbose)
-                        print(header_string,"\nThe output folder was changed from\n\t",old_output_folder,"\nto\n\t",self.output_folder,"\nThe old folder has not been found. The content of the present input folder has been copied to the new output folder. All (output) path attributes have been updated accordingly.\n",show=verbose)
-                    self.__check_define_output_files()
-                    self.log[timestamp] = {"action": "changed_output_folder", 
-                                           "old folder": old_output_folder,
-                                           "new folder": self.output_folder}
+            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
         #### Set resources (__resources_inputs is None for a standalone DNNLikelihood and is passed only if the DNNLikelihood
         #### is part of an ensemble)
         self.__resources_inputs = resources_inputs
@@ -279,6 +266,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     - **default**: ``None`` 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        self.check_tf_gpu(verbose=verbose)
         if self.__resources_inputs is None:
             #self.get_available_gpus(verbose=False)
             self.get_available_cpu(verbose=verbose_sub)
@@ -288,24 +276,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.available_cpu = self.__resources_inputs["available_cpu"]
             self.active_gpus = self.__resources_inputs["active_gpus"]
             self.gpu_mode = self.__resources_inputs["gpu_mode"]
-
-    def __set_likelihood(self,verbose=None):
-        verbose, verbose_sub = self.set_verbosity(verbose)
-        if self.input_likelihood_file is not None:
-            try:
-                self.likelihood = Lik(input_file=self.input_likelihood_file,verbose=verbose_sub)
-                timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-                self.log[timestamp] = {"action": "loaded likelihood object",
-                                       "file name": path.split(self.input_likelihood_file)[-1],
-                                       "file path": self.input_likelihood_file}
-                print(header_string,"\nThe Likelihood object stored in\n\t",self.input_likelihood_file,"\nhas been imported.\n",show=verbose)
-            except:
-                self.likelihood = None
-                print(header_string,"\nThe Likelihood object stored in\n\t",self.input_likelihood_file,"\ncould not be imported.\n",show=True)
-        else:
-            print(header_string,"\nNo Likelihood object has been specified.\n",show=verbose)
-        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-
 
     def __check_define_input_files(self,verbose=False):
         """
@@ -422,7 +392,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.output_figure_plot_losses_keras_file = None
         self.output_tensorboard_log_dir = None
         print(header_string,"\nDnnLik output folder set to\n\t", self.output_folder,".\n",show=verbose)
-        
+
     def __check_define_name(self):
         """
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
@@ -433,6 +403,23 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if self.name == None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.name = "model_"+timestamp+"_DNNLikelihood"
+
+    def __set_likelihood(self,verbose=None):
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if self.input_likelihood_file is not None:
+            try:
+                self.likelihood = Lik(input_file=self.input_likelihood_file,verbose=verbose_sub)
+                timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+                self.log[timestamp] = {"action": "loaded likelihood object",
+                                       "file name": path.split(self.input_likelihood_file)[-1],
+                                       "file path": self.input_likelihood_file}
+                print(header_string,"\nThe Likelihood object stored in\n\t",self.input_likelihood_file,"\nhas been imported.\n",show=verbose)
+            except:
+                self.likelihood = None
+                print(header_string,"\nThe Likelihood object stored in\n\t",self.input_likelihood_file,"\ncould not be imported.\n",show=True)
+        else:
+            print(header_string,"\nNo Likelihood object has been specified.\n",show=verbose)
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
 
     def __check_npoints(self):
         """
@@ -568,7 +555,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if self.ensemble_name == None:
             self.ensemble_folder = None
             self.standalone = True
-            print(header_string,"\nThis is a 'standalone' DNNLikelihood and does not belong to a DNNLikelihood_ensemble. The attributes 'ensemble_name' and 'ensemble_folder' are therefore been set to None.\n",show=verbose)
+            print(header_string,"\nThis is a 'standalone' DNNLikelihood and does not belong to a DNNLikelihood_ensemble. The attributes 'ensemble_name' and 'ensemble_folder' have therefore been set to None.\n",show=verbose)
         else:
             self.enseble_folder = path.abspath(path.join(self.output_folder,".."))
             self.standalone = False
@@ -1106,17 +1093,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         for i in range(len(metrics_string)):
             try:
                 metrics_obj[i] = metrics.deserialize(metrics_string[i])
-                print("\tAdded metric:",metrics_string[i],".\n",show=verbose)
+                print("\tAdded metric:",metrics_string[i],".",show=verbose)
             except:
                 try:
                     metrics_obj[i] = eval("self."+metrics_string[i])
-                    print("\tAdded metric:",metrics_string[i],".\n",show=verbose)
+                    print("\tAdded metric:",metrics_string[i],".",show=verbose)
                 except:
                     try:
                         metrics_obj[i] = eval("self."+utils.metric_name_unabbreviate(metrics_string[i]))
-                        print("\tAdded metric:",metrics_string[i],".\n",show=verbose)
+                        print("\tAdded metric:",metrics_string[i],".",show=verbose)
                     except:
-                        print("\tCould not set metric", metrics_string[i], ".\n",show=verbose)
+                        print("\tCould not set metric", metrics_string[i], ".",show=verbose)
         self.metrics_string = metrics_string
         self.metrics = metrics_obj
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -1422,7 +1409,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\Generating train/validation data\n",show=verbose)
+        print(header_string,"\nGenerating train/validation data\n",show=verbose)
         # Generate data
         if self.same_data:
             self.data.update_train_data(self.npoints_train, self.npoints_val, self.seed, verbose=verbose)
@@ -1483,7 +1470,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\Generating test data\n",show=verbose)
+        print(header_string,"\nGenerating test data\n",show=verbose)
         # Generate data
         self.data.generate_test_data(self.npoints_test, verbose=verbose)
         self.idx_test = self.data.data_dictionary["idx_test"][:self.npoints_train]

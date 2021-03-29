@@ -130,7 +130,6 @@ class Data(Verbosity):
             else:
                 self.dtype_required = "float64"
             self.__load(verbose=verbose_sub)
-            print(self.input_folder)
             self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.__define_test_fraction()
             self.figures_list = utils.check_figures_list(self.figures_list)

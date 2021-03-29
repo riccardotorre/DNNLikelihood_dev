@@ -3,6 +3,7 @@ import numpy as np
 import builtins
 #from multiprocessing import cpu_count
 from tensorflow.python.client import device_lib
+import tensorflow as tf
 import cpuinfo
 
 from .show_prints import print, Verbosity
@@ -35,6 +36,10 @@ class Resources(Verbosity):
     Class inherited by all other classes to provide the
     :meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>` method.
     """
+    def check_tf_gpu(self,verbose=None):
+        if not tf.test.gpu_device_name():
+            print("To enable GPU support please install GPU version of TF", show=verbose)
+
     def get_available_gpus(self,verbose=None):
         verbose, _ = self.set_verbosity(verbose)
         local_device_protos = device_lib.list_local_devices()
@@ -66,25 +71,27 @@ class Resources(Verbosity):
         if len(self.available_gpus) == 0:
             print('No available GPUs. Running with CPU support only.', show=verbose)
             self.active_gpus = self.available_gpus
-        if gpus_list == None:
-            print("No GPUs have been set. Running with CPU support only.", show=verbose)
-            self.active_gpus = []
-        elif gpus_list == "all":
-            gpus_list = list(range(len(self.available_gpus)))
         else:
-            if np.amax(np.array(gpus_list)) > len(self.available_gpus)-1:
+            # Set gpus_list
+            if gpus_list == "all":
+                gpus_list = list(range(len(self.available_gpus)))
+            if len(gpus_list) > len(self.available_gpus):
                 print('Not all selected GPU are available.', show=verbose)
                 print('Available GPUs are:\n', self.available_gpus, ".",show=verbose)
                 print('Proceeding with all available GPUs.', show=verbose)
                 gpus_list = list(range(len(self.available_gpus)))
-        if len(gpus_list) > 1:
-            selected_gpus = np.array(self.available_gpus)[gpus_list].tolist()
-            print(len(gpus_list), "GPUs have been set:\n" +
-                  "\n".join([str(x) for x in selected_gpus]), '.', show=verbose)
-            self.active_gpus = selected_gpus
-        else:
-            print("1 GPU hase been set:\n"+str(self.available_gpus[gpus_list[0]]), '.',show=verbose)
-            self.active_gpus = [self.available_gpus[gpus_list[0]]]
+            # Set active_gpus
+            if gpus_list == None or len(gpus_list) == 0:
+                print("No GPUs have been set. Running with CPU support only.", show=verbose)
+                self.active_gpus = []
+            elif len(gpus_list) == 1:
+                print("1 GPU has been set:\n"+str(self.available_gpus[gpus_list[0]]), '.',show=verbose)
+                self.active_gpus = [self.available_gpus[gpus_list[0]]]
+            else:
+                selected_gpus = np.array(self.available_gpus)[gpus_list].tolist()
+                print(len(gpus_list), "GPUs have been set:\n" + "\n".join([str(x) for x in selected_gpus]), '.', show=verbose)
+                self.active_gpus = selected_gpus
+        # Set gpu_mode
         if self.active_gpus != []:
             self.gpu_mode = True
         else:
