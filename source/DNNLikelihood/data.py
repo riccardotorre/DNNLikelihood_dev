@@ -134,7 +134,6 @@ class Data(Verbosity):
             self.__define_test_fraction()
             self.figures_list = utils.check_figures_list(self.figures_list)
             self.save_log(overwrite=True, verbose=verbose_sub)
-
         self.data_dictionary = {"X_train": np.array([[]], dtype=self.dtype_required), "Y_train": np.array([], dtype=self.dtype_required),
                                 "X_val": np.array([[]], dtype=self.dtype_required), "Y_val": np.array([], dtype=self.dtype_required),
                                 "X_test": np.array([[]], dtype=self.dtype_required), "Y_test": np.array([], dtype=self.dtype_required),

@@ -1810,7 +1810,6 @@ class Sampler(Verbosity):
                 new = np.empty(len(N))
                 ml = np.empty(len(N))
                 ml[:] = np.nan
-
             for i, n in enumerate(N):
                 # GW10 method
                 if "G&W 2010" in methods:
