@@ -330,14 +330,15 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if self.input_likelihood_file is not None:
             self.input_likelihood_file = path.abspath(self.input_likelihood_file)
         if self.input_summary_json_file == None:
-            self.input_files_base_name = self.input_summary_json_file
-            self.input_history_json_file = self.input_files_base_name
-            self.input_idx_h5_file = self.input_files_base_name
-            self.input_log_file = self.input_summary_json_file
-            self.input_predictions_h5_file = self.input_files_base_name
-            self.input_scalers_pickle_file = self.input_files_base_name
-            self.input_tf_model_h5_file = self.input_files_base_name
-            self.input_folder = self.input_files_base_name
+            self.input_files_base_name = None
+            self.input_history_json_file = None
+            self.input_idx_h5_file = None
+            self.input_log_file = None
+            self.input_predictions_h5_file = None
+            self.input_scalers_pickle_file = None
+            self.input_tf_model_h5_file = None
+            self.input_folder = None
+            print(header_string,"\nNo DnnLik input files and folders specified.\n", show=verbose)
         else:
             self.input_files_base_name = path.abspath(path.splitext(self.input_summary_json_file)[0].replace("_summary",""))
             self.input_history_json_file = self.input_files_base_name+"_history.json"
@@ -347,8 +348,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.input_scalers_pickle_file = self.input_files_base_name+"_scalers.pickle"
             self.input_tf_model_h5_file = self.input_files_base_name+"_model.h5"
             self.input_folder = path.split(self.input_files_base_name)[0]
-            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
-        if self.input_data_file != None:
+            print(header_string,"\nDnnLik input folder set to\n\t", self.input_folder,".\n",show=verbose)
+        if self.input_data_file is not None:
             self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
@@ -420,7 +421,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.output_checkpoints_folder = None
         self.output_figure_plot_losses_keras_file = None
         self.output_tensorboard_log_dir = None
-        print(header_string,"\nOutput folder set to\n\t", self.output_folder,".\n",show=verbose)
+        print(header_string,"\nDnnLik output folder set to\n\t", self.output_folder,".\n",show=verbose)
         
     def __check_define_name(self):
         """
@@ -4099,13 +4100,23 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         dictionary = utils.dic_minus_keys(self.__dict__,["_DnnLik__resources_inputs",
                                                          "callbacks","data","history",
                                                          "idx_test","idx_train","idx_val",
-                                                         "input_files_base_name","input_history_json_file",
-                                                         "input_idx_h5_file","input_log_file",
+                                                         "input_files_base_name", "input_folder", "input_history_json_file",
+                                                         "input_idx_h5_file","input_log_file", "input_likelihood_file",
                                                          "input_predictions_h5_file",
                                                          "input_scalers_pickle_file","input_summary_json_file",
-                                                         "input_tf_model_h5_file","likelihood","load_on_RAM",
+                                                         "input_tf_model_h5_file", "input_data_file",
+                                                         "likelihood","load_on_RAM",
                                                          "log","loss","metrics","model","optimizer",
-                                                         "predictions", "scalerX","scalerY","verbose",
+                                                         "output_folder", "output_figures_folder","output_figures_base_file",
+                                                         "output_files_base_name","output_history_json_file",
+                                                         "output_idx_h5_file", "output_log_file",
+                                                         "output_predictions_h5_file","output_predictions_json_file",
+                                                         "output_scalers_pickle_file","output_summary_json_file",
+                                                         "output_tf_model_graph_pdf_file","output_tf_model_h5_file",
+                                                         "output_tf_model_json_file","output_tf_model_onnx_file",
+                                                         "script_file","output_checkpoints_files",
+                                                         "output_checkpoints_folder","output_figure_plot_losses_keras_file",
+                                                         "output_tensorboard_log_dir", "predictions", "scalerX","scalerY","verbose",
                                                          "X_test","X_train","X_val","Y_test","Y_train","Y_val","W_train"])
         dictionary = utils.convert_types_dict(dictionary)
         with codecs.open(output_summary_json_file, "w", encoding="utf-8") as f:

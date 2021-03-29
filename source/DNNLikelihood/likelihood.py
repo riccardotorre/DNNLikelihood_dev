@@ -130,12 +130,13 @@ class Lik(Verbosity):
             self.input_h5_file = None
             self.input_log_file = None
             self.input_folder = None
+            print(header_string,"\nNo Lik input files and folders specified.\n", show=verbose)
         else:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
             self.input_h5_file = self.input_file+".h5"
             self.input_log_file = self.input_file+".log"
             self.input_folder = path.split(self.input_file)[0]
-            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
+            print(header_string,"\nLik input folder set to\n\t", self.input_folder,".\n",show=verbose)
 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
@@ -177,7 +178,7 @@ class Lik(Verbosity):
         self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         self.script_file = path.join(self.output_folder, self.name+"_script.py")
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
-        print(header_string,"\nOutput folder set to\n\t", self.output_folder,".\n",show=verbose)
+        print(header_string,"\nLik output folder set to\n\t", self.output_folder,".\n",show=verbose)
 
     def __check_define_name(self):
         """

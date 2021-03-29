@@ -120,12 +120,13 @@ class Histfactory(Verbosity):
             self.input_h5_file = None
             self.input_log_file = None
             self.input_folder = None
+            print(header_string,"\nNo Histfactory input files and folders specified.\n", show=verbose)
         else:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
             self.input_h5_file = self.input_file+".h5"
             self.input_log_file = self.input_file+".log"
             self.input_folder = path.split(self.input_file)[0]
-            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
+            print(header_string,"\nHistfactory input folder set to\n\t", self.input_folder,".\n",show=verbose)
 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
@@ -154,7 +155,7 @@ class Histfactory(Verbosity):
         self.output_folder = utils.check_create_folder(self.output_folder)
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
-        print(header_string,"\nOutput folder set to\n\t", self.output_folder,".\n",show=verbose)
+        print(header_string,"\nHistFactory output folder set to\n\t", self.output_folder,".\n",show=verbose)
 
     def __check_define_name(self):
         """
@@ -572,6 +573,7 @@ class Histfactory(Verbosity):
             - :attr:`Histfactory.output_log_file <DNNLikelihood.Histfactory.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string, "\nCreating 'Lik' object", show=verbose)
         if output_folder == None:
             output_folder = self.output_folder
         start = timer()
@@ -599,7 +601,6 @@ class Histfactory(Verbosity):
                                               path.split(lik_obj.output_log_file)[-1]], 
                                "files paths": [lik_obj.output_h5_file, 
                                                lik_obj.output_log_file]}
-        print(header_string,"\nLikelihood object for likelihood", lik_number, "created and saved to files\n\t", lik_obj.output_h5_file, 
-              "\n\t", lik_obj.output_log_file, "\nin", str(end-start), "s.\n", show=verbose)
+        print(header_string,"\nLik object for likelihood", lik_number, "created and saved in", str(end-start), "s.\n", show=verbose)
         self.save_log(overwrite=True, verbose=verbose_sub)
         return lik_obj

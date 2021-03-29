@@ -97,7 +97,7 @@ class Data(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.input_file = input_file
-        self.__check_define_input_files()
+        self.__check_define_input_files(verbose=verbose_sub)
         if self.input_file == None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
@@ -130,6 +130,7 @@ class Data(Verbosity):
             else:
                 self.dtype_required = "float64"
             self.__load(verbose=verbose_sub)
+            print(self.input_folder)
             self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.__define_test_fraction()
             self.figures_list = utils.check_figures_list(self.figures_list)
@@ -157,6 +158,7 @@ class Data(Verbosity):
             self.input_samples_h5_file = None
             self.input_log_file = None
             self.input_folder = None
+            print(header_string,"\nNo Data input files and folders specified.\n", show=verbose)
         else:
             self.input_file = self.input_file.replace("_object","")
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
@@ -164,7 +166,7 @@ class Data(Verbosity):
             self.input_samples_h5_file = self.input_file+"_samples.h5"
             self.input_log_file = self.input_file+".log"
             self.input_folder = path.split(self.input_file)[0]
-            print(header_string,"\nInput folder set to\n\t", self.input_folder,".\n",show=verbose)
+            print(header_string,"\nData input folder set to\n\t", self.input_folder,".\n",show=verbose)
 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
@@ -203,7 +205,7 @@ class Data(Verbosity):
         self.output_object_h5_file = path.join(self.output_folder, self.name+"_object.h5")
         self.output_samples_h5_file = path.join(self.output_folder, self.name+"_samples.h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
-        print(header_string,"\nOutput folder set to\n\t", self.output_folder,".\n",show=verbose)
+        print(header_string,"\nData output folder set to\n\t", self.output_folder,".\n",show=verbose)
         
     def __check_define_name(self):
         """
@@ -611,6 +613,7 @@ class Data(Verbosity):
                                                           "data_X","data_Y",
                                                           "dtype_required",
                                                           "input_file",
+                                                          "input_folder",
                                                           "input_samples_h5_file",
                                                           "input_object_h5_file",
                                                           "input_log_file",

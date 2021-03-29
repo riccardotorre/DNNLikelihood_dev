@@ -285,11 +285,12 @@ class Sampler(Verbosity):
             self.input_h5_file = path.abspath(self.input_file+".h5")
             self.input_log_file = path.abspath(self.input_file+".log")
             self.input_folder = path.split(self.input_file)[0]
+            print(header_string,"\nSampler input folder set to\n\t", self.input_folder,".\n",show=verbose)
         except:
             self.input_h5_file = None
             self.input_log_file = None
             self.input_folder = None
-            print(header_string,"\nNo input files and folders specified.\n", show=verbose)
+            print(header_string,"\nNo Sampler input files and folders specified.\n", show=verbose)
                 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
@@ -349,7 +350,7 @@ class Sampler(Verbosity):
         self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         self.backend_file = path.join(self.output_folder, self.name+"_backend.h5")
         self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
-        print(header_string,"\nOutput folder set to\n\t", self.output_folder, ".\n",show=verbose)
+        print(header_string,"\nSampler output folder set to\n\t", self.output_folder, ".\n",show=verbose)
 
     def __get_likelihood_script_file_from_input_file(self):
         """
@@ -2186,23 +2187,25 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_log_file <DNNLikelihood.Sampler.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nCreating 'Data' object", show=verbose)
+        print(header_string,"\nCreating 'Data' object\n", show=verbose)
         if output_folder == None:
             output_folder = self.output_folder
         start = timer()
         ### Compute available samples
         if burnin == "auto":
+            print(header_string)
             try:
-                print("Estimating autocorrelation time to optimize burnin. For very large chains this could take a while.",show=verbose)
+                print("Estimating autocorrelation time to optimize burnin. For very large chains this could take a while.", show=verbose)
                 autocorr_max = int(np.max(self.sampler.get_autocorr_time()))
             except:
                 raise Exception("Could not automatically determine optimal 'burnin'. You must manually specify the 'burnin' input.")
             burnin=int(np.min([5*autocorr_max,self.nsteps_available/2]))
             print("Maximum estimated autocorrelation time of all parameters is:",autocorr_max,".",show=verbose)
-            print("Burning automatically set to:", burnin, ".", show=verbose)
+            print("Burning automatically set to:", burnin, ".\n", show=verbose)
         else:
-            print("Warning: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.", show=verbose)
+            print(header_string,"\nWarning: When requiring an unbiased data sample please check that the required burnin is compatible with MCMC convergence.\n", show=verbose)
         if thin == "auto":
+            print(header_string)
             try:
                 autocorr_max
             except:
@@ -2214,11 +2217,11 @@ class Sampler(Verbosity):
                     thin=thin-1
                 if autocorr_max != None:
                     if thin < autocorr_max:
-                        print("The required number of samples does not allow a thin value larger than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".",show=verbose)
+                        print("The required number of samples does not allow a thin value larger than the estimated autocorrelation time.\nThin hase been set to the maximum possible value compatible with 'burnin':",thin,".\n",show=verbose)
                     else:
-                        print("Thin automatically set to:",thin,".",show=verbose)
+                        print("Thin automatically set to:",thin,".\n",show=verbose)
                 else:
-                    print("Thin automatically set to:",thin,".",show=verbose)
+                    print("Thin automatically set to:",thin,".\n",show=verbose)
             except:
                 raise Exception("Could not automatically determine optimal 'thin'. You must manually specify the 'thin' input.")
         logpdf_values=self.sampler.get_log_prob(discard = burnin, thin = thin, flat = True)
@@ -2234,7 +2237,7 @@ class Sampler(Verbosity):
         logpdf_values = logpdf_values[unique_indices]
         allsamples = allsamples[unique_indices]
         if np.count_nonzero(np.isfinite(logpdf_values)) < len(logpdf_values):
-            print("There are non-numeric logpdf values.",show=verbose)
+            print("There are non-numeric logpdf values.\n",show=verbose)
         end = timer()
         print(str(len(allsamples)), "unique samples generated in", end-start, "s.",show=verbose)
         data_sample_timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -2263,4 +2266,5 @@ class Sampler(Verbosity):
                                                ds.output_samples_h5_file,
                                                self.output_log_file]}
         self.save_log(overwrite=True, verbose=verbose_sub)
+        print(header_string, "\nData object created and saved in", str(end-start), "s.\n", show=verbose)
         return ds
