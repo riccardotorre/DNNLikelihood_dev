@@ -38,7 +38,7 @@ class Resources(Verbosity):
     """
     def check_tf_gpu(self,verbose=None):
         if not tf.test.gpu_device_name():
-            print("To enable GPU support please install GPU version of TF", show=verbose)
+            print("To enable GPU support please install GPU version of TensorFlow", show=verbose)
 
     def get_available_gpus(self,verbose=None):
         verbose, _ = self.set_verbosity(verbose)

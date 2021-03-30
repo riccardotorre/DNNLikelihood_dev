@@ -167,7 +167,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.seed = seed
             self.dtype = dtype
             self.same_data = same_data
-            self.__set_likelihood(verbose=verbose_sub)
             self.__model_data_inputs = model_data_inputs
             self.__check_define_model_data_inputs()
             self.__model_define_inputs = model_define_inputs
@@ -192,9 +191,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             #### Load summary_log dictionary
             print(header_string,"\nWhen providing DNNLik input folder all arguments but data, input_likelihood_file, load_on_RAM and dtype are ignored and the object is constructed from saved data.",show=verbose)
             self.__load_summary_json_and_log(verbose=verbose_sub)
-            if input_likelihood_file != None:
-                self.input_likelihood_file = path.abspath(input_likelihood_file)
-            self.__set_likelihood(verbose=verbose_sub)
             self.data = None
             #### Set main inputs and DataSample
             self.load_on_RAM = load_on_RAM
@@ -206,6 +202,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
         #### Set resources (__resources_inputs is None for a standalone DNNLikelihood and is passed only if the DNNLikelihood
         #### is part of an ensemble)
+        self.__set_likelihood(verbose=verbose_sub)
         self.__resources_inputs = resources_inputs
         self.__set_resources(verbose=verbose_sub)
         #### Set additional inputs
@@ -418,6 +415,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 self.likelihood = None
                 print(header_string,"\nThe Likelihood object stored in\n\t",self.input_likelihood_file,"\ncould not be imported.\n",show=True)
         else:
+            self.likelihood = None
             print(header_string,"\nNo Likelihood object has been specified.\n",show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
 
@@ -2978,9 +2976,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 pars_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][source]["pars"]
                 tmu_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][source]["tmu"]
             else:
-                pars_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_"+source][timestamp]["pars"]
-                tmu_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_"+source][timestamp]["tmu"]
+                try:
+                    pars_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_"+source][timestamp]["pars"]
+                    tmu_dict[source] = self.predictions["Frequentist_inference"]["logpdf_profiled_max_"+source][timestamp]["tmu"]
+                except:
+                    print("t_mu information for source '"+source+"' is not available. The curve will not be included in the plot.")
+                    pars_dict[source] = None
+                    tmu_dict[source] = None
         tmp = list(pars_dict.values())
+        try:
+            tmp.remove(None)
+        except:
+            pass
         if tmp.count(tmp[0]) == len(tmp) and len(tmp[0]) == 1:
             par=tmp[0][0]
         else:
@@ -2988,7 +2995,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         figure_file = self.output_figures_base_file+"_tmu_"+str(par) +".pdf"
         self.update_figures(figure_file=figure_file,overwrite=overwrite)
         for k, v in tmu_dict.items():
-            plt.plot(v[:,0],v[:,-1], label=r"%s"%k)
+            if v is not None:
+                plt.plot(v[:,0],v[:,-1], label=r"%s"%k)
         plt.title(r"%s" % self.fig_base_title, fontsize=10)
         plt.xlabel(r"$t_{\mu}$(%s)"%(self.pars_labels[par]))
         plt.ylabel(r"%s"%(self.pars_labels[par]))
@@ -3485,6 +3493,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                   # figure_file=None, show_plot=False, overwrite=False, verbose=None
                                   # sources=None, timestamp=None, show_plot=False, overwrite=False, verbose=None
                                   plot_tmu_sources_1d_kwargs={},  # sources=["likelihood","model","train","val","test"], timestamp=None, show_plot=False,overwrite=False, verbose=None
+                                  show_plots=True,
                                   overwrite=False,
                                   verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -3794,15 +3803,21 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                               "plot_corners_2samp",
                                               "plot_tmu_sources_1d"],
                                              [True,True,True,True,True,False],verbose=verbose_sub)
+            utils.check_set_dict_keys(plot_training_history_kwargs, ["show_plot","overwrite","verbose"],[show_plots,overwrite,verbose_sub])
+            utils.check_set_dict_keys(plot_pars_coverage_kwargs, ["show_plot","overwrite","verbose"],[show_plots,overwrite,verbose_sub])
+            utils.check_set_dict_keys(plot_lik_distribution_kwargs, ["show_plot","overwrite","verbose"],[show_plots,overwrite,verbose_sub])
+            utils.check_set_dict_keys(plot_corners_1samp_kwargs, ["show_plot","overwrite","verbose"],[show_plots,overwrite,verbose_sub])
+            utils.check_set_dict_keys(plot_corners_2samp_kwargs, ["show_plot","overwrite","verbose"],[show_plots,overwrite,verbose_sub])
+            utils.check_set_dict_keys(plot_tmu_sources_1d_kwargs, ["show_plot","overwrite","verbose"],[show_plots,overwrite,verbose_sub])
             if model_predictions["Model_evaluation"]:
                 # Make plots for model evaluation
                 print(header_string,"\nMaking plots for model evaluation\n", show=verbose)
                 if plots["plot_training_history"]:
-                    self.plot_training_history(timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_training_history_kwargs)
+                    self.plot_training_history(timestamp=timestamp, **plot_training_history_kwargs)
                 if plots["plot_pars_coverage"]:
-                    self.plot_pars_coverage(pars=pars, timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_pars_coverage_kwargs)
+                    self.plot_pars_coverage(pars=pars, timestamp=timestamp, **plot_pars_coverage_kwargs)
                 if plots["plot_lik_distribution"]:
-                    self.plot_lik_distribution(timestamp=timestamp, overwrite=overwrite,verbose=verbose_sub, **plot_lik_distribution_kwargs)
+                    self.plot_lik_distribution(timestamp=timestamp, **plot_lik_distribution_kwargs)
             if model_predictions["Bayesian_inference"]:
                 # Make corner plots for Bayesian inference
                 print(header_string,"\nMaking corner plots for Bayesian inference\n", show=verbose)
@@ -3831,7 +3846,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                r"$95.45\%$ HPDI", 
                                                                r"$99.73\%$ HPDI"],
                                                 figure_file=self.output_figures_base_file+"_corner_pars_"+string+".pdf",
-                                                timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_1samp_kwargs)
+                                                timestamp=timestamp, **plot_corners_1samp_kwargs)
                 #### 2sample corner plots
                 if len(plots["plot_corners_2samp"])>0:
                     for strings in plots["plot_corners_2samp"]:
@@ -3853,12 +3868,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                  r"$95.45\%$ HPDI", 
                                                                  r"$99.73\%$ HPDI"],
                                                 figure_file=self.output_figures_base_file+"_corner_pars_"+string1+"_vs_"+string2+".pdf",
-                                                timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub, **plot_corners_2samp_kwargs)
+                                                timestamp=timestamp, **plot_corners_2samp_kwargs)
             if model_predictions["Frequentist_inference"]:
                 # Make tmu plot for Frequentist inference
                 print(header_string,"\nMaking t_mu plot for Frequentist inference\n", show=verbose)
                 if plots["plot_tmu_sources_1d"]:
-                    self.plot_tmu_sources_1d(timestamp=timestamp,overwrite=overwrite,verbose=verbose_sub,**plot_tmu_sources_1d_kwargs)
+                    self.plot_tmu_sources_1d(timestamp=timestamp,**plot_tmu_sources_1d_kwargs)
             end = timer()
             print(header_string,"\nAll plots done in", str(end-start), "s.\n", show=verbose)
         self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
