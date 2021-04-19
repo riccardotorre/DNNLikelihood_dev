@@ -497,27 +497,7 @@ dictionary corresponding to values (data) that have been updated.</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>“file path”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Path of file involved in the action.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
 <dt><em>“files names”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of file names of files involved in the action.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“old folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Previous path.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“new folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>New path.</p>
 </dd>
 </dl>
 </li>
@@ -579,6 +559,48 @@ attribute set to <code class="docutils literal notranslate"><span class="pre">Fa
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">HDF5</span> <span class="pre">file</span></code> object</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="DNNLikelihood.Data.output_figures_base_file_name">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">output_figures_base_file_name</code><a class="headerlink" href="#DNNLikelihood.Data.output_figures_base_file_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base figures file name. It is
+automatically generated from the
+<a class="reference internal" href="#DNNLikelihood.Data.name" title="DNNLikelihood.Data.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.name</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="DNNLikelihood.Data.output_figures_base_file_path">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">output_figures_base_file_path</code><a class="headerlink" href="#DNNLikelihood.Data.output_figures_base_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base figures file name including absolute path. It is
+automatically generated from the
+<a class="reference internal" href="#DNNLikelihood.Data.output_figures_folder" title="DNNLikelihood.Data.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_figures_folder</span></code></a> and
+<a class="reference internal" href="#DNNLikelihood.Data.output_figures_base_file_name" title="DNNLikelihood.Data.output_figures_base_file_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_figures_base_file_name</span></code></a> attributes.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="DNNLikelihood.Data.output_figures_folder">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">output_figures_folder</code><a class="headerlink" href="#DNNLikelihood.Data.output_figures_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Absolute path to the folder where figures are saved. It is
+automatically generated (and created by the
+<a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_create_folder" title="DNNLikelihood.utils.check_create_folder"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_create_folder</span></code></a>
+if not present) from the
+<a class="reference internal" href="#DNNLikelihood.Data.output_folder" title="DNNLikelihood.Data.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.output_folder</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -711,6 +733,48 @@ and can contain latex expressions that are properly compiled when making plots.<
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
 <li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_poi,)</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="DNNLikelihood.Data.predictions">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">predictions</code><a class="headerlink" href="#DNNLikelihood.Data.predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nested dictionary containing all predictions and list of figures generated by the
+<a class="reference internal" href="methods.html#DNNLikelihood.Data.plot_corners_1samp" title="DNNLikelihood.Data.plot_corners_1samp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.plot_corners_1samp</span></code></a> method.</p>
+<blockquote>
+<div><blockquote>
+<div><ul>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> with the following structure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><em>“Figures”</em> (value type: <code class="docutils literal notranslate"><span class="pre">dict</span></code>)</dt><dd><p>Dictionary containing information on figures. This dictionary has the following structure:</p>
+<ul>
+<li><dl class="simple">
+<dt><em>“timestamp”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code>)</dt><dd><p>Dictionary containing the list of absolute paths of the figures produced at time <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><strong>schematic example</strong>:</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;Figures&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;timestamp1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+             <span class="s1">&#39;timestamp2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+             <span class="o">...</span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
 </ul>
 </div></blockquote>
 </dd></dl>

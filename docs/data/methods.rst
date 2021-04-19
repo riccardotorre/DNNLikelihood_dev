@@ -49,6 +49,8 @@ Methods
 
 .. automethod:: Data.define_scalers
 
+.. automethod:: Data.update_figures
+
 .. automethod:: Data.plot_corners_1samp
 
 .. py:method:: Data.set_verbosity

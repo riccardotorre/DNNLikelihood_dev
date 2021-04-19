@@ -118,7 +118,7 @@ class Data(Verbosity):
             self.test_fraction = test_fraction
             self.__define_test_fraction()
             self.load_on_RAM = load_on_RAM
-            self.figures_list = []
+            self.predictions = {"Figures": {}}
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.load_on_RAM = load_on_RAM
@@ -132,7 +132,11 @@ class Data(Verbosity):
             self.__load(verbose=verbose_sub)
             self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
             self.__define_test_fraction()
-            self.figures_list = utils.check_figures_list(self.figures_list)
+            try:
+                self.predictions["Figures"]
+            except:
+                self.reset_predictions(delete_figures=True, verbose=verbose_sub)
+            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
             self.save_log(overwrite=True, verbose=verbose_sub)
         self.data_dictionary = {"X_train": np.array([[]], dtype=self.dtype_required), "Y_train": np.array([], dtype=self.dtype_required),
                                 "X_val": np.array([[]], dtype=self.dtype_required), "Y_val": np.array([], dtype=self.dtype_required),
@@ -179,6 +183,7 @@ class Data(Verbosity):
 
             - :attr:`DnnLik.output_figures_base_file <DNNLikelihood.DnnLik.output_figures_base_file>`
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+            - :attr:`Data.output_predictions_json_file <DNNLikelihood.Data.output_predictions_json_file>`
             - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
             - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`
 
@@ -200,10 +205,12 @@ class Data(Verbosity):
                 self.output_folder = path.abspath("")
         self.output_folder = utils.check_create_folder(self.output_folder)
         self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
-        self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
+        self.output_figures_base_file_name = self.name+"_figure"
+        self.output_figures_base_file_path = path.join(self.output_figures_folder, self.output_figures_base_file_name)
         self.output_object_h5_file = path.join(self.output_folder, self.name+"_object.h5")
         self.output_samples_h5_file = path.join(self.output_folder, self.name+"_samples.h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
+        self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         print(header_string,"\nData output folder set to\n\t", self.output_folder,".\n",show=verbose)
         
     def __check_define_name(self):
@@ -363,10 +370,7 @@ class Data(Verbosity):
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_samples_h5_file)[-1],
                                                path.split(self.input_log_file)[-1],
-                                               path.split(self.input_object_h5_file)[-1]],
-                               "files paths": [self.input_samples_h5_file,
-                                               self.input_log_file,
-                                               self.input_object_h5_file]}
+                                               path.split(self.input_object_h5_file)[-1]]}
         print(header_string,"\nData object loaded in", str(end-start), ".\n",show=verbose)
         if self.load_on_RAM:
             print(header_string,"\nSamples loaded on RAM.\n", show=verbose)
@@ -470,6 +474,50 @@ class Data(Verbosity):
         self.test_range = range(int(round(self.npoints*(1-self.test_fraction))),self.npoints)
         self.save(overwrite=True, verbose=verbose_sub)
 
+    def reset_predictions(self, 
+                          delete_figures=False, 
+                          verbose=None):
+        """
+        Re-initializes the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary to
+
+         .. code-block:: python
+
+            predictions = {"logpdf_max": {},
+                           "logpdf_profiled_max": {},
+                           "Figures": figs}
+
+        Where ``figs`` may be either an empty dictionary or the present value of the corresponding one,
+        depending on the value of the ``delete_figures`` argument.
+
+        - **Arguments**
+
+            - **delete_figures**
+            
+                If ``True`` all files in the :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>` 
+                folder are deleted and the ``"Figures"`` item is reset to an empty dictionary.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``True`` 
+            
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if delete_figures:
+            utils.check_delete_all_files_in_path(self.output_figures_folder)
+            figs = {}
+            print(header_string,"\nAll predictions and figures have been deleted and the 'predictions' attribute has been initialized.\n")
+        else:
+            figs = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+            print(header_string,"\nAll predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.\n")
+        self.predictions = {"Figures": figs}
+
     def close_opened_dataset(self,verbose=None):
         """ 
         Closes the opened h5py datasets 
@@ -550,6 +598,34 @@ class Data(Verbosity):
         else:
             print(header_string,"\nData log file\n\t", self.output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
+    def save_predictions_json(self, timestamp=None, overwrite=False, verbose=None):
+        """ Save predictions json
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        if type(overwrite) == bool:
+            output_predictions_json_file = self.output_predictions_json_file
+            if not overwrite:
+                utils.check_rename_file(output_predictions_json_file, verbose=verbose_sub)
+        elif overwrite == "dump":
+            output_predictions_json_file = utils.generate_dump_file_name(self.output_predictions_json_file, timestamp=timestamp)
+        dictionary = utils.convert_types_dict(self.predictions)
+        with codecs.open(output_predictions_json_file, "w", encoding="utf-8") as f:
+            json.dump(dictionary, f, separators=(",", ":"), indent=4)
+        end = timer()
+        self.log[timestamp] = {"action": "saved predictions json",
+                               "file name": path.split(output_predictions_json_file)[-1]}
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
+        if type(overwrite) == bool:
+            if overwrite:
+                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+            else:
+                print(header_string,"\nPredictions json file\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+        elif overwrite == "dump":
+            print(header_string,"\nPredictions json file dump\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+
     def save_object_h5(self, overwrite=False, verbose=True):
         """
         The :class:`Lik <DNNLikelihood.Data>` object is saved to the HDF5 file
@@ -568,12 +644,20 @@ class Data(Verbosity):
             - :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` (saved to the file :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`)
             - :attr:`Data.dtype_required <DNNLikelihood.Data.dtype_required>`
             - :attr:`Data.input_file <DNNLikelihood.Data.input_file>`
+            - :attr:`Data.input_folder <DNNLikelihood.Data.input_folder>`
             - :attr:`Data.input_samples_h5_file <DNNLikelihood.Data.input_samples_h5_file>`
             - :attr:`Data.input_object_h5_file <DNNLikelihood.Data.input_object_h5_file>`
             - :attr:`Data.input_log_file <DNNLikelihood.Data.input_log_file>`
             - :attr:`Data.load_on_RAM <DNNLikelihood.Data.load_on_RAM>`
             - :attr:`Data.log <DNNLikelihood.Data.log>` (saved to the file :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`)
             - :attr:`Data.opened_dataset <DNNLikelihood.Data.opened_dataset>`
+            - :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`
+            - :attr:`Data.output_figures_folder <DNNLikelihood.Data.output_figures_folder>`
+            - :attr:`Data.output_figures_base_file_name <DNNLikelihood.Data.output_figures_base_file_name>`
+            - :attr:`Data.output_figures_base_file_path <DNNLikelihood.Data.output_figures_base_file_path>`
+            - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
+            - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
             - :attr:`Data.test_range <DNNLikelihood.Data.test_range>`
             - :attr:`Data.train_range <DNNLikelihood.Data.train_range>`
             - :attr:`Data.verbose <DNNLikelihood.Data.verbose>`
@@ -621,7 +705,8 @@ class Data(Verbosity):
                                                           "opened_dataset",
                                                           "output_folder",
                                                           "output_figures_folder",
-                                                          "output_figures_base_file",
+                                                          "output_figures_base_file_name",
+                                                          "output_figures_base_file_path",
                                                           "output_object_h5_file",
                                                           "output_samples_h5_file",
                                                           "output_log_file",
@@ -632,8 +717,7 @@ class Data(Verbosity):
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.output_object_h5_file)[-1],
-                               "file path": self.output_object_h5_file}
+                               "file name": path.split(self.output_object_h5_file)[-1]}
         print(header_string,"\nData object saved to file\n\t", self.output_object_h5_file,"in", str(end-start), "s.\n",show=verbose)
 
     def save_samples_h5(self, overwrite=False, verbose=None):
@@ -688,8 +772,7 @@ class Data(Verbosity):
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.output_samples_h5_file)[-1],
-                               "file path": self.output_samples_h5_file}
+                               "file name": path.split(self.output_samples_h5_file)[-1]}
         print(header_string,"\n"+str(self.npoints), "data samples (data_X, data_Y) saved to file\n\t", self.output_samples_h5_file,"\nin", end-start, "s.\n",show=verbose)
 
     def save(self, overwrite=False, verbose=None):
@@ -703,6 +786,7 @@ class Data(Verbosity):
         This method calls in order the three methods
         
             - :meth:`Data.save_log <DNNLikelihood.Data.save_json>`
+            - :meth:`Data.save_predictions_json <DNNLikelihood.Data.save_predictions_json>`
             - :meth:`Data.save_object_h5 <DNNLikelihood.Data.save_object_h5>`
             - :meth:`Data.save_samples_h5 <DNNLikelihood.Data.save_samples_h5>`
 
@@ -715,12 +799,14 @@ class Data(Verbosity):
         - **Produces files**
 
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+            - :attr:`Data.output_predictions_json_file <DNNLikelihood.Data.output_predictions_json_file>`
             - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
             - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>` 
         """
         verbose, _ = self.set_verbosity(verbose)
         self.save_object_h5(overwrite=overwrite, verbose=verbose)
         self.save_samples_h5(overwrite=overwrite, verbose=verbose)
+        self.save_predictions_json(overwrite=overwrite, verbose=verbose)
         self.save_log(overwrite=overwrite, verbose=verbose)
         
     def generate_train_indices(self, npoints_train, npoints_val, seed, verbose=None):
@@ -1190,11 +1276,74 @@ class Data(Verbosity):
         print(header_string,"\nStandard scalers defined in", end-start, "s.\n", show=verbose)
         return [scalerX, scalerY]
 
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=verbose):
+        """
+        Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
+        When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 
+        ``figure_file`` already existed in the :attr:`Data.predictions <DNNLikelihood.Data.predictions>` dictionary, then it
+        updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp 
+        (that is the key of the :attr:`Data.predictions["Figures"] <DNNLikelihood.Data.predictions>` dictionary).
+        When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
+        to generate the dump file name.
+        It returns the new figure_file.
+
+        - **Arguments**
+
+            - **figure_file**
+
+                Figure file path. If the figure already exists in the 
+                :meth:`Data.predictions <DNNLikelihood.Data.predictions>` dictionary, then its name is updated with the corresponding timestamp.
+
+            - **overwrite**
+
+                The method updates file names and :attr:`Data.predictions <DNNLikelihood.Data.predictions>` dictionary only if
+                ``overwrite=False``. If ``overwrite="dump"`` the method generates and returns the dump file path. 
+                If ``overwrite=True`` the method just returns ``figure_file``.
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
+        
+        - **Returns**
+
+            - **new_figure_file**
+                
+                String identical to the input string ``figure_file`` unless ``verbose="dump"``.
+
+        - **Creates/updates files**
+
+            - Updates ``figure_file`` file name.
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print("Checking and updating figures dictionary",show=verbose)
+        if figure_file is None:
+            raise Exception("figure_file input argument of update_figures method needs to be specified while it is None.")
+        else:
+            new_figure_file = figure_file
+            if type(overwrite) == bool:
+                if not overwrite:
+                    # search figure
+                    timestamp=None
+                    for k, v in self.predictions["Figures"].items():
+                        if figure_file in v:
+                            timestamp = k
+                    old_figure_file = utils.check_rename_file(path.join(self.output_figures_folder,figure_file),timestamp=timestamp,return_value="file_name",verbose=verbose_sub)
+                    if timestamp is not None:
+                        self.predictions["Figures"][timestamp] = [f.replace(figure_file,old_figure_file) for f in v] 
+            elif overwrite == "dump":
+                new_figure_file = utils.generate_dump_file_name(figure_file, timestamp=timestamp)
+        return new_figure_file
+
     def plot_corners_1samp(self, X, intervals=inference.CI_from_sigma([1, 2, 3]), 
                            weights=None, pars=None, max_points=None, nbins=50, pars_labels="original",
                            ranges_extend=None, title = "", color="green",
                            plot_title="Corner plot", legend_labels=None, 
-                           figure_file=None, show_plot=False, overwrite=False, verbose=None):
+                           figure_file_name=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         """
         Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters ``pars`` in the ``X`` array.
 
@@ -1286,7 +1435,7 @@ class Data(Verbosity):
                     - **type**: ``str``
                     - **default**: ``"green"``
 
-            - **plot title**
+            - **plot_title**
 
                 Title of the corner 
                 plot.
@@ -1294,7 +1443,7 @@ class Data(Verbosity):
                     - **type**: ``str``
                     - **default**: ``"Corner plot"``
 
-            - **legend labels**
+            - **legend_labels**
 
                 List of strings. Labels for the contours corresponding to the 
                 ``intervals`` to show in the legend.
@@ -1303,10 +1452,10 @@ class Data(Verbosity):
                     - **type**: ``str`` or ``None``
                     - **default**: ``None``
 
-            - **figure_file**
+            - **figure_file_name**
 
-                File name for the saved figure.
-                If ``None`` file name is automatically generated.
+                File name for the generated figure. If it is ``None`` (default),
+                it is automatically generated.
 
                     - **type**: ``str`` or ``None``
                     - **default**: ``None``
@@ -1318,6 +1467,17 @@ class Data(Verbosity):
 
                     - **type**: ``bool``
                     - **default**: ``False``
+
+            - **timestamp**
+            
+                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
+                If it is not passed, then it is generated. It is used as key in the 
+                :attr:`Data.predictions["Figures"] <DNNLikelihood.Data.predictions>` dictionary to save the current prediction.
+                It is also used to update the :attr:`Data.log <DNNLikelihood.Data.log>` dictionary and to save the object when 
+                ``overwrite="dump"``.
+                    
+                    - **type**: ``str``
+                    - **default**: ``None``
 
             - **overwrite**
 
@@ -1342,6 +1502,9 @@ class Data(Verbosity):
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting 2D marginal posterior density", show=verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if legend_labels != None:
             if len(legend_labels) != len(intervals):
                 raise Exception("Legend labels should either be None or a list of strings with the same length as intervals.")
@@ -1358,13 +1521,6 @@ class Data(Verbosity):
             ranges = extend_corner_range(X, X, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        if figure_file == None:
-            figure_file = self.output_figures_base_file+"_corner_posterior_pars_" + "_".join([str(i) for i in pars]) +".pdf"
-        else:
-            figpath, figname, figext = [path.split(figure_file)[0]]+list(path.splitext(path.split(figure_file)[1]))
-            figure_file = self.output_figures_base_file +"_"+ figname + ".pdf"
-        if not overwrite:
-            utils.check_rename_file(figure_file)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -1377,7 +1533,7 @@ class Data(Verbosity):
         samp = X[rnd_idx][:,pars]
         if weights is not None:
             weights = weights[rnd_idx]
-        print(header_string,"\nComputing HPDIs.\n", show=verbose)
+        print("Computing HPDIs.\n", show=verbose)
         HPDI = [inference.HPDI(samp[:,i], intervals = intervals, weights=weights, nbins=nbins, print_hist=False, optimize_binning=False) for i in range(nndims)]
         levels = np.array([[np.sort(inference.HPD_quotas(samp[:,[i,j]], nbins=nbins, intervals = intervals, weights=weights)).tolist() for j in range(nndims)] for i in range(nndims)])
         fig, axes = plt.subplots(nndims, nndims, figsize=(3*nndims, 3*nndims))
@@ -1430,16 +1586,18 @@ class Data(Verbosity):
             legend_labels = [intervals_str[i] for i in range(len(intervals))]
         fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc="upper right")#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
         #plt.tight_layout()
-        plt.savefig(figure_file)#, dpi=200)  # ,dpi=200)
-        utils.append_without_duplicate(self.figures_list, figure_file)
-        self.figures_list = utils.check_figures_list(self.figures_list)
+        if figure_file_name is not None:
+            figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+        else:
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_corner_posterior_1samp_pars_" + "_".join([str(i) for i in pars]) +".pdf",timestamp=timestamp,overwrite=overwrite) 
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
+        utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_file)[-1],
-                               "file path": figure_file}
-        print(header_string,r"\n\t%s" % figure_file, "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
-        print(header_string,"\nPlot done and saved in", end-start, "s.\n", show=verbose)
+                               "file name": figure_file_name}
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)

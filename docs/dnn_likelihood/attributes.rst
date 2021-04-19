@@ -485,12 +485,8 @@ Attributes
             ``"saved scalers h5"``, ``"saved model graph pdf"``.
          - *"file name"* (value type: ``str``)
             File name of file involved in the action.
-         - *"file path"* (value type: ``str``)
-            Path of file involved in the action.
          - *"files names"* (value type: ``list`` of ``str``)
             List of file names of files involved in the action.
-         - *"files paths"* (value type: ``list`` of ``str``)
-            List of paths of files involved in the action.
          - *"optimizer"* (value type: ``str``)
             String corresponding to the attribute :attr:`DnnLik.optimizer_string <DNNLikelihood.DnnLik.optimizer_string>`.
          - *"loss"* (value type: ``str``)
@@ -749,13 +745,22 @@ Attributes
           
       - **type**: ``str`` or ``None``
 
-.. py:attribute:: DnnLik.output_figures_base_file
+.. py:attribute:: DnnLik.output_figures_base_file_name
 
-   Absolute path to the saved figures. It includes the base figure name and is 
+   Base figures file name. It is 
+   automatically generated from the 
+   :attr:`DnnLik.name <DNNLikelihood.DnnLik.name>` attribute.
+
+      - **type**: ``str`` 
+
+.. py:attribute:: DnnLik.output_figures_base_file_path
+
+   Base figures file name including absolute path. It is 
    automatically generated from the
-   :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_files_base_name>` attribute.
+   :attr:`DnnLik.output_figures_folder <DNNLikelihood.DnnLik.output_figures_folder>` and 
+   :attr:`DnnLik.output_figures_base_file_name <DNNLikelihood.DnnLik.output_figures_base_file_name>` attributes.
 
-      - **type**: ``str``
+      - **type**: ``str`` 
 
 .. py:attribute:: DnnLik.output_figures_folder
 

@@ -91,12 +91,8 @@ Attributes
                ``nsteps`` involved of the corresponding action.
             - *"file name"* (value type: ``str``)
                File name of file involved in the action.
-            - *"file path"* (value type: ``str``)
-               Path of file involved in the action.
             - *"files names"* (value type: ``list`` of ``str``)
                List of file names of files involved in the action.
-            - *"files paths"* (value type: ``list`` of ``str``)
-               List of paths of files involved in the action.
             - *"old folder"* (value type: ``str``)
                Previous path.
             - *"new folder"* (value type: ``str``)
@@ -232,12 +228,20 @@ Attributes
         
         - **type**: ``int``
 
-.. py:attribute:: Sampler.output_figures_base_file
+.. py:attribute:: Sampler.output_figures_base_file_name
 
-   Absolute path to the saved figures. It includes the base figure name and is 
+   Base figures file name. It is 
+   automatically generated from the 
+   :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attribute.
+
+      - **type**: ``str`` 
+
+.. py:attribute:: Sampler.output_figures_base_file_path
+
+   Base figures file name including absolute path. It is 
    automatically generated from the
    :attr:`Sampler.output_figures_folder <DNNLikelihood.Sampler.output_figures_folder>` and 
-   :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
+   :attr:`Sampler.output_figures_base_file_name <DNNLikelihood.Sampler.output_figures_base_file_name>` attributes.
 
       - **type**: ``str`` 
 
@@ -247,7 +251,7 @@ Attributes
    automatically generated (and created by the 
    :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
    if not present) from the
-   :attr:`Sampler.output_folder <DNNLikelihood.Lik.output_folder>` attribute.
+   :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
 
       - **type**: ``str`` 
 

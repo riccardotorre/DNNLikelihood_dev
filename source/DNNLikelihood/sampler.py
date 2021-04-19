@@ -349,7 +349,8 @@ class Sampler(Verbosity):
         self.output_log_file = path.join(self.output_folder, self.name+".log")
         self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         self.backend_file = path.join(self.output_folder, self.name+"_backend.h5")
-        self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
+        self.output_figures_base_file_name = self.name+"_figure"
+        self.output_figures_base_file_path = path.join(self.output_figures_folder, self.output_figures_base_file_name)
         print(header_string,"\nSampler output folder set to\n\t", self.output_folder, ".\n",show=verbose)
 
     def __get_likelihood_script_file_from_input_file(self):
@@ -507,9 +508,7 @@ class Sampler(Verbosity):
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_h5_file)[-1],
-                                                path.split(self.input_log_file)[-1]],
-                               "files paths": [self.input_h5_file,
-                                                self.input_log_file]}
+                                                path.split(self.input_log_file)[-1]]}
         print(header_string,"\nSampler object loaded in", str(end-start), ".\n",show=verbose)
 
     def __init_backend(self, verbose=None):
@@ -574,8 +573,7 @@ class Sampler(Verbosity):
             self.nsteps_required = nsteps_tmp
             end = timer()
             self.log[timestamp] = {"action": "created backend", 
-                                   "file name": path.split(self.backend_file)[-1], 
-                                   "file path": self.backend_file}
+                                   "file name": path.split(self.backend_file)[-1]}
             print(header_string,"\nCreated backend\n\t", self.backend_file, "\nfor chains", self.name, "in", end-start, "s.\n",show=verbose)
         else:
             nsteps_tmp = self.nsteps_required
@@ -587,8 +585,7 @@ class Sampler(Verbosity):
             #self.nsteps_required = self.sampler.iteration
             end = timer()
             self.log[timestamp] = {"action": "loaded backend", 
-                                   "file name": path.split(self.backend_file)[-1], 
-                                   "file path": self.backend_file}
+                                   "file name": path.split(self.backend_file)[-1]}
             print(header_string,"\nLoaded backend\n\t", self.backend_file, "\nfor chains",self.name, "in", end-start, "s.\n",show=verbose)
 
     def __init_sampler(self, verbose=None):
@@ -839,8 +836,7 @@ class Sampler(Verbosity):
         self.log[timestamp] = {"action": "run sampler", 
                                "nsteps": nsteps_to_run, 
                                "available steps": self.nsteps_available,
-                               "file name": path.split(self.backend_file)[-1],
-                               "file path": self.backend_file}
+                               "file name": path.split(self.backend_file)[-1]}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string,"\nDone in", end-start, "seconds.", show=verbose)
         print("Final number of steps: {0}.".format(self.backend.iteration), ".", show=verbose)
@@ -868,7 +864,7 @@ class Sampler(Verbosity):
             
                 A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
                 If it is not passed, then it is generated. It is passed to the
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
                 to generate the dump file name.
                     
                     - **type**: ``str``
@@ -880,7 +876,7 @@ class Sampler(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -907,7 +903,7 @@ class Sampler(Verbosity):
             if not overwrite:
                 utils.check_rename_file(output_log_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_log_file = utils.generate_dump_file_path(self.output_log_file, timestamp=timestamp)
+            output_log_file = utils.generate_dump_file_name(self.output_log_file, timestamp=timestamp)
         dictionary = utils.convert_types_dict(self.log)
         with codecs.open(self.output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
@@ -932,14 +928,13 @@ class Sampler(Verbosity):
             if not overwrite:
                 utils.check_rename_file(output_predictions_json_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_predictions_json_file = utils.generate_dump_file_path(self.output_predictions_json_file, timestamp=timestamp)
+            output_predictions_json_file = utils.generate_dump_file_name(self.output_predictions_json_file, timestamp=timestamp)
         dictionary = utils.convert_types_dict(self.predictions)
         with codecs.open(output_predictions_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         self.log[timestamp] = {"action": "saved predictions json",
-                               "file name": path.split(output_predictions_json_file)[-1],
-                               "file path": output_predictions_json_file}
+                               "file name": path.split(output_predictions_json_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -990,7 +985,7 @@ class Sampler(Verbosity):
                 A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
                 If it is not passed, then it is generated. It is used to update the 
                 :attr:`Lik.log <DNNLikelihood.Lik.log>` object and, when ``overwrite="dump"``, is passed to the
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
                 to generate the dump file name.
                     
                     - **type**: ``str``
@@ -1002,7 +997,7 @@ class Sampler(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -1030,7 +1025,7 @@ class Sampler(Verbosity):
             if not overwrite:
                 utils.check_rename_file(output_h5_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_h5_file = utils.generate_dump_file_path(self.output_h5_file, timestamp=timestamp)
+            output_h5_file = utils.generate_dump_file_name(self.output_h5_file, timestamp=timestamp)
         dictionary = utils.dic_minus_keys(self.__dict__, ["backend", 
                                                           "backend_file",
                                                           "input_file", 
@@ -1043,7 +1038,8 @@ class Sampler(Verbosity):
                                                           "moves", 
                                                           "ndims",
                                                           "nsteps_available",
-                                                          "output_figures_base_file",
+                                                          "output_figures_base_file_name",
+                                                          "output_figures_base_file_path",
                                                           "output_figures_folder",
                                                           "output_folder",
                                                           "output_h5_file",
@@ -1060,8 +1056,7 @@ class Sampler(Verbosity):
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(output_h5_file)[-1],
-                               "file path": output_h5_file}
+                               "file name": path.split(output_h5_file)[-1]}
 
         if type(overwrite) == bool:
             if overwrite:
@@ -1363,14 +1358,14 @@ class Sampler(Verbosity):
         print(header_string,"\nGelman-Rubin statistics for parameters", pars,"computed in",str(end-start),"s.\n",show=verbose)
         #return np.array(res)
 
-    def update_figures(self,figure_file=None,timestamp=None,overwrite=False):
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=verbose):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
         When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 
-        ``figure_file`` already existed in the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then it
+        ``figure_file`` already existed in the :attr:`Sampler.predictions <DNNLikelihood.Sampler.predictions>` dictionary, then it
         updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp 
-        (that is the key of the :attr:`Lik.predictions["Figures"] <DNNLikelihood.Lik.predictions>` dictionary).
-        When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function
+        (that is the key of the :attr:`Sampler.predictions["Figures"] <DNNLikelihood.Sampler.predictions>` dictionary).
+        When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
         to generate the dump file name.
         It returns the new figure_file.
 
@@ -1379,18 +1374,35 @@ class Sampler(Verbosity):
             - **figure_file**
 
                 Figure file path. If the figure already exists in the 
-                :meth:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then its name is updated with the corresponding timestamp.
+                :meth:`Sampler.predictions <DNNLikelihood.Sampler.predictions>` dictionary, then its name is updated with the corresponding timestamp.
 
             - **overwrite**
 
-                The method updates file names and :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary only if
+                The method updates file names and :attr:`Sampler.predictions <DNNLikelihood.Sampler.predictions>` dictionary only if
                 ``overwrite=False``. If ``overwrite="dump"`` the method generates and returns the dump file path. 
-                If ``overwrite=True`` the method does nothing.
+                If ``overwrite=True`` the method just returns ``figure_file``.
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         
+        - **Returns**
+
+            - **new_figure_file**
+                
+                String identical to the input string ``figure_file`` unless ``verbose="dump"``.
+
         - **Creates/updates files**
 
             - Updates ``figure_file`` file name.
         """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print("Checking and updating figures dictionary",show=verbose)
         if figure_file is None:
             raise Exception("figure_file input argument of update_figures method needs to be specified while it is None.")
         else:
@@ -1402,11 +1414,11 @@ class Sampler(Verbosity):
                     for k, v in self.predictions["Figures"].items():
                         if figure_file in v:
                             timestamp = k
-                        old_figure_file = utils.check_rename_file(figure_file,timestamp=timestamp)
-                        if old_figure_file is not None:
-                            self.predictions["Figures"][k] = [q.replace(figure_file,old_figure_file) for q in v]
+                    old_figure_file = utils.check_rename_file(path.join(self.output_figures_folder,figure_file),timestamp=timestamp,return_value="file_name",verbose=verbose_sub)
+                    if timestamp is not None:
+                        self.predictions["Figures"][timestamp] = [f.replace(figure_file,old_figure_file) for f in v] 
             elif overwrite == "dump":
-                new_figure_file = utils.generate_dump_file_path(figure_file, timestamp=timestamp)
+                new_figure_file = utils.generate_dump_file_name(figure_file, timestamp=timestamp)
         return new_figure_file
 
     def plot_gelman_rubin(self, 
@@ -1465,7 +1477,7 @@ class Sampler(Verbosity):
                 A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
                 If it is not passed, then it is generated. It is used as key in the 
                 :attr:`Sampler.predictions["logpdf_max"] <DNNLikelihood.Sampler.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
+                It is also used to update the :attr:`Sampler.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
                 ``overwrite="dump"``.
                     
                     - **type**: ``str``
@@ -1477,7 +1489,7 @@ class Sampler(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -1523,15 +1535,14 @@ class Sampler(Verbosity):
             plt.ylabel(r"$\hat{R}_{c}(%s)$" % (pars_labels[par].replace("$", "")))
             plt.xscale("log")
             plt.tight_layout()
-            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_GR_Rc_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
-            plt.savefig(figure_file)
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_GR_Rc_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_file)[-1], 
-                                   "file path": figure_file}
+                                   "file name": figure_file_name}
             end = timer()
-            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file_name), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1541,15 +1552,14 @@ class Sampler(Verbosity):
             plt.ylabel(r"$\sqrt{\hat{V}}(%s)$"% (pars_labels[par].replace("$", "")))
             plt.xscale("log")
             plt.tight_layout()
-            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_GR_sqrtVhat_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
-            plt.savefig(figure_file)
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_GR_sqrtVhat_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_file)[-1], 
-                                   "file path": figure_file}
+                                   "file name": figure_file_name}
             end = timer()
-            print(header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print(header_string+"\nFigure file\n\t",r"%s" % (figure_file_name), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1559,15 +1569,14 @@ class Sampler(Verbosity):
             plt.ylabel(r"$\sqrt{W}(%s)$"% (pars_labels[par].replace("$", "")))
             plt.xscale("log")
             plt.tight_layout()
-            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_GR_sqrtW_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
-            plt.savefig(figure_file)
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_GR_sqrtW_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_file)[-1], 
-                                   "file path": figure_file}
+                                   "file name": figure_file_name}
             end = timer()
-            print(header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print(header_string+"\nFigure file\n\t",r"%s" % (figure_file_name), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1628,7 +1637,7 @@ class Sampler(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -1662,7 +1671,6 @@ class Sampler(Verbosity):
         plt.style.use(mplstyle_path)
         pars = np.array([pars]).flatten()
         pars_labels = self.__set_pars_labels(pars_labels)
-        filename = self.output_figures_base_file
         for par in pars:
             start = timer()
             chain = self.sampler.get_chain()[:, :, par].T
@@ -1673,15 +1681,14 @@ class Sampler(Verbosity):
             plt.xlabel(r"$%s$" % (pars_labels[par].replace("$", "")))
             plt.ylabel(r"$p(%s)$" % (pars_labels[par].replace("$", "")))
             plt.tight_layout()
-            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_distr_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
-            plt.savefig(figure_file)
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_distr_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_file)[-1], 
-                                   "file path": figure_file}
+                                   "file name": figure_file_name}
             end = timer()
-            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file_name), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1760,7 +1767,7 @@ class Sampler(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -1854,15 +1861,14 @@ class Sampler(Verbosity):
             plt.ylabel(r"$\tau_{%s}$ estimates" % (pars_labels[par].replace("$", "")))
             plt.legend()
             plt.tight_layout()
-            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_autocorr_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
-            plt.savefig(figure_file)
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_autocorr_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_file)[-1], 
-                                   "file path": figure_file}
+                                   "file name": figure_file_name}
             end = timer()
-            print("\n"+header_string,"\n\t%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string,"\n\t%s" % (figure_file_name), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -1934,7 +1940,7 @@ class Sampler(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -1975,15 +1981,14 @@ class Sampler(Verbosity):
             plt.ylabel(r"$%s$" %(pars_labels[par].replace("$", "")))
             plt.xscale("log")
             plt.tight_layout()
-            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_chains_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
-            plt.savefig(figure_file)
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_chains_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_file)[-1], 
-                                   "file path": figure_file}
+                                   "file name": figure_file_name}
             end = timer()
-            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+            print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file_name), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
             if show_plot:
                 plt.show()
             plt.close()
@@ -2035,7 +2040,7 @@ class Sampler(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -2072,15 +2077,14 @@ class Sampler(Verbosity):
         plt.ylabel(r"-logpdf")
         plt.xscale("log")
         plt.tight_layout()
-        figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_chains_logpdf.pdf",timestamp=timestamp,overwrite=overwrite) 
-        plt.savefig(figure_file)
+        figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_chains_logpdf.pdf",timestamp=timestamp,overwrite=overwrite) 
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
         self.log[timestamp] = {"action": "saved figure", 
-                               "file name": path.split(figure_file)[-1], 
-                               "file path": figure_file}
+                               "file name": figure_file_name}
         end = timer()
-        print("\n"+header_string+"\nFigure file\n\t",r"%s" % (figure_file), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
         if show_plot:
             plt.show()
         plt.close()
@@ -2258,13 +2262,10 @@ class Sampler(Verbosity):
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "created data object", 
                                "files names": [path.split(ds.output_log_file)[-1],
+                                               path.split(ds.output_predictions_json_file)[-1],
                                                path.split(ds.output_object_h5_file)[-1],
                                                path.split(ds.output_samples_h5_file)[-1],
-                                               path.split(self.output_log_file)[-1]],
-                               "files paths": [ds.output_log_file,
-                                               ds.output_object_h5_file,
-                                               ds.output_samples_h5_file,
-                                               self.output_log_file]}
+                                               path.split(self.output_log_file)[-1]]}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string, "\nData object created and saved in", str(end-start), "s.\n", show=verbose)
         return ds

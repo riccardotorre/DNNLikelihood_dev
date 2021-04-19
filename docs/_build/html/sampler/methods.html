@@ -297,9 +297,9 @@ if <code class="docutils literal notranslate"><span class="pre">new_sampler=Fals
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.nsteps_required" title="DNNLikelihood.Sampler.nsteps_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.nsteps_required</span></code></a> (if not given as input)</p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.moves_str" title="DNNLikelihood.Sampler.moves_str"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.moves_str</span></code></a> (if not given as input)</p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.parallel_CPU" title="DNNLikelihood.Sampler.parallel_CPU"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.parallel_CPU</span></code></a> (if not given as input)</p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.predictions" title="DNNLikelihood.Sampler.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.predictions</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.vectorize" title="DNNLikelihood.Sampler.vectorize"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.vectorize</span></code></a> (if not given as input)</p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.log" title="DNNLikelihood.Sampler.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.log</span></code></a></p></li>
-<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.figures_list</span></code></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> (if not given as input)</p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_h5_file" title="DNNLikelihood.Sampler.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_h5_file</span></code></a> (same as <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a>)</p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code>)</p></li>
@@ -435,7 +435,7 @@ to set the attributes corresponding to the output folder</p>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_log_file" title="DNNLikelihood.Sampler.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_log_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_predictions_json_file" title="DNNLikelihood.Sampler.output_predictions_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_predictions_json_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.backend_file" title="DNNLikelihood.Sampler.backend_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.backend_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_figures_base_file" title="DNNLikelihood.Sampler.output_figures_base_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_figures_base_file</span></code></a></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_figures_base_file</span></code></p></li>
 </ul>
 </div></blockquote>
 <p>depending on the value of the
@@ -859,7 +859,7 @@ If <code class="docutils literal notranslate"><span class="pre">verbose=2</span>
 <blockquote>
 <div><p>A timestamp string with format <code class="docutils literal notranslate"><span class="pre">&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]</span></code>.
 If it is not passed, then it is generated. It is passed to the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function
 to generate the dump file name.</p>
 <blockquote>
 <div><ul class="simple">
@@ -875,7 +875,7 @@ to generate the dump file name.</p>
 If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name already exists, then the old file gets renamed with the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function.
 If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code>, a dump of the file is saved through the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -958,7 +958,7 @@ dictionary:</p>
 <div><p>A timestamp string with format <code class="docutils literal notranslate"><span class="pre">&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]</span></code>.
 If it is not passed, then it is generated. It is used to update the
 <a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a> object and, when <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code>, is passed to the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function
 to generate the dump file name.</p>
 <blockquote>
 <div><ul class="simple">
@@ -974,7 +974,7 @@ to generate the dump file name.</p>
 If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name already exists, then the old file gets renamed with the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function.
 If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code>, a dump of the file is saved through the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -1229,7 +1229,7 @@ It is also used to update the <a class="reference internal" href="attributes.htm
 If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name already exists, then the old file gets renamed with the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function.
 If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code>, a dump of the file is saved through the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -1332,7 +1332,7 @@ It is also used to update the <a class="reference internal" href="attributes.htm
 If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name already exists, then the old file gets renamed with the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function.
 If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code>, a dump of the file is saved through the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -1468,7 +1468,7 @@ It is also used to update the <a class="reference internal" href="attributes.htm
 If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name already exists, then the old file gets renamed with the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function.
 If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code>, a dump of the file is saved through the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -1585,7 +1585,7 @@ It is also used to update the <a class="reference internal" href="attributes.htm
 If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name already exists, then the old file gets renamed with the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function.
 If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code>, a dump of the file is saved through the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -1676,7 +1676,7 @@ It is also used to update the <a class="reference internal" href="attributes.htm
 If <code class="docutils literal notranslate"><span class="pre">False</span></code> is a file with the same name already exists, then the old file gets renamed with the
 <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function.
 If <code class="docutils literal notranslate"><span class="pre">&quot;dump&quot;</span></code>, a dump of the file is saved through the
-<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_path</span></code> function.</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>

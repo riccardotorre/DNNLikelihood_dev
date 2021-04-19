@@ -116,12 +116,8 @@ Attributess
             When an operation involving a single likelihood has been performed this value is the likelihood number.
          - *"file name"* (value type: ``str``)
             File name of file involved in the action.
-         - *"file path"* (value type: ``str``)
-            Path of file involved in the action.
          - *"files names"* (value type: ``list`` of ``str``)
             List of file names of files involved in the action.
-         - *"files paths"* (value type: ``list`` of ``str``)
-            List of paths of files involved in the action.
          - *"old folder"* (value type: ``str``)
             Previous path.
          - *"new folder"* (value type: ``str``)

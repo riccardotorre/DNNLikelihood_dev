@@ -294,8 +294,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         been initialized directly from a :mod:`Data <data>` object.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        if self.input_data_file is not None:
+            self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
         if self.input_likelihood_file is not None:
-            self.input_likelihood_file = path.abspath(self.input_likelihood_file)
+            self.input_likelihood_file = path.abspath(path.splitext(self.input_likelihood_file)[0])
         if self.input_summary_json_file == None:
             self.input_files_base_name = None
             self.input_history_json_file = None
@@ -316,8 +318,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.input_tf_model_h5_file = self.input_files_base_name+"_model.h5"
             self.input_folder = path.split(self.input_files_base_name)[0]
             print(header_string,"\nDnnLik input folder set to\n\t", self.input_folder,".\n",show=verbose)
-        if self.input_data_file is not None:
-            self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
 
     def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
         """
@@ -370,7 +370,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 self.output_folder = path.abspath("")
         self.output_folder = utils.check_create_folder(self.output_folder)
         self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
-        self.output_figures_base_file = path.join(self.output_figures_folder, self.name+"_figure")
+        self.output_figures_base_file_name = self.name+"_figure"
+        self.output_figures_base_file_path = path.join(self.output_figures_folder, self.output_figures_base_file_name)
         self.output_files_base_name = path.join(self.output_folder, self.name)
         self.output_history_json_file = self.output_files_base_name+"_history.json"
         self.output_idx_h5_file = self.output_files_base_name+"_idx.h5"
@@ -408,8 +409,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 self.likelihood = Lik(input_file=self.input_likelihood_file,verbose=verbose_sub)
                 timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
                 self.log[timestamp] = {"action": "loaded likelihood object",
-                                       "file name": path.split(self.input_likelihood_file)[-1],
-                                       "file path": self.input_likelihood_file}
+                                       "file name": path.split(self.input_likelihood_file)[-1]}
                 print(header_string,"\nThe Likelihood object stored in\n\t",self.input_likelihood_file,"\nhas been imported.\n",show=verbose)
             except:
                 self.likelihood = None
@@ -754,9 +754,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded summary and log json",
                                "files names": [path.split(self.input_summary_json_file)[-1],
-                                               path.split(self.input_log_file)[-1]],
-                               "files paths": [self.input_summary_json_file,
-                                               self.input_log_file]}
+                                               path.split(self.input_log_file)[-1]]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print(header_string,"\nDnnLik summary json and log files loaded in", str(end-start), ".\n", show=verbose)
 
@@ -797,8 +795,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded history json",
-                               "file name": path.split(self.input_history_json_file)[-1],
-                               "file path": self.input_history_json_file}
+                               "file name": path.split(self.input_history_json_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print(header_string,"\nDnnLik history json file loaded in", str(end-start), ".\n", show=verbose)
 
@@ -843,8 +840,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded tf model h5 and tf model history pickle",
-                               "file name": path.split(self.input_tf_model_h5_file)[-1],
-                               "file path": self.input_tf_model_h5_file}
+                               "file name": path.split(self.input_tf_model_h5_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print(header_string,"\nDnnLik tf model h5 file loaded in", str(end-start), ".\n", show=verbose)
 
@@ -881,8 +877,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded scalers h5",
-                               "file name": path.split(self.input_scalers_pickle_file)[-1],
-                               "file path": self.input_scalers_pickle_file}
+                               "file name": path.split(self.input_scalers_pickle_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print(header_string,"\nDnnLik scalers h5 file loaded in", str(end-start), ".\n", show=verbose)
 
@@ -932,8 +927,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded data indices h5",
-                               "file name": path.split(self.input_idx_h5_file)[-1],
-                               "file path": self.input_idx_h5_file}
+                               "file name": path.split(self.input_idx_h5_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print(header_string,"\nDnnLik data indices h5 file loaded in", str(end-start), ".\n", show=verbose)
 
@@ -967,8 +961,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded predictions h5",
-                               "file name": path.split(self.input_predictions_h5_file)[-1],
-                               "file path": self.input_predictions_h5_file}
+                               "file name": path.split(self.input_predictions_h5_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print(header_string,"\nDnnLik predictions h5 file loaded in",str(end-start), ".\n", show=verbose)
 
@@ -1136,7 +1129,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nSetting callbacks\n",show=verbose)
         for cb in callbacks_string:
             if cb == "PlotLossesKeras":
-                #self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
+                #self.output_figure_plot_losses_keras_file = self.output_figures_base_file_name+"_plot_losses_keras.pdf"
                 #utils.check_rename_file(self.output_figure_plot_losses_keras_file)
                 #string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
                 string = "PlotLossesKeras()"
@@ -1157,7 +1150,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         for cb in callbacks_dict:
             name = cb["name"]
             #if name == "PlotLossesKeras":
-            #    self.output_figure_plot_losses_keras_file = self.output_figures_base_file+"_plot_losses_keras.pdf"
+            #    self.output_figure_plot_losses_keras_file = self.output_figures_base_file_name+"_plot_losses_keras.pdf"
             #    utils.check_rename_file(self.output_figure_plot_losses_keras_file)
             #    string = "fig_path = '"+self.output_figure_plot_losses_keras_file + "', "
             ##    name = "callbacks."+name
@@ -1732,6 +1725,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nTraining Keras model\n",show=verbose)
         # Scale data
         start = timer()
+        epochs_before_run = self.epochs_available
         epochs_to_run = self.__set_epochs_to_run()
         print("Required a total of",self.epochs_required,"epochs.",self.epochs_available,"epochs already available. Training for a maximum of",epochs_to_run,"epochs.\n", show=verbose)
         if epochs_to_run == 0:
@@ -1778,13 +1772,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 plt.close()
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "trained tf model",
-                                   "epochs run": epochs_to_run,
+                                   "epochs to run": epochs_to_run,
+                                   "epochs run": self.epochs_available-epochs_before_run,
                                    "epochs total": self.epochs_available,
                                    "batch size": self.batch_size,
                                    "training time": self.training_time}
             self.save_log(overwrite=True, verbose=verbose_sub)
             print("Model for DNNLikelihood", self.name, "successfully trained for",
-                  epochs_to_run, "epochs in", self.training_time, "s.\n", show=verbose)
+                  self.epochs_available-epochs_before_run, "epochs in", self.training_time, "s.\n", show=verbose)
 
     def check_x_bounds(self,pars_val,pars_bounds):
         res = []
@@ -2870,14 +2865,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         title = title.replace("+", "") + "Loss: " + str(self.loss_string)
         self.fig_base_title = title
 
-    def update_figures(self,figure_file=None,timestamp=None,overwrite=False):
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=verbose):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
         When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 
-        ``figure_file`` already existed in the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then it
+        ``figure_file`` already existed in the :attr:`DNNLik.predictions <DNNLikelihood.DNNLik.predictions>` dictionary, then it
         updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp 
-        (that is the key of the :attr:`Lik.predictions["Figures"] <DNNLikelihood.Lik.predictions>` dictionary).
-        When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function
+        (that is the key of the :attr:`DNNLik.predictions["Figures"] <DNNLikelihood.DNNLik.predictions>` dictionary).
+        When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
         to generate the dump file name.
         It returns the new figure_file.
 
@@ -2886,22 +2881,38 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - **figure_file**
 
                 Figure file path. If the figure already exists in the 
-                :meth:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary, then its name is updated with the corresponding timestamp.
+                :meth:`DNNLik.predictions <DNNLikelihood.DNNLik.predictions>` dictionary, then its name is updated with the corresponding timestamp.
 
             - **overwrite**
 
-                The method updates file names and :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary only if
+                The method updates file names and :attr:`DNNLik.predictions <DNNLikelihood.DNNLik.predictions>` dictionary only if
                 ``overwrite=False``. If ``overwrite="dump"`` the method generates and returns the dump file path. 
-                If ``overwrite=True`` the method does nothing.
+                If ``overwrite=True`` the method just returns ``figure_file``.
+
+            - **verbose**
+            
+                Verbosity mode. 
+                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
+                    
+                    - **type**: ``bool``
+                    - **default**: ``None`` 
         
+        - **Returns**
+
+            - **new_figure_file**
+                
+                String identical to the input string ``figure_file`` unless ``verbose="dump"``.
+
         - **Creates/updates files**
 
             - Updates ``figure_file`` file name.
         """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print("Checking and updating figures dictionary",show=verbose)
         if figure_file is None:
             raise Exception("figure_file input argument of update_figures method needs to be specified while it is None.")
         else:
-            figure_file = path.abspath(figure_file)
             new_figure_file = figure_file
             if type(overwrite) == bool:
                 if not overwrite:
@@ -2910,11 +2921,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     for k, v in self.predictions["Figures"].items():
                         if figure_file in v:
                             timestamp = k
-                        old_figure_file = utils.check_rename_file(figure_file,timestamp=timestamp)
-                        if old_figure_file is not None:
-                            self.predictions["Figures"][k] = [q.replace(figure_file,old_figure_file) for q in v]
+                    old_figure_file = utils.check_rename_file(path.join(self.output_figures_folder,figure_file),timestamp=timestamp,return_value="file_name",verbose=verbose_sub)
+                    if timestamp is not None:
+                        self.predictions["Figures"][timestamp] = [f.replace(figure_file,old_figure_file) for f in v] 
             elif overwrite == "dump":
-                new_figure_file = utils.generate_dump_file_path(figure_file, timestamp=timestamp)
+                new_figure_file = utils.generate_dump_file_name(figure_file, timestamp=timestamp)
         return new_figure_file
     
     def plot_training_history(self, metrics=["loss"], yscale="log", show_plot=False, timestamp=None, overwrite=False, verbose=None):
@@ -2928,7 +2939,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             start = timer()
             metric = utils.metric_name_unabbreviate(metric)
             val_metric = "val_"+ metric
-            figure_file = self.update_figures(figure_file=self.output_figures_base_file+"_training_history_" + metric+".pdf",timestamp=timestamp,overwrite=overwrite)
             plt.plot(self.history[metric])
             plt.plot(self.history[val_metric])
             plt.yscale(yscale)
@@ -2942,19 +2952,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ax = plt.axes()
             #x1, x2, y1, y2 = plt.axis()
             plt.text(0.967, 0.2, r"%s" % self.summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
-                                                                              edgecolor="black", boxstyle="round,pad=0.5"), ha="right", ma="left", transform=ax.transAxes)
-            plt.savefig(r"%s" % (figure_file))
+                     edgecolor="black", boxstyle="round,pad=0.5"), ha="right", ma="left", transform=ax.transAxes)
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_training_history_" + metric+".pdf",timestamp=timestamp,overwrite=overwrite)
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
             if show_plot:
                 plt.show()
             plt.close()
             end = timer()
             self.log[timestamp] = {"action": "saved figure", 
-                                   "file name": path.split(figure_file)[-1], 
-                                   "file path": figure_file}
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+                                   "file name": figure_file_name}
+            print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
 
     def plot_tmu_sources_1d(self,
@@ -2992,8 +3001,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             par=tmp[0][0]
         else:
             raise Exception("Parameters should be  should be the same for the different tmu sources.")
-        figure_file = self.output_figures_base_file+"_tmu_"+str(par) +".pdf"
-        self.update_figures(figure_file=figure_file,overwrite=overwrite)
         for k, v in tmu_dict.items():
             if v is not None:
                 plt.plot(v[:,0],v[:,-1], label=r"%s"%k)
@@ -3002,18 +3009,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.ylabel(r"%s"%(self.pars_labels[par]))
         plt.legend()
         plt.tight_layout()
-        plt.savefig(r"%s" %figure_file)
+        figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_tmu_"+str(par) +".pdf",timestamp=timestamp,overwrite=overwrite)
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+        #self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         self.log[timestamp] = {"action": "saved figure", 
-                               "file name": path.split(figure_file)[-1], 
-                               "file path": figure_file}
-        print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+                               "file name": figure_file_name}
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
 
     def plot_pars_coverage(self, pars=None, loglik=True, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -3027,11 +3034,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             pars = pars
         for par in pars:
             start=timer()
-            if loglik:
-                figure_file = self.output_figures_base_file+"_par_loglik_coverage_" + str(par) +".pdf"
-            else:
-                figure_file = self.output_figures_base_file+"_par_lik_coverage_" + str(par) +".pdf"
-            figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
             nnn = min(1000,len(self.X_train),len(self.X_test))
             rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
             rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
@@ -3059,18 +3061,22 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 plt.ylabel(r"prob ($\mathcal{L}\cdot\mathcal{P}$)")
             plt.legend()
             plt.tight_layout()
-            plt.savefig(r"%s" %figure_file)
+            if loglik:
+                figure_file_name = self.output_figures_base_file_name+"_par_loglik_coverage_" + str(par) +".pdf"
+            else:
+                figure_file_name = self.output_figures_base_file_name+"_par_lik_coverage_" + str(par) +".pdf"
+            figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
             utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-            self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+            #self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
             if show_plot:
                 plt.show()
             plt.close()
             end = timer()
             self.log[timestamp] = {"action": "saved figure",
-                                   "file name": path.split(figure_file)[-1],
-                                   "file path": figure_file}
-            print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+                                   "file name": figure_file_name}
+            print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
 
     def plot_lik_distribution(self, loglik=True, show_plot=False, timestamp=None, overwrite=False, verbose=None):
@@ -3081,9 +3087,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.style.use(mplstyle_path)
         start = timer()
         if loglik:
-            figure_file = self.output_figures_base_file+"_loglik_distribution.pdf"
+            figure_file = self.output_figures_base_file_name+"_loglik_distribution.pdf"
         else:
-            figure_file = self.output_figures_base_file+"_lik_distribution.pdf"
+            figure_file = self.output_figures_base_file_name+"_lik_distribution.pdf"
         figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
         nnn = min(10000, len(self.X_train), len(self.X_test))
         rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
@@ -3120,25 +3126,30 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.legend()
         plt.yscale("log")
         plt.tight_layout()
-        plt.savefig(r"%s" % figure_file)
+
+        if loglik:
+            figure_file_name = self.output_figures_base_file_name+"_loglik_distribution.pdf"
+        else:
+            figure_file_name = self.output_figures_base_file_name+"_lik_distribution.pdf"
+        figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)))
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+        #self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_file)[-1],
-                               "file path": figure_file}
+                               "file name": figure_file_name}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
-        print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
 
     def plot_corners_1samp(self, X, W=None, pars=None, max_points=None, nbins=50, pars_labels="original",
                            HPDI_dic={"sample": "train", "type": "true"},
                            ranges_extend=None, title = None, color="green",
                            plot_title="Params contours", legend_labels=None, legend_loc="upper right",
-                           figure_file=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
+                           figure_file_name=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nPlotting 2d posterior distributions for single sample\n",show=verbose)
         if timestamp is None:
@@ -3153,7 +3164,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ranges = extend_corner_range(X, X, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -3232,25 +3242,28 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         lines = [line1, line2, line3, line4]
         fig.legend(lines, legend_labels, fontsize=int(7+2*nndims), loc=legend_loc, bbox_to_anchor=(0.95, 0.8))#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))
         #plt.tight_layout()
-        plt.savefig(figure_file)#, dpi=200)  # ,dpi=200)
+        if figure_file_name is not None:
+            figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+        else:
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_corner_posterior_1samp_pars_" + "_".join([str(i) for i in pars]) +".pdf",timestamp=timestamp,overwrite=overwrite) 
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+        #self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_file)[-1],
-                               "file path": figure_file}
-        print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+                               "file name": figure_file_name}
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
 
     def plot_corners_2samp(self, X1, X2, W1=None, W2=None, pars=None, max_points=None, nbins=50, pars_labels=None,
                      HPDI1_dic={"sample": "train", "type": "true"}, HPDI2_dic={"sample": "test", "type": "true"},
                      ranges_extend=None, title1 = None, title2 = None,
                      color1="green", color2="red", 
                      plot_title="Params contours", legend_labels=None, legend_loc="upper right",
-                     figure_file=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
+                     figure_file_name=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nPlotting 2d posterior distributions for two samples comparison\n",show=verbose)
         if timestamp is None:
@@ -3265,7 +3278,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ranges = extend_corner_range(X1, X2, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
-        figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
         nndims = len(pars)
         if max_points != None:
             if type(max_points) == list:
@@ -3384,19 +3396,22 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         fig.legend(lines, legend_labels, fontsize=int(
             7+2*nndims), loc=legend_loc, bbox_to_anchor=(0.95, 0.8))
         #plt.tight_layout()
-        plt.savefig(figure_file, dpi=50)  # ,dpi=200)
+        if figure_file_name is not None:
+            figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+        else:
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_corner_posterior_2samp_pars_" + "_".join([str(i) for i in pars]) +".pdf",timestamp=timestamp,overwrite=overwrite) 
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
-        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file)
-        self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+        #self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
         if show_plot:
             plt.show()
         plt.close()
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
-                               "file name": path.split(figure_file)[-1],
-                               "file path": figure_file}
-        print(header_string,r"\n\t%s" % (figure_file), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+                               "file name": figure_file_name}
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
 
     def corner_select_data(self,string, weights):
         [W_train, W_val, W_test] = weights
@@ -3845,7 +3860,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                r"$68.27\%$ HPDI", 
                                                                r"$95.45\%$ HPDI", 
                                                                r"$99.73\%$ HPDI"],
-                                                figure_file=self.output_figures_base_file+"_corner_pars_"+string+".pdf",
+                                                figure_file_name=self.output_figures_base_file_name+"_corner_pars_"+string+".pdf",
                                                 timestamp=timestamp, **plot_corners_1samp_kwargs)
                 #### 2sample corner plots
                 if len(plots["plot_corners_2samp"])>0:
@@ -3867,7 +3882,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                                  r"$68.27\%$ HPDI", 
                                                                  r"$95.45\%$ HPDI", 
                                                                  r"$99.73\%$ HPDI"],
-                                                figure_file=self.output_figures_base_file+"_corner_pars_"+string1+"_vs_"+string2+".pdf",
+                                                figure_file_name=self.output_figures_base_file_name+"_corner_pars_"+string1+"_vs_"+string2+".pdf",
                                                 timestamp=timestamp, **plot_corners_2samp_kwargs)
             if model_predictions["Frequentist_inference"]:
                 # Make tmu plot for Frequentist inference
@@ -3895,7 +3910,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                "plot_corners_2samp_kwargs": plot_corners_2samp_kwargs,
                                "plot_tmu_sources_1d_kwargs": plot_tmu_sources_1d_kwargs}
         self.save(timestamp=timestamp,overwrite=overwrite, verbose=verbose_sub)
-        print(header_string,"\nAll predictions done in",end_global-start_global,"s.\n", show=verbose)
+        print(header_string,"\nAll predictions computed in",end_global-start_global,"s.\n", show=verbose)
 
     def save_log(self, timestamp=None, overwrite=False, verbose=None):
         """
@@ -3910,7 +3925,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_log_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_log_file = utils.generate_dump_file_path(self.output_log_file, timestamp=timestamp)
+            output_log_file = utils.generate_dump_file_name(self.output_log_file, timestamp=timestamp)
         dictionary = utils.convert_types_dict(self.log)
         with codecs.open(output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
@@ -3935,7 +3950,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_idx_h5_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_idx_h5_file = utils.generate_dump_file_path(self.output_idx_h5_file, timestamp=timestamp)
+            output_idx_h5_file = utils.generate_dump_file_name(self.output_idx_h5_file, timestamp=timestamp)
         #self.close_opened_dataset(verbose=verbose_sub)
         utils.check_delete_files(output_idx_h5_file)
         h5_out = h5py.File(output_idx_h5_file, "w")
@@ -3947,8 +3962,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         h5_out.close()
         end = timer()
         self.log[timestamp] = {"action": "saved indices",
-                               "file name": path.split(output_idx_h5_file)[-1],
-                               "file path": output_idx_h5_file}
+                               "file name": path.split(output_idx_h5_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -3970,7 +3984,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_tf_model_json_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_tf_model_json_file = utils.generate_dump_file_path(self.output_tf_model_json_file, timestamp=timestamp)
+            output_tf_model_json_file = utils.generate_dump_file_name(self.output_tf_model_json_file, timestamp=timestamp)
         try:
             model_json = self.model.to_json()
         except:
@@ -3981,8 +3995,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         end = timer()
         
         self.log[timestamp] = {"action": "saved tf model json",
-                               "file name": path.split(output_tf_model_json_file)[-1],
-                               "file path": output_tf_model_json_file}
+                               "file name": path.split(output_tf_model_json_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4004,7 +4017,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_tf_model_h5_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_tf_model_h5_file = utils.generate_dump_file_path(self.output_tf_model_h5_file, timestamp=timestamp)
+            output_tf_model_h5_file = utils.generate_dump_file_name(self.output_tf_model_h5_file, timestamp=timestamp)
         try:
             self.model.save(output_tf_model_h5_file)
         except:
@@ -4012,8 +4025,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             return
         end = timer()
         self.log[timestamp] = {"action": "saved tf model h5",
-                               "file name": path.split(output_tf_model_h5_file)[-1],
-                               "file path": output_tf_model_h5_file}
+                               "file name": path.split(output_tf_model_h5_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4035,7 +4047,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_tf_model_onnx_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_tf_model_onnx_file = utils.generate_dump_file_path(self.output_tf_model_onnx_file, timestamp=timestamp)
+            output_tf_model_onnx_file = utils.generate_dump_file_name(self.output_tf_model_onnx_file, timestamp=timestamp)
         try:
             onnx_model = keras2onnx.convert_keras(self.model, self.name)
         except:
@@ -4044,8 +4056,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         onnx.save_model(onnx_model, output_tf_model_onnx_file)
         end = timer()
         self.log[timestamp] = {"action": "saved tf model onnx",
-                               "file name": path.split(output_tf_model_onnx_file)[-1],
-                               "file path": output_tf_model_onnx_file}
+                               "file name": path.split(output_tf_model_onnx_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4067,7 +4078,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_history_json_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_history_json_file = utils.generate_dump_file_path(self.output_history_json_file, timestamp=timestamp)
+            output_history_json_file = utils.generate_dump_file_name(self.output_history_json_file, timestamp=timestamp)
         #for key in list(history.keys()):
         #    self.history[utils.metric_name_abbreviate(key)] = self.history.pop(key)
         dictionary = utils.convert_types_dict(self.history)
@@ -4075,8 +4086,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             json.dump(dictionary, f, separators=(",", ":"), sort_keys=True, indent=4)
         end = timer()
         self.log[timestamp] = {"action": "saved history json",
-                               "file name": path.split(output_history_json_file)[-1],
-                               "file path": output_history_json_file}
+                               "file name": path.split(output_history_json_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4098,7 +4108,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_summary_json_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_summary_json_file = utils.generate_dump_file_path(self.output_summary_json_file, timestamp=timestamp)
+            output_summary_json_file = utils.generate_dump_file_name(self.output_summary_json_file, timestamp=timestamp)
         dictionary = utils.dic_minus_keys(self.__dict__,["_DnnLik__resources_inputs",
                                                          "callbacks","data","history",
                                                          "idx_test","idx_train","idx_val",
@@ -4109,7 +4119,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                          "input_tf_model_h5_file", "input_data_file",
                                                          "likelihood","load_on_RAM",
                                                          "log","loss","metrics","model","optimizer",
-                                                         "output_folder", "output_figures_folder","output_figures_base_file",
+                                                         "output_folder", "output_figures_folder",
+                                                         "output_figures_base_file_name", "output_figures_base_file_path",
                                                          "output_files_base_name","output_history_json_file",
                                                          "output_idx_h5_file", "output_log_file",
                                                          "output_predictions_h5_file","output_predictions_json_file",
@@ -4125,8 +4136,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         self.log[timestamp] = {"action": "saved summary json",
-                               "file name": path.split(output_summary_json_file)[-1],
-                               "file path": output_summary_json_file}
+                               "file name": path.split(output_summary_json_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4205,14 +4215,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_predictions_json_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_predictions_json_file = utils.generate_dump_file_path(self.output_predictions_json_file, timestamp=timestamp)
+            output_predictions_json_file = utils.generate_dump_file_name(self.output_predictions_json_file, timestamp=timestamp)
         dictionary = utils.convert_types_dict(self.predictions)
         with codecs.open(output_predictions_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         self.log[timestamp] = {"action": "saved predictions json",
-                               "file name": path.split(output_predictions_json_file)[-1],
-                               "file path": output_predictions_json_file}
+                               "file name": path.split(output_predictions_json_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4234,13 +4243,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_predictions_h5_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_predictions_h5_file = utils.generate_dump_file_path(self.output_predictions_h5_file, timestamp=timestamp)
+            output_predictions_h5_file = utils.generate_dump_file_name(self.output_predictions_h5_file, timestamp=timestamp)
         dictionary = dict(self.predictions)
         dd.io.save(output_predictions_h5_file, dictionary)
         end = timer()
         self.log[timestamp] = {"action": "saved predictions json",
-                               "file name": path.split(output_predictions_h5_file)[-1],
-                               "file path": output_predictions_h5_file}
+                               "file name": path.split(output_predictions_h5_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4272,15 +4280,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_scalers_pickle_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_scalers_pickle_file = utils.generate_dump_file_path(self.output_scalers_pickle_file, timestamp=timestamp)
+            output_scalers_pickle_file = utils.generate_dump_file_name(self.output_scalers_pickle_file, timestamp=timestamp)
         pickle_out = open(output_scalers_pickle_file, "wb")
         pickle.dump(self.scalerX, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.scalerY, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         end = timer()
         self.log[timestamp] = {"action": "saved scalers h5",
-                               "file name": path.split(output_scalers_pickle_file)[-1],
-                               "file path": output_scalers_pickle_file}
+                               "file name": path.split(output_scalers_pickle_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4302,7 +4309,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if not overwrite:
                 utils.check_rename_file(output_tf_model_graph_pdf_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_tf_model_graph_pdf_file = utils.generate_dump_file_path(self.output_tf_model_graph_pdf_file, timestamp=timestamp)
+            output_tf_model_graph_pdf_file = utils.generate_dump_file_name(self.output_tf_model_graph_pdf_file, timestamp=timestamp)
         png_file = path.splitext(output_tf_model_graph_pdf_file)[0]+".png"
         try:
             plot_model(self.model, show_shapes=True, show_layer_names=True, to_file=png_file)
@@ -4320,8 +4327,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 print(header_string,"\nCannot remove png file",png_file,".\n", show=verbose)
         end = timer()
         self.log[timestamp] = {"action": "saved model graph pdf",
-                               "file name": path.split(output_tf_model_graph_pdf_file)[-1],
-                               "file path": output_tf_model_graph_pdf_file}
+                               "file name": path.split(output_tf_model_graph_pdf_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
@@ -4438,7 +4444,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                            )
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.script_file)[-1],
-                               "file path": self.script_file}
+                               "file name": path.split(self.script_file)[-1]}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string,"\nFile\n\t", self.script_file, "\ncorrectly generated.\n", show=verbose)

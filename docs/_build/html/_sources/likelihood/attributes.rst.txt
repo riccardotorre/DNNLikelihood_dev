@@ -58,12 +58,8 @@ Attributes
             Number of maxima computed by the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method.
          - *"file name"* (value type: ``str``)
             File name of file involved in the action.
-         - *"file path"* (value type: ``str``)
-            Path of file involved in the action.
          - *"files names"* (value type: ``list`` of ``str``)
             List of file names of files involved in the action.
-         - *"files paths"* (value type: ``list`` of ``str``)
-            List of paths of files involved in the action.
          - *"old folder"* (value type: ``str``)
             Previous path.
          - *"new folder"* (value type: ``str``)
@@ -130,12 +126,20 @@ Attributes
        
       - **type**: ``int``  
 
-.. py:attribute:: Lik.output_figures_base_file
+.. py:attribute:: Lik.output_figures_base_file_name
 
-   Absolute path to the saved figures. It includes the base figure name and is 
+   Base figures file name. It is 
+   automatically generated from the 
+   :attr:`Lik.name <DNNLikelihood.Lik.name>` attribute.
+
+      - **type**: ``str`` 
+
+.. py:attribute:: Lik.output_figures_base_file_path
+
+   Base figures file name including absolute path. It is 
    automatically generated from the
    :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>` and 
-   :attr:`Lik.name <DNNLikelihood.Lik.name>` attributes.
+   :attr:`Lik.output_figures_base_file_name <DNNLikelihood.Lik.output_figures_base_file_name>` attributes.
 
       - **type**: ``str`` 
 

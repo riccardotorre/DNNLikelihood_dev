@@ -252,9 +252,7 @@ class Histfactory(Verbosity):
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_h5_file)[-1],
-                                               path.split(self.input_log_file)[-1]],
-                               "files paths": [self.input_h5_file,
-                                               self.input_log_file]}
+                                               path.split(self.input_log_file)[-1]]}
         print(header_string,"\nHistfactory object loaded in", str(end-start), ".\n", show=verbose)
 
     def import_likelihoods(self,lik_numbers_list=None, progressbar=True, verbose=None):
@@ -383,7 +381,7 @@ class Histfactory(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -408,18 +406,18 @@ class Histfactory(Verbosity):
             if not overwrite:
                 utils.check_rename_file(output_log_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_log_file = utils.generate_dump_file_path(self.output_log_file, timestamp=timestamp)
+            output_log_file = utils.generate_dump_file_name(self.output_log_file, timestamp=timestamp)
         dictionary = utils.convert_types_dict(self.log)
         with codecs.open(output_log_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory log file\n\t", output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nHistfactory log file dump\n\t", output_log_file, "\nsaved in", str(end-start), "s.", show=verbose)
+            print(header_string,"\nHistfactory log file dump\n\t", output_log_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save(self, lik_numbers_list=None, overwrite=False, verbose=None):
         """
@@ -458,7 +456,7 @@ class Histfactory(Verbosity):
                 If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
                 :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
                 If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_path <DNNLikelihood.utils.generate_dump_file_path>` function.
+                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
                     
                     - **type**: ``bool`` or ``str``
                     - **allowed str**: ``"dump"``
@@ -484,7 +482,7 @@ class Histfactory(Verbosity):
             if not overwrite:
                 utils.check_rename_file(output_h5_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_h5_file = utils.generate_dump_file_path(self.output_h5_file, timestamp=timestamp)
+            output_h5_file = utils.generate_dump_file_name(self.output_h5_file, timestamp=timestamp)
         if lik_numbers_list == None:
             lik_numbers_list = list(self.likelihoods_dict.keys())
         dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", 
@@ -512,15 +510,14 @@ class Histfactory(Verbosity):
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(output_h5_file)[-1],
-                               "file path": output_h5_file}
+                               "file name": output_h5_file}
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.", show=verbose)
+                print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nHistfactory h5 file dump\n\t", output_h5_file, "\nsaved in", str(end-start), "s.", show=verbose)
+            print(header_string,"\nHistfactory h5 file dump\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         self.save_log(overwrite=overwrite, verbose=verbose)
     
     def get_likelihood_object(self, lik_number=0, output_folder=None, verbose=None):
@@ -573,7 +570,7 @@ class Histfactory(Verbosity):
             - :attr:`Histfactory.output_log_file <DNNLikelihood.Histfactory.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string, "\nCreating 'Lik' object", show=verbose)
+        print(header_string, "\nCreating 'Lik' object\n", show=verbose)
         if output_folder == None:
             output_folder = self.output_folder
         start = timer()
@@ -598,9 +595,7 @@ class Histfactory(Verbosity):
         self.log[timestamp] = {"action": "saved likelihood object", 
                                "likelihood number": lik_number, 
                                "file names": [path.split(lik_obj.output_h5_file)[-1],
-                                              path.split(lik_obj.output_log_file)[-1]], 
-                               "files paths": [lik_obj.output_h5_file, 
-                                               lik_obj.output_log_file]}
+                                              path.split(lik_obj.output_log_file)[-1]]}
         print(header_string,"\nLik object for likelihood", lik_number, "created and saved in", str(end-start), "s.\n", show=verbose)
         self.save_log(overwrite=True, verbose=verbose_sub)
         return lik_obj

@@ -315,17 +315,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </dl>
 </li>
 <li><dl class="simple">
-<dt><em>“file path”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Path of file involved in the action.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
 <dt><em>“files names”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of file names of files involved in the action.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“files paths”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of paths of files involved in the action.</p>
 </dd>
 </dl>
 </li>
@@ -434,12 +424,25 @@ It is set equal to the length of the array
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="DNNLikelihood.Lik.output_figures_base_file">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">output_figures_base_file</code><a class="headerlink" href="#DNNLikelihood.Lik.output_figures_base_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Absolute path to the saved figures. It includes the base figure name and is
+<dt id="DNNLikelihood.Lik.output_figures_base_file_name">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">output_figures_base_file_name</code><a class="headerlink" href="#DNNLikelihood.Lik.output_figures_base_file_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base figures file name. It is
+automatically generated from the
+<a class="reference internal" href="#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attribute.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="DNNLikelihood.Lik.output_figures_base_file_path">
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">output_figures_base_file_path</code><a class="headerlink" href="#DNNLikelihood.Lik.output_figures_base_file_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base figures file name including absolute path. It is
 automatically generated from the
 <a class="reference internal" href="#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a> and
-<a class="reference internal" href="#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attributes.</p>
+<a class="reference internal" href="#DNNLikelihood.Lik.output_figures_base_file_name" title="DNNLikelihood.Lik.output_figures_base_file_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file_name</span></code></a> attributes.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>

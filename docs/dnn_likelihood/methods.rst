@@ -91,6 +91,8 @@ Methods
 
 .. automethod:: DnnLik.generate_fig_base_title
 
+.. automethod:: DnnLik.update_figures
+
 .. automethod:: DnnLik.plot_training_history
 
 .. automethod:: DnnLik.plot_pars_coverage

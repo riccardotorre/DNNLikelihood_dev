@@ -11,6 +11,7 @@ from PIL import Image
 import sys
 import h5py
 import numpy as np
+from matplotlib import pyplot as plt
 from datetime import datetime
 from timeit import default_timer as timer
 
@@ -116,13 +117,12 @@ def filename_without_datetime(name):
     else:
         file = file+"_"+extension
 
-def generate_dump_file_path(path, timestamp=None):
+def generate_dump_file_name(filename, timestamp=None):
     if timestamp is None:
         timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-    file, extension = os.path.splitext(path)
-    filepath, filename = os.path.split(file)
-    dump_file_path = os.path.join(filepath, "dump_"+filename+"_"+timestamp+extension)
-    return dump_file_path
+    file, extension = os.path.splitext(filename)
+    dump_filename = os.path.join("dump_"+file+"_"+timestamp+extension)
+    return dump_filename
 
 def replace_strings_in_file(filename, old_strings, new_string):
     # Safely read the input filename using 'with'
@@ -146,7 +146,16 @@ def replace_strings_in_file(filename, old_strings, new_string):
             s = s.replace(old_string, new_string)
         f.write(s)
 
-def check_rename_file(path,timestamp=None,verbose=True):
+def savefig(path,**kwargs):
+    """
+    Function that patches the ``plt.savefig`` method for long filenames on Windows platforms.
+    """
+    if 'win32' in sys.platform or "win64" in sys.platform:
+        plt.savefig("\\\\?\\" + path, **kwargs)
+    else:
+        plt.savefig(path, **kwargs)
+
+def check_rename_file(path,timestamp=None,return_value=None,verbose=True):
     if os.path.exists(path):
         if timestamp == None:
             now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -159,17 +168,20 @@ def check_rename_file(path,timestamp=None,verbose=True):
         except:
             match = ""
         if match != "":
+            new_name = filename.replace(match, now)+extension
             new_path = file.replace(match,now)+extension
         else:
-            new_path = os.path.join(filepath,"old_"+now+"_"+filename+extension)
+            new_name = "old_"+now+"_"+filename+extension
+            new_path = os.path.join(filepath, new_name)
         if 'win32' in sys.platform:
             shutil.move("\\\\?\\" + path, "\\\\?\\" + new_path)
         else:
             shutil.move(path, new_path)
         print(header_string,"\nThe file\n\t",path,"\nalready exists and has been moved to\n\t",new_path,"\n",show=verbose)
-        return new_path
-        #print("New file name set to", path)
-    #return path
+        if return_value == "file_path":
+            return new_path
+        elif return_value == "file_name":
+            return new_name
 
 def check_delete_files(paths):
     paths = np.array([paths]).flatten()
@@ -264,14 +276,18 @@ def show_figures(fig_list):
 
 def check_figures_list(fig_list,output_figures_folder=None):
     new_fig_list = []
-    new_fig_path = output_figures_folder
     for fig in fig_list:
-        old_fig_path = os.path.split(os.path.abspath(fig))[0]
-        if new_fig_path is not None:
-            if old_fig_path != new_fig_path:
-                fig = fig.replace(old_fig_path,new_fig_path)
-        if os.path.exists(fig):
+        fig_path = os.path.join(output_figures_folder,fig)
+        if os.path.exists(fig_path):
             new_fig_list.append(fig)
+    #new_fig_path = output_figures_folder
+    #for fig in fig_list:
+    #    old_fig_path = os.path.split(os.path.abspath(fig))[0]
+    #    if new_fig_path is not None:
+    #        if old_fig_path != new_fig_path:
+    #            fig = fig.replace(old_fig_path,new_fig_path)
+    #    if os.path.exists(fig):
+    #        new_fig_list.append(fig)
     return new_fig_list
 
 def check_figures_dic(fig_dic,output_figures_folder=None):
