@@ -3,6 +3,7 @@ __all__ = ["Histfactory"]
 import builtins
 import codecs
 import json
+import shutil
 import sys
 from datetime import datetime
 from os import listdir, path, stat
@@ -81,6 +82,7 @@ class Histfactory(Verbosity):
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nInitialize Histfactory object.\n",show=verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.input_file = input_file
         self.__check_define_input_files()
@@ -153,9 +155,17 @@ class Histfactory(Verbosity):
             else:
                 self.output_folder = path.abspath("")
         self.output_folder = utils.check_create_folder(self.output_folder)
+        print(header_string,"\nHistFactory output folder set to\n\t", self.output_folder,".\n",show=verbose)
+        if path.exists(path.join(self.output_folder, "histfactory_workspace")):
+            self.workspace_folder = path.join(self.output_folder, "histfactory_workspace")
+            print(header_string,"\nHistfactory Workspace folder", path.split(self.workspace_folder)[-1],"already present in the output folder.\n",show=verbose)
+        else:
+            shutil.copytree(self.workspace_folder, path.join(self.output_folder, "histfactory_workspace"))
+            self.workspace_folder = path.join(self.output_folder, "histfactory_workspace")
+            print(header_string,"\nHistfactory Workspace folder", path.split(self.workspace_folder)[-1],"copied into the output folder.\n",show=verbose)
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
-        print(header_string,"\nHistFactory output folder set to\n\t", self.output_folder,".\n",show=verbose)
+        
 
     def __check_define_name(self):
         """
@@ -211,8 +221,8 @@ class Histfactory(Verbosity):
             likelihoods_dict[n]["name"] = self.name+"_" + str(n)+"_"+likelihoods_dict[n]["name"]+"_likelihood"
         self.likelihoods_dict = likelihoods_dict
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        self.log[timestamp] = {"action": "import histfactory",
-                               "folder": self.workspace_folder}
+        self.log[timestamp] = {"action": "imported histfactory workspace",
+                               "folder": path.split(self.workspace_folder)[-1]}
         print(header_string,"\nSuccessfully imported", len(list(self.likelihoods_dict.keys())),"likelihoods from", len(list(self.regions.keys())), "regions.\n",show=verbose)
 
     def __load(self,verbose=None):
@@ -492,6 +502,7 @@ class Histfactory(Verbosity):
                                                           "output_folder",
                                                           "output_h5_file",
                                                           "output_log_file",
+                                                          "workspace_folder",
                                                           "likelihoods_dict", 
                                                           "log", 
                                                           "verbose"])
@@ -510,7 +521,7 @@ class Histfactory(Verbosity):
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": output_h5_file}
+                               "file name": path.split(self.output_h5_file)[-1]}
         if type(overwrite) == bool:
             if overwrite:
                 print(header_string,"\nHistfactory h5 file\n\t", output_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
@@ -576,8 +587,9 @@ class Histfactory(Verbosity):
         start = timer()
         lik = dict(self.likelihoods_dict[lik_number])
         if not lik["model_loaded"]:
-            print(header_string,"\nModel for likelihood",lik_number,"not loaded. Attempting to load it.")
+            print(header_string,"\nModel for likelihood",lik_number,"not loaded. Attempting to load it.\n")
             self.import_likelihoods(lik_numbers_list=[lik_number], verbose=True)
+            lik = dict(self.likelihoods_dict[lik_number])
         lik_obj = Lik(name=lik["name"].replace("_histfactory", ""),
                       logpdf=lik["model"].logpdf,
                       logpdf_args=[lik["obs_data"]],

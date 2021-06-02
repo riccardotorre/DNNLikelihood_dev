@@ -1281,8 +1281,73 @@ the <code class="docutils literal notranslate"><span class="pre">X</span></code>
 </dd></dl>
 
 <dl class="py method">
+<dt id="DNNLikelihood.Data.update_figures">
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">update_figures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">figure_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.update_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.update_figures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that generates new file names and renames old figure files when new ones are produced with the argument <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>.
+When <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code> it calls the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function and, if
+<code class="docutils literal notranslate"><span class="pre">figure_file</span></code> already existed in the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.predictions" title="DNNLikelihood.Data.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.predictions</span></code></a> dictionary, then it
+updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp
+(that is the key of the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.predictions" title="DNNLikelihood.Data.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.predictions[&quot;Figures&quot;]</span></code></a> dictionary).
+When <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> it calls the <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function
+to generate the dump file name.
+It returns the new figure_file.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>figure_file</strong></p>
+<blockquote>
+<div><p>Figure file path. If the figure already exists in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.predictions" title="DNNLikelihood.Data.predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.predictions</span></code></a> dictionary, then its name is updated with the corresponding timestamp.</p>
+</div></blockquote>
+</li>
+<li><p><strong>overwrite</strong></p>
+<blockquote>
+<div><p>The method updates file names and <a class="reference internal" href="attributes.html#DNNLikelihood.Data.predictions" title="DNNLikelihood.Data.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.predictions</span></code></a> dictionary only if
+<code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>. If <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> the method generates and returns the dump file path.
+If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the method just returns <code class="docutils literal notranslate"><span class="pre">figure_file</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.
+The plots are shown in the interactive console calling <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> only if <code class="docutils literal notranslate"><span class="pre">verbose=True</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Returns</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>new_figure_file</strong></p>
+<blockquote>
+<div><p>String identical to the input string <code class="docutils literal notranslate"><span class="pre">figure_file</span></code> unless <code class="docutils literal notranslate"><span class="pre">verbose=&quot;dump&quot;</span></code>.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Creates/updates files</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Updates <code class="docutils literal notranslate"><span class="pre">figure_file</span></code> file name.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt id="DNNLikelihood.Data.plot_corners_1samp">
-<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">plot_corners_1samp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">intervals</span><span class="o">=</span><span class="default_value">array([0.68268949, 0.95449974, 0.9973002])</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nbins</span><span class="o">=</span><span class="default_value">50</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">ranges_extend</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'green'</span></em>, <em class="sig-param"><span class="n">plot_title</span><span class="o">=</span><span class="default_value">'Corner plot'</span></em>, <em class="sig-param"><span class="n">legend_labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.plot_corners_1samp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.plot_corners_1samp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Data.</code><code class="sig-name descname">plot_corners_1samp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">intervals</span><span class="o">=</span><span class="default_value">array([0.68268949, 0.95449974, 0.9973002])</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">max_points</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nbins</span><span class="o">=</span><span class="default_value">50</span></em>, <em class="sig-param"><span class="n">pars_labels</span><span class="o">=</span><span class="default_value">'original'</span></em>, <em class="sig-param"><span class="n">ranges_extend</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">color</span><span class="o">=</span><span class="default_value">'green'</span></em>, <em class="sig-param"><span class="n">plot_title</span><span class="o">=</span><span class="default_value">'Corner plot'</span></em>, <em class="sig-param"><span class="n">legend_labels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">figure_file_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/data.html#Data.plot_corners_1samp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Data.plot_corners_1samp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters <code class="docutils literal notranslate"><span class="pre">pars</span></code> in the <code class="docutils literal notranslate"><span class="pre">X</span></code> array.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -1414,7 +1479,7 @@ color.</p>
 </div></blockquote>
 </div></blockquote>
 </li>
-<li><p><strong>plot title</strong></p>
+<li><p><strong>plot_title</strong></p>
 <blockquote>
 <div><p>Title of the corner
 plot.</p>
@@ -1426,11 +1491,23 @@ plot.</p>
 </div></blockquote>
 </div></blockquote>
 </li>
-<li><p><strong>legend labels</strong></p>
+<li><p><strong>legend_labels</strong></p>
 <blockquote>
 <div><p>List of strings. Labels for the contours corresponding to the
 <code class="docutils literal notranslate"><span class="pre">intervals</span></code> to show in the legend.
 If <code class="docutils literal notranslate"><span class="pre">None</span></code> the legend automatically reports the intervals.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>figure_file_name</strong></p>
+<blockquote>
+<div><p>File name for the generated figure. If it is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
+it is automatically generated.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
@@ -1447,6 +1524,21 @@ interactive console.</p>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
 <li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+<li><p><strong>timestamp</strong></p>
+<blockquote>
+<div><p>A timestamp string with format <code class="docutils literal notranslate"><span class="pre">&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]</span></code>.
+If it is not passed, then it is generated. It is used as key in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Data.predictions" title="DNNLikelihood.Data.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.predictions[&quot;Figures&quot;]</span></code></a> dictionary to save the current prediction.
+It is also used to update the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.log" title="DNNLikelihood.Data.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.log</span></code></a> dictionary and to save the object when
+<code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 </ul>
 </div></blockquote>
 </div></blockquote>

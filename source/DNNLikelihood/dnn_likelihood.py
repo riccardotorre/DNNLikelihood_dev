@@ -2865,7 +2865,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         title = title.replace("+", "") + "Loss: " + str(self.loss_string)
         self.fig_base_title = title
 
-    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=verbose):
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=None):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
         When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 

@@ -1958,6 +1958,71 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </dd></dl>
 
 <dl class="py method">
+<dt id="DNNLikelihood.DnnLik.update_figures">
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">update_figures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">figure_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.update_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.update_figures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that generates new file names and renames old figure files when new ones are produced with the argument <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>.
+When <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code> it calls the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function and, if
+<code class="docutils literal notranslate"><span class="pre">figure_file</span></code> already existed in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">DNNLik.predictions</span></code> dictionary, then it
+updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp
+(that is the key of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">DNNLik.predictions[&quot;Figures&quot;]</span></code> dictionary).
+When <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> it calls the <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function
+to generate the dump file name.
+It returns the new figure_file.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>figure_file</strong></p>
+<blockquote>
+<div><p>Figure file path. If the figure already exists in the
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">DNNLik.predictions</span></code> dictionary, then its name is updated with the corresponding timestamp.</p>
+</div></blockquote>
+</li>
+<li><p><strong>overwrite</strong></p>
+<blockquote>
+<div><p>The method updates file names and <code class="xref py py-attr docutils literal notranslate"><span class="pre">DNNLik.predictions</span></code> dictionary only if
+<code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>. If <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> the method generates and returns the dump file path.
+If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the method just returns <code class="docutils literal notranslate"><span class="pre">figure_file</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.
+The plots are shown in the interactive console calling <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> only if <code class="docutils literal notranslate"><span class="pre">verbose=True</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Returns</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>new_figure_file</strong></p>
+<blockquote>
+<div><p>String identical to the input string <code class="docutils literal notranslate"><span class="pre">figure_file</span></code> unless <code class="docutils literal notranslate"><span class="pre">verbose=&quot;dump&quot;</span></code>.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Creates/updates files</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Updates <code class="docutils literal notranslate"><span class="pre">figure_file</span></code> file name.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt id="DNNLikelihood.DnnLik.plot_training_history">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">plot_training_history</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metrics</span><span class="o">=</span><span class="default_value">['loss']</span></em>, <em class="sig-param"><span class="n">yscale</span><span class="o">=</span><span class="default_value">'log'</span></em>, <em class="sig-param"><span class="n">show_plot</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.plot_training_history"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.plot_training_history" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>

@@ -5,6 +5,7 @@ import codecs
 import h5py
 import json
 import time
+from copy import copy
 from datetime import datetime
 from os import path, sep, stat
 from timeit import default_timer as timer
@@ -83,6 +84,7 @@ class Lik(Verbosity):
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        print(header_string,"\nInitialize Likelihood object.\n",show=verbose)
         self.input_file = input_file
         self.__check_define_input_files()
         if self.input_file == None:
@@ -697,12 +699,13 @@ class Lik(Verbosity):
                 - **type**: ``float`` or ``numpy.ndarray``
                 - **shape for numpy.ndarray**: ``(n_points,)``
         """
-        self.logpdf.args = args
-        self.logpdf.kwargs = kwargs
+        logpdf = copy(self.logpdf)
+        logpdf.args = args
+        logpdf.kwargs = kwargs
         if len(np.shape(x_pars)) == 1:
             if not (np.all(x_pars >= self.pars_bounds[:, 0]) and np.all(x_pars <= self.pars_bounds[:, 1])):
                 return -np.inf
-            tmp = self.logpdf(x_pars)
+            tmp = logpdf(x_pars)
             if type(tmp) == np.ndarray or type(tmp) == list:
                 tmp = tmp[0]
             if np.isnan(tmp):
@@ -710,7 +713,7 @@ class Lik(Verbosity):
             return tmp
         else:
             x_pars_list = x_pars
-            tmp = self.logpdf(x_pars)
+            tmp = logpdf(x_pars)
             for i in range(len(x_pars_list)):
                 x_pars = x_pars_list[i]
                 if not (np.all(x_pars >= self.pars_bounds[:, 0]) and np.all(x_pars <= self.pars_bounds[:, 1])):
@@ -1166,7 +1169,7 @@ class Lik(Verbosity):
         print(header_string,"\n"+str(len(pars_vals_bounded)),"local maxima computed in", end-start, "s.",show=verbose)
         print("Log-pdf values lie in the range [", np.min(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), ",", np.max(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), "].\n", show=verbose)
         
-    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=verbose):
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=None):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
         When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 

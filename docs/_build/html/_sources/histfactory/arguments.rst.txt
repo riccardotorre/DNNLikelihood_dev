@@ -6,11 +6,11 @@ Arguments
 .. currentmodule:: Histfactory
 
 .. argument:: workspace_folder
-   :type: str
 
    Path (either relative to the code execution folder or absolute)
    containing the ATLAS histfactory workspace (containing the "Regions" subfolders).
-   It is saved in the :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>` attribute.
+   Unless it is already there, the folder is copied into the 
+   :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>` and renamed "hitfactory_workspace".
 
       - **type**: ``str`` or ``None``
       - **default**: ``None``   

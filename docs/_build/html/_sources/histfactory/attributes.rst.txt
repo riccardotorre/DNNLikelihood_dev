@@ -109,7 +109,7 @@ Attributess
          - *"action"* (value type: ``str``)
             Short description of the action.
             
-            **possible values**: ``"changed_output_folder"``. ``"created"``, ``"created likelihood object"``, ``"imported histfactory"``, ``"imported likelihoods"``, ``"loaded"``, ``"saved"``, and ``"saved likelihood object"``
+            **possible values**: ``"changed_output_folder"``. ``"created"``, ``"created likelihood object"``, ``"imported histfactory workspace"``, ``"imported likelihoods"``, ``"loaded"``, ``"saved"``, and ``"saved likelihood object"``
          - *"likelihoods numbers"* (value type: ``list`` of ``int``)
             When an operation involving several likelihoods has been performed this value is the list of involved likelihoods .
          - *"likelihood number"* (value type: ``int``)
@@ -118,10 +118,6 @@ Attributess
             File name of file involved in the action.
          - *"files names"* (value type: ``list`` of ``str``)
             List of file names of files involved in the action.
-         - *"old folder"* (value type: ``str``)
-            Previous path.
-         - *"new folder"* (value type: ``str``)
-            New path.
 
 .. py:attribute:: Histfactory.name
 
@@ -210,8 +206,10 @@ Attributess
 
 .. py:attribute:: Histfactory.workspace_folder
 
-   Absolute path of the ATLAS histfactory workspace folder
-   corresponding to the input argument :argument:`workspace_folder`.
+   Absolute path of the folder "histfactory_workspace" located into
+   the :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
+   If it does not exist, such folder, containing the Histfactory Workspace, is created
+   by copying the folder corresponding to the input argument :argument:`workspace_folder`.
 
       - **type**: ``str``
 

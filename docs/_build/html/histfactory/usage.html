@@ -239,6 +239,14 @@ that may need to be changed (see <a class="reference internal" href="arguments.h
 </div></blockquote>
 <p>See the documentation of the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a> and
 <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a> methods.</p>
+<p>Moreover, when the object is created, the <code class="docutils literal notranslate"><span class="pre">workspace_folder</span></code> given as input is copied
+(if it is not already there) into the output folder “&lt;my_output_folder&gt;”
+and renamed “histfactory_workspace”:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>&lt;my_output_folder&gt;/histfactory_workspace</p></li>
+</ul>
+</div></blockquote>
 <p>The object can also be initialized importing it from saved files. In this case only the <a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>
 argument needs to be specified, while all other arguments are ignored.
 One could also optionally specify a new <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>. In case this is not specified, the
@@ -255,8 +263,8 @@ likelihood, the dictionary looks like this</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;signal_region&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood&#39;</span><span class="p">,</span>
      <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 </pre></div>
@@ -277,8 +285,8 @@ attribute is updated, as well as the corresponding file &lt;my_output_folder&gt;
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;signal_region&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;full path to HEPData_workspaces&gt;/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood&#39;</span><span class="p">,</span>
      <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
      <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">pyhf</span><span class="o">.</span><span class="n">pdf</span><span class="o">.</span><span class="n">Model</span> <span class="n">at</span> <span class="mh">0x22c40b29d48</span><span class="o">&gt;</span><span class="p">,</span>

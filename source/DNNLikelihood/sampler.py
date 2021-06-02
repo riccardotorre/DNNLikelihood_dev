@@ -158,6 +158,7 @@ class Sampler(Verbosity):
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        print(header_string,"\nInitialize Sampler object.\n",show=verbose)
         # Setting all arguments
         self.likelihood_script_file = likelihood_script_file
         self.likelihood = likelihood
@@ -270,11 +271,11 @@ class Sampler(Verbosity):
         if new_sampler:
             if self.likelihood_script_file is not None:
                 self.likelihood_script_file = path.splitext(path.abspath(self.likelihood_script_file))[0]+".py"
-                print("Option 1: 'likelihood_script_file' is given as input")
+                #print("Option 1: 'likelihood_script_file' is given as input")
             else:
                 if self.likelihood is not None:
                     ### Try to detemine likelihood_script_file from likelihood
-                    print("Option 2: 'likelihood' is given as input")
+                    #print("Option 2: 'likelihood' is given as input")
                     self.__get_likelihood_script_file_from_likelihood(verbose=verbose_sub)
                 else:
                     raise Exception("You have to specify at least one argument among 'likelihood', 'likelihood_script_file', and 'input_file'.")
@@ -1358,7 +1359,7 @@ class Sampler(Verbosity):
         print(header_string,"\nGelman-Rubin statistics for parameters", pars,"computed in",str(end-start),"s.\n",show=verbose)
         #return np.array(res)
 
-    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=verbose):
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=None):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
         When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 

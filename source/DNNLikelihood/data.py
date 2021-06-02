@@ -96,6 +96,7 @@ class Data(Verbosity):
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        print(header_string, "\nInitialize Data object.\n", show=verbose)
         self.input_file = input_file
         self.__check_define_input_files(verbose=verbose_sub)
         if self.input_file == None:
@@ -1276,7 +1277,7 @@ class Data(Verbosity):
         print(header_string,"\nStandard scalers defined in", end-start, "s.\n", show=verbose)
         return [scalerX, scalerY]
 
-    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=verbose):
+    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=None):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
         When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 

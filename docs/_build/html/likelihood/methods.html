@@ -622,7 +622,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 If it is not passed, then it is generated. It is used to update the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a> object and, when <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code>, is passed to the
 <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.generate_dump_file_name</span></code> function
-to generate the dump file name.</p>
+to generate the dump file name.
+The timestamp input is also used to search in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.prediction</span></code>
+attribute for profiled maxima information to be used as parameters initialization for sampling.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
@@ -1137,7 +1139,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.Lik.update_figures">
-<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">update_figures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">figure_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.update_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.update_figures" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">Lik.</code><code class="sig-name descname">update_figures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">figure_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/likelihood.html#Lik.update_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.Lik.update_figures" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that generates new file names and renames old figure files when new ones are produced with the argument <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>.
 When <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code> it calls the <a class="reference internal" href="../utils.html#DNNLikelihood.utils.check_rename_file" title="DNNLikelihood.utils.check_rename_file"><code class="xref py py-func docutils literal notranslate"><span class="pre">utils.check_rename_file</span></code></a> function and, if
 <code class="docutils literal notranslate"><span class="pre">figure_file</span></code> already existed in the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary, then it
@@ -1160,7 +1162,31 @@ It returns the new figure_file.</p>
 <blockquote>
 <div><p>The method updates file names and <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary only if
 <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>. If <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> the method generates and returns the dump file path.
-If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the method does nothing.</p>
+If <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> the method just returns <code class="docutils literal notranslate"><span class="pre">figure_file</span></code>.</p>
+</div></blockquote>
+</li>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>Verbosity mode.
+See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.
+The plots are shown in the interactive console calling <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> only if <code class="docutils literal notranslate"><span class="pre">verbose=True</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Returns</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>new_figure_file</strong></p>
+<blockquote>
+<div><p>String identical to the input string <code class="docutils literal notranslate"><span class="pre">figure_file</span></code> unless <code class="docutils literal notranslate"><span class="pre">verbose=&quot;dump&quot;</span></code>.</p>
 </div></blockquote>
 </li>
 </ul>

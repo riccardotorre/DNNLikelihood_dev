@@ -260,6 +260,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initialize Data object.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_input_files</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
@@ -1440,11 +1441,74 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Standard scalers defined in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">scalerX</span><span class="p">,</span> <span class="n">scalerY</span><span class="p">]</span></div>
 
+<div class="viewcode-block" id="Data.update_figures"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.update_figures">[docs]</a>    <span class="k">def</span> <span class="nf">update_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">figure_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. </span>
+<span class="sd">        When ``overwrite=False`` it calls the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function and, if </span>
+<span class="sd">        ``figure_file`` already existed in the :attr:`Data.predictions &lt;DNNLikelihood.Data.predictions&gt;` dictionary, then it</span>
+<span class="sd">        updates the dictionary by appennding to the old figure name the timestamp corresponding to its generation timestamp </span>
+<span class="sd">        (that is the key of the :attr:`Data.predictions[&quot;Figures&quot;] &lt;DNNLikelihood.Data.predictions&gt;` dictionary).</span>
+<span class="sd">        When ``overwrite=&quot;dump&quot;`` it calls the :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function</span>
+<span class="sd">        to generate the dump file name.</span>
+<span class="sd">        It returns the new figure_file.</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **figure_file**</span>
+
+<span class="sd">                Figure file path. If the figure already exists in the </span>
+<span class="sd">                :meth:`Data.predictions &lt;DNNLikelihood.Data.predictions&gt;` dictionary, then its name is updated with the corresponding timestamp.</span>
+
+<span class="sd">            - **overwrite**</span>
+
+<span class="sd">                The method updates file names and :attr:`Data.predictions &lt;DNNLikelihood.Data.predictions&gt;` dictionary only if</span>
+<span class="sd">                ``overwrite=False``. If ``overwrite=&quot;dump&quot;`` the method generates and returns the dump file path. </span>
+<span class="sd">                If ``overwrite=True`` the method just returns ``figure_file``.</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                Verbosity mode. </span>
+<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">        </span>
+<span class="sd">        - **Returns**</span>
+
+<span class="sd">            - **new_figure_file**</span>
+<span class="sd">                </span>
+<span class="sd">                String identical to the input string ``figure_file`` unless ``verbose=&quot;dump&quot;``.</span>
+
+<span class="sd">        - **Creates/updates files**</span>
+
+<span class="sd">            - Updates ``figure_file`` file name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Checking and updating figures dictionary&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">figure_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;figure_file input argument of update_figures method needs to be specified while it is None.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_figure_file</span> <span class="o">=</span> <span class="n">figure_file</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                    <span class="c1"># search figure</span>
+                    <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">figure_file</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                            <span class="n">timestamp</span> <span class="o">=</span> <span class="n">k</span>
+                    <span class="n">old_figure_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span><span class="n">figure_file</span><span class="p">),</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">return_value</span><span class="o">=</span><span class="s2">&quot;file_name&quot;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span><span class="n">old_figure_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span> 
+            <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+                <span class="n">new_figure_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_name</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">new_figure_file</span></div>
+
 <div class="viewcode-block" id="Data.plot_corners_1samp"><a class="viewcode-back" href="../../data/methods.html#DNNLikelihood.Data.plot_corners_1samp">[docs]</a>    <span class="k">def</span> <span class="nf">plot_corners_1samp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">intervals</span><span class="o">=</span><span class="n">inference</span><span class="o">.</span><span class="n">CI_from_sigma</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> 
                            <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">pars_labels</span><span class="o">=</span><span class="s2">&quot;original&quot;</span><span class="p">,</span>
                            <span class="n">ranges_extend</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">,</span>
                            <span class="n">plot_title</span><span class="o">=</span><span class="s2">&quot;Corner plot&quot;</span><span class="p">,</span> <span class="n">legend_labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                           <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                           <span class="n">figure_file_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters ``pars`` in the ``X`` array.</span>
 
@@ -1536,7 +1600,7 @@
 <span class="sd">                    - **type**: ``str``</span>
 <span class="sd">                    - **default**: ``&quot;green&quot;``</span>
 
-<span class="sd">            - **plot title**</span>
+<span class="sd">            - **plot_title**</span>
 
 <span class="sd">                Title of the corner </span>
 <span class="sd">                plot.</span>
@@ -1544,11 +1608,19 @@
 <span class="sd">                    - **type**: ``str``</span>
 <span class="sd">                    - **default**: ``&quot;Corner plot&quot;``</span>
 
-<span class="sd">            - **legend labels**</span>
+<span class="sd">            - **legend_labels**</span>
 
 <span class="sd">                List of strings. Labels for the contours corresponding to the </span>
 <span class="sd">                ``intervals`` to show in the legend.</span>
 <span class="sd">                If ``None`` the legend automatically reports the intervals.</span>
+
+<span class="sd">                    - **type**: ``str`` or ``None``</span>
+<span class="sd">                    - **default**: ``None``</span>
+
+<span class="sd">            - **figure_file_name**</span>
+
+<span class="sd">                File name for the generated figure. If it is ``None`` (default),</span>
+<span class="sd">                it is automatically generated.</span>
 
 <span class="sd">                    - **type**: ``str`` or ``None``</span>
 <span class="sd">                    - **default**: ``None``</span>
@@ -1560,6 +1632,17 @@
 
 <span class="sd">                    - **type**: ``bool``</span>
 <span class="sd">                    - **default**: ``False``</span>
+
+<span class="sd">            - **timestamp**</span>
+<span class="sd">            </span>
+<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
+<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
+<span class="sd">                :attr:`Data.predictions[&quot;Figures&quot;] &lt;DNNLikelihood.Data.predictions&gt;` dictionary to save the current prediction.</span>
+<span class="sd">                It is also used to update the :attr:`Data.log &lt;DNNLikelihood.Data.log&gt;` dictionary and to save the object when </span>
+<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``str``</span>
+<span class="sd">                    - **default**: ``None``</span>
 
 <span class="sd">            - **overwrite**</span>
 
@@ -1585,6 +1668,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Plotting 2D marginal posterior density&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">legend_labels</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">legend_labels</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">intervals</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Legend labels should either be None or a list of strings with the same length as intervals.&quot;</span><span class="p">)</span>
@@ -1666,9 +1751,11 @@
             <span class="n">legend_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">intervals_str</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intervals</span><span class="p">))]</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">legend_labels</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="mi">7</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">nndims</span><span class="p">),</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span><span class="c1">#(1/nndims*1.05,1/nndims*1.1))#transform=axes[0,0].transAxes)# loc=(0.53, 0.8))</span>
         <span class="c1">#plt.tight_layout()</span>
-        <span class="n">figure_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_figures</span><span class="p">(</span><span class="n">figure_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file_name</span><span class="o">+</span><span class="s2">&quot;_corner_posterior_pars_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">])</span> <span class="o">+</span><span class="s2">&quot;.pdf&quot;</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span> 
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
-            <span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span> <span class="n">figure_file_name</span><span class="p">)),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">figure_file_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">figure_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_figures</span><span class="p">(</span><span class="n">figure_file</span><span class="o">=</span><span class="n">figure_file_name</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">figure_file_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_figures</span><span class="p">(</span><span class="n">figure_file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_base_file_name</span><span class="o">+</span><span class="s2">&quot;_corner_posterior_1samp_pars_&quot;</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">])</span> <span class="o">+</span><span class="s2">&quot;.pdf&quot;</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">)</span> 
+        <span class="n">utils</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span> <span class="n">figure_file_name</span><span class="p">)),</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">check_set_dict_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],[</span><span class="n">timestamp</span><span class="p">],[[]],</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">append_without_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">],</span> <span class="n">figure_file_name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">show_plot</span><span class="p">:</span>

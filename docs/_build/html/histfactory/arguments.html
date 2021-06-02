@@ -223,10 +223,11 @@
 <span id="histfactory-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
 <dl class="py argument">
 <dt id="Histfactory.workspace_folder">
-<code class="sig-name descname">workspace_folder</code><em class="property">: str</em><a class="headerlink" href="#Histfactory.workspace_folder" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">workspace_folder</code><a class="headerlink" href="#Histfactory.workspace_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path (either relative to the code execution folder or absolute)
 containing the ATLAS histfactory workspace (containing the “Regions” subfolders).
-It is saved in the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.workspace_folder" title="DNNLikelihood.Histfactory.workspace_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.workspace_folder</span></code></a> attribute.</p>
+Unless it is already there, the folder is copied into the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.workspace_folder" title="DNNLikelihood.Histfactory.workspace_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.workspace_folder</span></code></a> and renamed “hitfactory_workspace”.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>

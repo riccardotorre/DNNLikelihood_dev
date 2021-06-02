@@ -398,7 +398,7 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 <div><ul>
 <li><dl>
 <dt><em>“action”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Short description of the action.</p>
-<p><strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;changed_output_folder&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">histfactory&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">likelihoods&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code></p>
+<p><strong>possible values</strong>: <code class="docutils literal notranslate"><span class="pre">&quot;changed_output_folder&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">&quot;created&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;created</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">histfactory</span> <span class="pre">workspace&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;imported</span> <span class="pre">likelihoods&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;loaded&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;saved&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;saved</span> <span class="pre">likelihood</span> <span class="pre">object&quot;</span></code></p>
 </dd>
 </dl>
 </li>
@@ -419,16 +419,6 @@ strings as keys and actions as values. Actions are also dictionaries, containing
 </li>
 <li><dl class="simple">
 <dt><em>“files names”</em> (value type: <code class="docutils literal notranslate"><span class="pre">list</span></code> of <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>List of file names of files involved in the action.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“old folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>Previous path.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt><em>“new folder”</em> (value type: <code class="docutils literal notranslate"><span class="pre">str</span></code>)</dt><dd><p>New path.</p>
 </dd>
 </dl>
 </li>
@@ -567,8 +557,10 @@ See <a class="reference internal" href="../show_prints.html#verbosity-mode"><spa
 <dl class="py attribute">
 <dt id="DNNLikelihood.Histfactory.workspace_folder">
 <code class="sig-prename descclassname">Histfactory.</code><code class="sig-name descname">workspace_folder</code><a class="headerlink" href="#DNNLikelihood.Histfactory.workspace_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Absolute path of the ATLAS histfactory workspace folder
-corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.workspace_folder" title="Histfactory.workspace_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code></a>.</p>
+<dd><p>Absolute path of the folder “histfactory_workspace” located into
+the <a class="reference internal" href="#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a>.
+If it does not exist, such folder, containing the Histfactory Workspace, is created
+by copying the folder corresponding to the input argument <a class="reference internal" href="arguments.html#Histfactory.workspace_folder" title="Histfactory.workspace_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code></a>.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>

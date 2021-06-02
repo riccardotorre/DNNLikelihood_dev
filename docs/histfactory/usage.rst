@@ -31,6 +31,12 @@ When the object is created, it is automatically saved and two files are created:
 See the documentation of the :meth:`Histfactory.save <DNNLikelihood.Histfactory.save>` and 
 :meth:`Histfactory.save_log <DNNLikelihood.Histfactory.save_log>` methods.
 
+Moreover, when the object is created, the ``workspace_folder`` given as input is copied 
+(if it is not already there) into the output folder "<my_output_folder>"
+and renamed "histfactory_workspace":
+
+   - <my_output_folder>/histfactory_workspace
+
 The object can also be initialized importing it from saved files. In this case only the :argument:`input_file <Histfactory.input_file>` 
 argument needs to be specified, while all other arguments are ignored.
 One could also optionally specify a new :argument:`output_folder <Histfactory.output_folder>`. In case this is not specified, the 
@@ -52,8 +58,8 @@ likelihood, the dictionary looks like this
    histfactory.likelihoods_dict[0]
 
    >>> {'signal_region': 'A',
-        'bg_only_file': '<full path to HEPData_workspaces>/RegionA/BkgOnly.json',
-        'patch_file': '<full path to HEPData_workspaces>/RegionA/patch.sbottom_1000_131_1.json',
+        'bg_only_file': '<my_output_folder>/histfactory_workspace/RegionA/BkgOnly.json',
+        'patch_file': '<my_output_folder>/histfactory_workspace/RegionA/patch.sbottom_1000_131_1.json',
         'name': 'ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood',
         'model_loaded': False}
 
@@ -79,8 +85,8 @@ Looking at the dictionary for the fist likelihood, now one gets
    histfactory.likelihoods_dict[0]
 
    >>> {'signal_region': 'A',
-        'bg_only_file': '<full path to HEPData_workspaces>/RegionA/BkgOnly.json',
-        'patch_file': '<full path to HEPData_workspaces>/RegionA/patch.sbottom_1000_131_1.json',
+        'bg_only_file': '<my_output_folder>/histfactory_workspace/RegionA/BkgOnly.json',
+        'patch_file': '<my_output_folder>/histfactory_workspace/RegionA/patch.sbottom_1000_131_1.json',
         'name': 'ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood',
         'model_loaded': True,
         'model': <pyhf.pdf.Model at 0x22c40b29d48>,
