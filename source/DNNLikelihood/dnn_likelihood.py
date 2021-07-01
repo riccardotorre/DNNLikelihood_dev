@@ -1533,7 +1533,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             for i in self.hidden_layers[1:]:
                 if i[1] == "selu":
                     x = Dense(i[0], activation=i[1], kernel_initializer="lecun_normal")(x)
-                if i[1] != "selu" and len(i) <3:
+                elif i[1] != "selu" and len(i) <3:
                     x = Dense(i[0], activation=i[1])(x)
                 else:
                     x = Dense(i[0], activation=i[1], kernel_initializer=i[2])(x)
@@ -1779,7 +1779,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                    "training time": self.training_time}
             self.save_log(overwrite=True, verbose=verbose_sub)
             print("Model for DNNLikelihood", self.name, "successfully trained for",
-                  self.epochs_available-epochs_before_run, "epochs in", self.training_time, "s.\n", show=verbose)
+                  self.epochs_available-epochs_before_run, "epochs in", self.training_time*epochs_to_run, "s (",self.training_time,"s/epoch).\n", show=verbose)
 
     def check_x_bounds(self,pars_val,pars_bounds):
         res = []

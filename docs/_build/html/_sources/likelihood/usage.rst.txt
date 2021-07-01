@@ -217,7 +217,7 @@ item of the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary a
 Finally, one could profile the logpdf with respect to some of the parameters and compute local maxima through
 the :meth:`Lik.compute_profiled_maxima_logpdf <DNNLikelihood.Lik.compute_profiled_maxima_logpdf>` method. This
 is useful both to initialize chains in a MCMC or to perform profiled likelihood inference. The result is stored in the 
-"logpdf_profiled_max" item of the :attr:`Lik.logpdf_profiled_max <DNNLikelihood.Lik.logpdf_profiled_max>` dictionary attribute.
+"logpdf_profiled_max" item of the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary attribute.
 For instance, profiling with respect to the nuisance parameters for ``10`` values of the signal strength parameter
 on a grid in the ``(-1,1)`` interval, can be obtained as follows:
 
