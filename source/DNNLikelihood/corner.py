@@ -172,7 +172,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             raise ValueError("Lengths of weights must match number of samples")
 
     # Parse the parameter ranges.
-    if range == None:
+    if range is None:
         if "extents" in hist2d_kwargs:
             logging.warn("Deprecated keyword argument 'extents'. "
                          "Use 'range' instead.")

@@ -1421,6 +1421,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                "data": ["idx_train", "X_train", "Y_train", "idx_val", "X_val", "Y_val"],
                                "npoints train": self.npoints_train,
                                "npoints val": self.npoints_val}
+        # Compute sample weights
         if self.weighted:
             print(header_string,"\nIn order to compute sample weights with the desired parameters please run the function\
                    self.compute_sample_weights(bins=100, power=1) before training.\n Proceding with sample weights\
@@ -3456,17 +3457,24 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if delete_figures:
-            utils.check_delete_all_files_in_path(self.output_figures_folder)
-            figs = {}
-            print(header_string,"\nAll predictions and figures have been deleted and the 'predictions' attribute has been initialized.\n")
-        else:
-            figs = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
-            print(header_string,"\nAll predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.\n")
-        self.predictions = {"Model_evaluation": {},
-                            "Bayesian_inference": {},
-                            "Frequentist_inference": {},
-                            "Figures": figs}
+        try:
+            if delete_figures:
+                utils.check_delete_all_files_in_path(self.output_figures_folder)
+                figs = {}
+                print(header_string,"\nAll predictions and figures have been deleted and the 'predictions' attribute has been initialized.\n")
+            else:
+                figs = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+                print(header_string,"\nAll predictions have been deleted and the 'predictions' attribute has been initialized. No figure file has been deleted.\n")
+            self.predictions = {"Model_evaluation": {},
+                                "Bayesian_inference": {},
+                                "Frequentist_inference": {},
+                                "Figures": figs}
+        except:
+            self.predictions = {"Model_evaluation": {},
+                                "Bayesian_inference": {},
+                                "Frequentist_inference": {},
+                                "Figures": {}}
+        
 
     def model_compute_predictions(self, 
                                   CI=inference.CI_from_sigma([inference.sigma_from_CI(0.5), 1, 2, 3]), 
@@ -3873,7 +3881,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                 HPDI1_dic={"sample": string1.split("_")[0], "type": string1.split("_")[1]}, 
                                                 HPDI2_dic={"sample": string2.split("_")[0], "type": string2.split("_")[1]},
                                                 pars = pars, pars_labels = "original",
-                                                title1 = "$68\%$ HPDI - sample: "+string1.split("_")[0], 
+                                                title1 = "$68\%$ HPDI - sample: "+string1.split("_")[0],
                                                 title2 ="$68\%$ HPDI - sample: "+string2.split("_")[0],
                                                 color1 = "green", color2 = "red",
                                                 plot_title = "Samples: "+string1+" vs "+string2,

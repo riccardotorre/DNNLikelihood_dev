@@ -1344,7 +1344,7 @@ class Data(Verbosity):
                            weights=None, pars=None, max_points=None, nbins=50, pars_labels="original",
                            ranges_extend=None, title = "", color="green",
                            plot_title="Corner plot", legend_labels=None, 
-                           figure_file_name=None, show_plot=False, timestamp=None, overwrite=False, verbose=None):
+                           figure_file_name=None, show_plot=False, timestamp=None, overwrite=False, verbose=None, **corner_kwargs):
         """
         Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters ``pars`` in the ``X`` array.
 
@@ -1537,16 +1537,41 @@ class Data(Verbosity):
         print("Computing HPDIs.\n", show=verbose)
         HPDI = [inference.HPDI(samp[:,i], intervals = intervals, weights=weights, nbins=nbins, print_hist=False, optimize_binning=False) for i in range(nndims)]
         levels = np.array([[np.sort(inference.HPD_quotas(samp[:,[i,j]], nbins=nbins, intervals = intervals, weights=weights)).tolist() for j in range(nndims)] for i in range(nndims)])
+        corner_kwargs_default = {"labels":  [r"%s" % s for s in labels],
+                                 "max_n_ticks": 6, 
+                                 "color": color,
+                                 "plot_contours": True,
+                                 "smooth": True, 
+                                 "smooth1d": True,
+                                 "range": ranges,
+                                 "plot_datapoints": True, 
+                                 "plot_density": False, 
+                                 "fill_contours": False, 
+                                 "normalize1d": True,
+                                 "hist_kwargs": {"color": color, "linewidth": "1.5"}, 
+                                 "label_kwargs": {"fontsize": 16}, 
+                                 "show_titles": False,
+                                 "title_kwargs": {"fontsize": 18}, 
+                                 "levels_lists": levels,
+                                 "data_kwargs": {"alpha": 1},
+                                 "contour_kwargs": {"linestyles": ["dotted", "dashdot", "dashed"][:len(HPDI[0])], "linewidths": [linewidth, linewidth, linewidth][:len(HPDI[0])]},
+                                 "no_fill_contours": False, 
+                                 "contourf_kwargs": {"colors": ["white", "lightgreen", color], "alpha": 1}}
+        corner_kwargs_default = utils.dic_minus_keys(corner_kwargs_default, list(corner_kwargs.keys()))
+        corner_kwargs = {**corner_kwargs,**corner_kwargs_default}
         fig, axes = plt.subplots(nndims, nndims, figsize=(3*nndims, 3*nndims))
-        figure = corner(samp, bins=nbins, weights=weights, labels=[r"%s" % s for s in labels],
-                        fig=fig, max_n_ticks=6, color=color, plot_contours=True, smooth=True, 
-                        smooth1d=True, range=ranges, plot_datapoints=True, plot_density=False, 
-                        fill_contours=False, normalize1d=True, hist_kwargs={"color": color, "linewidth": "1.5"}, 
-                        label_kwargs={"fontsize": 16}, show_titles=False, title_kwargs={"fontsize": 18}, 
-                        levels_lists=levels, data_kwargs={"alpha": 1}, 
-                        contour_kwargs={"linestyles": ["dotted", "dashdot", "dashed"][:len(HPDI[0])], "linewidths": [linewidth, linewidth, linewidth][:len(HPDI[0])]},
-                        no_fill_contours=False, contourf_kwargs={"colors": ["white", "lightgreen", color], "alpha": 1})  
+        figure = corner(samp, bins=nbins, weights=weights, fig=fig, **corner_kwargs)
                         # , levels=(0.393,0.68,)) ,levels=[300],levels_lists=levels1)#,levels=[120])
+        #figure = corner(samp, bins=nbins, weights=weights, labels=[r"%s" % s for s in labels],
+        #                fig=fig, max_n_ticks=6, color=color, plot_contours=True, smooth=True,
+        #                smooth1d=True, range=ranges, plot_datapoints=True, plot_density=False,
+        #                fill_contours=False, normalize1d=True, hist_kwargs={"color": color, "linewidth": "1.5"},
+        #                label_kwargs={"fontsize": 16}, show_titles=False, title_kwargs={"fontsize": 18},
+        #                levels_lists=levels, data_kwargs={"alpha": 1},
+        #                contour_kwargs={"linestyles": ["dotted", "dashdot", "dashed"][:len(
+        #                    HPDI[0])], "linewidths": [linewidth, linewidth, linewidth][:len(HPDI[0])]},
+        #                no_fill_contours=False, contourf_kwargs={"colors": ["white", "lightgreen", color], "alpha": 1}, **kwargs)
+        #                # , levels=(0.393,0.68,)) ,levels=[300],levels_lists=levels1)#,levels=[120])
         axes = np.array(figure.axes).reshape((nndims, nndims))
         lines_array = list(matplotlib.lines.lineStyles.keys())
         linestyles = (lines_array[0:4]+lines_array[0:4]+lines_array[0:4])[0:len(intervals)]
