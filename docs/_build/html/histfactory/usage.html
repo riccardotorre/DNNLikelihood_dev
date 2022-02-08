@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Usage &mdash; DNNLikelihood</title>
@@ -45,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Class" href="class.html" />
-    <link rel="prev" title="The Histfactory object" href="index.html" /> 
+    <link rel="prev" title="Histfactory object" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,22 +100,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Histfactory object</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Histfactory object</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="class.html">Class</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
@@ -167,7 +166,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-          <li><a href="index.html">The Histfactory object</a> &raquo;</li>
+          <li><a href="index.html">Histfactory object</a> &raquo;</li>
         
       <li>Usage</li>
     
@@ -212,118 +211,267 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="usage">
+<section id="usage">
 <span id="histfactory-usage"></span><h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
-<p>We give here a brief introduction to the use of the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> class. Refer to the
-full class documentation for more details.</p>
+<p>We give here a brief introduction to the use of the <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> class.
+Refer to the full class documentation for more details.</p>
 <p>The first time a <a class="reference internal" href="class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object is created, the
 <a class="reference internal" href="arguments.html#Histfactory.workspace_folder" title="Histfactory.workspace_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">workspace_folder</span></code></a> argument,
-corresponding to the folder containing the histfactory workspace, needs to be specified. All other input arguments have a default value
-that may need to be changed (see <a class="reference internal" href="arguments.html#histfactory-arguments"><span class="std std-ref">Arguments documentation</span></a>). Optionally, the user may specify the argument
-<a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> containing the path (either relative or absolute) to a folder where output files will be saved and the argument
-<a class="reference internal" href="arguments.html#Histfactory.name" title="Histfactory.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> with the name of the object (which is otherwise automatically generated).</p>
+corresponding to the folder containing the histfactory workspace, needs to be specified. All other input
+arguments have a default value that may need to be changed (see
+<a class="reference internal" href="arguments.html#histfactory-arguments"><span class="std std-ref">Arguments documentation</span></a>). Optionally, the user may specify the argument
+<a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> containing the path (either relative to the code
+execution path or absolute) to a folder where output files will be saved and the argument
+<a class="reference internal" href="arguments.html#Histfactory.name" title="Histfactory.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> with the name of the object (which is otherwise automatically
+generated).</p>
 <p>A basic initialization code is</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
-<span class="n">histfactory</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Histfactory</span><span class="p">(</span><span class="n">workspace_folder</span><span class="o">=</span><span class="s2">&quot;HEPData_workspaces&quot;</span><span class="p">,</span>
+<span class="n">histfactory</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Histfactory</span><span class="p">(</span><span class="n">workspace_folder</span><span class="o">=&lt;</span><span class="n">path_to_HEPData_workspaces</span><span class="o">&gt;</span><span class="s2">&quot;,</span>
                                         <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ATLAS_sbottom_search&quot;</span><span class="p">,</span>
-                                        <span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&lt;my_output_folder&gt;&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>When the object is created, it is automatically saved and two files are created:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>&lt;my_output_folder&gt;/ATLAS_sbottom_search_histfactory.h5</p></li>
-<li><p>&lt;my_output_folder&gt;/ATLAS_sbottom_search_histfactory.log</p></li>
-</ul>
-</div></blockquote>
-<p>See the documentation of the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a> and
-<a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a> methods.</p>
-<p>Moreover, when the object is created, the <code class="docutils literal notranslate"><span class="pre">workspace_folder</span></code> given as input is copied
-(if it is not already there) into the output folder “&lt;my_output_folder&gt;”
-and renamed “histfactory_workspace”:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>&lt;my_output_folder&gt;/histfactory_workspace</p></li>
-</ul>
-</div></blockquote>
-<p>The object can also be initialized importing it from saved files. In this case only the <a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>
-argument needs to be specified, while all other arguments are ignored.
-One could also optionally specify a new <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>. In case this is not specified, the
-<a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute from the imported object is used.
-For instance we could import the object created above with</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
+                                        <span class="n">output_folder</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">path_to_output_folder</span><span class="o">&gt;</span><span class="s2">&quot;,</span>
+                                        <span class="n">verbose</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
 
-<span class="n">histfactory</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Histfactory</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;&lt;my_output_folder&gt;/ATLAS_sbottom_search_histfactory&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Initialize</span> <span class="n">Histfactory</span> <span class="nb">object</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">No</span> <span class="n">Histfactory</span> <span class="nb">input</span> <span class="n">files</span> <span class="ow">and</span> <span class="n">folders</span> <span class="n">specified</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">HistFactory</span> <span class="n">output</span> <span class="n">folder</span> <span class="nb">set</span> <span class="n">to</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span> <span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">Workspace</span> <span class="n">folder</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_HEPData_workspaces</span><span class="o">&gt;</span>
+    <span class="n">copied</span> <span class="n">into</span> <span class="n">the</span> <span class="n">folder</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">histfactory_workspace</span> <span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Successfully</span> <span class="n">imported</span> <span class="mi">649</span> <span class="n">likelihoods</span> <span class="kn">from</span> <span class="mi">3</span> <span class="n">regions</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.03017405600985512</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">h5</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">h5</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.03426715300884098</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0014114639780018479</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>The object we created above has the attribute <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.likelihoods_dict" title="DNNLikelihood.Histfactory.likelihoods_dict"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.likelihoods_dict</span></code></a>, whichs contains
-a dictionary with items corresponsing to likelihoods and their properties. For instance, for the first
-likelihood, the dictionary looks like this</p>
+<p>where we used the placeholders &lt;path_to_HEPData_workspaces&gt;, &lt;abs_path_to_HEPData_workspaces&gt;,
+&lt;path_to_output_folder&gt;, and &lt;abs_path_to_output_folder&gt; to indicate the corresponding paths
+(relative paths can be given as input and are automatically converted into absolute paths).</p>
+<p>When the object is created, it is automatically saved and three files are created:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>&lt;abs_path_to_output_folder&gt;/ATLAS_sbottom_search_histfactory.h5</p></li>
+<li><p>&lt;abs_path_to_output_folder&gt;/ATLAS_sbottom_search_histfactory.json</p></li>
+<li><p>&lt;abs_path_to_output_folder&gt;/ATLAS_sbottom_search_histfactory.log</p></li>
+</ul>
+</div></blockquote>
+<p>See the documentation of the</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a></p></li>
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_h5" title="DNNLikelihood.Histfactory.save_h5"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_h5</span></code></a></p></li>
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_json" title="DNNLikelihood.Histfactory.save_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_json</span></code></a></p></li>
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save_log" title="DNNLikelihood.Histfactory.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save_log</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>methods for more details.</p>
+<p>Moreover, when the object is created, the <code class="docutils literal notranslate"><span class="pre">workspace_folder</span></code> given as input is copied
+(if it is not already there) into the output folder “&lt;abs_path_to_output_folder&gt;” and
+renamed “histfactory_workspace”, and the corresponding path
+<code class="docutils literal notranslate"><span class="pre">&lt;abs_path_to_output_folder&gt;/histfactory_workspace</span></code> is saved in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.workspace_folder" title="DNNLikelihood.Histfactory.workspace_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.workspace_folder</span></code></a> attribute.</p>
+<p>The object can also be initialized importing it from saved files. In this case only the
+<a class="reference internal" href="arguments.html#Histfactory.input_file" title="Histfactory.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>
+argument needs to be specified (with path relative to the code execution folder
+or absolute and with or without extension), while all other arguments are ignored.
+One could also optionally specify a new <a class="reference internal" href="arguments.html#Histfactory.output_folder" title="Histfactory.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>.
+In case this is not specified, the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.output_folder" title="DNNLikelihood.Histfactory.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.output_folder</span></code></a> attribute is set equal to
+the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.input_folder" title="DNNLikelihood.Histfactory.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.input_folder</span></code></a> one, so that the
+object continues to be saved in the same path from which it has been imported.
+For instance we could import the object created above with</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory_loaded</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Histfactory</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;&lt;path_to_output_folder&gt;/ATLAS_sbottom_search_histfactory&quot;</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Initialize</span> <span class="n">Histfactory</span> <span class="nb">object</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="nb">input</span> <span class="n">folder</span> <span class="nb">set</span> <span class="n">to</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span> <span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="nb">object</span> <span class="n">loaded</span> <span class="ow">in</span> <span class="mf">0.016981199999918317</span> <span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">HistFactory</span> <span class="n">output</span> <span class="n">folder</span> <span class="nb">set</span> <span class="n">to</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span> <span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">Workspace</span> <span class="n">folder</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">histfactory_workspace</span>
+    <span class="n">already</span> <span class="n">present</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">output</span> <span class="n">folder</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">log</span> <span class="n">file</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">log</span>
+   <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0009314999999787688</span> <span class="n">s</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The object we created above has the attribute
+<a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.likelihoods_dict" title="DNNLikelihood.Histfactory.likelihoods_dict"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.likelihoods_dict</span></code></a>,
+whichs contains a dictionary with items corresponsing to likelihoods and their properties.
+For instance, for the first likelihood, the dictionary looks like this</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;signal_region&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;BkgOnly.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood&#39;</span><span class="p">,</span>
      <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">'model_loaded':</span> <span class="pre">False</span></code> flag indicates that the corresponding likelihood has not yet been fully imported, i.e. that the corresponding
-parameters information and logpdf are not available. Liks can be imported using the
-<a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.import_likelihoods" title="DNNLikelihood.Histfactory.import_likelihoods"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.import_likelihoods</span></code></a> method. One can choose to import only one likelihood,
-only some of them, or all of them, specifying the <code class="docutils literal notranslate"><span class="pre">lik_numbers_list</span></code> argument. For instance the first likelihood
-can be imported through:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory</span><span class="o">.</span><span class="n">import_likelihoods</span><span class="p">(</span><span class="n">lik_numbers_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">'model_loaded':</span> <span class="pre">False</span></code> flag indicates that the corresponding likelihood has not yet been
+fully imported, i.e. that the corresponding parameters information and logpdf are not available.
+Likelihoods can be imported using the
+<a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.import_likelihoods" title="DNNLikelihood.Histfactory.import_likelihoods"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.import_likelihoods</span></code></a> method.
+One can choose to import only one likelihood, only some of them, or all of them, specifying the
+<code class="docutils literal notranslate"><span class="pre">lik_list</span></code> argument. For instance the first likelihood can be imported through:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory</span><span class="o">.</span><span class="n">import_likelihoods</span><span class="p">(</span><span class="n">lik_list</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Loading</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">histfactory_workspace</span><span class="o">/</span><span class="n">RegionA</span><span class="o">/</span><span class="n">patch</span><span class="o">.</span><span class="n">sbottom_1000_131_1</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">patch</span> <span class="n">file</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">File</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">histfactory_workspace</span><span class="o">/</span><span class="n">RegionA</span><span class="o">/</span><span class="n">patch</span><span class="o">.</span><span class="n">sbottom_1000_131_1</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">processed</span> <span class="ow">in</span> <span class="mf">1.2005613000000004</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">log</span> <span class="n">file</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0015189000000006558</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Imported</span> <span class="mi">1</span> <span class="n">likelihoods</span> <span class="ow">in</span>  <span class="mf">1.2017501000000017</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>When importing more than one likelihood, the option <code class="docutils literal notranslate"><span class="pre">progressbar</span></code>, which by default is <code class="docutils literal notranslate"><span class="pre">True</span></code>, allows to monitor the import with
-a progress bar. The imported likelihood are stored in the dictionary so that the corresponding item now contains full likelihood information,
-and the <code class="docutils literal notranslate"><span class="pre">model_loaded</span></code> flag is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. When the object is imported, the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.log" title="DNNLikelihood.Histfactory.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.log</span></code></a>
-attribute is updated, as well as the corresponding file &lt;my_output_folder&gt;/ATLAS_sbottom_search_histfactory.log.</p>
+<p>When importing more than one likelihood, the option <code class="docutils literal notranslate"><span class="pre">progressbar</span></code>, which by default is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+allows to monitor the import with a progress bar. The imported likelihood are stored in the dictionary
+so that the corresponding item now contains full likelihood information, and the <code class="docutils literal notranslate"><span class="pre">model_loaded</span></code> flag
+is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>. When the object is imported, the <a class="reference internal" href="attributes.html#DNNLikelihood.Histfactory.log" title="DNNLikelihood.Histfactory.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Histfactory.log</span></code></a>
+attribute is updated, as well as the corresponding file
+&lt;abs_path_to_output_folder&gt;/ATLAS_sbottom_search_histfactory.log.</p>
 <p>Looking at the dictionary for the fist likelihood, now one gets</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory</span><span class="o">.</span><span class="n">likelihoods_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;signal_region&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/BkgOnly.json&#39;</span><span class="p">,</span>
-     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;my_output_folder&gt;/histfactory_workspace/RegionA/patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;bg_only_file&#39;</span><span class="p">:</span> <span class="s1">&#39;BkgOnly.json&#39;</span><span class="p">,</span>
+     <span class="s1">&#39;patch_file&#39;</span><span class="p">:</span> <span class="s1">&#39;patch.sbottom_1000_131_1.json&#39;</span><span class="p">,</span>
      <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;ATLAS_sbottom_search_histfactory_0_region_A_patch_sbottom_1000_131_1_likelihood&#39;</span><span class="p">,</span>
      <span class="s1">&#39;model_loaded&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-     <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">pyhf</span><span class="o">.</span><span class="n">pdf</span><span class="o">.</span><span class="n">Model</span> <span class="n">at</span> <span class="mh">0x22c40b29d48</span><span class="o">&gt;</span><span class="p">,</span>
+     <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">pyhf</span><span class="o">.</span><span class="n">pdf</span><span class="o">.</span><span class="n">Model</span> <span class="n">at</span> <span class="mh">0x1dac0074ee0</span><span class="o">&gt;</span><span class="p">,</span>
      <span class="s1">&#39;obs_data&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">153.</span><span class="p">,</span>  <span class="mf">52.</span><span class="p">,</span>  <span class="mf">19.</span><span class="p">,</span>  <span class="mf">12.</span><span class="p">,</span>   <span class="mf">3.</span><span class="p">,</span>   <span class="mf">2.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>   <span class="mf">0.</span><span class="p">,</span>
-              <span class="o">...</span><span class="p">]),</span>
+             <span class="o">...</span><span class="p">]),</span>
      <span class="s1">&#39;pars_central&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span>
-            <span class="o">...</span><span class="p">]),</span>
+         <span class="o">...</span><span class="p">]),</span>
      <span class="s1">&#39;pars_bounds&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span> <span class="mf">9.150e-01</span><span class="p">,</span>  <span class="mf">1.085e+00</span><span class="p">],</span>
-            <span class="o">...</span><span class="p">]),</span>
+         <span class="o">...</span><span class="p">]),</span>
      <span class="s1">&#39;pars_labels&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;lumi_0&#39;</span><span class="p">,</span>
-      <span class="o">...</span><span class="p">],</span>
+     <span class="o">...</span><span class="p">],</span>
      <span class="s1">&#39;pars_pos_poi&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">5</span><span class="p">]),</span>
      <span class="s1">&#39;pars_pos_nuis&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">3</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span>
             <span class="o">...</span><span class="p">])}</span>
 </pre></div>
 </div>
-<p>Once likelihoods are imported the object can be saved using the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a>
-method. This saves the whole object, unless the optional argument <code class="docutils literal notranslate"><span class="pre">lik_numbers_list</span></code> is specified. It it is specified, then only the listed likelihoods
-are saved in <code class="docutils literal notranslate"><span class="pre">'model_loaded':</span> <span class="pre">True</span></code> mode (if they have been previously imported), so with full likelihood information, while all other likelihoods
-are saved in <code class="docutils literal notranslate"><span class="pre">'model_loaded':</span> <span class="pre">False</span></code> mode, that means without full likelihood information. This may allow to save disk space. If only some likelihoods
-have been imported and no <code class="docutils literal notranslate"><span class="pre">lik_numbers_list</span></code> argument is specified in the
-<a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a> method, then the object is saved in its current state. For instance,
-we can save our object (which only contains the first likelihood in <code class="docutils literal notranslate"><span class="pre">'model_loaded':</span> <span class="pre">True</span></code> mode), simply by writing</p>
+<p>Once likelihoods are imported the object can be saved using the
+<a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.save" title="DNNLikelihood.Histfactory.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.save</span></code></a>
+method. This saves the whole object, unless the optional argument <code class="docutils literal notranslate"><span class="pre">lik_list</span></code> is specified.
+If it is specified, then only the listed likelihoods are saved in <code class="docutils literal notranslate"><span class="pre">'model_loaded'</span> <span class="pre">=</span> <span class="pre">True</span></code> mode
+(if they have been previously imported), so with full likelihood information, while all other likelihoods
+are saved in <code class="docutils literal notranslate"><span class="pre">'model_loaded'</span> <span class="pre">=</span> <span class="pre">False</span></code> mode, that means without full likelihood information.
+This may allow to save disk space. If only some likelihoods have been imported and no <code class="docutils literal notranslate"><span class="pre">lik_list</span></code>
+argument is specified, then the object is saved in its current state. For instance, we can save our object
+(which only contains the first likelihood in <code class="docutils literal notranslate"><span class="pre">'model_loaded'</span> <span class="pre">=</span> <span class="pre">True</span></code> mode), simply by writing</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">histfactory</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.049732799999901545</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">h5</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">h5</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.024474800000007235</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0014777999999751046</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> ensure that the output files (generated when initializing the object) are updated.</p>
-<p>Finally, from any of the imported likelihoods, one can obtain a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object through the
-<a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.get_likelihood_object" title="DNNLikelihood.Histfactory.get_likelihood_object"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.get_likelihood_object</span></code></a>. When created, the
-<a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is automatically saved (see the documentation of the
-<a class="reference internal" href="../likelihood/methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a> method). For instance, for our
+<p>The <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> argument ensures that the output files (generated when initializing the object)
+are updated. If <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code>, then the old files are renamed and new files are saved.</p>
+<p>Finally, from any of the imported likelihoods, one can obtain a <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object
+through the <a class="reference internal" href="methods.html#DNNLikelihood.Histfactory.get_likelihood_object" title="DNNLikelihood.Histfactory.get_likelihood_object"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.get_likelihood_object</span></code></a>
+method. When created, the <a class="reference internal" href="../likelihood/class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is automatically saved
+(see the documentation of the <a class="reference internal" href="../likelihood/methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a> method). For instance, for our
 first likelihood we can do</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood_0</span> <span class="o">=</span> <span class="n">histfactory</span><span class="o">.</span><span class="n">get_likelihood_object</span><span class="p">(</span><span class="n">lik_number</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood_0</span> <span class="o">=</span> <span class="n">histfahistfactoryct</span><span class="o">.</span><span class="n">get_likelihood_object</span><span class="p">(</span><span class="n">lik_number</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="s2">&quot;ATLAS_sbottom_search/likelihood_0&quot;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Creating</span> <span class="s1">&#39;Lik&#39;</span> <span class="nb">object</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Initialize</span> <span class="n">Likelihood</span> <span class="nb">object</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Lik</span> <span class="n">output</span> <span class="n">folder</span> <span class="nb">set</span> <span class="n">to</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_likelihood_output_folder</span><span class="o">&gt;</span> <span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_likelihood_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_0_region_A_patch_sbottom_1000_131_1_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.001089200000002677</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_likelihood_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_0_region_A_patch_sbottom_1000_131_1_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0015916000000046893</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">h5</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_likelihood_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_0_region_A_patch_sbottom_1000_131_1_likelihood</span><span class="o">.</span><span class="n">h5</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0571498000000048</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Lik</span> <span class="nb">object</span> <span class="k">for</span> <span class="n">likelihood</span> <span class="mi">0</span> <span class="n">created</span> <span class="ow">and</span> <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0637558000000027</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Histfactory</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">ATLAS_sbottom_search_histfactory</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0008726000000010004</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
+<p>where the placeholder &lt;abs_path_to_likelihood_output_folder&gt; represent the absolute paths to the likelihood
+object output folder.</p>
 <p>For additional information see the <a class="reference internal" href="../likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a> object documentation.</p>
-</div>
+</section>
 
 
            </div>
@@ -336,7 +484,7 @@ first likelihood we can do</p>
         <a href="class.html" class="btn btn-neutral float-right" title="Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="The Histfactory object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Histfactory object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

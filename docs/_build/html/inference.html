@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Inference functions &mdash; DNNLikelihood</title>
@@ -45,7 +46,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Useful functions" href="utils.html" />
-    <link rel="prev" title="Methods" href="resources/methods.html" /> 
+    <link rel="prev" title="Others" href="others.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,23 +100,26 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Inference functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="others.html">Others</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Inference functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html">Useful functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_losses.html">Custom losses</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="citations.html">Use and Citation</a></li>
@@ -168,6 +172,8 @@
         
           <li><a href="code.html">Python module</a> &raquo;</li>
         
+          <li><a href="others.html">Others</a> &raquo;</li>
+        
       <li>Inference functions</li>
     
     
@@ -211,16 +217,16 @@
     text-align: unset;
 }
 </style>
-<span class="target" id="module-inference"></span><div class="section" id="inference-functions">
+<span class="target" id="module-inference"></span><section id="inference-functions">
 <h1>Inference functions<a class="headerlink" href="#inference-functions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="summary">
+<section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>Bla bla bla</p>
-</div>
-<div class="section" id="usage">
+</section>
+<section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="functions">
+</section>
+<section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="DNNLikelihood.inference.CI_from_sigma">
@@ -286,16 +292,16 @@ NOTE: quantiles should be in [0, 1]!</p>
 
 <dl class="py function">
 <dt id="DNNLikelihood.inference.compute_maximum_logpdf">
-<code class="sig-name descname">compute_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ndims</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#compute_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.compute_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">compute_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ndims</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">minimization_options</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#compute_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.compute_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="DNNLikelihood.inference.compute_profiled_maximum_logpdf">
-<code class="sig-name descname">compute_profiled_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_val</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ndims</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#compute_profiled_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.compute_profiled_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">compute_profiled_maximum_logpdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logpdf</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_val</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ndims</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_bounds</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">minimization_options</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/inference.html#compute_profiled_maximum_logpdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.inference.compute_profiled_maximum_logpdf" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -308,7 +314,7 @@ NOTE: quantiles should be in [0, 1]!</p>
         <a href="utils.html" class="btn btn-neutral float-right" title="Useful functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="resources/methods.html" class="btn btn-neutral float-left" title="Methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="others.html" class="btn btn-neutral float-left" title="Others" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

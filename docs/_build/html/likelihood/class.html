@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Class &mdash; DNNLikelihood</title>
@@ -99,8 +100,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Likelihood object</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Lik object</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Class</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="arguments.html">Arguments</a></li>
@@ -110,16 +111,14 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
@@ -172,7 +171,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-          <li><a href="index.html">The Likelihood object</a> &raquo;</li>
+          <li><a href="index.html">Lik object</a> &raquo;</li>
         
       <li>Class</li>
     
@@ -217,7 +216,7 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="class">
+<section id="class">
 <h1>Class<a class="headerlink" href="#class" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="DNNLikelihood.Lik">
@@ -311,58 +310,61 @@ The object can be directly created or obtained from an ATLAS histfactory workspa
 <tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.logpdf" title="DNNLikelihood.Lik.logpdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.logpdf</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.ndims" title="DNNLikelihood.Lik.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.ndims</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.ndims" title="DNNLikelihood.Lik.ndims"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.ndims</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_base_file_name" title="DNNLikelihood.Lik.output_figures_base_file_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file_name</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_base_file_name" title="DNNLikelihood.Lik.output_figures_base_file_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file_name</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_base_file_path" title="DNNLikelihood.Lik.output_figures_base_file_path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file_path</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_base_file_path" title="DNNLikelihood.Lik.output_figures_base_file_path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_base_file_path</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_h5_file" title="DNNLikelihood.Lik.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_h5_file</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_h5_file" title="DNNLikelihood.Lik.output_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_h5_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_json_file" title="DNNLikelihood.Lik.output_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_json_file</span></code></a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_bounds" title="DNNLikelihood.Lik.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_bounds</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_predictions_json_file" title="DNNLikelihood.Lik.output_predictions_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_predictions_json_file</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_bounds" title="DNNLikelihood.Lik.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_bounds</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_labels" title="DNNLikelihood.Lik.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_labels_auto" title="DNNLikelihood.Lik.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels_auto</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_labels" title="DNNLikelihood.Lik.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_nuis" title="DNNLikelihood.Lik.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_nuis</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_labels_auto" title="DNNLikelihood.Lik.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels_auto</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_poi" title="DNNLikelihood.Lik.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_poi</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_nuis" title="DNNLikelihood.Lik.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_nuis</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_poi" title="DNNLikelihood.Lik.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_poi</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.script_file" title="DNNLikelihood.Lik.script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.script_file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.verbose" title="DNNLikelihood.Lik.verbose"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.verbose</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.script_file" title="DNNLikelihood.Lik.script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.script_file</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="attributes.html#DNNLikelihood.Lik.verbose" title="DNNLikelihood.Lik.verbose"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.verbose</span></code></a></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -379,55 +381,73 @@ The object can be directly created or obtained from an ATLAS histfactory workspa
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_input_files" title="DNNLikelihood.Lik._Lik__check_define_input_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__check_define_input_files</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_input_files" title="DNNLikelihood.Lik._Lik__check_define_input_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__check_define_input_files</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_output_files" title="DNNLikelihood.Lik._Lik__check_define_output_files"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__check_define_output_files</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_name" title="DNNLikelihood.Lik._Lik__check_define_name"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__check_define_name</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_name" title="DNNLikelihood.Lik._Lik__check_define_name"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__check_define_name</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_ndims" title="DNNLikelihood.Lik._Lik__check_define_ndims"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__check_define_ndims</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_ndims" title="DNNLikelihood.Lik._Lik__check_define_ndims"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__check_define_ndims</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_output_files" title="DNNLikelihood.Lik._Lik__check_define_output_files"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__check_define_output_files</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_pars" title="DNNLikelihood.Lik._Lik__check_define_pars"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__check_define_pars</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__check_define_pars" title="DNNLikelihood.Lik._Lik__check_define_pars"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__check_define_pars</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__load" title="DNNLikelihood.Lik._Lik__load"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__load</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__load" title="DNNLikelihood.Lik._Lik__load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__load</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__set_pars_labels" title="DNNLikelihood.Lik._Lik__set_pars_labels"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.__set_pars_labels</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik._Lik__set_pars_labels" title="DNNLikelihood.Lik._Lik__set_pars_labels"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__set_pars_labels</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_log" title="DNNLikelihood.Lik.save_log"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.save_log</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.save</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_script" title="DNNLikelihood.Lik.save_script"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.save_script</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf" title="DNNLikelihood.Lik.logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_tmu_1d" title="DNNLikelihood.Lik.plot_tmu_1d"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_tmu_1d</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>:class:<a href="#id1"><span class="problematic" id="id2">`</span></a>Lik.update_figures &lt;DNNLikelihood.Lik.update_figures&gt;`|</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.reset_predictions" title="DNNLikelihood.Lik.reset_predictions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.reset_predictions</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.set_verbosity" title="DNNLikelihood.Lik.set_verbosity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik.set_verbosity</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_h5" title="DNNLikelihood.Lik.save_h5"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_h5</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_json" title="DNNLikelihood.Lik.save_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_json</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_log" title="DNNLikelihood.Lik.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_log</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_predictions_json" title="DNNLikelihood.Lik.save_predictions_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_predictions_json</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_script" title="DNNLikelihood.Lik.save_script"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_script</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.set_verbosity" title="DNNLikelihood.Lik.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.set_verbosity</span></code></a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.update_figures" title="DNNLikelihood.Lik.update_figures"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.update_figures</span></code></a></p></td>
 <td></td>
 </tr>
 </tbody>
@@ -435,7 +455,7 @@ The object can be directly created or obtained from an ATLAS histfactory workspa
 <p><strong>Inheritance diagram</strong></p>
 <div class="graphviz"><img src="../_images/inheritance-2aa3ef82b2e69fb07aadce98cd2ca14971884349.png" alt="Inheritance diagram of DNNLikelihood.Lik" class="inheritance graphviz" /></div>
 <hr class="docutils" />
-</div>
+</section>
 
 
            </div>

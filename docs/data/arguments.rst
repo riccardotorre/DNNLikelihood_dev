@@ -7,11 +7,7 @@ Arguments
 
 .. argument:: name
 
-    Name of the :mod:`Data <data>` object.
-    It is used to build the :attr:`Data.name <DNNLikelihood.Data.name>` attribute.
-     
-        - **type**: ``str`` or ``None``
-        - **default**: ``None``   
+    See :argument:`name <common_classes_arguments.name>`.
 
 .. argument:: data_X
 
@@ -36,15 +32,15 @@ Arguments
     the :attr:`Data.dtype_stored <DNNLikelihood.Data.dtype_stored>` and
     :attr:`Data.dtype_required <DNNLikelihood.Data.dtype_required>` attributes.
     
-    - :argument:`input_file` is ``None``
-    
-        It represents the data type of the data that will be saved in 
-        the :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>` dataset.
+- :argument:`input_file` is ``None``
 
-    - :argument:`input_file` is ``None``
+    It represents the data type of the data that will be saved in 
+    the :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>` dataset.
 
-        It represents the data type required for the generation of train/validation/test datasets 
-        (stored in the temporary attribute :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`).
+- :argument:`input_file` is ``None``
+
+    It represents the data type required for the generation of train/validation/test datasets 
+    (stored in the temporary attribute :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`).
 
     In the case in which, when the object is created, one needs a different dtype for stored data and for the 
     generation of train/validation/test datasets, one can pass a list of two strings corresponding to two dtypes
@@ -60,52 +56,23 @@ Arguments
 
 .. argument:: pars_central   
 
-    List or |numpy_link| array containing central values of the parameters of the original lilekelihood.
-    It is used to build the :attr:`Lik.pars_central <DNNLikelihood.Lik.pars_central>` attribute.
-        
-        - **type**: ``list`` or ```numpy.ndarray``
-        - **shape**: ``(ndims,)``
-        - **default**: ``None`` 
+    See :argument:`pars_central <common_classes_arguments.pars_central>`.
 
 .. argument:: pars_pos_poi   
 
-    List or |numpy_link| array containing the positions in the parameters list of the
-    parameters of interest.
-    It is used to build the :attr:`Data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>` attribute.
-
-        - **type**: ``list`` or ``numpy.ndarray``
-        - **shape**: ``(n_poi,)``
-        - **default**: ``None`` 
+    See :argument:`pars_pos_poi <common_classes_arguments.pars_pos_poi>`.
 
 .. argument:: pars_pos_nuis   
 
-    List or |numpy_link| array containing the positions in the parameters list of the
-    nuisance parameters.
-    It is used to build the :attr:`Data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>` attribute.
-
-        - **type**: ``list`` or ``numpy.ndarray``
-        - **shape**: ``(n_nuis,)``
-        - **default**: ``None`` 
+    See :argument:`pars_pos_nuis <common_classes_arguments.pars_pos_nuis>`.
 
 .. argument:: pars_labels   
 
-    List containing the parameters names as strings.
-    Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
-    and can contain latex expressions that are properly compiled when making plots.
-    It is used to build the :attr:`Data.pars_labels <DNNLikelihood.Data.pars_labels>` attribute.
-
-        - **type**: ``list``
-        - **shape**: ``(ndims,)``
-        - **default**: ``None`` 
+    See :argument:`pars_labels <common_classes_arguments.pars_labels>`.
 
 .. argument:: pars_bounds   
 
-    List or |numpy_link| array containing containing bounds for the parameters.
-    It is used to build the :attr:`Data.pars_bounds <DNNLikelihood.Data.pars_bounds>` attribute.
-
-        - **type**: ``numpy.ndarray`` or ``None``
-        - **shape**: ``(ndims,2)``
-        - **default**: ``None`` 
+    See :argument:`pars_bounds <common_classes_arguments.pars_bounds>`.
 
 .. argument:: test_fraction
 
@@ -121,30 +88,14 @@ Arguments
 
 .. argument:: output_folder
      
-    Path (either relative to the code execution folder or absolute) where output files are saved.
-    It is used to set the :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute.
-        
-        - **type**: ``str`` or ``None``
-        - **default**: ``None``
+    See :argument:`output_folder <common_classes_arguments.output_folder>`.
 
 .. argument:: input_file
 
-    File name (either relative to the code execution folder or absolute, with or without extension
-    and with or without the "_object" suffix) 
-    of a saved :mod:`Data <data>` object. 
-    It is used to set the 
-    :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute.
-
-       - **type**: ``str`` or ``None``
-       - **default**: ``None``
+    See :argument:`input_file <common_classes_arguments.input_file>`.
 
 .. argument:: verbose
 
-    Argument used to set the verbosity mode of the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` 
-    method and the default verbosity mode of all class methods that accept a ``verbose`` argument.
-    See :ref:`Verbosity mode <verbosity_mode>`.
-
-       - **type**: ``bool``
-       - **default**: ``True``
+   See :argument:`verbose <common_classes_arguments.verbose>`.
 
 .. include:: ../external_links.rst

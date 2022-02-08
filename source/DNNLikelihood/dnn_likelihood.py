@@ -5,6 +5,7 @@ import codecs
 import json
 import multiprocessing
 import pickle
+import random
 import re
 import time
 from datetime import datetime
@@ -24,18 +25,19 @@ import seaborn as sns
 import tensorflow as tf
 from tensorflow.keras import Input
 from tensorflow.keras import backend as K
-from tensorflow.keras import callbacks, losses, metrics, optimizers
-from tensorflow.keras.layers import (AlphaDropout, BatchNormalization, Dense,
-                                     Dropout, InputLayer)
+from tensorflow.keras import layers, initializers, regularizers, constraints, callbacks, optimizers, metrics, losses
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.utils import plot_model
 
-from . import inference, utils
+from . import inference, utils, custom_losses
 from .corner import corner, extend_corner_range, get_1d_hist
 from .data import Data
 from .likelihood import Lik
 from .resources import Resources
 from .show_prints import print
+
+header_string = "=============================="
+footer_string = "------------------------------"
 
 try:
     from livelossplot import PlotLossesKerasTF as PlotLossesKeras
@@ -49,9 +51,6 @@ greens = sns.color_palette("Greens", 30)
 blues = sns.color_palette("Blues", 30)
 
 mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mplstyle")
-
-header_string = "=============================="
-footer_string = "------------------------------"
 
 class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resources
     """
@@ -78,14 +77,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                  resources_inputs=None,
                  output_folder=None,
                  ensemble_name=None,
-                 input_summary_json_file=None,
+                 input_file=None,
                  verbose=True
                  ):
         """
         The :class:`DnnLik <DNNLikelihood.DnnLik>` object can be initialized in two different ways, 
-        depending on the value of the :argument:`input_summary_json_file` argument.
+        depending on the value of the :argument:`input_file` argument.
 
-        - :argument:`input_summary_json_file` is ``None`` (default)
+        - :argument:`input_file` is ``None`` (default)
 
             All other arguments are parsed and saved in corresponding attributes. If no :argument:`name` is given, 
             then one is created. If the input argument :argument:`ensemble_name` is not ``None`` the object is assumed to be
@@ -95,11 +94,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             The full object is saved through the 
             :meth:`DnnLik.save <DNNLikelihood.DnnLik.save>` method. 
         
-        - :argument:`input_summary_json_file` is not ``None``
+        - :argument:`input_file` is not ``None``
 
-            The object is reconstructed from the input files. First the log and summary_json files are loaded through 
+            The object is reconstructed from the input files. First the log and json files are loaded through 
             the private method
-            :meth:`DnnLik.__load_summary_json_and_log <DNNLikelihood.DnnLik._Lik__load_summary_json_and_log>`,
+            :meth:`DnnLik.__load_json_and_log <DNNLikelihood.DnnLik._Lik__load_json_and_log>`,
             then, if the input arguments :argument:`dtype` and/or :argument:`seed` are provided,
             the corresponding attributes are set to their values (overwriting the values imported from files), and finally 
             all other attributes are loaded through the private methods:
@@ -108,7 +107,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 - :meth:`DnnLik.__load_history_and_log <DNNLikelihood.DnnLik._Lik__load_history>`
                 - :meth:`DnnLik.__load_model <DNNLikelihood.DnnLik._Lik__load_model>`
                 - :meth:`DnnLik.__load_predictions <DNNLikelihood.DnnLik._Lik__load_predictions>`
-                - :meth:`DnnLik.__load_scalers_and_log <DNNLikelihood.DnnLik._Lik__load_scalers>`
+                - :meth:`DnnLik.__load_preprocessing_and_log <DNNLikelihood.DnnLik._Lik__load_preprocessing>`
 
             Moreover, depending on the value of the input argument :argument:`output_folder` the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` method behaves as follows:
 
@@ -124,13 +123,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     
                     Output folder, files, and path attributes are not updated and everything is read from the loaded object.
 
-            Only the json summary and log files are saved (overwriting the old ones) through the methods:
+            Only the json and log files are saved (overwriting the old ones) through the methods:
                 
-                - :meth:`DnnLik.save_summary_json <DNNLikelihood.DnnLik.save_summary_json>` 
+                - :meth:`DnnLik.save_json <DNNLikelihood.DnnLik.save_json>` 
                 - :meth:`DnnLik.save_log <DNNLikelihood.DnnLik.save_log>` 
     
         Resources, data, seed, dtype and |tf_link| objects are set in the same way, independently of the value of
-        :argument:`input_summary_json_file`, through the private methods:
+        :argument:`input_file`, through the private methods:
             
             - :meth:`DnnLik.__set_data <DNNLikelihood.DnnLik._Lik__set_data>`
             - :meth:`DnnLik.__set_dtype <DNNLikelihood.DnnLik._Lik__set_dtype>`
@@ -145,18 +144,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         - **Produces file**
 
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
-            - :attr:`DnnLik.output_summary_json_file <DNNLikelihood.DnnLik.output_summary_json_file>`
+            - :attr:`DnnLik.output_json_file <DNNLikelihood.DnnLik.output_json_file>`
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        self.output_folder = output_folder
         #### Set input files
-        self.input_summary_json_file = input_summary_json_file
+        self.input_file = input_file
         self.input_data_file = input_data_file
         self.input_likelihood_file = input_likelihood_file
         self.__check_define_input_files(verbose=verbose_sub)
         ############ Check wheather to create a new DNNLik object from inputs or from files
-        if self.input_files_base_name == None:
+        if self.input_file == None:
             ############ Initialize input parameters from arguments
             #### Set main inputs
             self.log = {timestamp: {"action": "created"}}
@@ -180,7 +180,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.npoints_train, self.npoints_val, self.npoints_test = self.__model_data_inputs["npoints"]
             #### Set output folder and files
             self.output_folder = output_folder
-            self.__check_define_output_files(output_folder=output_folder, timestamp=timestamp, verbose=verbose_sub)
+            self.__check_define_output_files(timestamp=timestamp, verbose=verbose_sub)
             #### Set ensemble attributes if the DNNLikelihood is part of an ensemble
             self.ensemble_name = ensemble_name
             self.__check_define_ensemble_folder(verbose=verbose_sub)
@@ -190,7 +190,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             ############ Initialize input parameters from file
             #### Load summary_log dictionary
             print(header_string,"\nWhen providing DNNLik input folder all arguments but data, input_likelihood_file, load_on_RAM and dtype are ignored and the object is constructed from saved data.",show=verbose)
-            self.__load_summary_json_and_log(verbose=verbose_sub)
+            self.__load_json_and_log(verbose=verbose_sub)
             self.data = None
             #### Set main inputs and DataSample
             self.load_on_RAM = load_on_RAM
@@ -199,7 +199,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if seed != None:
                 self.seed = seed
             ### Set name, folders and files names
-            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
+            self.__check_define_output_files(timestamp=timestamp,verbose=verbose_sub)
         #### Set resources (__resources_inputs is None for a standalone DNNLikelihood and is passed only if the DNNLikelihood
         #### is part of an ensemble)
         self.__set_likelihood(verbose=verbose_sub)
@@ -211,17 +211,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.__set_data(verbose=verbose_sub) # also sets self.ndims
         self.__set_tf_objects(verbose=verbose_sub) # optimizer, loss, metrics, callbacks
         ### Initialize model, history,scalers, data indices, and predictions
-        if self.input_files_base_name != None:
+        if self.input_file != None:
             self.__load_data_indices(verbose=verbose_sub)
             self.__load_history(verbose=verbose_sub)
             self.__load_model(verbose=verbose_sub)
             self.__load_predictions(verbose=verbose_sub)
-            self.__load_scalers(verbose=verbose_sub)
+            self.__load_preprocessing(verbose=verbose_sub)
             self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
         else:
             self.epochs_available = 0
+            self.training_time = 0
             self.idx_train, self.idx_val, self.idx_test = [np.array([], dtype="int"),np.array([], dtype="int"),np.array([], dtype="int")]
             self.scalerX, self.scalerY = [None,None]
+            self.rotationX = None
             self.model = None
             self.history = {}
             self.predictions = {"Model_evaluation": {}, 
@@ -232,13 +234,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.X_val, self.Y_val = [np.array([[]], dtype=self.dtype),np.array([], dtype=self.dtype)]
         self.X_test, self.Y_test = [np.array([[]], dtype=self.dtype),np.array([], dtype=self.dtype)]
         ### Save object
-        if self.input_files_base_name == None:
-            self.save_summary_json(overwrite=False, verbose=verbose_sub)
+        if self.input_file == None:
+            self.save_json(overwrite=False, verbose=verbose_sub)
             self.save_log(overwrite=False, verbose=verbose_sub)
             #self.save(overwrite=False, verbose=verbose_sub)
             #self.save_log(overwrite=False, verbose=verbose_sub)
         else:
-            self.save_summary_json(overwrite=True, verbose=verbose_sub)
+            self.save_json(overwrite=True, verbose=verbose_sub)
             self.save_log(overwrite=True, verbose=verbose_sub)
 
     def __set_resources(self,verbose=None):
@@ -256,11 +258,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         self.check_tf_gpu(verbose=verbose)
@@ -284,11 +282,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.input_idx_h5_file <DNNLikelihood.DnnLik.input_idx_h5_file>`
             - :attr:`DnnLik.input_log_file <DNNLikelihood.DnnLik.input_log_file>`
             - :attr:`DnnLik.input_predictions_h5_file <DNNLikelihood.DnnLik.input_predictions_h5_file>`
-            - :attr:`DnnLik.input_scalers_pickle_file <DNNLikelihood.DnnLik.input_scalers_pickle_file>`
+            - :attr:`DnnLik.input_preprocessing_pickle_file <DNNLikelihood.DnnLik.input_preprocessing_pickle_file>`
             - :attr:`DnnLik.input_tf_model_h5_file <DNNLikelihood.DnnLik.input_tf_model_h5_file>`
 
         depending on the value of the 
-        :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+        :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
         It also sets the attribute
         :attr:`DnnLik.input_data_file <DNNLikelihood.DnnLik.input_data_file>` if the object has
         been initialized directly from a :mod:`Data <data>` object.
@@ -298,28 +296,29 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.input_data_file = path.abspath(path.splitext(self.input_data_file)[0])
         if self.input_likelihood_file is not None:
             self.input_likelihood_file = path.abspath(path.splitext(self.input_likelihood_file)[0])
-        if self.input_summary_json_file == None:
-            self.input_files_base_name = None
+        if self.input_file == None:
+            self.input_json_file = None
             self.input_history_json_file = None
             self.input_idx_h5_file = None
             self.input_log_file = None
             self.input_predictions_h5_file = None
-            self.input_scalers_pickle_file = None
+            self.input_preprocessing_pickle_file = None
             self.input_tf_model_h5_file = None
             self.input_folder = None
             print(header_string,"\nNo DnnLik input files and folders specified.\n", show=verbose)
         else:
-            self.input_files_base_name = path.abspath(path.splitext(self.input_summary_json_file)[0].replace("_summary",""))
-            self.input_history_json_file = self.input_files_base_name+"_history.json"
-            self.input_idx_h5_file = self.input_files_base_name+"_idx.h5"
-            self.input_log_file = self.input_files_base_name+".log"
-            self.input_predictions_h5_file = self.input_files_base_name+"_predictions.h5"
-            self.input_scalers_pickle_file = self.input_files_base_name+"_scalers.pickle"
-            self.input_tf_model_h5_file = self.input_files_base_name+"_model.h5"
-            self.input_folder = path.split(self.input_files_base_name)[0]
+            self.input_file = path.abspath(path.splitext(self.input_file)[0])
+            self.input_json_file = self.input_file+".json"
+            self.input_history_json_file = self.input_file+"_history.json"
+            self.input_idx_h5_file = self.input_file+"_idx.h5"
+            self.input_log_file = self.input_file+".log"
+            self.input_predictions_h5_file = self.input_file+"_predictions.h5"
+            self.input_preprocessing_pickle_file = self.input_file+"_preprocessing.pickle"
+            self.input_tf_model_h5_file = self.input_file+"_model.h5"
+            self.input_folder = path.split(self.input_file)[0]
             print(header_string,"\nDnnLik input folder set to\n\t", self.input_folder,".\n",show=verbose)
 
-    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
+    def __check_define_output_files(self,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
         to set the attributes corresponding to output folders
@@ -335,8 +334,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.output_idx_h5_file <DNNLikelihood.DnnLik.output_idx_h5_file>`
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
             - :attr:`DnnLik.output_predictions_h5_file <DNNLikelihood.DnnLik.output_predictions_h5_file>`
-            - :attr:`DnnLik.output_scalers_pickle_file <DNNLikelihood.DnnLik.output_scalers_pickle_file>`
-            - :attr:`DnnLik.output_summary_json_file <DNNLikelihood.DnnLik.output_summary_json_file>`
+            - :attr:`DnnLik.output_preprocessing_pickle_file <DNNLikelihood.DnnLik.output_preprocessing_pickle_file>`
+            - :attr:`DnnLik.output_json_file <DNNLikelihood.DnnLik.output_json_file>`
             - :attr:`DnnLik.output_tf_model_graph_pdf_file <DNNLikelihood.DnnLik.output_tf_model_graph_pdf_file>`
             - :attr:`DnnLik.output_tf_model_h5_file <DNNLikelihood.DnnLik.output_tf_model_h5_file>`
             - :attr:`DnnLik.output_tf_model_json_file <DNNLikelihood.DnnLik.output_tf_model_json_file>`
@@ -359,8 +358,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if they do not exist.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if output_folder is not None:
-            self.output_folder = path.abspath(output_folder)
+        if self.output_folder is not None:
+            self.output_folder = path.abspath(self.output_folder)
             if self.input_folder is not None and self.output_folder != self.input_folder:
                 utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
         else:
@@ -378,8 +377,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.output_log_file = self.output_files_base_name+".log"
         self.output_predictions_h5_file = self.output_files_base_name+"_predictions.h5"
         self.output_predictions_json_file = self.output_files_base_name+"_predictions.json"
-        self.output_scalers_pickle_file = self.output_files_base_name+"_scalers.pickle"
-        self.output_summary_json_file = self.output_files_base_name+"_summary.json"
+        self.output_preprocessing_pickle_file = self.output_files_base_name+"_preprocessing.pickle"
+        self.output_json_file = self.output_files_base_name+".json"
         self.output_tf_model_graph_pdf_file = self.output_files_base_name+"_model_graph.pdf"
         self.output_tf_model_h5_file = self.output_files_base_name+"_model.h5"
         self.output_tf_model_json_file = self.output_files_base_name+"_model.json"
@@ -396,11 +395,15 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
         to define the :attr:`DnnLik.name <DNNLikelihood.DnnLik.name>` attribute.
         If it is ``None`` it replaces it with 
-        ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_DNNLikelihood"``.
+        ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_dnnlikelihood"``,
+        otherwise it appends the suffix "_dnnlikelihood" 
+        (preventing duplication if it is already present).
         """
         if self.name == None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-            self.name = "model_"+timestamp+"_DNNLikelihood"
+            self.name = "model_"+timestamp+"_dnnlikelihood"
+        else:
+            self.name = utils.check_add_suffix(self.name, "_dnnlikelihood")
 
     def __set_likelihood(self,verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -461,10 +464,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.__model_data_inputs["npoints"][1] = round(self.__model_data_inputs["npoints"][0]*self.__model_data_inputs["npoints"][1])
         if self.__model_data_inputs["npoints"][2] <= 1:
             self.__model_data_inputs["npoints"][2] = round(self.__model_data_inputs["npoints"][0]*self.__model_data_inputs["npoints"][2])
-        utils.check_set_dict_keys(self.__model_data_inputs, ["scaleX",
-                                                             "scaleY",
+        utils.check_set_dict_keys(self.__model_data_inputs, ["scalerX",
+                                                             "scalerY",
+                                                             "rotationX",
                                                              "weighted"],
-                                                            [False,False,False],verbose=verbose_sub)
+                                                            [False,False,False,False],verbose=verbose_sub)
 
     def __check_define_model_define_inputs(self,verbose=None):
         """
@@ -497,11 +501,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if self.__model_compile_inputs == None:
@@ -543,11 +543,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, _ = self.set_verbosity(verbose)
         if self.ensemble_name == None:
@@ -566,6 +562,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         if self.seed == None:
             self.seed = 1
+        random.seed(self.seed)
         np.random.seed(self.seed)
         tf.random.set_seed(self.seed)
 
@@ -607,11 +604,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if self.data == None and self.input_data_file == None:
@@ -677,6 +670,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             
             - :attr:`DnnLik.scalerX_bool <DNNLikelihood.DnnLik.scalerX_bool>`
             - :attr:`DnnLik.scalerY_bool <DNNLikelihood.DnnLik.scalerY_bool>`
+            - :attr:`DnnLik.rotationX_bool <DNNLikelihood.DnnLik.rotationX_bool>`
             - :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>`
             - :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>`
             - :attr:`DnnLik.act_func_out_layer <DNNLikelihood.DnnLik.act_func_out_layer>`
@@ -684,9 +678,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>`
             - :attr:`DnnLik.epochs_required <DNNLikelihood.DnnLik.epochs_required>`
             - :attr:`DnnLik.batch_size <DNNLikelihood.DnnLik.batch_size>`
+            - :attr:`DnnLik.model_train_kwargs <DNNLikelihood.DnnLik.model_train_kwargs>`
         """
         self.scalerX_bool = self.__model_data_inputs["scalerX"]
         self.scalerY_bool = self.__model_data_inputs["scalerY"]
+        self.rotationX_bool = self.__model_data_inputs["rotationX"]
         self.weighted = self.__model_data_inputs["weighted"]
         self.hidden_layers = self.__model_define_inputs["hidden_layers"]
         self.act_func_out_layer = self.__model_define_inputs["act_func_out_layer"]
@@ -695,6 +691,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.kernel_initializer = self.__model_define_inputs["kernel_initializer"]
         self.epochs_required = self.__model_train_inputs["epochs"]
         self.batch_size = self.__model_train_inputs["batch_size"]
+        self.model_train_kwargs = utils.dic_minus_keys(self.__model_train_inputs, ["epochs", "batch_size"])
 
     def __set_tf_objects(self,verbose=None):
         """
@@ -710,39 +707,32 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         _, verbose_sub = self.set_verbosity(verbose)
+        self.__set_layers(verbose=verbose_sub)
         self.__set_optimizer(verbose=verbose_sub)  # this defines the string optimizer_string and object optimizer
         self.__set_loss(verbose=verbose_sub)  # this defines the string loss_string and the object loss
         self.__set_metrics(verbose=verbose_sub)  # this defines the lists metrics_string and metrics
         self.__set_callbacks(verbose=verbose_sub)  # this defines the lists callbacks_strings and callbacks
 
-    def __load_summary_json_and_log(self,verbose=None):
+    def __load_json_and_log(self,verbose=None):
         """
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one 
         to import part of a previously saved
         :class:`DnnLik <DNNLikelihood.DnnLik>` object from the files 
-        :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` and
+        :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` and
         :attr:`DnnLik.input_log_file <DNNLikelihood.DnnLik.input_log_file>`.
 
         - **Arguments**
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        with open(self.input_summary_json_file) as json_file:
+        with open(self.input_json_file) as json_file:
             dictionary = json.load(json_file)
         self.__dict__.update(dictionary)
         with open(self.input_log_file) as json_file:
@@ -752,11 +742,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.log = dictionary
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        self.log[timestamp] = {"action": "loaded summary and log json",
-                               "files names": [path.split(self.input_summary_json_file)[-1],
+        self.log[timestamp] = {"action": "loaded object and log json",
+                               "files names": [path.split(self.input_json_file)[-1],
                                                path.split(self.input_log_file)[-1]]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print(header_string,"\nDnnLik summary json and log files loaded in", str(end-start), ".\n", show=verbose)
+        print(header_string,"\nDnnLik json and log files loaded in", str(end-start), ".\n", show=verbose)
 
     def __load_history(self,verbose=None):
         """
@@ -775,11 +765,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -811,18 +797,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
+        custom_objects = custom_losses.losses()
         try:
-            self.model = load_model(self.input_tf_model_h5_file, custom_objects={"mean_error": self.mean_error,
-                                                                                 "mean_percentage_error": self.mean_percentage_error,
-                                                                                 "R2_metric": self.R2_metric})
+            self.model = load_model(self.input_tf_model_h5_file, custom_objects = custom_objects)
         except:
             print(header_string,"\nNo model file available. The model and epochs_available attributes will be initialized to None and 0, respectively.\n",show=verbose)
             self.model = None
@@ -844,42 +825,40 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
         print(header_string,"\nDnnLik tf model h5 file loaded in", str(end-start), ".\n", show=verbose)
 
-    def __load_scalers(self,verbose=None):
+    def __load_preprocessing(self,verbose=None):
         """
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
         to set the :attr:`DnnLik.scalerX <DNNLikelihood.DnnLik.scalerX>` and 
         :attr:`DnnLik.scalerY <DNNLikelihood.DnnLik.scalerY>` attributes from the file
-        :attr:`DnnLik.input_scalers_pickle_file <DNNLikelihood.DnnLik.input_scalers_pickle_file>`.
+        :attr:`DnnLik.input_preprocessing_pickle_file <DNNLikelihood.DnnLik.input_preprocessing_pickle_file>`.
         If the file is not found the attributes are set to ``None``.
 
         - **Arguments**
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         try:
-            pickle_in = open(self.input_scalers_pickle_file, "rb")
+            pickle_in = open(self.input_preprocessing_pickle_file, "rb")
             self.scalerX = pickle.load(pickle_in)
             self.scalerY = pickle.load(pickle_in)
+            self.rotationX = pickle.load(pickle_in)
             pickle_in.close()
         except:
             print(header_string,"\nNo scalers file available. The scalerX and scalerY attributes will be initialized to None.\n",show=verbose)
             self.scalerX = None
             self.scalerY = None
+            self.rotationX = None
             return
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        self.log[timestamp] = {"action": "loaded scalers h5",
-                               "file name": path.split(self.input_scalers_pickle_file)[-1]}
+        self.log[timestamp] = {"action": "loaded scalers and X rotation h5",
+                               "file name": path.split(self.input_preprocessing_pickle_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved at the end of all loadings
-        print(header_string,"\nDnnLik scalers h5 file loaded in", str(end-start), ".\n", show=verbose)
+        print(header_string,"\nDnnLik preprocessing h5 file loaded in", str(end-start), ".\n", show=verbose)
 
     def __load_data_indices(self,verbose=None):
         """
@@ -902,11 +881,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -943,11 +918,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -970,12 +941,150 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
     #    Bla bla
     #    """
     #    verbose, verbose_sub = self.set_verbosity(verbose)
-    #    self.__load_summary_json_and_log(verbose=verbose)
+    #    self.__load_json_and_log(verbose=verbose)
     #    self.__load_model(verbose=verbose)
     #    self.__load_history(verbose=verbose)
-    #    self.__load_scalers(verbose=verbose)
+    #    self.__load_preprocessing(verbose=verbose)
     #    self.__load_data_indices(verbose=verbose)
     #    self.__load_predictions(verbose=verbose)
+
+    def __set_layers(self, verbose=None):
+        """
+        Method that defines strings representing the |tf_keras_layers_link| that are stored in the 
+        :attr:`DnnLik.layers_string <DNNLikelihood.DnnLik.layers_string>` attribute.
+        These are defined from the attributes
+
+            - :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>`
+            - :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>`
+            - :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>`
+
+        If |tf_keras_batch_normalization_link| layers are specified in the 
+        :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>` attribute, then the 
+        :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>` attribute is ignored. Otherwise,
+        if :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>` is ``True``, then a 
+        |tf_keras_batch_normalization_link| layer is added after the input layer and before
+        each |tf_keras_dense_link| layer.
+
+        If |tf_keras_dropout_link| layers are specified in the 
+        :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>` attribute, then the 
+        :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>` attribute is ignored. Otherwise,
+        if :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>` is larger than ``0``, then
+        a |tf_keras_dropout_link| layer is added after each |tf_keras_dense_link| layer 
+        (but the output layer).
+        
+        The method also sets the three attributes:
+
+            - :attr:`DnnLik.layers <DNNLikelihood.DnnLik.layers>` (set to an empty list ``[]``, filled by the 
+                :meth:`DnnLik.model_define <DNNLikelihood.DnnLik.model_define>` method)
+            - :attr:`DnnLik.model_params <DNNLikelihood.DnnLik.model_params>`
+            - :attr:`DnnLik.model_trainable_params <DNNLikelihood.DnnLik.model_trainable_params>`
+            - :attr:`DnnLik.model_non_trainable_params <DNNLikelihood.DnnLik.model_non_trainable_params>`
+
+        - **Arguments**
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+        
+        - **Produces file**
+
+            - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nSetting hidden layers\n",show=verbose)
+        self.layers_string = []
+        self.layers = []
+        layer_string = "layers.Input(shape=(" + str(self.ndims)+",))"
+        self.layers_string.append(layer_string)
+        print("Added Input layer: ", layer_string, show=verbose)
+        i = 0
+        if "dropout" in str(self.hidden_layers).lower():
+            insert_dropout = False
+            self.dropout_rate = "custom"
+        elif "dropout" not in str(self.hidden_layers).lower() and self.dropout_rate != 0:
+            insert_dropout = True
+        else:
+            insert_dropout = False
+        if "batchnormalization" in str(self.hidden_layers).lower():
+            self.batch_norm = "custom"
+        for layer in self.hidden_layers:
+            if type(layer) == str:
+                if "(" in layer:
+                    layer_string = "layers."+layer
+                else:
+                    layer_string = "layers."+layer+"()"
+            elif type(layer) == dict:
+                try:
+                    name = layer["name"]
+                except:
+                    raise Exception("The layer ", str(layer), " has unspecified name.")
+                try:
+                    args = layer["args"]
+                except:
+                    args = []
+                try:
+                    kwargs = layer["kwargs"]
+                except:
+                    kwargs = {}
+                layer_string = utils.build_method_string_from_dict("layers", name, args, kwargs)
+            elif type(layer) == list:
+                units = layer[0]
+                activation = layer[1]
+                try:
+                    initializer = layer[2]
+                except:
+                    initializer = None
+                if activation == "selu":
+                    layer_string = "layers.Dense(" + str(units) + ", activation='" + activation + "', kernel_initializer='lecun_normal')"
+                elif activation != "selu" and initializer != None:
+                    layer_string = "layers.Dense(" + str(units) + ", activation='" + activation + "')"
+                else:
+                    layer_string = "layers.Dense(" + str(units)+", activation='" + activation + "', kernel_initializer='" + initializer + "')"
+            else:
+                layer_string = None
+                print("Invalid input for layer: ", layer,". The layer will not be added to the model.", show=verbose)
+            if self.batch_norm == True and "dense" in layer_string.lower():
+                self.layers_string.append("layers.BatchNormalization()")
+                print("Added hidden layer: layers.BatchNormalization()", show=verbose)
+                i = i + 1
+            if layer_string is not None:
+                try:
+                    eval(layer_string)
+                    self.layers_string.append(layer_string)
+                    print("Added hidden layer: ", layer_string, show=verbose)
+                except Exception as e:
+                    print(e)
+                    print("Could not add layer", layer_string, "\n", show=verbose)
+                i = i + 1
+            if insert_dropout:
+                try:
+                    act = eval(layer_string+".activation")
+                    if "selu" in str(act).lower():
+                        layer_string = "layers.AlphaDropout("+str(self.dropout_rate)+")"
+                        self.layers_string.append(layer_string)
+                        print("Added hidden layer: ", layer_string, show=verbose)
+                        i = i + 1
+                    elif "linear" not in str(act):
+                        layer_string = "layers.Dropout("+str(self.dropout_rate)+")"
+                        self.layers_string.append(layer_string)
+                        print("Added hidden layer: ", layer_string, show=verbose)
+                        i = i + 1
+                except:
+                    layer_string = "layers.AlphaDropout("+str(self.dropout_rate)+")"
+                    self.layers_string.append(layer_string)
+                    print("Added hidden layer: ", layer_string, show=verbose)
+                    i = i + 1
+        if self.batch_norm == True and "dense" in layer_string.lower():
+            self.layers_string.append("layers.BatchNormalization()")
+            print("Added hidden layer: layers.BatchNormalization()", show=verbose)
+        #outputLayer = layers.Dense(1, activation=self.act_func_out_layer)
+
+        layer_string = "layers.Dense(1, activation='"+str(self.act_func_out_layer)+"')"
+        self.layers_string.append(layer_string)
+        print("Added Output layer: ", layer_string,".\n", show=verbose)
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        self.log[timestamp] = {"action": "layers set",
+                               "metrics": self.layers_string}
 
     def __set_optimizer(self,verbose=None):
         """
@@ -983,46 +1092,59 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._DnnLik__set_tf_objects>` one
         to set the |tf_keras_optimizers_link| object. It sets the
         :attr:`DnnLik.optimizer_string <DNNLikelihood.DnnLik.optimizer_string>`
-        and :attr:`DnnLik.optimizer <DNNLikelihood.DnnLik.optimizer>` attributes. The former is set from the
-        :attr:`DnnLik.__model_optimizer_inputs <DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs>` 
-        dictionary, while the latter is set by evaluating the former.
+        and :attr:`DnnLik.optimizer <DNNLikelihood.DnnLik.optimizer>` attributes.
+        The former is set from the :attr:`DnnLik.__model_optimizer_inputs <DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs>` 
+        dictionary.  The latter is set to ``None`` and then updated by the 
+        :meth:`DnnLik.model_compile <DNNLikelihood.DnnLik.model_compile>` method during model compilation). 
 
         - **Arguments**
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nSetting optimizer\n",show=verbose)
+        self.optimizer = None
         if type(self.__model_optimizer_inputs) == str:
-            self.optimizer_string = self.__model_optimizer_inputs
+            if "(" in self.__model_optimizer_inputs:
+                optimizer_string = "optimizers." + self.__model_optimizer_inputs.replace("optimizers.","")
+            else:
+                optimizer_string = "optimizers."+ self.__model_optimizer_inputs.replace("optimizers.","") +"()"
         elif type(self.__model_optimizer_inputs) == dict:
-            name = self.__model_optimizer_inputs["name"]
-            string = name+"("
-            for key, value in utils.dic_minus_keys(self.__model_optimizer_inputs,["name"]).items():
-                if type(value) == str:
-                    value = "'"+value+"'"
-                string = string+str(key)+"="+str(value)+", "
-            optimizer_string = str("optimizers."+string+")").replace(", )", ")")
-            self.optimizer_string = optimizer_string
+                try:
+                    name = self.__model_optimizer_inputs["name"]
+                except:
+                    raise Exception("The optimizer ", str(self.__model_optimizer_inputs), " has unspecified name.")
+                try:
+                    args = self.__model_optimizer_inputs["args"]
+                except:
+                    args = []
+                try:
+                    kwargs = self.__model_optimizer_inputs["kwargs"]
+                except:
+                    kwargs = {}
+                optimizer_string = utils.build_method_string_from_dict("optimizers", name, args, kwargs)
         else:
             raise Exception("Could not set optimizer. The model_optimizer_inputs argument does not have a valid format (str or dict).")
-        self.optimizer = eval(optimizer_string)
+        try:
+            optimizer = eval(optimizer_string)
+            self.optimizer_string = optimizer_string
+            self.optimizer = eval(self.optimizer_string)
+            print("Optimizer set to:", self.optimizer_string, "\n", show=verbose)
+        except Exception as e:
+            print(e)
+            raise Exception("Could not set optimizer", optimizer_string, "\n")
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "optimizer set",
                                "optimizer": self.optimizer_string}
-        #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
-        print(header_string,"\nOptimizer set to:", self.optimizer_string, ".\n", show=verbose)
-
+        
     def __set_loss(self, verbose=None):
         """
         Private method used by the 
         :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._DnnLik__set_tf_objects>` one
-        to set the |tf_keras_losses_link| object. It sets the
+        to set the loss object (it could be a |tf_keras_losses_link| object or a custom loss defined
+        in the :mod:`Dnn_likelihood <dnn_likelihood>` module). It sets the
         :attr:`DnnLik.loss_string <DNNLikelihood.DnnLik.loss_string>`
         and :attr:`DnnLik.loss <DNNLikelihood.DnnLik.loss>` attributes. The former is set from the
         :attr:`DnnLik.__model_compile_inputs <DNNLikelihood.DnnLik._DnnLik__model_compile_inputs>` 
@@ -1032,37 +1154,72 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nSetting loss\n",show=verbose)
-        loss_string = self.__model_compile_inputs["loss"]
-        try:
-            loss_obj = losses.deserialize(loss_string)
-            print("Loss set to:",loss_string,".\n",show=verbose)
-        except:
+        self.loss = None
+        ls = self.__model_compile_inputs["loss"]
+        if type(ls) == str:
+            ls = ls.replace("losses.","")
             try:
-                loss_obj = eval("self."+loss_string)
-                print("Loss set to:", loss_string, ".\n", show=verbose)
+                eval("losses." + ls)
+                loss_string = "losses." + ls
             except:
-                print("Could not set loss", loss_string, ".\n", show=verbose)
-        self.loss_string = loss_string
-        self.loss = loss_obj
+                try:
+                    eval("losses."+losses.deserialize(ls).__name__)
+                    loss_string = "losses."+losses.deserialize(ls).__name__
+                except:
+                    try:
+                        eval("self."+ls)
+                        loss_string = "self."+ls
+                    except:
+                        try:
+                            eval("self.custom_losses."+custom_losses.metric_name_unabbreviate(ls))
+                            loss_string = "self.custom_losses." + custom_losses.metric_name_unabbreviate(ls)
+                        except:
+                            loss_string = None
+        elif type(ls) == dict:
+            try:
+                name = ls["name"]
+            except:
+                raise Exception("The optimizer ", str(ls), " has unspecified name.")
+            try:
+                args = ls["args"]
+            except:
+                args = []
+            try:
+                kwargs = ls["kwargs"]
+            except:
+                kwargs = {}
+            loss_string = utils.build_method_string_from_dict("losses", name, args, kwargs)
+        else:
+            raise Exception("Could not set loss. The model_compile_inputs['loss'] item does not have a valid format (str or dict).")
+        if loss_string is not None:
+            try:
+                eval(loss_string)
+                self.loss_string = loss_string
+                self.loss = eval(self.loss_string)
+                if "self." in loss_string:
+                    print("Custom loss set to:",loss_string.replace("self.",""),".\n",show=verbose)
+                else:
+                    print("Loss set to:",loss_string,".\n",show=verbose)
+            except Exception as e:
+                print(e)
+                raise Exception("Could not set loss", loss_string, "\n")
+        else:
+            raise Exception("Could not set loss", loss_string, "\n")
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loss set",
-                               "loss": self.loss_string}
-        #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
+                               "loss": self.loss_string}            
 
     def __set_metrics(self, verbose=None):
         """
         Private method used by the 
         :meth:`DnnLik.__set_tf_objects <DNNLikelihood.DnnLik._DnnLik__set_tf_objects>` one
-        to set the |tf_keras_metrics_link| objects. It sets the
-        :attr:`DnnLik.metrics_string <DNNLikelihood.DnnLik.metrics_string>`
+        to set the metrics objects (as for the loss, metrics could be |tf_keras_metrics_link|
+        objects or a custom metrics defined in the :mod:`Dnn_likelihood <dnn_likelihood>` module). 
+        It sets the :attr:`DnnLik.metrics_string <DNNLikelihood.DnnLik.metrics_string>`
         and :attr:`DnnLik.metrics <DNNLikelihood.DnnLik.metrics>` attributes. The former is set from the
         :attr:`DnnLik.__model_compile_inputs <DNNLikelihood.DnnLik._DnnLik__model_compile_inputs>` 
         dictionary, while the latter is set by evaluating each item in the the former.
@@ -1071,36 +1228,68 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        metrics_string = self.__model_compile_inputs["metrics"]
-        metrics_obj = list(range(len(metrics_string)))
+        self.metrics_string = []
+        self.metrics = []
         print(header_string,"\nSetting metrics\n",show=verbose)
-        for i in range(len(metrics_string)):
-            try:
-                metrics_obj[i] = metrics.deserialize(metrics_string[i])
-                print("\tAdded metric:",metrics_string[i],".",show=verbose)
-            except:
+        for met in self.__model_compile_inputs["metrics"]:
+            if type(met) == str:
+                met = met.replace("metrics.","")
                 try:
-                    metrics_obj[i] = eval("self."+metrics_string[i])
-                    print("\tAdded metric:",metrics_string[i],".",show=verbose)
+                    eval("metrics." + met)
+                    metric_string = "metrics." + met
                 except:
                     try:
-                        metrics_obj[i] = eval("self."+utils.metric_name_unabbreviate(metrics_string[i]))
-                        print("\tAdded metric:",metrics_string[i],".",show=verbose)
+                        eval("metrics."+metrics.deserialize(met).__name__)
+                        metric_string = "metrics."+metrics.deserialize(met).__name__
                     except:
-                        print("\tCould not set metric", metrics_string[i], ".",show=verbose)
-        self.metrics_string = metrics_string
-        self.metrics = metrics_obj
+                        try:
+                            eval("self."+met)
+                            metric_string = "self."+met
+                        except:          
+                            try:
+                                eval("custom_losses."+custom_losses.metric_name_unabbreviate(met))
+                                metric_string = "custom_losses." + custom_losses.metric_name_unabbreviate(met)
+                            except:
+                                metric_string = None
+            elif type(met) == dict:
+                try:
+                    name = met["name"]
+                except:
+                    raise Exception("The metric ", str(met), " has unspecified name.")
+                try:
+                    args = met["args"]
+                except:
+                    args = []
+                try:
+                    kwargs = met["kwargs"]
+                except:
+                    kwargs = {}
+                metric_string = utils.build_method_string_from_dict("metrics", name, args, kwargs)
+            else:
+                metric_string = None
+                print("Invalid input for metric: ", str(met),". The metric will not be added to the model.", show=verbose)
+            if metric_string is not None:
+                try:
+                    eval(metric_string)
+                    self.metrics_string.append(metric_string)
+                    if "self." in metric_string:
+                        print("\tAdded custom metric:", metric_string.replace("self.",""), show=verbose)
+                    else:
+                        print("\tAdded metric:", metric_string, show=verbose)
+                except Exception as e:
+                    print(e)
+                    print("Could not add metric", metric_string, "\n", show=verbose)
+            else:
+                print("Could not add metric", str(met), "\n", show=verbose)
+        for metric_string in self.metrics_string:
+            self.metrics.append(eval(metric_string))
+        print("",show=verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "metrics set",
                                "metrics": self.metrics_string}
-        #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
 
     def __set_callbacks(self, verbose=None):
         """
@@ -1116,114 +1305,128 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        callbacks_strings = []
-        callbacks_string = [cb for cb in self.__model_callbacks_inputs if type(cb) == str]
-        callbacks_dict = [cb for cb in self.__model_callbacks_inputs if type(cb) == dict]
         print(header_string,"\nSetting callbacks\n",show=verbose)
-        for cb in callbacks_string:
-            if cb == "PlotLossesKeras":
-                #self.output_figure_plot_losses_keras_file = self.output_figures_base_file_name+"_plot_losses_keras.pdf"
-                #utils.check_rename_file(self.output_figure_plot_losses_keras_file)
-                #string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
-                string = "PlotLossesKeras()"
-            elif cb == "ModelCheckpoint":
-                self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
-                self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
-                utils.check_create_folder(self.output_checkpoints_folder)
-                string = "callbacks.ModelCheckpoint(filepath='" + self.output_checkpoints_files+"')"
-            elif cb == "TensorBoard":
-                self.output_tensorboard_log_dir = path.join(self.output_folder, "tensorboard_logs")
-                utils.check_create_folder(self.output_tensorboard_log_dir)
-                #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
-                string = "callbacks.TensorBoard(log_dir='" + self.output_tensorboard_log_dir+"')"
+        self.callbacks_strings = []
+        self.callbacks = []
+        for cb in self.__model_callbacks_inputs:
+            if type(cb) == str:
+                if cb == "ModelCheckpoint":
+                    self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
+                    self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
+                    utils.check_create_folder(self.output_checkpoints_folder)
+                    cb_string = "callbacks.ModelCheckpoint(filepath=r'" + self.output_checkpoints_files+"')"
+                elif cb == "TensorBoard":
+                    self.output_tensorboard_log_dir = path.join(self.output_folder, "tensorboard_logs")
+                    utils.check_create_folder(self.output_tensorboard_log_dir)
+                    #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
+                    cb_string = "callbacks.TensorBoard(log_dir=r'" + self.output_tensorboard_log_dir+"')"
+                elif cb == "PlotLossesKeras":
+                    #self.output_figure_plot_losses_keras_file = self.output_figures_base_file_name+"_plot_losses_keras.pdf"
+                    #utils.check_rename_file(self.output_figure_plot_losses_keras_file)
+                    #string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
+                    cb_string = "PlotLossesKeras()"
+                elif cb == "ModelCheckpoint":
+                    self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
+                    self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
+                    utils.check_create_folder(self.output_checkpoints_folder)
+                    cb_string = "callbacks.ModelCheckpoint(filepath=r'" + self.output_checkpoints_files+"')"
+                else:
+                    if "(" in cb:
+                        cb_string = "callbacks."+cb.replace("callbacks.","")
+                    else:
+                        cb_string = "callbacks."+cb.replace("callbacks.","")+"()"
+            elif type(cb) == dict:
+                try:
+                    name = cb["name"]
+                except:
+                    raise Exception("The layer ", str(cb), " has unspecified name.")
+                try:
+                    args = cb["args"]
+                except:
+                    args = []
+                try:
+                    kwargs = cb["kwargs"]
+                except:
+                    kwargs = {}
+                if name == "ModelCheckpoint":
+                    self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
+                    self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
+                    utils.check_create_folder(self.output_checkpoints_folder)
+                    kwargs["filepath"] = self.output_checkpoints_files
+                elif name == "TensorBoard":
+                    self.output_tensorboard_log_dir = path.join(self.output_folder, "tensorboard_logs")
+                    utils.check_create_folder(self.output_tensorboard_log_dir)
+                    #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
+                    kwargs["log_dir"] = self.output_tensorboard_log_dir
+                for key, value in kwargs.items():
+                    if key == "monitor" and type(value) == str:
+                        if "val_" in value:
+                            value = value.split("val_")[1]
+                        if value == "loss":
+                            value = "val_loss"
+                        else:
+                            value = "val_" + custom_losses.metric_name_unabbreviate(value)
+                cb_string = utils.build_method_string_from_dict("callbacks", name, args, kwargs)
             else:
-                string = "callbacks."+cb+"()"
-            callbacks_strings.append(string)
-            print("\tAdded callback:", string, show=verbose)
-        for cb in callbacks_dict:
-            name = cb["name"]
-            #if name == "PlotLossesKeras":
-            #    self.output_figure_plot_losses_keras_file = self.output_figures_base_file_name+"_plot_losses_keras.pdf"
-            #    utils.check_rename_file(self.output_figure_plot_losses_keras_file)
-            #    string = "fig_path = '"+self.output_figure_plot_losses_keras_file + "', "
-            ##    name = "callbacks."+name
-            if name == "ModelCheckpoint":
-                self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
-                self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
-                utils.check_create_folder(self.output_checkpoints_folder)
-                string = "filepath = '"+self.output_checkpoints_files+"', "
-                name = "callbacks."+name
-                for key, value in utils.dic_minus_keys(cb, ["name"]).items():
-                    if key == "monitor" and type(value) == str:
-                        if "val_" in value:
-                            value = value.split("val_")[1]
-                        if value == "loss":
-                            value = "val_loss"
-                        else:
-                            value = "val_" + utils.metric_name_unabbreviate(value)
-                    if type(value) == str:
-                        value = "'"+value+"'"
-                    if not "filepath" in key:
-                        string = string+str(key)+"="+str(value)+", "
-            elif name == "TensorBoard":
-                self.output_tensorboard_log_dir = path.join(self.output_folder, "tensorboard_logs")
-                utils.check_create_folder(self.output_tensorboard_log_dir)
-                #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
-                string = "log_dir = '"+self.output_tensorboard_log_dir+"', "
-                name = "callbacks."+name
-                for key, value in utils.dic_minus_keys(cb, ["name"]).items():
-                    if key == "monitor" and type(value) == str:
-                        if "val_" in value:
-                            value = value.split("val_")[1]
-                        if value == "loss":
-                            value = "val_loss"
-                        else:
-                            value = "val_" + utils.metric_name_unabbreviate(value)
-                    if type(value) == str:
-                        value = "'"+value+"'"
-                    if not "log_dir" in key:
-                        string = string+str(key)+"="+str(value)+", "
+                cb_string = None
+                print("Invalid input for callback: ", cb,". The callback will not be added to the model.", show=verbose)
+            if cb_string is not None:
+                try:
+                    eval(cb_string)
+                    self.callbacks_strings.append(cb_string)
+                    print("\tAdded callback:", cb_string, show=verbose)
+                except Exception as e:
+                    print("Could not set callback", cb_string, "\n",show=verbose)
+                    print(e)
             else:
-                string = ""
-                name = "callbacks."+name
-                for key, value in utils.dic_minus_keys(cb,["name"]).items():
-                    if key == "monitor" and type(value) == str:
-                        if "val_" in value:
-                            value = value.split("val_")[1]
-                        if value == "loss":
-                            value = "val_loss"
-                        else:
-                            value = "val_" + utils.metric_name_unabbreviate(value)
-                    if type(value) == str:
-                        value = "'"+value+"'"
-                    string = string+str(key)+"="+str(value)+", "
-            string = str(name+"("+string+")").replace(", )", ")")
-            callbacks_strings.append(string)
-            #callbacks.append(eval(string))
-            print("\tAdded callback:", string, ".\n",show=verbose)
-        if not "TerminateOnNaN" in str(callbacks_strings):
-            callbacks_strings.append("callbacks.TerminateOnNaN()")
-        callbacks_strings = [s.replace("'C:\\","r'C:\\") for s in callbacks_strings]
-        callbacks_obj = list(range(len(callbacks_strings)))
-        for i in range(len(callbacks_strings)):
-            try:
-                callbacks_obj[i] = eval(callbacks_strings[i])
-            except Exception as e:
-                print("Could not set callbacks", callbacks_strings[i], ".\n",show=verbose)
-                print(e)
-        self.callbacks_strings = callbacks_strings
-        self.callbacks = callbacks_obj
+                print("Could not set callback", cb_string, "\n",show=verbose)
+        for cb_string in self.callbacks_strings:
+            self.callbacks.append(eval(cb_string))
+        print("", show=verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "callbacks set",
                                "callbacks": self.callbacks_strings}
-        #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of __init__
+
+    def __set_optimizer_minimization(self, optimizer):
+        """
+        Bla bla bla.
+        """
+
+        if optimizer is None or optimizer == {}:
+            optimizer_string = "optimizers.SGD(learning_rate=1)"
+        elif type(optimizer) == str:
+            if "(" in optimizer:
+                optimizer_string = "optimizers." + \
+                    optimizer.replace("optimizers.", "")
+            else:
+                optimizer_string = "optimizers." + \
+                    optimizer.replace("optimizers.", "") + "()"
+        elif type(optimizer) == dict:
+            try:
+                name = optimizer["name"]
+            except:
+                raise Exception("The optimizer ", str(
+                    optimizer), " has unspecified name.")
+            try:
+                args = optimizer["args"]
+            except:
+                args = []
+            try:
+                kwargs = optimizer["kwargs"]
+            except:
+                kwargs = {}
+            if name.lower() == "scipy":
+                optimizer_string = "scipy.optimize"
+            else:
+                optimizer_string = utils.build_method_string_from_dict(
+                    "optimizers", name, args, kwargs)
+        else:
+            raise Exception(
+                "Could not set optimizer. The optimizer argument does not have a valid format.")
+        return [optimizer_string, eval(optimizer_string)]
 
     def __set_epochs_to_run(self):
         """
@@ -1293,12 +1496,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     - **default**: ``1``
 
             - **verbose**
-
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-
-                    - **type**: ``bool``
-                    - **default**: ``None``
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Returns**
 
@@ -1310,11 +1509,37 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\Computing sample weights\n",show=verbose)
-        self.W_train = self.data.compute_sample_weights(
-            self.Y_train, nbins=nbins, power=power, verbose=verbose_sub).astype(self.dtype)
+        self.W_train = self.data.compute_sample_weights(self.Y_train, nbins=nbins, power=power, verbose=verbose_sub).astype(self.dtype)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "computed sample weights"}
         #self.save_log(overwrite=True, verbose=verbose_sub)
+
+    def define_rotation(self, verbose=None):
+        """
+        Method that defines the rotation matrix that diagonalizes the covariance matrix of the 
+        ``data_X``, making them uncorrelated.
+        Such matrix is defined based on the 
+        :attr:`DnnLik.rotationX_bool <DNNLikelihood.DnnLik.rotationX_bool>` attribute
+        When the boolean attribute is ``False`` the matrix is set to the identity matrix.
+        The method computes the rotation matrix by calling the corresponding method 
+        :meth:`Data.define_rotation <DNNLikelihood.Data.define_rotation>` method of the 
+        :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
+        
+        Note: Data are transformed with the matrix ``V`` through ``np.dot(X,V)`` and transformed back throug
+        ``np.dot(X_diag,np.transpose(V))``.
+
+        - **Arguments**
+
+           - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nDefining data rotation\n",show=verbose)
+        self.rotationX = self.data.define_rotation(self.X_train, self.rotationX_bool, verbose=verbose_sub)
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        self.log[timestamp] = {"action": "defined X rotation",
+                               "rotation X": self.rotationX_bool}
 
     def define_scalers(self, verbose=None):
         """
@@ -1327,24 +1552,53 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :meth:`Data.define_scalers <DNNLikelihood.Data.define_scalers>` method of the 
         :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
 
+        Note: The X scaler is defined on data rotated with the 
+        :attr:`DnnLik.rotationX <DNNLikelihood.DnnLik.rotationX>` matrix.
+
         - **Arguments**
 
            - **verbose**
-
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-
-                    - **type**: ``bool``
-                    - **default**: ``None``
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nSetting standard scalers\n",show=verbose)
-        self.scalerX, self.scalerY = self.data.define_scalers(self.X_train, self.Y_train, self.scalerX_bool, self.scalerY_bool, verbose=verbose_sub)
+        self.scalerX, self.scalerY = self.data.define_scalers(np.dot(self.X_train,self.rotationX), self.Y_train, self.scalerX_bool, self.scalerY_bool, verbose=verbose_sub)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "defined scalers",
                                "scaler X": self.scalerX_bool,
                                "scaler Y": self.scalerY_bool}
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved by generate_train_data
+
+    def transform_data_X(self, X, verbose=None):
+        """
+        Method that transforms X data applying first the rotation 
+        :attr:`DnnLik.rotationX <DNNLikelihood.DnnLik.rotationX>`
+        and then the transformation with scalerX
+        :attr:`DnnLik.scalerX <DNNLikelihood.DnnLik.scalerX>` .
+        """
+        return self.scalerX.transform(np.dot(X, self.rotationX))
+
+    def inverse_transform_data_X(self, X, verbose=None):
+        """
+        Inverse of the method
+        :meth:`Data.transform_data_X <DNNLikelihood.Data.transform_data_X>`.
+        """
+        return np.dot(self.scalerX.inverse_transform(X), np.transpose(self.rotationX))
+
+    def transform_data_Y(self, Y, verbose=None):
+        """
+        Method that transforms Y data with scalerY
+        :attr:`DnnLik.scalerY <DNNLikelihood.DnnLik.scalerY>` .
+        """
+        return self.scalerY.transform(Y.reshape(-1, 1)).reshape(-1,)
+
+    def inverse_transform_data_Y(self, Y, verbose=None):
+        """
+        Inverse of the method
+        :meth:`Data.transform_data_Y <DNNLikelihood.Data.transform_data_Y>`.
+        """
+        return self.scalerY.inverse_transform(Y)
 
     def generate_train_data(self, verbose=None):
         """
@@ -1379,6 +1633,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>` attribute is ``False``,
         data are re-generated from scratch at each call of the method.
 
+        The method also generates the attributes
+
+            - :attr:`DnnLik.scalerX <DNNLikelihood.DnnLik.scalerX>`
+            - :attr:`DnnLik.scalerY <DNNLikelihood.DnnLik.scalerY>`
+            - :attr:`DnnLik.rotationX <DNNLikelihood.DnnLik.rotationX>`
+
+        by calling the
+        :meth:`Data.update_train_data <DNNLikelihood.Data.update_train_data>`,
+        :meth:`Data.update_train_data <DNNLikelihood.Data.update_train_data>`, and 
+        :meth:`Data.update_train_data <DNNLikelihood.Data.update_train_data>` methods. All transformations
+        are defined starting from the training data :attr:`DnnLik.X_train <DNNLikelihood.DnnLik.X_train>`
+        and :attr:`DnnLik.Y_train <DNNLikelihood.DnnLik.Y_train>`.
+
         If the :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>` attribute is ``True`` the
         :meth:`DnnLik.compute_sample_weights <DNNLikelihood.DnnLik.compute_sample_weights>` is called
         with default arguments. In order to compute sample weights with different arguments, the user should call again the
@@ -1388,12 +1655,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         - **Arguments**
 
            - **verbose**
-
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-
-                    - **type**: ``bool``
-                    - **default**: ``None``
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
@@ -1414,7 +1677,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.Y_val = self.data.data_dictionary["Y_val"][:self.npoints_val].astype(self.dtype)
         self.pars_bounds_train = np.vstack([np.min(self.X_train,axis=0),np.max(self.X_train,axis=0)]).T
         self.pred_bounds_train = np.array([np.min(self.Y_train), np.max(self.Y_train)])
-        # Define scalers
+        # Define transformations
+        self.define_rotation(verbose=verbose_sub)
         self.define_scalers(verbose=verbose_sub)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "generated train data",
@@ -1433,29 +1697,43 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         Method that generates test data corresponding to the attributes
 
-            - :attr:`DnnLik.idx_train <DNNLikelihood.DnnLik.idx_test>`
-            - :attr:`DnnLik.X_train <DNNLikelihood.DnnLik.X_test>`
-            - :attr:`DnnLik.Y_train <DNNLikelihood.DnnLik.Y_test>`
+            - :attr:`DnnLik.idx_test <DNNLikelihood.DnnLik.idx_test>`
+            - :attr:`DnnLik.X_test <DNNLikelihood.DnnLik.X_test>`
+            - :attr:`DnnLik.Y_test <DNNLikelihood.DnnLik.Y_test>`
 
-        Differently from the training and validation data, the test data are always shared by different 
-        :class:`DnnLik <DNNLikelihood.DnnLik>` objects within an
-        :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object.
-        Therefore test data are always kept up-to-date in the 
-        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute of the 
+        Data are generated by calling the methods
+        :meth:`Data.update_test_data <DNNLikelihood.Data.update_test_data>` or
+        :meth:`Data.generate_test_data <DNNLikelihood.Data.generate_test_data>` of the 
         :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`
-        and are always generated by calling the :meth:`Data.generate_test_data <DNNLikelihood.Data.generate_test_data>` of the 
+        depending on the value of :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>`.
+
+        When the :class:`DnnLik <DNNLikelihood.DnnLik>` object is not part of a
+        :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object, that is when the
+        :attr:`DnnLik.standalone <DNNLikelihood.DnnLik.standalone>` attribute is ``True``, 
+        or when the :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>`
+        attribute is ``True``, that means that all members of the ensemble will share the same data (or a
+        subset of the same data if they have different number of points), then data are kept up-to-date in the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` attribute of the 
         :mod:`Data <data>` object :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`.
-        In this way test data are never re-generated if they are (even partially) available.
+        This means that data are not generated again if they are already available from another member and that
+        if the number of points is increased, data are added to the existing ones and are not re-generated from scratch.
+
+        When instead the :class:`DnnLik <DNNLikelihood.DnnLik>` object is part of a
+        :class:`DnnLikEnsemble <DNNLikelihood.DnnLikEnsemble>` object and the
+        :attr:`DnnLik.same_data <DNNLikelihood.DnnLik.same_data>` attribute is ``False``,
+        data are re-generated from scratch at each call of the method.
+
+        If the :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>` attribute is ``True`` the
+        :meth:`DnnLik.compute_sample_weights <DNNLikelihood.DnnLik.compute_sample_weights>` is called
+        with default arguments. In order to compute sample weights with different arguments, the user should call again the
+        :meth:`DnnLik.compute_sample_weights <DNNLikelihood.DnnLik.compute_sample_weights>` method after 
+        data generation.
 
         - **Arguments**
 
            - **verbose**
-
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-
-                    - **type**: ``bool``
-                    - **default**: ``None``
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
@@ -1464,7 +1742,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nGenerating test data\n",show=verbose)
         # Generate data
-        self.data.generate_test_data(self.npoints_test, verbose=verbose)
+        if self.same_data:
+            self.data.update_test_data(self.npoints_test, self.seed, verbose=verbose)
+        else:
+            self.data.generate_test_data(self.npoints_test, self.seed, verbose=verbose)
         self.idx_test = self.data.data_dictionary["idx_test"][:self.npoints_train]
         self.X_test = self.data.data_dictionary["X_test"][:self.npoints_test].astype(self.dtype)
         self.Y_test = self.data.data_dictionary["Y_test"][:self.npoints_test].astype(self.dtype)
@@ -1478,17 +1759,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         Method that defines the |tf_keras_model_link| stored in the 
         :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>` attribute.
-        The model is defined from the attributes
+        The model is defined from the attribute
 
-            - :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>`
-            - :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>`
-            - :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>`
+            - :attr:`DnnLik.layers_string <DNNLikelihood.DnnLik.layers_string>`
 
-        All hidden layers in the module are |tf_keras_layers_dense_link| layers.
-        If :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>` is ``True``, then a 
-        |tf_keras_batch_normalization_link| layer is added after the input layer and after each hidden layer.
-        If :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>` is larger than ``0``, then
-        a |tf_keras_dropout_link| layer is added after each hidden layer with the given dropout rate.
+        created by the method :meth:`DnnLik.__set_layers <DNNLikelihood.DnnLik._DnnLik__set_layers>`
+        during initialization. Each layer string is evaluated and appended to the list attribute
+        :attr:`DnnLik.layers <DNNLikelihood.DnnLik.layers>`
         
         The method also sets the three attributes:
 
@@ -1500,11 +1777,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         
         - **Produces file**
 
@@ -1514,39 +1787,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nDefining Keras model\n",show=verbose)
         # Define model
         start = timer()
-        inputLayer = Input(shape=(self.ndims,))
-        if self.batch_norm:
-            x = BatchNormalization()(inputLayer)
-        if self.hidden_layers[0][1] == "selu":
-            x = Dense(self.hidden_layers[0][0], activation=self.hidden_layers[0][1], kernel_initializer="lecun_normal")(inputLayer)
-        elif self.hidden_layers[0][1] != "selu" and len(self.hidden_layers[0]) < 3:
-            x = Dense(self.hidden_layers[0][0], activation=self.hidden_layers[0][1])(inputLayer)
-        else:
-            x = Dense(self.hidden_layers[0][0], activation=self.hidden_layers[0][1], kernel_initializer=self.hidden_layers[0][2])(inputLayer)
-        if self.batch_norm:
-            x = BatchNormalization()(x)
-        if self.dropout_rate != 0:
-            if self.hidden_layers[0][1] == "selu":
-                x = AlphaDropout(self.dropout_rate)(x)
-            else:
-                x = Dropout(self.dropout_rate)(x)
-        if len(self.hidden_layers) > 1:
-            for i in self.hidden_layers[1:]:
-                if i[1] == "selu":
-                    x = Dense(i[0], activation=i[1], kernel_initializer="lecun_normal")(x)
-                elif i[1] != "selu" and len(i) <3:
-                    x = Dense(i[0], activation=i[1])(x)
-                else:
-                    x = Dense(i[0], activation=i[1], kernel_initializer=i[2])(x)
-                if self.batch_norm:
-                    x = BatchNormalization()(x)
-                if self.dropout_rate != 0:
-                    if i[1] == "selu":
-                        x = AlphaDropout(self.dropout_rate)(x)
-                    else:
-                        x = Dropout(self.dropout_rate)(x)
-        outputLayer = Dense(1, activation=self.act_func_out_layer)(x)
-        self.model = Model(inputs=inputLayer, outputs=outputLayer)
+        self.layers = []
+        self.layers.append(eval(self.layers_string[0]))
+        x = self.layers[0]
+        for layer_string in self.layers_string[1:]:
+            self.layers.append(eval(layer_string))
+            x = self.layers[-1](x)
+        self.model = Model(inputs=self.layers[0], outputs=x)
         self.model_params = int(self.model.count_params())
         self.model_trainable_params = int(np.sum([K.count_params(p) for p in self.model.trainable_weights]))
         self.model_non_trainable_params = int(np.sum([K.count_params(p) for p in self.model.non_trainable_weights]))
@@ -1558,7 +1805,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                "model summary": summary_list}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print("Model for DNNLikelihood",self.name,"defined in", str(end-start), "s.\n",show=verbose)
-        print(self.model.summary(), show=verbose)
+        def print_fn(string):
+            print(string,show=verbose)
+        self.model.summary(print_fn=print_fn)
 
     def model_compile(self,verbose=None):
         """
@@ -1570,15 +1819,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.optimizer <DNNLikelihood.DnnLik.optimizer>`
             - :attr:`DnnLik.metrics <DNNLikelihood.DnnLik.metrics>`
 
+        constructed from the corresponding string attributes
+
+            - :attr:`DnnLik.loss_string <DNNLikelihood.DnnLik.loss_string>`
+            - :attr:`DnnLik.optimizer_string <DNNLikelihood.DnnLik.optimizer_string>`
+            - :attr:`DnnLik.metrics_string <DNNLikelihood.DnnLik.metrics_string>`
+
         - **Arguments**
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
@@ -1588,6 +1839,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nCompiling Keras model\n",show=verbose)
         # Compile model
         start = timer()
+        self.loss = eval(self.loss_string)
+        self.optimizer = eval(self.optimizer_string)
+        self.metrics = []
+        for metric_string in self.metrics_string:
+            self.metrics.append(eval(metric_string))
         self.model.compile(loss=self.loss, optimizer=self.optimizer, metrics=self.metrics)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -1631,18 +1887,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\n Defining and compiling Keras model\n",show=verbose)
+        print(header_string,"\nDefining and compiling Keras model\n",show=verbose)
         try:
             self.model
             create = False
@@ -1710,13 +1962,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. The second value returned by the
-                :meth:`DNNLik.set_verbosity <DNNLikelihood.DNNLik.set_verbosity>` method is the verbosity mode passed to the
-                |tf_keras_model_fit_link|. See the documentation of |tf_keras_model_fit_link| for the available verbosity modes.
-                Also see the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+                Also see the documentation of |tf_keras_model_fit_link| for the available verbosity modes.
 
         - **Produces file**
 
@@ -1724,6 +1971,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nTraining Keras model\n",show=verbose)
+        # Reset random state
+        self.__set_seed()
         # Scale data
         start = timer()
         epochs_before_run = self.epochs_available
@@ -1735,25 +1984,26 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if len(self.X_train) <= 1:
                 self.generate_train_data(verbose=verbose_sub)
             print("Scaling training/val data.\n", show=verbose)
-            X_train = self.scalerX.transform(self.X_train)
-            X_val = self.scalerX.transform(self.X_val)
-            Y_train = self.scalerY.transform(self.Y_train.reshape(-1, 1)).reshape(len(self.Y_train))
-            Y_val = self.scalerY.transform(self.Y_val.reshape(-1, 1)).reshape(len(self.Y_val))
+            X_train = self.transform_data_X(self.X_train)
+            X_val = self.transform_data_X(self.X_val)
+            Y_train = self.transform_data_Y(self.Y_train)
+            Y_val = self.transform_data_Y(self.Y_val)
             #print([type(X_train),type(X_val),type(Y_train),type(Y_train)],show=verbose)
             # If PlotLossesKeras == in callbacks set plot style
             if "PlotLossesKeras" in str(self.callbacks_strings):
                 plt.style.use(mplstyle_path)
+            for callback_string in self.callbacks_strings:
+                self.callbacks.append(eval(callback_string))
             # Train model
             print("Start training of model for DNNLikelihood",self.name, ".\n",show=verbose)
             if self.weighted:
                 # Train
                 history = self.model.fit(X_train, Y_train, sample_weight=self.W_train, initial_epoch=self.epochs_available, epochs=self.epochs_required, batch_size=self.batch_size, verbose=verbose_sub,
-                        validation_data=(X_val, Y_val), callbacks=self.callbacks)
+                        validation_data=(X_val, Y_val), callbacks=self.callbacks, **self.model_train_kwargs)
             else:
                 history = self.model.fit(X_train, Y_train, initial_epoch=self.epochs_available, epochs=self.epochs_required, batch_size=self.batch_size, verbose=verbose_sub,
-                        validation_data=(X_val, Y_val), callbacks=self.callbacks)
+                                         validation_data=(X_val, Y_val), callbacks=self.callbacks, **self.model_train_kwargs)
             end = timer()
-            self.training_time = (end - start)/epochs_to_run
             history = history.history
             for k, v in history.items():
                 history[k] = list(np.array(v, dtype=self.dtype))
@@ -1765,6 +2015,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 for k, v in self.history.items():
                     self.history[k] = v + history[k]
             self.epochs_available = len(self.history["loss"])
+            epochs_current_run = self.epochs_available-epochs_before_run
+            training_time_current_run = (end - start)
+            self.training_time = self.training_time + training_time_current_run
             print("Updating model.history and model.epoch attribute.\n",show=verbose)
             self.model.history.history = self.history
             self.model.history.params["epochs"] = self.epochs_available
@@ -1774,13 +2027,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.log[timestamp] = {"action": "trained tf model",
                                    "epochs to run": epochs_to_run,
-                                   "epochs run": self.epochs_available-epochs_before_run,
+                                   "epochs run": epochs_current_run,
                                    "epochs total": self.epochs_available,
                                    "batch size": self.batch_size,
-                                   "training time": self.training_time}
+                                   "training time for current run": training_time_current_run,
+                                   "total training time": self.training_time}
             self.save_log(overwrite=True, verbose=verbose_sub)
-            print("Model for DNNLikelihood", self.name, "successfully trained for",
-                  self.epochs_available-epochs_before_run, "epochs in", self.training_time*epochs_to_run, "s (",self.training_time,"s/epoch).\n", show=verbose)
+            print("Model for DNNLikelihood", self.name, "successfully trained for", epochs_current_run, "epochs in", training_time_current_run, "s (",training_time_current_run/epochs_current_run,"s/epoch).\n", show=verbose)
 
     def check_x_bounds(self,pars_val,pars_bounds):
         res = []
@@ -1881,18 +2134,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>` (only if ``save_log=True``)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nPredictiong with Keras model\n",show=verbose)
+        print(header_string,"\nPredicting with Keras model\n",show=verbose)
         start = timer()
         if x_boundaries == "original": 
             pars_bounds = np.array(self.pars_bounds)
@@ -1910,8 +2159,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if batch_size == None:
             batch_size = self.batch_size
         print("Scaling data.\n", show=verbose)
-        X = self.scalerX.transform(X)
-        pred = self.scalerY.inverse_transform(self.model.predict(X, batch_size=batch_size, steps=steps, verbose=verbose_sub)).reshape(len(X))
+        X = self.transform_data_X(X)
+        pred = self.inverse_transform_data_Y(self.model.predict(X, batch_size=batch_size, steps=steps, verbose=verbose_sub)).reshape(len(X))
         if x_boundaries:
             for i in range(len(X)):
                 x = X[i]
@@ -1966,11 +2215,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if len(x.shape) == 1:
@@ -1978,33 +2223,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         pred = self.model_predict(x, batch_size=1, steps=None, x_boundaries=x_boundaries, y_boundaries=y_boundaries, save_log=False, verbose=False)[0][0]
         return pred
 
-    def __set_optimizer_minimization(self, optimizer):
-        """
-        Bla bla bla.
-        """
-        if type(optimizer) != dict:
-            raise Exception("Could not set optimizer. The optimizer argument does not have a valid format.")
-        if optimizer == {}:
-            opt_string = "optimizers.SGD(learning_rate=1)"
-        else:
-            name = optimizer["name"]
-        if name == "scipy" or name == "Scipy":
-            opt_string = "scipy.optimize"
-        else:
-            try:
-                string = name+"("
-                for key, value in utils.dic_minus_keys(optimizer,["name","options"]).items():
-                    if type(value) == str:
-                        value = "'"+value+"'"
-                    string = string+str(key)+"="+str(value)+", "
-                opt_string = str("optimizers."+string+")").replace(", )", ")")
-            except:
-                raise Exception("Could not set optimizer. The optimizer argument does not have a valid format.")
-        return [opt_string,eval(opt_string)]
-
     def compute_maximum_model(self,
                               pars_init=None,
                               optimizer={},
+                              minimization_options={},
                               x_boundaries=False, 
                               y_boundaries=False,
                               timestamp = None,
@@ -2125,18 +2347,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
             - :attr:`DnnLik.output_log_file <DNNLikelihood.DnnLik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nComputing absolute maximum of Keras model\n",show=verbose)
+        print(header_string,"\nComputing global maximum of Keras model\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         start = timer()
@@ -2160,46 +2378,45 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 raise Exception("pars_init out of bounds.")
         opt_log, opt = self.__set_optimizer_minimization(optimizer)
         utils.check_set_dict_keys(self.predictions["Frequentist_inference"], ["logpdf_max_model"],
-                                                 [{}],verbose=verbose_sub)
+                                                                             [{}],verbose=verbose_sub)
         utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_max_model"], [timestamp],
-                                                 [{}],verbose=False)
+                                                                                                 [{}],verbose=False)
         if "scipy" in opt_log:
             utils.check_set_dict_keys(optimizer, ["name",
-                                                  "method",
-                                                  "options"],
-                                                 ["scipy","Powell",{}],verbose=verbose_sub)
-            method=optimizer["method"]
-            options=optimizer["options"]
+                                                  "args",
+                                                  "kwargs"],
+                                                 ["scipy",[],{"method": "Powell"}],verbose=verbose_sub)
+            args = optimizer["args"]
+            kwargs = optimizer["kwargs"]
+            options = minimization_options
             print(header_string,"\nOptimizing with scipy.optimize\n", show=verbose)
             def minus_loglik(x):
                 return -self.model_predict_scalar(x, x_boundaries=x_boundaries, y_boundaries=y_boundaries)
-            ml = opt.minimize(minus_loglik, pars_init, method=method, options=options)
+            ml = opt.minimize(minus_loglik, pars_init, *args, options=options, **kwargs)
             self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp] = {"x": np.array(ml["x"]), "y": -ml["fun"]}
             end = timer()
             print("Optimized in", str(end-start), "s.\n", show=verbose)
         else:
             print(header_string,"\nOptimizing with tensorflow\n", show=verbose)
-            utils.check_set_dict_keys(optimizer, ["options"],
-                                                 [{}],verbose=verbose_sub)
-            utils.check_set_dict_keys(optimizer["options"], ["maxiter",
+            utils.check_set_dict_keys(minimization_options, ["maxiter",
                                                              "tolerance"],
                                                             [1000*self.ndims,0.0001],
                                                             verbose=verbose_sub)
-            utils.check_set_dict_keys(optimizer["options"], ["run_length"],
-                                                            [np.min([500,optimizer["options"]["maxiter"]])],
+            utils.check_set_dict_keys(minimization_options, ["run_length"],
+                                                            [np.min([500,minimization_options["maxiter"]])],
                                                             verbose=verbose_sub)
-            maxiter = optimizer["options"]["maxiter"]
-            run_length = optimizer["options"]["run_length"]
-            tolerance = optimizer["options"]["tolerance"]
-            pars_init_scaled = self.scalerX.transform(pars_init.reshape(1,-1))
+            maxiter = minimization_options["maxiter"]
+            run_length = minimization_options["run_length"]
+            tolerance = minimization_options["tolerance"]
+            pars_init_scaled = self.transform_data_X(pars_init.reshape(1,-1))
             x_var = tf.Variable(pars_init_scaled.reshape(1,-1), dtype=self.dtype)
             if x_boundaries:
-                pars_bounds_scaled = np.vstack([self.scalerX.transform(np.nan_to_num(pars_bounds[:,0].reshape(1,-1))).reshape(-1,),
-                                                self.scalerX.transform(np.nan_to_num(pars_bounds[:,1].reshape(1,-1))).reshape(-1,)]).T
+                pars_bounds_scaled = np.vstack([self.transform_data_X(np.nan_to_num(pars_bounds[:,0].reshape(1,-1))).reshape(-1,),
+                                                self.transform_data_X(np.nan_to_num(pars_bounds[:,1].reshape(1,-1))).reshape(-1,)]).T
                 x_bounds = tf.reshape(tf.Variable(pars_bounds_scaled, dtype=self.dtype),(-1,2))
-                y_bounds = self.scalerY.transform(np.array(self.pred_bounds_train).reshape(-1,1)).reshape(-1,)
+                y_bounds = self.transform_data_Y(np.array(self.pred_bounds_train))
             if y_boundaries:
-                y_bounds = self.scalerY.transform(np.array(self.pred_bounds_train).reshape(-1,1)).reshape(-1,)
+                y_bounds = self.transform_data_Y(np.array(self.pred_bounds_train))
             if not x_boundaries and not y_boundaries:
                 @tf.function
                 def f():
@@ -2239,17 +2456,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if last_run_length != 0:
                 nruns = nruns+1
                 run_steps = np.concatenate((run_steps, np.array([[run_steps[-1][1]+1,run_steps[-1][1]+last_run_length]])))
+            converged = False
             for i in range(nruns):
                 step_before = run_steps[i][0]
-                value_before = self.scalerY.inverse_transform([-f().numpy()])[0]
+                value_before = self.inverse_transform_data_Y([-f().numpy()])[0]
                 for _ in range(run_steps[i][0], run_steps[i][1]):
                     opt.minimize(f, var_list=[x_var])
                 step_after = run_steps[i][1]
-                value_after = self.scalerY.inverse_transform([-f().numpy()])[0]
+                value_after = self.inverse_transform_data_Y([-f().numpy()])[0]
                 variation = (value_before-value_after)/value_before
                 print("Step:",step_before,"Value:",value_before,"-- Step:",step_after,"Value:",value_after,r"-- % Variation",variation, show=verbose)
                 if variation > 0 and variation < tolerance:
                     end = timer()
+                    converged = True
                     print("Converged to tolerance",tolerance,"in",str(end-start),"s.\n", show=verbose)
                     break
                 if value_after<value_before:
@@ -2257,11 +2476,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     opt._hyper['learning_rate'] = lr/2
                     print("Optimizer learning rate reduced from",
                           lr.numpy(), "to", (lr/2).numpy(), ".\n", show=verbose)
-            x_final = self.scalerX.inverse_transform(x_var.numpy())[0]
-            y_final = self.scalerY.inverse_transform([-f().numpy()])[0]
+            x_final = np.dot(self.scalerX.inverse_transform(x_var.numpy()),np.transpose(self.rotationX))[0]
+            y_final = self.inverse_transform_data_Y([-f().numpy()])[0]
             self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp] = {"x": np.array(x_final), "y": y_final}
             end = timer()
-            print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.\n", show=verbose)
+            if not converged:
+                print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.\n", show=verbose)
             print("Best tolerance",variation,"reached in",str(end-start),"s.\n", show=verbose)
         if y_boundaries and self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"] < self.pred_bounds_train[0]: 
             print("Warning: the model maximum (",self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"],") is smaller than the minimum y value in the training data (",self.pred_bounds_train[0],").\n",show=True)
@@ -2269,11 +2489,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             print("Warning: the model maximum (",self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"],") is larger than the maximum y value in the training data (",self.pred_bounds_train[1],").\n",show=True)
         self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["pars_init"] = pars_init
         self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["optimizer"] = optimizer
+        self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["minimization_options"] = minimization_options
         self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["x_boundaries"] = x_boundaries
         self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y_boundaries"] = y_boundaries
         self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["optimization_time"] = end-start
         self.log[timestamp] = {"action": "computed maximum model",
-                               "optimizer": opt_log,
+                               "optimizer": optimizer,
+                               "minimization_options": minimization_options,
                                "optimization time": end-start,
                                "x": self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["x"],
                                "y": self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"]}
@@ -2287,6 +2509,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                        pars_val=None,
                                        pars_init=None,
                                        optimizer={},
+                                       minimization_options={},
                                        x_boundaries=False,
                                        y_boundaries=False,
                                        timestamp=None,
@@ -2341,35 +2564,35 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                   [timestamp],
                                   [{}], verbose=verbose_sub)
         if "scipy" in opt_log:
-            utils.check_set_dict_keys(optimizer, ["method",
-                                                  "options"],
-                                                 ["Powell",{}],verbose=verbose_sub)
-            method = optimizer["method"]
-            options = optimizer["options"]
+            utils.check_set_dict_keys(optimizer, ["name",
+                                                  "args",
+                                                  "kwargs"],
+                                                 ["scipy",[],{"method": "Powell"}],verbose=verbose_sub)
+            args = optimizer["args"]
+            kwargs = optimizer["kwargs"]
+            options = minimization_options
             print(header_string,"\nOptimizing with scipy.optimize\n", show=verbose)
             pars_init_reduced = np.delete(pars_init, pars)
             def minus_loglik(x):
                 return -self.model_predict_scalar(np.insert(x, pars_insert, pars_val), x_boundaries=x_boundaries, y_boundaries=y_boundaries)
-            ml = opt.minimize(minus_loglik, pars_init_reduced, method=method, options=options)
+            ml = opt.minimize(minus_loglik, pars_init_reduced, *args, options=options, **kwargs)
             x_final = np.insert(ml["x"], pars_insert, pars_val)
             y_final = -ml["fun"]
             end = timer()
             print("Optimized in", str(end-start), "s.\n", show=verbose)
         else:
             print(header_string,"\nOptimizing with tensorflow\n", show=verbose)
-            utils.check_set_dict_keys(optimizer, ["options"],
-                                                 [{}],verbose=verbose_sub)
-            utils.check_set_dict_keys(optimizer["options"], ["maxiter",
+            utils.check_set_dict_keys(minimization_options, ["maxiter",
                                                              "tolerance"],
                                                             [1000*self.ndims,0.0001],
                                                             verbose=verbose_sub)
-            utils.check_set_dict_keys(optimizer["options"], ["run_length"],
-                                                            [np.min([500,optimizer["options"]["maxiter"]])],
+            utils.check_set_dict_keys(minimization_options, ["run_length"],
+                                                            [np.min([500,minimization_options["maxiter"]])],
                                                             verbose=verbose_sub)
-            maxiter = optimizer["options"]["maxiter"]
-            run_length = optimizer["options"]["run_length"]
-            tolerance = optimizer["options"]["tolerance"]
-            pars_init_scaled = self.scalerX.transform(pars_init.reshape(1,-1))
+            maxiter = minimization_options["maxiter"]
+            run_length = minimization_options["run_length"]
+            tolerance = minimization_options["tolerance"]
+            pars_init_scaled = self.transform_data_X(pars_init.reshape(1,-1))
             x_var = tf.reshape(tf.Variable(pars_init_scaled.reshape(1,-1), dtype=self.dtype),(-1,))
             idx_reduced = np.reshape(np.delete(np.array(list(range(self.ndims))),pars),(-1,1))
             x_var_reduced = tf.Variable(tf.gather_nd(x_var,idx_reduced))
@@ -2377,14 +2600,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             x_var_0 = tf.Variable(tf.gather_nd(x_var,idx_0))
             idx_resort = np.reshape(np.argsort(np.reshape(np.concatenate((idx_0,idx_reduced)),(-1,))),(-1,1))
             if x_boundaries:
-                pars_bounds_scaled = np.vstack([self.scalerX.transform(np.nan_to_num(pars_bounds[:, 0].reshape(1, -1))).reshape(-1,),
-                                                self.scalerX.transform(np.nan_to_num(pars_bounds[:, 1].reshape(1, -1))).reshape(-1,)]).T
+                pars_bounds_scaled = np.vstack([self.transform_data_X(np.nan_to_num(pars_bounds[:, 0].reshape(1, -1))).reshape(-1,),
+                                                self.transform_data_X(np.nan_to_num(pars_bounds[:, 1].reshape(1, -1))).reshape(-1,)]).T
                 x_bounds = tf.reshape(tf.Variable(
                     pars_bounds_scaled, dtype=self.dtype), (-1, 2))
-                y_bounds = self.scalerY.transform(
-                    np.array(self.pred_bounds_train).reshape(-1, 1)).reshape(-1,)
+                y_bounds = self.transform_data_Y(np.array(self.pred_bounds_train))
             if y_boundaries:
-                y_bounds = self.scalerY.transform(np.array(self.pred_bounds_train).reshape(-1,1)).reshape(-1,)
+                y_bounds = self.transform_data_Y(np.array(self.pred_bounds_train))
             if not x_boundaries and not y_boundaries:
                 @tf.function
                 def f():
@@ -2434,11 +2656,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 run_steps = np.concatenate((run_steps, np.array([[run_steps[-1][1]+1,run_steps[-1][1]+last_run_length]])))
             for i in range(nruns):
                 step_before = run_steps[i][0]
-                value_before = self.scalerY.inverse_transform([-f().numpy()])[0]
+                value_before = self.inverse_transform_data_Y([-f().numpy()])[0]
                 for _ in range(run_steps[i][0], run_steps[i][1]):
                     opt.minimize(f, var_list=[x_var_reduced])
                 step_after = run_steps[i][1]
-                value_after = self.scalerY.inverse_transform([-f().numpy()])[0]
+                value_after = self.inverse_transform_data_Y([-f().numpy()])[0]
                 variation = (value_before-value_after)/value_before
                 print("Step:",step_before,"Value:",value_before,"-- Step:",step_after,"Value:",value_after,r"-- % Variation",variation, show=verbose)
                 if variation > 0 and variation < tolerance:
@@ -2451,8 +2673,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     print("Optimizer learning rate reduced from",lr.numpy(),"to",(lr/2).numpy(),".\n", show=verbose)
             var = tf.concat((x_var_0,x_var_reduced),axis=0)
             var = tf.reshape(tf.gather_nd(var,idx_resort),(1,-1))
-            x_final = self.scalerX.inverse_transform(var.numpy())[0]
-            y_final = self.scalerY.inverse_transform([-f().numpy()])[0]
+            x_final = np.dot(self.scalerX.inverse_transform(var.numpy()),np.transpose(self.rotationX))[0]
+            y_final = self.inverse_transform_data_Y([-f().numpy()])[0]
             end = timer()
             print("Did not converge to tolerance",tolerance,"using",maxiter,"steps.\n", show=verbose)
             print("Best tolerance",variation,"reached in",str(end-start),"s.\n", show=verbose)
@@ -2460,17 +2682,18 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         try:
             y_max=self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y"]
             if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["pars_init"] != pars_init:
-                print("Warning: existing global maximum has been computed with a different parameters initialization 'pars_init'.", show=verbose_sub)
+                print("Warning: existing global maximum has been computed with a different parameters initialization 'pars_init'.", show=True)
             if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["optimizer"] != optimizer:
-                print("Warning: existing global maximum has been computed with a different optimizer and or different optimization parameters.", show=verbose_sub)
+                print("Warning: existing global maximum has been computed with a different optimizer and or different optimization parameters.", show=True)
             if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["x_boundaries"] != x_boundaries:
-                print("Warning: existing global maximum has been computed with different 'x_boundaries'.", show=verbose_sub)
+                print("Warning: existing global maximum has been computed with different 'x_boundaries'.", show=True)
             if self.predictions["Frequentist_inference"]["logpdf_max_model"][timestamp]["y_boundaries"] != y_boundaries:
-                print("Warning: existing global maximum has been computed with different 'y_boundaries'.", show=verbose_sub)
+                print("Warning: existing global maximum has been computed with different 'y_boundaries'.", show=True)
         except:
             print(header_string,"\nComputing global maximum to estimate tmu test statistics.\n",show=verbose)
             self.compute_maximum_model(pars_init=pars_init,
                                        optimizer=optimizer,
+                                       minimization_options=minimization_options,
                                        x_boundaries=x_boundaries, 
                                        y_boundaries=y_boundaries,
                                        timestamp=timestamp,
@@ -2491,17 +2714,19 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars"] = pars
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars_init"] = pars_init
         self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimizer"] = optimizer
+        self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["minimization_options"] = minimization_options
         if not multiple:
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["x_boundaries"] = x_boundaries
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["y_boundaries"] = y_boundaries
         try:    
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimization_times"].append(end-start)
-            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["global_optimization_time"]=np.array(self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimization_times"]).sum()
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["total_optimization_time"]=np.array(self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimization_times"]).sum()
         except:
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["optimization_times"]=[end-start]
-            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["global_optimization_time"]=end-start
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["total_optimization_time"]=end-start
         self.log[timestamp] = {"action": "computed profiled maximum model",
-                               "optimizer": opt_log,
+                               "optimizer": optimizer,
+                               "minimization_options": minimization_options,
                                "optimization time": end-start,
                                "pars": pars,
                                "x": self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["X"][-1],
@@ -2516,6 +2741,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                       pars_ranges=None,
                                       pars_init=None,
                                       optimizer={},
+                                      minimization_options={},
                                       spacing="grid",
                                       x_boundaries=False,
                                       y_boundaries=False,
@@ -2524,7 +2750,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                       save=True,
                                       verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nComputing profiled maximua of Keras model\n",show=verbose)
+        print(header_string,"\nComputing profiled maxima of Keras model\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if pars is None:
@@ -2571,28 +2797,34 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             pars_vals_bounded = pars_vals
         if len(pars_vals) != len(pars_vals_bounded):
             print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.\n",show=verbose)
-        res = []
-        for pars_val in pars_vals_bounded:
-            print(header_string,"\nOptimizing for parameters:",pars," - values:",pars_val.tolist(),".\n",show=verbose)
-            self.compute_profiled_maximum_model(pars=pars,
-                                                pars_val=pars_val,
-                                                pars_init=pars_init,
-                                                optimizer=optimizer,
-                                                x_boundaries=x_boundaries,
-                                                y_boundaries=y_boundaries,
-                                                timestamp=timestamp,
-                                                save=False,
-                                                verbose=verbose_sub)
-            if progressbar:
-                iterator = iterator + 1
-                overall_progress.value = float(iterator)/(len(pars_vals_bounded))
-        end = timer()
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"],
+                                  ["logpdf_profiled_max_model"],
+                                  [{}],verbose=verbose_sub)
+        utils.check_set_dict_keys(self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"],
+                                  [timestamp],
+                                  [{}], verbose=verbose_sub)
         self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars"] = pars
         self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars_ranges"] = pars_ranges
         self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["pars_init"] = pars_init
         self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["spacing"] = spacing
         self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["x_boundaries"] = x_boundaries
         self.predictions["Frequentist_inference"]["logpdf_profiled_max_model"][timestamp]["y_boundaries"] = y_boundaries
+        for pars_val in pars_vals_bounded:
+            print("Optimizing for parameters:",pars," - values:",pars_val.tolist(),".",show=verbose)
+            self.compute_profiled_maximum_model(pars=pars,
+                                                pars_val=pars_val,
+                                                pars_init=pars_init,
+                                                optimizer=optimizer,
+                                                minimization_options=minimization_options,
+                                                x_boundaries=x_boundaries,
+                                                y_boundaries=y_boundaries,
+                                                timestamp=timestamp,
+                                                save=False,
+                                                verbose=False)
+            if progressbar:
+                iterator = iterator + 1
+                overall_progress.value = float(iterator)/(len(pars_vals_bounded))
+        end = timer()
         self.log[timestamp] = {"action": "computed profiled maxima model",
                                "pars": pars, 
                                "pars_ranges": pars_ranges, 
@@ -2613,7 +2845,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nComputing absolute maximum from samples\n",show=verbose)
+        print(header_string,"\nComputing global maximum from samples\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         samples = np.array([samples]).flatten()
@@ -2723,7 +2955,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if len(pars_vals) != len(pars_vals_bounded):
                 print("Deleted", str(len(pars_vals)-len(pars_vals_bounded)),"points outside the parameters allowed range.\n",show=verbose)
             for pars_val in pars_vals_bounded:
-                print(header_string,"\nOptimizing for parameters:",pars," - values:",pars_val.tolist(),".",show=verbose)
+                print("Optimizing for parameters:",pars," - values:",pars_val.tolist(),".",show=verbose)
                 start_sub = timer()
                 tmp = inference.compute_profiled_maximum_sample(pars=pars,
                                                                 pars_val=pars_val,
@@ -2766,7 +2998,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["pars_ranges"] = pars_ranges
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["data_file"] = self.input_data_file
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["idx_file"] = self.output_idx_h5_file
-            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["global_optimization_time"] = np.array(self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["optimization_times"]).sum()
+            self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["total_optimization_time"] = np.array(self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["optimization_times"]).sum()
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["spacing"] = spacing
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["binwidths"] = binwidths
             self.predictions["Frequentist_inference"]["logpdf_profiled_max_sample"][timestamp][sample]["x_boundaries"] = x_boundaries            
@@ -2825,11 +3057,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
@@ -2842,8 +3070,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         if batch_size == None:
             batch_size = self.batch_size
         print("Scaling data.\n", show=verbose)
-        X = self.scalerX.transform(X)
-        Y = self.scalerY.transform(Y.reshape(-1, 1)).reshape(len(Y))
+        X = self.transform_data_X(X)
+        Y = self.transform_data_Y(Y)
         pred = self.model.evaluate(X, Y, batch_size=batch_size, verbose=verbose_sub)
         end = timer()
         prediction_time = (end - start)/len(X)
@@ -2862,7 +3090,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         title = "Ndim: " + str(self.ndims) + " - "
         title = title + "Nevt: " + "%.E" % Decimal(str(self.npoints_train)) + " - "
         title = title + "Layers: " + str(len(self.hidden_layers)) + " - "
-        title = title + "Nodes: " + str(self.hidden_layers[0][0]) + " - "
+        #title = title + "Nodes: " + str(self.hidden_layers[0][0]) + " - "
         title = title.replace("+", "") + "Loss: " + str(self.loss_string)
         self.fig_base_title = title
 
@@ -2892,12 +3120,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         
         - **Returns**
 
@@ -2938,7 +3161,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         metrics = np.unique(metrics)
         for metric in metrics:
             start = timer()
-            metric = utils.metric_name_unabbreviate(metric)
+            metric = custom_losses.metric_name_unabbreviate(metric)
             val_metric = "val_"+ metric
             plt.plot(self.history[metric])
             plt.plot(self.history[val_metric])
@@ -3036,6 +3259,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         for par in pars:
             start=timer()
             nnn = min(1000,len(self.X_train),len(self.X_test))
+            np.random.seed(self.seed)
             rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
             rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
             Y_pred_test, _ = self.model_predict(self.X_test[rnd_idx_test], batch_size=self.batch_size)
@@ -3080,7 +3304,12 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
         #self.save_log(overwrite=True, verbose=verbose_sub) #log saved at the end of predictions
 
-    def plot_lik_distribution(self, loglik=True, show_plot=False, timestamp=None, overwrite=False, verbose=None):
+    def plot_lik_distribution(self, 
+                              loglik=True, 
+                              show_plot=False, 
+                              timestamp=None, 
+                              overwrite=False, 
+                              verbose=None):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nPlotting likelihood distribution\n",show=verbose)
         if timestamp is None:
@@ -3093,6 +3322,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             figure_file = self.output_figures_base_file_name+"_lik_distribution.pdf"
         figure_file = self.update_figures(figure_file=figure_file,timestamp=timestamp,overwrite=overwrite)
         nnn = min(10000, len(self.X_train), len(self.X_test))
+        np.random.seed(self.seed)
         rnd_idx_train = np.random.choice(np.arange(self.npoints_train), nnn, replace=False)
         rnd_idx_test = np.random.choice(np.arange(self.npoints_test), nnn, replace=False)
         Y_pred_test, _ = self.model_predict(self.X_test[rnd_idx_test], batch_size=self.batch_size)
@@ -3127,7 +3357,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         plt.legend()
         plt.yscale("log")
         plt.tight_layout()
-
         if loglik:
             figure_file_name = self.output_figures_base_file_name+"_loglik_distribution.pdf"
         else:
@@ -3173,6 +3402,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 nnn = np.min([len(X), max_points])
         else:
             nnn = len(X)
+        np.random.seed(self.seed)
         rnd_idx = np.random.choice(np.arange(len(X)), nnn, replace=False)
         samp = X[rnd_idx][:,pars]
         if W is not None:
@@ -3290,6 +3520,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         else:
             nnn1 = len(X1)
             nnn2 = len(X2)
+        np.random.seed(self.seed)
         rnd_idx_1 = np.random.choice(np.arange(len(X1)), nnn1, replace=False)
         rnd_idx_2 = np.random.choice(np.arange(len(X2)), nnn2, replace=False)
         samp1 = X1[rnd_idx_1][:,pars]
@@ -3449,11 +3680,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -3474,7 +3701,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                 "Bayesian_inference": {},
                                 "Frequentist_inference": {},
                                 "Figures": {}}
-        
 
     def model_compute_predictions(self, 
                                   CI=inference.CI_from_sigma([inference.sigma_from_CI(0.5), 1, 2, 3]), 
@@ -3620,22 +3846,54 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             self.predictions["Bayesian_inference"]["HPDI"][timestamp] = HPDI_result
             self.predictions["Bayesian_inference"]["HPDI_error"][timestamp] = HDPI_error
             print(header_string,"\nComputing KS test between one-dimensional distributions (pred vs true) using reweighted distributions\n", show=verbose)
+            KS_train_val = [inference.ks_w(self.X_train[:, q], self.X_val[:, q]) for q in range(len(self.X_train[0]))]
+            KS_train_test = [inference.ks_w(self.X_train[:, q], self.X_test[:, q]) for q in range(len(self.X_train[0]))]
+            KS_val_test = [inference.ks_w(self.X_val[:, q], self.X_test[:, q]) for q in range(len(self.X_train[0]))]
+            KS_train_pred_train = [inference.ks_w(self.X_train[:, q], self.X_train[:, q], np.ones(len(self.X_train)), W_train) for q in range(len(self.X_train[0]))]
+            KS_train_pred_val = [inference.ks_w(self.X_train[:, q], self.X_val[:, q], np.ones(len(self.X_train)), W_val) for q in range(len(self.X_train[0]))]
+            KS_train_pred_test = [inference.ks_w(self.X_train[:, q], self.X_test[:, q], np.ones(len(self.X_train)), W_test) for q in range(len(self.X_train[0]))]
+            KS_val_pred_train = [inference.ks_w(self.X_val[:, q], self.X_train[:, q], np.ones(len(self.X_val)), W_train) for q in range(len(self.X_train[0]))]
+            KS_val_pred_val = [inference.ks_w(self.X_val[:, q], self.X_val[:, q], np.ones(len(self.X_val)), W_val) for q in range(len(self.X_train[0]))]
+            KS_val_pred_test = [inference.ks_w(self.X_val[:, q], self.X_test[:, q], np.ones(len(self.X_val)), W_test) for q in range(len(self.X_train[0]))]
             KS_test_pred_train = [inference.ks_w(self.X_test[:, q], self.X_train[:, q], np.ones(len(self.X_test)), W_train) for q in range(len(self.X_train[0]))]
             KS_test_pred_val = [inference.ks_w(self.X_test[:, q], self.X_val[:, q], np.ones(len(self.X_test)), W_val) for q in range(len(self.X_train[0]))]
-            KS_val_pred_test = [inference.ks_w(self.X_val[:, q], self.X_test[:, q], np.ones(len(self.X_val)), W_test) for q in range(len(self.X_train[0]))]
-            KS_train_pred_train = [inference.ks_w(self.X_train[:, q], self.X_train[:, q], np.ones(len(self.X_train)), W_train) for q in range(len(self.X_train[0]))]
+            KS_test_pred_test = [inference.ks_w(self.X_test[:, q], self.X_test[:, q], np.ones(len(self.X_test)), W_test) for q in range(len(self.X_train[0]))]
+            KS_train_val_median = np.median(np.array(KS_train_val)[:, 1]).tolist()
+            KS_train_test_median = np.median(np.array(KS_train_test)[:, 1]).tolist()
+            KS_val_test_median = np.median(np.array(KS_val_test)[:, 1]).tolist()
+            KS_train_pred_train_median = np.median(np.array(KS_train_pred_train)[:, 1]).tolist()
+            KS_train_pred_val_median = np.median(np.array(KS_train_pred_val)[:, 1]).tolist()
+            KS_train_pred_test_median = np.median(np.array(KS_train_pred_test)[:, 1]).tolist()
+            KS_val_pred_train_median = np.median(np.array(KS_val_pred_train)[:, 1]).tolist()
+            KS_val_pred_val_median = np.median(np.array(KS_val_pred_val)[:, 1]).tolist()
+            KS_val_pred_test_median = np.median(np.array(KS_val_pred_test)[:, 1]).tolist()
             KS_test_pred_train_median = np.median(np.array(KS_test_pred_train)[:, 1]).tolist()
             KS_test_pred_val_median = np.median(np.array(KS_test_pred_val)[:, 1]).tolist()
-            KS_val_pred_test_median = np.median(np.array(KS_val_pred_test)[:, 1]).tolist()
-            KS_train_pred_train_median = np.median(np.array(KS_train_pred_train)[:, 1]).tolist()
-            self.predictions["Bayesian_inference"]["KS"][timestamp] = {"Test_vs_pred_on_train": KS_test_pred_train,
-                                                                       "Test_vs_pred_on_val": KS_test_pred_val,
+            KS_test_pred_test_median = np.median(np.array(KS_test_pred_test)[:, 1]).tolist()
+            self.predictions["Bayesian_inference"]["KS"][timestamp] = {"Train_vs_val": KS_train_val,
+                                                                       "Train_vs_test": KS_train_test,
+                                                                       "Val_vs_test": KS_val_test,
+                                                                       "Train_vs_pred_on_train": KS_train_pred_train,
+                                                                       "Train_vs_pred_on_val": KS_train_pred_val,
+                                                                       "Train_vs_pred_on_test": KS_train_pred_test,
+                                                                       "Val_vs_pred_on_train": KS_val_pred_train,
+                                                                       "Val_vs_pred_on_val": KS_val_pred_val,
                                                                        "Val_vs_pred_on_test": KS_val_pred_test,
-                                                                       "Train_vs_pred_on_train": KS_train_pred_train}
-            self.predictions["Bayesian_inference"]["KS_medians"][timestamp] = {"Test_vs_pred_on_train": KS_test_pred_train_median,
-                                                                               "Test_vs_pred_on_val": KS_test_pred_val_median,
+                                                                       "Test_vs_pred_on_train": KS_test_pred_train,
+                                                                       "Test_vs_pred_on_val": KS_test_pred_val,
+                                                                       "Test_vs_pred_on_test": KS_test_pred_test}
+            self.predictions["Bayesian_inference"]["KS_medians"][timestamp] = {"Train_vs_val": KS_train_val_median,
+                                                                               "Train_vs_test": KS_train_test_median,
+                                                                               "Val_vs_test": KS_val_test_median,
+                                                                               "Train_vs_pred_on_train": KS_train_pred_train_median,
+                                                                               "Train_vs_pred_on_val": KS_train_pred_val_median,
+                                                                               "Train_vs_pred_on_test": KS_train_pred_test_median,
+                                                                               "Val_vs_pred_on_train": KS_val_pred_train_median,
+                                                                               "Val_vs_pred_on_val": KS_val_pred_val_median,
                                                                                "Val_vs_pred_on_test": KS_val_pred_test_median,
-                                                                               "Train_vs_pred_on_train": KS_train_pred_train_median}                                          
+                                                                               "Test_vs_pred_on_train": KS_test_pred_train_median,
+                                                                               "Test_vs_pred_on_val": KS_test_pred_val_median,
+                                                                               "Test_vs_pred_on_test": KS_test_pred_test_median}
             end = timer()
             print(header_string,"\nBayesian inference benchmarks computed in", str(end-start), "s.\n", show=verbose)
         # Frequentist inference
@@ -3680,10 +3938,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         utils.check_set_dict_keys(frequentist_inference_options["compute_maximum_likelihood_kwargs"], 
                                                   ["pars_init",
                                                    "optimizer",
+                                                   "minimization_options",
                                                    "timestamp",
                                                    "save",
                                                    "verbose"],
-                                                  [None,{},timestamp,False,verbose_sub],verbose=verbose_sub)
+                                                  [None,{},{},timestamp,False,verbose_sub],verbose=verbose_sub)
                         string = "self.likelihood.compute_maximum_logpdf("
                         for key, value in frequentist_inference_options["compute_maximum_likelihood_kwargs"].items():
                             if type(value) == str:
@@ -3707,12 +3966,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                    "pars_bounds",
                                                    "spacing",
                                                    "optimizer",
+                                                   "minimization_options",
                                                    "timestamp",
                                                    "progressbar",
                                                    "save",
                                                    "verbose"],
                                                   [pars,np.full([len(pars),3],[-1,1,2]).tolist(),
-                                                   None,None,"grid",{},timestamp,True,False,verbose_sub],verbose=verbose_sub)
+                                                   None,None,"grid",{},{},timestamp,True,False,verbose_sub],verbose=verbose_sub)
                         string = "self.likelihood.compute_profiled_maxima_logpdf("
                         for key, value in frequentist_inference_options["compute_profiled_maxima_likelihood_kwargs"].items():
                             if type(value) == str:
@@ -3774,12 +4034,13 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     utils.check_set_dict_keys(frequentist_inference_options["compute_maximum_model_kwargs"], 
                                               ["pars_init",
                                                "optimizer",
+                                               "minimization_options",
                                                "x_boundaries",
                                                "y_boundaries",
                                                "timestamp",
                                                "save",
                                                "verbose"],
-                                              [None,{},False,False,timestamp,False,verbose_sub],verbose=verbose_sub)
+                                              [None,{},{},False,False,timestamp,False,verbose_sub],verbose=verbose_sub)
                     string = "self.compute_maximum_model("
                     for key, value in frequentist_inference_options["compute_maximum_model_kwargs"].items():
                         if type(value) == str:
@@ -3794,6 +4055,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                "pars_ranges",
                                                "pars_init",
                                                "optimizer",
+                                               "minimization_options",
                                                "spacing",
                                                "x_boundaries",
                                                "y_boundaries",
@@ -3801,7 +4063,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                "progressbar",
                                                "save",
                                                "verbose"],
-                                              [pars,np.full([len(pars),3],[-1,1,2]).tolist(),None,{},"grid",False,False,timestamp,True,False,verbose_sub],verbose=verbose_sub)
+                                              [pars,np.full([len(pars),3],[-1,1,2]).tolist(),None,{},{},"grid",False,False,timestamp,True,False,verbose_sub],verbose=verbose_sub)
                     string = "self.compute_profiled_maxima_model("
                     for key, value in frequentist_inference_options["compute_profiled_maxima_model_kwargs"].items():
                         if type(value) == str:
@@ -3900,7 +4162,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             end = timer()
             print(header_string,"\nAll plots done in", str(end-start), "s.\n", show=verbose)
         self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
-        #self.save_summary_json(overwrite=overwrite, verbose=verbose_sub)
+        #self.save_json(overwrite=overwrite, verbose=verbose_sub)
         end_global = timer()
         self.log[timestamp] = {"action": "computed predictions",
                                "CI": CI,
@@ -3919,6 +4181,67 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                "plot_tmu_sources_1d_kwargs": plot_tmu_sources_1d_kwargs}
         self.save(timestamp=timestamp,overwrite=overwrite, verbose=verbose_sub)
         print(header_string,"\nAll predictions computed in",end_global-start_global,"s.\n", show=verbose)
+
+    def generate_summary_text(self,model_predictions={},timestamp=None,verbose=None):
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        utils.check_set_dict_keys(model_predictions, ["Model_evaluation",
+                                                      "Bayesian_inference",
+                                                      "Frequentist_inference"],
+                                  [False, False, False], verbose=verbose_sub)
+        summary_text = "Sample file: " + str(path.split(self.input_data_file)[1].replace("_", r"$\_$")) + "\n"
+        #layers_string = [x.replace("layers.","") for x in self.layers_string[1:-1]]
+        #summary_text = summary_text + "Layers: " + utils.string_add_newline_at_char(str(layers_string),",") + "\n"
+        summary_text = summary_text + "Pars: " + str(self.ndims) + "\n"
+        summary_text = summary_text + "Trainable pars: " + str(self.model_trainable_params) + "\n"
+        summary_text = summary_text + "Scaled X/Y: " + str(self.scalerX_bool) +"/"+ str(self.scalerY_bool) + "\n"
+        summary_text = summary_text + "Dropout: " + str(self.dropout_rate) + "\n"
+        summary_text = summary_text + "AF out: " + self.act_func_out_layer + "\n"
+        summary_text = summary_text + "Batch norm: " + str(self.batch_norm) + "\n"
+        summary_text = summary_text + "Loss: " + self.loss_string + "\n"
+        optimizer_string = self.optimizer_string.replace("optimizers.","")
+        summary_text = summary_text + "Optimizer: " + \
+            utils.string_add_newline_at_char(
+                optimizer_string, ",").replace("_", r"$\_$") + "\n"
+        summary_text = summary_text + "Batch size: " + str(self.batch_size) + "\n"
+        summary_text = summary_text + "Epochs: " + str(self.epochs_available) + "\n"
+        summary_text = summary_text + "GPU(s): " + utils.string_add_newline_at_char(str(self.training_device),",") + "\n"
+        if model_predictions["Model_evaluation"]:
+            try:
+                metrics_scaled = self.predictions["Model_evaluation"]["Metrics_on_scaled_data"][timestamp]
+                summary_text = summary_text + "Best losses: " + "[" + "{0:1.2e}".format(metrics_scaled["loss_best"]) + "," + \
+                                                                      "{0:1.2e}".format(metrics_scaled["val_loss_best"]) + "," + \
+                                                                      "{0:1.2e}".format(metrics_scaled["test_loss_best"]) + "]" + "\n"
+            except:
+                pass
+            try:
+                metrics_unscaled = self.predictions["Model_evaluation"]["Metrics_on_unscaled_data"][timestamp]
+                summary_text = summary_text + "Best losses scaled: " + "[" + "{0:1.2e}".format(metrics_unscaled["loss_best_unscaled"]) + "," + \
+                                                                             "{0:1.2e}".format(metrics_unscaled["val_loss_best_unscaled"]) + "," + \
+                                                                             "{0:1.2e}".format(metrics_unscaled["test_loss_best_unscaled"]) + "]" + "\n"
+            except:
+                pass
+        if model_predictions["Bayesian_inference"]:
+            try:
+                ks_medians = self.predictions["Bayesian_inference"]["KS_medians"][timestamp]
+                summary_text = summary_text + "KS $p$-median: " + "[" + "{0:1.2e}".format(ks_medians["Test_vs_pred_on_train"]) + "," + \
+                                                                    "{0:1.2e}".format(ks_medians["Test_vs_pred_on_val"]) + "," + \
+                                                                    "{0:1.2e}".format(ks_medians["Val_vs_pred_on_test"]) + "," + \
+                                                                    "{0:1.2e}".format(ks_medians["Train_vs_pred_on_train"]) + "]" + "\n"
+            except:
+                pass
+        if model_predictions["Frequentist_inference"]:
+            summary_text = summary_text + "Average error on tmu: "
+        #if FREQUENTISTS_RESULTS:
+        #    summary_text = summary_text + "Mean error on tmu: "+ str(summary_log["Frequentist mean error on tmu"]) + "\n"
+        summary_text = summary_text + "Training time: " + str(round(self.training_time,1)) + "s" + "\n"
+        if model_predictions["Model_evaluation"] or model_predictions["Bayesian_inference"]:
+            try:
+                summary_text = summary_text + "Pred time per point: " + str(round(self.predictions["Model_evaluation"][timestamp]["Prediction_time"],1)) + "s"
+            except:
+                pass
+        self.summary_text = summary_text
 
     def save_log(self, timestamp=None, overwrite=False, verbose=None):
         """
@@ -4007,11 +4330,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode json file\n\t", output_tf_model_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel json file\n\t", output_tf_model_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nMode json file\n\t", output_tf_model_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel json file\n\t", output_tf_model_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nMode json file dump\n\t", output_tf_model_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+            print(header_string,"\nModel json file dump\n\t", output_tf_model_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save_model_h5(self, timestamp=None, overwrite=False, verbose=None):
         """ Save model to h5
@@ -4037,11 +4360,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode h5 file\n\t", output_tf_model_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel h5 file\n\t", output_tf_model_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nMode h5 file\n\t", output_tf_model_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel h5 file\n\t", output_tf_model_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nMode h5 file dump\n\t", output_tf_model_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+            print(header_string,"\nModel h5 file dump\n\t", output_tf_model_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save_model_onnx(self, timestamp=None, overwrite=False, verbose=None):
         """ Save model to onnx
@@ -4068,14 +4391,14 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode onnx file\n\t", output_tf_model_onnx_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel onnx file\n\t", output_tf_model_onnx_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nMode onnx file\n\t", output_tf_model_onnx_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel onnx file\n\t", output_tf_model_onnx_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nMode onnx file dump\n\t", output_tf_model_onnx_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+            print(header_string,"\nModel onnx file dump\n\t", output_tf_model_onnx_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save_history_json(self, timestamp=None,overwrite=False,verbose=None):
-        """ Save summary log (history plus model specifications) to json
+        """ Save training history to json
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -4098,118 +4421,62 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nMode history file\n\t", output_history_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel history file\n\t", output_history_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nMode history file\n\t", output_history_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nModel history file\n\t", output_history_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nMode history file dump\n\t", output_history_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+            print(header_string,"\nModel history file dump\n\t", output_history_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
-    def save_summary_json(self, timestamp=None, overwrite=False, verbose=None):
-        """ Save summary log (history plus model specifications) to json
+    def save_json(self, timestamp=None, overwrite=False, verbose=None):
+        """ Save object to json
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
-            output_summary_json_file = self.output_summary_json_file
+            output_json_file = self.output_json_file
             if not overwrite:
-                utils.check_rename_file(output_summary_json_file, verbose=verbose_sub)
+                utils.check_rename_file(output_json_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_summary_json_file = utils.generate_dump_file_name(self.output_summary_json_file, timestamp=timestamp)
+            output_json_file = utils.generate_dump_file_name(self.output_json_file, timestamp=timestamp)
         dictionary = utils.dic_minus_keys(self.__dict__,["_DnnLik__resources_inputs",
                                                          "callbacks","data","history",
                                                          "idx_test","idx_train","idx_val",
                                                          "input_files_base_name", "input_folder", "input_history_json_file",
                                                          "input_idx_h5_file","input_log_file", "input_likelihood_file",
                                                          "input_predictions_h5_file",
-                                                         "input_scalers_pickle_file","input_summary_json_file",
+                                                         "input_preprocessing_pickle_file","input_file",
                                                          "input_tf_model_h5_file", "input_data_file",
-                                                         "likelihood","load_on_RAM",
+                                                         "layers","likelihood","load_on_RAM",
                                                          "log","loss","metrics","model","optimizer",
                                                          "output_folder", "output_figures_folder",
                                                          "output_figures_base_file_name", "output_figures_base_file_path",
                                                          "output_files_base_name","output_history_json_file",
                                                          "output_idx_h5_file", "output_log_file",
                                                          "output_predictions_h5_file","output_predictions_json_file",
-                                                         "output_scalers_pickle_file","output_summary_json_file",
+                                                         "output_preprocessing_pickle_file","output_json_file",
                                                          "output_tf_model_graph_pdf_file","output_tf_model_h5_file",
                                                          "output_tf_model_json_file","output_tf_model_onnx_file",
                                                          "script_file","output_checkpoints_files",
                                                          "output_checkpoints_folder","output_figure_plot_losses_keras_file",
-                                                         "output_tensorboard_log_dir", "predictions", "scalerX","scalerY","verbose",
+                                                         "output_tensorboard_log_dir", "predictions", 
+                                                         "rotationX","scalerX","scalerY","verbose",
                                                          "X_test","X_train","X_val","Y_test","Y_train","Y_val","W_train"])
         dictionary = utils.convert_types_dict(dictionary)
-        with codecs.open(output_summary_json_file, "w", encoding="utf-8") as f:
+        with codecs.open(output_json_file, "w", encoding="utf-8") as f:
             json.dump(dictionary, f, separators=(",", ":"), indent=4)
         end = timer()
-        self.log[timestamp] = {"action": "saved summary json",
-                               "file name": path.split(output_summary_json_file)[-1]}
+        self.log[timestamp] = {"action": "saved object json",
+                               "file name": path.split(output_json_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nSummary json file\n\t", output_summary_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nJson file\n\t", output_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nSummary json file\n\t", output_summary_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nJson file\n\t", output_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nSummary json file dump\n\t", output_summary_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
-
-    def generate_summary_text(self,model_predictions={},timestamp=None,verbose=None):
-        verbose, verbose_sub = self.set_verbosity(verbose)
-        if timestamp is None:
-            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        utils.check_set_dict_keys(model_predictions, ["Model_evaluation",
-                                                      "Bayesian_inference",
-                                                      "Frequentist_inference"],
-                                  [False, False, False], verbose=verbose_sub)
-        summary_text = "Sample file: " + str(path.split(self.input_data_file)[1].replace("_", r"$\_$")) + "\n"
-        summary_text = summary_text + "Layers: " + utils.string_add_newline_at_char(str(self.hidden_layers),",") + "\n"
-        summary_text = summary_text + "Pars: " + str(self.ndims) + "\n"
-        summary_text = summary_text + "Trainable pars: " + str(self.model_trainable_params) + "\n"
-        summary_text = summary_text + "Scaled X/Y: " + str(self.scalerX_bool) +"/"+ str(self.scalerY_bool) + "\n"
-        summary_text = summary_text + "Dropout: " + str(self.dropout_rate) + "\n"
-        summary_text = summary_text + "AF out: " + self.act_func_out_layer + "\n"
-        summary_text = summary_text + "Batch norm: " + str(self.batch_norm) + "\n"
-        summary_text = summary_text + "Loss: " + self.loss_string + "\n"
-        summary_text = summary_text + "Optimizer: " + utils.string_add_newline_at_char(self.optimizer_string,",").replace("_", "-") + "\n"
-        summary_text = summary_text + "Batch size: " + str(self.batch_size) + "\n"
-        summary_text = summary_text + "Epochs: " + str(self.epochs_available) + "\n"
-        summary_text = summary_text + "GPU(s): " + utils.string_add_newline_at_char(str(self.training_device),",") + "\n"
-        if model_predictions["Model_evaluation"]:
-            try:
-                metrics_scaled = self.predictions["Model_evaluation"]["Metrics_on_scaled_data"][timestamp]
-                summary_text = summary_text + "Best losses: " + "[" + "{0:1.2e}".format(metrics_scaled["loss_best"]) + "," + \
-                                                                      "{0:1.2e}".format(metrics_scaled["val_loss_best"]) + "," + \
-                                                                      "{0:1.2e}".format(metrics_scaled["test_loss_best"]) + "]" + "\n"
-            except:
-                pass
-            try:
-                metrics_unscaled = self.predictions["Model_evaluation"]["Metrics_on_unscaled_data"][timestamp]
-                summary_text = summary_text + "Best losses scaled: " + "[" + "{0:1.2e}".format(metrics_unscaled["loss_best_unscaled"]) + "," + \
-                                                                             "{0:1.2e}".format(metrics_unscaled["val_loss_best_unscaled"]) + "," + \
-                                                                             "{0:1.2e}".format(metrics_unscaled["test_loss_best_unscaled"]) + "]" + "\n"
-            except:
-                pass
-        if model_predictions["Bayesian_inference"]:
-            try:
-                ks_medians = self.predictions["Bayesian_inference"]["KS_medians"][timestamp]
-                summary_text = summary_text + "KS $p$-median: " + "[" + "{0:1.2e}".format(ks_medians["Test_vs_pred_on_train"]) + "," + \
-                                                                    "{0:1.2e}".format(ks_medians["Test_vs_pred_on_val"]) + "," + \
-                                                                    "{0:1.2e}".format(ks_medians["Val_vs_pred_on_test"]) + "," + \
-                                                                    "{0:1.2e}".format(ks_medians["Train_vs_pred_on_train"]) + "]" + "\n"
-            except:
-                pass
-        if model_predictions["Frequentist_inference"]:
-            summary_text = summary_text + "Average error on tmu: "
-        #if FREQUENTISTS_RESULTS:
-        #    summary_text = summary_text + "Mean error on tmu: "+ str(summary_log["Frequentist mean error on tmu"]) + "\n"
-        summary_text = summary_text + "Train time per epoch: " + str(round(self.training_time,1)) + "s" + "\n"
-        if model_predictions["Model_evaluation"] or model_predictions["Bayesian_inference"]:
-            try:
-                summary_text = summary_text + "Pred time per point: " + str(round(self.predictions["Model_evaluation"][timestamp]["Prediction_time"],1)) + "s"
-            except:
-                pass
-        self.summary_text = summary_text
+            print(header_string,"\n\nJson file\n\t dump\n\t", output_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save_predictions_json(self, timestamp=None,overwrite=False, verbose=None):
         """ Save predictions json
@@ -4275,35 +4542,36 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.save_predictions_json(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
         self.save_predictions_h5(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
 
-    def save_scalers(self, timestamp=None, overwrite=False, verbose=None):
+    def save_preprocessing(self, timestamp=None, overwrite=False, verbose=None):
         """ 
-        Save scalers to pickle
+        Save scalers and X rotation to pickle
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
-            output_scalers_pickle_file = self.output_scalers_pickle_file
+            output_preprocessing_pickle_file = self.output_preprocessing_pickle_file
             if not overwrite:
-                utils.check_rename_file(output_scalers_pickle_file, verbose=verbose_sub)
+                utils.check_rename_file(output_preprocessing_pickle_file, verbose=verbose_sub)
         elif overwrite == "dump":
-            output_scalers_pickle_file = utils.generate_dump_file_name(self.output_scalers_pickle_file, timestamp=timestamp)
-        pickle_out = open(output_scalers_pickle_file, "wb")
+            output_preprocessing_pickle_file = utils.generate_dump_file_name(self.output_preprocessing_pickle_file, timestamp=timestamp)
+        pickle_out = open(output_preprocessing_pickle_file, "wb")
         pickle.dump(self.scalerX, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle.dump(self.scalerY, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
+        pickle.dump(self.rotationX, pickle_out, protocol=pickle.HIGHEST_PROTOCOL)
         pickle_out.close()
         end = timer()
-        self.log[timestamp] = {"action": "saved scalers h5",
-                               "file name": path.split(output_scalers_pickle_file)[-1]}
+        self.log[timestamp] = {"action": "saved scalers and X rotation h5",
+                               "file name": path.split(output_preprocessing_pickle_file)[-1]}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log saved by save
         if type(overwrite) == bool:
             if overwrite:
-                print(header_string,"\nScalers pickle file\n\t", output_scalers_pickle_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nPreprocessing pickle file\n\t", output_preprocessing_pickle_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
             else:
-                print(header_string,"\nScalers pickle file\n\t", output_scalers_pickle_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+                print(header_string,"\nPreprocessing pickle file\n\t", output_preprocessing_pickle_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
-            print(header_string,"\nScalers pickle file dump\n\t", output_scalers_pickle_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+            print(header_string,"\nPreprocessing pickle file dump\n\t", output_preprocessing_pickle_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
     def save_model_graph_pdf(self, timestamp=None, overwrite=False, verbose=None):
         """ Save model graph to pdf
@@ -4364,42 +4632,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.save_model_onnx(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
         self.save_history_json(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
         self.save_predictions(timestamp=timestamp,overwrite=overwrite, verbose=verbose)
-        self.save_summary_json(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
-        self.save_scalers(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
+        self.save_json(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
+        self.save_preprocessing(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
         self.save_model_graph_pdf(timestamp=timestamp,overwrite=overwrite,verbose=verbose)
         self.save_log(timestamp=timestamp,overwrite=overwrite, verbose=verbose)
-
-    def show_figures(self,fig_list,verbose=None):
-        verbose, verbose_sub = self.set_verbosity(verbose)
-        fig_list = np.array(fig_list).flatten().tolist()
-        for fig in fig_list:
-            try:
-                from os import startfile
-                startfile(r"%s"%fig)
-                print(header_string,"\nFile", fig, "opened.\n", show=verbose)
-            except:
-                print(header_string,"\nFile", fig,"not found.\n", show=verbose)
-
-    def mean_error(self, y_true, y_pred):
-        y_true = tf.convert_to_tensor(y_true)
-        y_pred = tf.convert_to_tensor(y_pred)
-        ME_model = K.mean(y_true-y_pred)
-        return K.abs(ME_model)
-
-    def mean_percentage_error(self, y_true, y_pred):
-        y_true = tf.convert_to_tensor(y_true)
-        y_pred = tf.convert_to_tensor(y_pred)
-        MPE_model = K.mean((y_true-y_pred)/(K.sign(y_true)*K.clip(K.abs(y_true),
-                                                                  K.epsilon(),
-                                                                  None)))
-        return 100. * K.abs(MPE_model)
-
-    def R2_metric(self, y_true, y_pred):
-        y_true = tf.convert_to_tensor(y_true)
-        y_pred = tf.convert_to_tensor(y_pred)
-        MSE_model =  K.sum(K.square( y_true-y_pred )) 
-        MSE_baseline = K.sum(K.square( y_true - K.mean(y_true) ) ) 
-        return (1 - MSE_model/(MSE_baseline + K.epsilon()))
 
     def save_script(self, 
                     model_predict_kwargs = {},
@@ -4412,11 +4648,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates file**
 
@@ -4431,7 +4663,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             out_file.write("import DNNLikelihood\n"+
                            "import numpy as np\n" + "\n" +
                            "dnnlik = DNNLikelihood.DnnLik(name=None,\n" +
-                           "\tinput_file="+r"'" + r"%s" % ((self.output_summary_json_file).replace(sep, '/'))+"', \n" +
+                           "\tinput_file="+r"'" + r"%s" % ((self.output_json_file).replace(sep, '/'))+"', \n" +
                            "verbose = "+str(self.verbose)+")"+"\n"+"\n" +
                            "name = dnnlik.name\n" +
                            "def logpdf(x_pars,*args,**kwargs):\n" +
@@ -4455,3 +4687,35 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                "file name": path.split(self.script_file)[-1]}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string,"\nFile\n\t", self.script_file, "\ncorrectly generated.\n", show=verbose)
+
+    def show_figures(self,fig_list,verbose=None):
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        fig_list = np.array(fig_list).flatten().tolist()
+        for fig in fig_list:
+            try:
+                from os import startfile
+                startfile(r"%s"%fig)
+                print(header_string,"\nFile", fig, "opened.\n", show=verbose)
+            except:
+                print(header_string,"\nFile", fig,"not found.\n", show=verbose)
+
+    #def mean_error(self, y_true, y_pred):
+    #    y_true = tf.convert_to_tensor(y_true)
+    #    y_pred = tf.convert_to_tensor(y_pred)
+    #    ME_model = K.mean(y_true-y_pred)
+    #    return K.abs(ME_model)
+    #
+    #def mean_percentage_error(self, y_true, y_pred):
+    #    y_true = tf.convert_to_tensor(y_true)
+    #    y_pred = tf.convert_to_tensor(y_pred)
+    #    MPE_model = K.mean((y_true-y_pred)/(K.sign(y_true)*K.clip(K.abs(y_true),
+    #                                                              K.epsilon(),
+    #                                                              None)))
+    #    return 100. * K.abs(MPE_model)
+    #
+    #def R2_metric(self, y_true, y_pred):
+    #    y_true = tf.convert_to_tensor(y_true)
+    #    y_pred = tf.convert_to_tensor(y_pred)
+    #    MSE_model =  K.sum(K.square( y_true-y_pred )) 
+    #    MSE_baseline = K.sum(K.square( y_true - K.mean(y_true) ) ) 
+    #    return (1 - MSE_model/(MSE_baseline + K.epsilon()))

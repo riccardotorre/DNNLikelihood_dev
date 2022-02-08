@@ -4,10 +4,11 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>The Data object &mdash; DNNLikelihood</title>
+  <title>Data object &mdash; DNNLikelihood</title>
   
 
   
@@ -99,22 +100,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">The Data object</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data object</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="class.html">Class</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
@@ -167,7 +166,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-      <li>The Data object</li>
+      <li>Data object</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -210,8 +209,8 @@
     text-align: unset;
 }
 </style>
-<span class="target" id="module-data"><span id="data-object"></span></span><div class="section" id="the-data-object">
-<h1>The Data object<a class="headerlink" href="#the-data-object" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-data"><span id="data-object"></span></span><section id="id1">
+<h1>Data object<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="class.html#DNNLikelihood.Data" title="DNNLikelihood.Data"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data</span></code></a> class acts as a data container. It is used by the <code class="xref py py-mod docutils literal notranslate"><span class="pre">DNNLikelihood</span></code> object
 and the <a class="reference internal" href="../dnn_likelihood_ensemble/index.html#module-dnn_likelihood_ensemble" title="dnn_likelihood_ensemble"><code class="xref py py-mod docutils literal notranslate"><span class="pre">DNNLikEnsemble</span></code></a> object to manage training/validation/test data
 through the <a class="reference internal" href="attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-class docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> dictionary.
@@ -229,7 +228,7 @@ the <a class="reference internal" href="../dnn_likelihood_ensemble/index.html#mo
 </li>
 </ul>
 </div>
-</div>
+</section>
 
 
            </div>

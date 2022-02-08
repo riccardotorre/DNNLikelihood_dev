@@ -3,7 +3,7 @@ The DNNLikelihood project
 
 .. toctree::
    :hidden:
-   :maxdepth: 4
+   :maxdepth: -1
 
    introduction
    install

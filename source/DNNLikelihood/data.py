@@ -13,6 +13,7 @@ import h5py
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import seaborn as sns
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -90,20 +91,21 @@ class Data(Verbosity):
         - **Creates files**
 
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
-            - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)
             - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         print(header_string, "\nInitialize Data object.\n", show=verbose)
+        self.output_folder = output_folder
         self.input_file = input_file
         self.__check_define_input_files(verbose=verbose_sub)
         if self.input_file == None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
-            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
+            self.__check_define_output_files(timestamp=timestamp,verbose=verbose_sub)
             self.dtype = dtype
             self.data_X = data_X
             self.data_Y = data_Y
@@ -131,7 +133,7 @@ class Data(Verbosity):
             else:
                 self.dtype_required = "float64"
             self.__load(verbose=verbose_sub)
-            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
+            self.__check_define_output_files(timestamp=timestamp,verbose=verbose_sub)
             self.__define_test_fraction()
             try:
                 self.predictions["Figures"]
@@ -150,7 +152,7 @@ class Data(Verbosity):
         to set the attributes corresponding to input files:
 
             - :attr:`Data.input_log_file <DNNLikelihood.Data.input_log_file>`
-            - :attr:`Data.input_object_h5_file <DNNLikelihood.Data.input_object_h5_file>`
+            - :attr:`Data.input_h5_file <DNNLikelihood.Data.input_h5_file>`
             - :attr:`Data.input_samples_h5_file <DNNLikelihood.Data.input_samples_h5_file>`
 
         depending on the value of the 
@@ -158,21 +160,20 @@ class Data(Verbosity):
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if self.input_file == None:
-            self.input_object_h5_file = None
+            self.input_h5_file = None
             self.input_samples_h5_file = None
             self.input_log_file = None
             self.input_folder = None
             print(header_string,"\nNo Data input files and folders specified.\n", show=verbose)
         else:
-            self.input_file = self.input_file.replace("_object","")
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
-            self.input_object_h5_file = self.input_file+"_object.h5"
+            self.input_h5_file = self.input_file+".h5"
             self.input_samples_h5_file = self.input_file+"_samples.h5"
             self.input_log_file = self.input_file+".log"
             self.input_folder = path.split(self.input_file)[0]
             print(header_string,"\nData input folder set to\n\t", self.input_folder,".\n",show=verbose)
 
-    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
+    def __check_define_output_files(self,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` one
         to set the attributes corresponding to output folders
@@ -185,7 +186,7 @@ class Data(Verbosity):
             - :attr:`DnnLik.output_figures_base_file <DNNLikelihood.DnnLik.output_figures_base_file>`
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
             - :attr:`Data.output_predictions_json_file <DNNLikelihood.Data.output_predictions_json_file>`
-            - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
             - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`
 
         depending on the values of the 
@@ -195,8 +196,8 @@ class Data(Verbosity):
         it does not exist.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if output_folder is not None:
-            self.output_folder = path.abspath(output_folder)
+        if self.output_folder is not None:
+            self.output_folder = path.abspath(self.output_folder)
             if self.input_folder is not None and self.output_folder != self.input_folder:
                 utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
         else:
@@ -208,7 +209,7 @@ class Data(Verbosity):
         self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
         self.output_figures_base_file_name = self.name+"_figure"
         self.output_figures_base_file_path = path.join(self.output_figures_folder, self.output_figures_base_file_name)
-        self.output_object_h5_file = path.join(self.output_folder, self.name+"_object.h5")
+        self.output_h5_file = path.join(self.output_folder, self.name+".h5")
         self.output_samples_h5_file = path.join(self.output_folder, self.name+"_samples.h5")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
         self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
@@ -285,11 +286,7 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, _ = self.set_verbosity(verbose)
         if self.pars_central is not None:
@@ -335,7 +332,7 @@ class Data(Verbosity):
         :mod:`Data <data>` object from the files 
         
             - :attr:`Data.input_samples_h5_file <DNNLikelihood.Data.input_samples_h5_file>`
-            - :attr:`Data.input_object_h5_file <DNNLikelihood.Data.input_object_h5_file>`
+            - :attr:`Data.input_h5_file <DNNLikelihood.Data.input_h5_file>`
             - :attr:`Data.input_log_file <DNNLikelihood.Data.input_log_file>`
 
         If :attr:`Data.load_on_RAM <DNNLikelihood.Data.load_on_RAM>` is ``True``, then all samples are loaded into RAM, 
@@ -345,15 +342,11 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
-        dictionary = dd.io.load(self.input_object_h5_file)
+        dictionary = dd.io.load(self.input_h5_file)
         self.__dict__.update(dictionary)
         with open(self.input_log_file) as json_file:
             dictionary = json.load(json_file)
@@ -371,7 +364,7 @@ class Data(Verbosity):
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_samples_h5_file)[-1],
                                                path.split(self.input_log_file)[-1],
-                                               path.split(self.input_object_h5_file)[-1]]}
+                                               path.split(self.input_h5_file)[-1]]}
         print(header_string,"\nData object loaded in", str(end-start), ".\n",show=verbose)
         if self.load_on_RAM:
             print(header_string,"\nSamples loaded on RAM.\n", show=verbose)
@@ -450,23 +443,19 @@ class Data(Verbosity):
         Method analog to the private method :meth:`Data.__define_test_fraction <DNNLikelihood.Data._Data__define_test_fraction>`
         useful to change the available fraction of train/valifation vs test data.
         Differently from the analog private method, this one updates the files corresponding to the
-        :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>` and
+        :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>` and
         :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>` attributes.
 
         - **Arguments**
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Updates files**
 
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
-            - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
         """
         _, verbose_sub = self.set_verbosity(verbose)
         if self.test_fraction == None:
@@ -502,11 +491,7 @@ class Data(Verbosity):
             
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -528,11 +513,7 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, _ = self.set_verbosity(verbose)
         try:
@@ -567,20 +548,11 @@ class Data(Verbosity):
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
-                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
-                function.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates file**
 
@@ -630,13 +602,13 @@ class Data(Verbosity):
     def save_object_h5(self, overwrite=False, verbose=True):
         """
         The :class:`Lik <DNNLikelihood.Data>` object is saved to the HDF5 file
-        :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`, the datasets corresponding to the 
+        :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`, the datasets corresponding to the 
         :attr:`Data.data_X <DNNLikelihood.Data.data_X>` and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` attributes
         are saved to the file :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`, and the object 
         log is saved to the json file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`.
         
         This method saves the content of the :attr:``Lik.__dict__ <DNNLikelihood.Lik.__dict__>`` 
-        attribute in the h5 file :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
+        attribute in the h5 file :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
         using the |deepdish_link| package. The following attributes are excluded from the saved
         dictionary:
 
@@ -647,7 +619,7 @@ class Data(Verbosity):
             - :attr:`Data.input_file <DNNLikelihood.Data.input_file>`
             - :attr:`Data.input_folder <DNNLikelihood.Data.input_folder>`
             - :attr:`Data.input_samples_h5_file <DNNLikelihood.Data.input_samples_h5_file>`
-            - :attr:`Data.input_object_h5_file <DNNLikelihood.Data.input_object_h5_file>`
+            - :attr:`Data.input_h5_file <DNNLikelihood.Data.input_h5_file>`
             - :attr:`Data.input_log_file <DNNLikelihood.Data.input_log_file>`
             - :attr:`Data.load_on_RAM <DNNLikelihood.Data.load_on_RAM>`
             - :attr:`Data.log <DNNLikelihood.Data.log>` (saved to the file :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`)
@@ -656,7 +628,7 @@ class Data(Verbosity):
             - :attr:`Data.output_figures_folder <DNNLikelihood.Data.output_figures_folder>`
             - :attr:`Data.output_figures_base_file_name <DNNLikelihood.Data.output_figures_base_file_name>`
             - :attr:`Data.output_figures_base_file_path <DNNLikelihood.Data.output_figures_base_file_path>`
-            - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
             - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
             - :attr:`Data.test_range <DNNLikelihood.Data.test_range>`
@@ -670,36 +642,27 @@ class Data(Verbosity):
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
-                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
-                function.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
-            - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if not overwrite:
-            utils.check_rename_file(self.output_object_h5_file, verbose=verbose_sub)
+            utils.check_rename_file(self.output_h5_file, verbose=verbose_sub)
         dictionary = utils.dic_minus_keys(self.__dict__, ["data_dictionary",
                                                           "data_X","data_Y",
                                                           "dtype_required",
                                                           "input_file",
                                                           "input_folder",
                                                           "input_samples_h5_file",
-                                                          "input_object_h5_file",
+                                                          "input_h5_file",
                                                           "input_log_file",
                                                           "load_on_RAM",
                                                           "log",
@@ -708,23 +671,23 @@ class Data(Verbosity):
                                                           "output_figures_folder",
                                                           "output_figures_base_file_name",
                                                           "output_figures_base_file_path",
-                                                          "output_object_h5_file",
+                                                          "output_h5_file",
                                                           "output_samples_h5_file",
                                                           "output_log_file",
                                                           "test_range",
                                                           "train_range",
                                                           "verbose"])
-        dd.io.save(self.output_object_h5_file, dictionary)
+        dd.io.save(self.output_h5_file, dictionary)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
-                               "file name": path.split(self.output_object_h5_file)[-1]}
-        print(header_string,"\nData object saved to file\n\t", self.output_object_h5_file,"in", str(end-start), "s.\n",show=verbose)
+                               "file name": path.split(self.output_h5_file)[-1]}
+        print(header_string,"\nData object saved to file\n\t", self.output_h5_file,"in", str(end-start), "s.\n",show=verbose)
 
     def save_samples_h5(self, overwrite=False, verbose=None):
         """
         The :class:`Lik <DNNLikelihood.Data>` object is saved to the HDF5 file
-        :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`, the datasets corresponding to the 
+        :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`, the datasets corresponding to the 
         :attr:`Data.data_X <DNNLikelihood.Data.data_X>` and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` attributes
         are saved to the file :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`, and the object 
         log is saved to the json file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`.
@@ -740,20 +703,11 @@ class Data(Verbosity):
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
-                already exists, then the old file gets renamed with the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` 
-                function.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Produces file**
 
@@ -779,7 +733,7 @@ class Data(Verbosity):
     def save(self, overwrite=False, verbose=None):
         """
         The :class:`Lik <DNNLikelihood.Data>` object is saved to the HDF5 file
-        :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`, the datasets corresponding to the 
+        :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`, the datasets corresponding to the 
         :attr:`Data.data_X <DNNLikelihood.Data.data_X>` and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` attributes
         are saved to the file :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>`, and the object 
         log is saved to the json file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`.
@@ -801,7 +755,7 @@ class Data(Verbosity):
 
             - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
             - :attr:`Data.output_predictions_json_file <DNNLikelihood.Data.output_predictions_json_file>`
-            - :attr:`Data.output_object_h5_file <DNNLikelihood.Data.output_object_h5_file>`
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
             - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>` 
         """
         verbose, _ = self.set_verbosity(verbose)
@@ -844,16 +798,12 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         _, verbose_sub = self.set_verbosity(verbose)
         np.random.seed(seed)
         idx_train = np.random.choice(self.train_range, npoints_train+npoints_val, replace=False)
-        idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val)]
+        idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val, shuffle=False)]
         self.data_dictionary["idx_train"] = idx_train
         self.data_dictionary["idx_val"] = idx_val
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -898,11 +848,7 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -954,18 +900,14 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         _, verbose_sub = self.set_verbosity(verbose)
         existing_train = np.sort(np.concatenate((self.data_dictionary["idx_train"], self.data_dictionary["idx_val"])))
         np.random.seed(seed)
         idx_train = np.random.choice(np.setdiff1d(np.array(self.train_range), existing_train), npoints_train+npoints_val, replace=False)
         if np.size(idx_train) != 0:
-            idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val)]
+            idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val, shuffle=False)]
         else:
             idx_val = idx_train
         self.data_dictionary["idx_train"] = np.sort(np.concatenate((self.data_dictionary["idx_train"],idx_train)))
@@ -980,7 +922,7 @@ class Data(Verbosity):
 
     def update_train_data(self, npoints_train, npoints_val, seed, verbose=None):
         """
-        Analog of :meth:`Data.generate_train_indices <DNNLikelihood.Data.generate_train_data>`, but it only updates
+        Analog of :meth:`Data.generate_train_data <DNNLikelihood.Data.generate_train_data>`, but it only updates
         data adding more points if any are already available in the 
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
         It updates the  ``"X_train"``, ``"Y_train"``, ``"X_val"`` and ``"Y_val"`` items of the 
@@ -1011,11 +953,7 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -1046,14 +984,12 @@ class Data(Verbosity):
         self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string,"\nAdded", str(npoints_train), "(X_train, Y_train) samples and", str(npoints_val),"(X_val, Y_val) samples in", end-start,"s.\n",show=verbose)
 
-    def generate_test_indices(self, npoints_test, verbose=None):
+    def generate_test_indices(self, npoints_test, seed, verbose=None):
         """
         Method used to generate ``npoints_test`` test data indices 
         (integer positions in the :attr:`Data.data_X <DNNLikelihood.Data.data_X>`
-        and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` arrays). Test indices are always generated
-        deterministically and always represent
-        the first ``npoints_test`` in the :attr:`Dara.test_range <DNNLikelihood.Data.test_range>` range.
-        It updates the ``"idx_test"`` item of the 
+        and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` arrays). It updates the 
+        ``"idx_test"`` item of the 
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
 
         - **Arguments**
@@ -1064,38 +1000,35 @@ class Data(Verbosity):
                 test points.
 
                     - **type**: ``int``
+            
+            - **seed**
+
+                Seed of the random number generator. It is used to initialize 
+                the |numpy_link| random state.
+
+                    - **type**: ``int``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        n_existing_test = len(self.data_dictionary["idx_test"])
-        idx_test = np.array(self.test_range)[range(n_existing_test, n_existing_test+npoints_test)]
-        self.data_dictionary["idx_test"] = np.concatenate((self.data_dictionary["idx_test"],idx_test))
+        np.random.seed(seed)
+        idx_test = np.random.choice(self.test_range, npoints_test, replace=False)
+        self.data_dictionary["idx_test"] = idx_test
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_test"],
                                "npoints test": npoints_test}
         #self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by generate_test_data
-        return idx_test
 
-    def generate_test_data(self, npoints_test, verbose=None):
+    def generate_test_data(self, npoints_test, seed, verbose=None):
         """
-        Method used to generate ``npoints_test`` test data indices
-        (integer positions in the :attr:`Data.data_X <DNNLikelihood.Data.data_X>`
-        and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` arrays). In order to extract the required 
-        number of points from the :attr:`Data.data_X <DNNLikelihood.Data.data_X>`
+        Method used to generate ``npoints_test`` test data.
+        In order to extract the required number of points from the :attr:`Data.data_X <DNNLikelihood.Data.data_X>`
         and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` arrays (which may not be available on RAM),
         it first generates indices with the :meth:`Data.generate_test_indices <DNNLikelihood.Data.generate_test_indices>`
         method and then slices the data with the generated indices.
-        Test data are always generated deterministically and always correspond to the first ``npoints_test`` 
-        in the :attr:`Dara.test_range <DNNLikelihood.Data.test_range>` range of :attr:`Data.data_X <DNNLikelihood.Data.data_X>`
-        and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`.
         It updates the ``"X_test"`` and ``"Y_test"`` items of the
         :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
 
@@ -1108,33 +1041,118 @@ class Data(Verbosity):
 
                     - **type**: ``int``
 
+            - **seed**
+
+                Seed of the random number generator. It is used to initialize 
+                the |numpy_link| random state.
+
+                    - **type**: ``int``
+
             - **verbose**
-
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-
-                    - **type**: ``bool``
-                    - **default**: ``None``
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         self.__check_sync_data_dictionary(verbose=verbose_sub)
-        npoints_test = npoints_test-len(self.data_dictionary["Y_test"])
-        idx_test = self.generate_test_indices(npoints_test, verbose=verbose)
+        self.generate_test_indices(npoints_test, seed)
+        self.data_dictionary["X_test"] = self.data_X[self.data_dictionary["idx_test"]].astype(self.dtype_required)
+        self.data_dictionary["Y_test"] = self.data_Y[self.data_dictionary["idx_test"]].astype(self.dtype_required)
+        end = timer()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        self.log[timestamp] = {"action": "updated data dictionary",
+                               "data": ["X_test", "Y_test"],
+                               "npoints test": npoints_test}
+        self.save_log(overwrite=True, verbose=verbose_sub)
+        print(header_string,"\nGenerated", str(npoints_test), "(X_test, Y_test) samples in", end-start,"s.\n",show=verbose)
+
+    def update_test_indices(self, npoints_test, seed, verbose=None):
+        """
+        Analog of :meth:`Data.generate_test_indices <DNNLikelihood.Data.generate_test_indices>`, but it only updates
+        indices adding more points if any are already available in the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
+        It updates the  ``"idx_test"`` item of the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
+
+        - **Arguments**
+
+            - **npoints_test**
+
+                Required number of 
+                test points.
+
+                    - **type**: ``int``
+
+            - **seed**
+
+                Seed of the random number generator. It is used to initialize 
+                the |numpy_link| random state.
+
+                    - **type**: ``int``
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+        """
+        _, verbose_sub = self.set_verbosity(verbose)
+        existing_test = np.sort(self.data_dictionary["idx_test"])
+        np.random.seed(seed)
+        idx_test = np.random.choice(np.setdiff1d(np.array(self.test_range), existing_test), npoints_test, replace=False)
+        self.data_dictionary["idx_test"] = np.sort(np.concatenate((self.data_dictionary["idx_test"],idx_test)))
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        self.log[timestamp] = {"action": "updated data dictionary",
+                               "data": ["idx_test"],
+                               "npoints test": npoints_test}
+        #self.save_log(overwrite=True, verbose=verbose_sub) # log is saved by update_test_data
+        return idx_test
+
+    def update_test_data(self, npoints_test, seed, verbose=None):
+        """
+        Analog of :meth:`Data.generate_test_data <DNNLikelihood.Data.generate_test_data>`, but it only updates
+        data adding more points if any are already available in the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
+        It updates the  ``"X_test"`` and ``"Y_test"`` items of the 
+        :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
+
+        - **Arguments**
+
+            - **npoints_test**
+
+                Required number of 
+                test points.
+
+                    - **type**: ``int``
+            
+            - **seed**
+
+                Seed of the random number generator. It is used to initialize 
+                the |numpy_link| random state.
+
+                    - **type**: ``int``
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        self.__check_sync_data_dictionary(verbose=verbose_sub)
+        npoints_test = npoints_test-len(self.data_dictionary["idx_test"])
+        idx_test = self.update_test_indices(npoints_test, seed, verbose=verbose)
         if idx_test != []:
             if self.data_dictionary["X_test"].size == 0:
                 self.data_dictionary["X_test"] = self.data_X[idx_test].astype(self.dtype_required)
                 self.data_dictionary["Y_test"] = self.data_Y[idx_test].astype(self.dtype_required)
             else:
-                self.data_dictionary["X_test"] = np.concatenate((self.data_dictionary["X_test"], self.data_X[idx_test])).astype(self.dtype_required)
-                self.data_dictionary["Y_test"] = np.concatenate((self.data_dictionary["Y_test"], self.data_Y[idx_test])).astype(self.dtype_required)
+                self.data_dictionary["X_test"] = np.concatenate((self.data_dictionary["X_test"],self.data_X[idx_test])).astype(self.dtype_required)
+                self.data_dictionary["Y_test"] = np.concatenate((self.data_dictionary["Y_test"],self.data_Y[idx_test])).astype(self.dtype_required)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
-                               "data": ["X_train", "Y_train", "X_val", "Y_val"],
-                               "npoints train": npoints_test}
+                               "data": ["X_test", "Y_test"],
+                               "npoints test": npoints_test}
         self.save_log(overwrite=True, verbose=verbose_sub)
-        print(header_string,"\nAdded", str(npoints_test), "(X_test, Y_test) samples in", end-start, "s.\n",show=verbose)
+        print(header_string,"\nAdded", str(npoints_test), "(X_test, Y_test) samples in", end-start,"s.\n",show=verbose)
 
     def compute_sample_weights(self, sample, nbins=100, power=1, verbose=None):
         """
@@ -1170,12 +1188,8 @@ class Data(Verbosity):
                     - **default**: ``1``
 
             - **verbose**
-
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-
-                    - **type**: ``bool``
-                    - **default**: ``None``
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Returns**
 
@@ -1202,7 +1216,7 @@ class Data(Verbosity):
     def define_scalers(self, data_X, data_Y, scalerX_bool, scalerY_bool, verbose=None):
         """
         Method that defines |standard_scalers_link| fit to the ``data_X`` and ``data_Y`` data.
-        Scalers are defined based in the boolean flags ``scalerX_bool`` and ``scalerY_bool``. When the flags are false
+        Scalers are defined based on the boolean flags ``scalerX_bool`` and ``scalerY_bool``. When the flags are ``False``
         the scalers are defined with the arguemtns ``with_mean=False`` and ``with_std=False`` which correspond to identity
         transformations.
 
@@ -1226,25 +1240,21 @@ class Data(Verbosity):
 
             - **scalerX_bool**
 
-                If true the ``X`` scaler is fit to the ``data_X`` data, otherwise it is set
+                If ``True`` the ``X`` scaler is fit to the ``data_X`` data, otherwise it is set
                 to the identity transformation.
 
                     - **type**: ``bool``
 
             - **scalerY_bool**
 
-                If true the ``Y`` scaler is fit to the ``data_Y`` data, otherwise it is set
+                If ``True`` the ``Y`` scaler is fit to the ``data_Y`` data, otherwise it is set
                 to the identity transformation.
 
                     - **type**: ``bool``
 
             - **verbose**
-
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-
-                    - **type**: ``bool``
-                    - **default**: ``None``
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Returns**
 
@@ -1277,6 +1287,60 @@ class Data(Verbosity):
         print(header_string,"\nStandard scalers defined in", end-start, "s.\n", show=verbose)
         return [scalerX, scalerY]
 
+    def define_rotation(self, data_X, rotationX_bool, verbose=None):
+        """
+        Method that defines the rotation matrix that diagonalizes the covariance matrix of the ``data_X``,
+        making them uncorrelated.
+        Such matrix is defined based on the boolean flag ``rotationX_bool``. When the flag is ``False``
+        the matrix is set to the identity matrix.
+        
+        Note: Data are transformed with the matrix ``V`` through ``np.dot(X,V)`` and transformed back throug
+        ``np.dot(X_diag,np.transpose(V))``.
+        
+        - **Arguments**
+
+            - **data_X**
+
+                ``X`` data to compute the 
+                rotation matrix that diagonalizes the covariance matrix.
+
+                    - **type**: ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndim)``
+
+            - **rotationX_bool**
+
+                If ``True`` the rotation matrix is set to the identity matrix.
+
+                    - **type**: ``bool``
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+        - **Returns**
+
+            Matrix in the form of a 2D |Numpy_link| 
+            array.
+            
+                - **type**: ``numpy.ndarray``
+                - **shape**: ``(ndim,ndim)``
+        """
+        _, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if rotationX_bool:
+            cov_matrix = np.cov(data_X, rowvar=False)
+            w, V = np.linalg.eig(cov_matrix)
+        else:
+            V = np.identity(self.ndims)
+        end = timer()
+        timestamp = "datetime_" + \
+            datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        self.log[timestamp] = {"action": "defined covariance rotation matrix",
+                               "rotation X": rotationX_bool}
+        self.save_log(overwrite=True, verbose=verbose_sub)
+        print(header_string, "\nMatrix that rotates the correlation matrix defined in",end-start, "s.\n", show=verbose)
+        return V
+
     def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=None):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
@@ -1303,12 +1367,7 @@ class Data(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         
         - **Returns**
 
@@ -1340,11 +1399,516 @@ class Data(Verbosity):
                 new_figure_file = utils.generate_dump_file_name(figure_file, timestamp=timestamp)
         return new_figure_file
 
-    def plot_corners_1samp(self, X, intervals=inference.CI_from_sigma([1, 2, 3]), 
-                           weights=None, pars=None, max_points=None, nbins=50, pars_labels="original",
-                           ranges_extend=None, title = "", color="green",
-                           plot_title="Corner plot", legend_labels=None, 
-                           figure_file_name=None, show_plot=False, timestamp=None, overwrite=False, verbose=None, **corner_kwargs):
+    def data_description(self,
+                         X=None,
+                         pars_labels="original",
+                         timestamp=None,
+                         overwrite=False,
+                         verbose=None):
+        """
+        Gives a description of data by calling the |Pandas_dataframe_describe|
+        method.
+
+        - **Arguments**
+
+            - **X**
+
+                X data to use for the plot. If ``None`` is given the 
+                :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset is used.
+
+                    - **type**: ``list`` or ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndims)``
+                    - **default**: ``None``
+
+            - **pars_labels**
+
+                    Argument that is passed to the :meth:`Data.__set_pars_labels < DNNLikelihood.Data._Lik__set_pars_labels>`
+                    method to set the parameters labels to be used in the plots.
+
+                        - **type**: ``list`` or ``str``
+                        - **shape of list**: ``[]``
+                        - **accepted strings**: ``"original"``, ``"generic"``
+                        - **default**: ``original``
+
+            - **timestamp**
+            
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **overwrite**
+            
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+        - **Updates file**
+
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nGenerating data description", show=verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        start = timer()
+        if X is None:
+            X = self.data_X
+        else:
+            X = np.array(X)
+        pars_labels = self.__set_pars_labels(pars_labels)
+        df = pd.DataFrame(X,columns=pars_labels)
+        df_description = pd.DataFrame(df.describe())
+        end = timer()
+        print("\n"+header_string+"\nData description generated in", str(end-start), "s.\n", show=verbose)
+        return df_description
+
+    def plot_X_distributions_summary(self,
+                                     X=None,
+                                     max_points=None,
+                                     nbins=50,
+                                     pars_labels="original", 
+                                     color="green",
+                                     figure_file_name=None,
+                                     show_plot=False,
+                                     timestamp=None,
+                                     overwrite=False,
+                                     verbose=None,
+                                     **step_kwargs):
+        """
+        Plots a summary of all 1D distributions of the parameters in 
+        the :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset.
+
+        - **Arguments**
+
+            - **X**
+
+                X data to use for the plot. If ``None`` is given the 
+                :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset is used.
+
+                    - **type**: ``list`` or ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndims)``
+                    - **default**: ``None``
+            
+            - **max_points**
+
+                Maximum number of points used to make
+                the plot. If the numnber is smaller than the total
+                number of available points, then a random subset is taken.
+                If ``None`` then all available points are used.
+
+                    - **type**: ``int`` or ``None``
+                    - **default**: ``None``
+
+            - **nbins**
+
+                Number of bins used to make 
+                the histograms.
+
+                    - **type**: ``int``
+                    - **default**: ``50``
+
+            - **pars_labels**
+
+                Argument that is passed to the :meth:`Data.__set_pars_labels < DNNLikelihood.Data._Lik__set_pars_labels>`
+                method to set the parameters labels to be used in the plots.
+
+                    - **type**: ``list`` or ``str``
+                    - **shape of list**: ``[]``
+                    - **accepted strings**: ``"original"``, ``"generic"``
+                    - **default**: ``original``
+
+            - **color**
+
+                Plot 
+                color.
+
+                    - **type**: ``str``
+                    - **default**: ``"green"``
+
+            - **figure_file_name**
+
+                File name for the generated figure. If it is ``None`` (default),
+                it is automatically generated.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **show_plot**
+            
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
+
+            - **timestamp**
+            
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **overwrite**
+            
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+            - **step_kwargs**
+
+                Additional keyword arguments to pass to the ``plt.step``function.
+
+                    - **type**: ``dict``
+
+        - **Updates file**
+
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting 1D distributions summary", show=verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        plt.style.use(mplstyle_path)
+        start = timer()
+        if X is None:
+            X = self.data_X
+        else:
+            X = np.array(X)
+        pars_labels = self.__set_pars_labels(pars_labels)
+        labels = np.array(pars_labels).tolist()
+        if max_points != None:
+            nnn = np.min([len(X), max_points])
+        else:
+            nnn = len(X)
+        rnd_indices = np.random.choice(np.arange(len(X)),size=nnn,replace=False)
+        sqrt_n_plots = int(np.ceil(np.sqrt(len(X[1, :]))))
+        plt.rcParams["figure.figsize"] = (sqrt_n_plots*3, sqrt_n_plots*3)
+        for i in range(len(X[1,:])):
+            plt.subplot(sqrt_n_plots,sqrt_n_plots,i+1)
+            counts, bins = np.histogram(X[rnd_indices,i], nbins)
+            integral = 1
+            plt.step(bins[:-1], counts/integral, where='post',color = color,**step_kwargs)
+            plt.xlabel(pars_labels[i],fontsize=11)
+            plt.xticks(fontsize=11, rotation=90)
+            plt.yticks(fontsize=11, rotation=90)
+            x1,x2,y1,y2 = plt.axis()
+            plt.tight_layout()
+        plt.subplots_adjust(top=0.92, bottom=0.08, left=0.10, right=0.95, hspace=0.4, wspace=0.4)
+        plt.tight_layout()
+        if figure_file_name is not None:
+            figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+        else:
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_pars_summary.pdf",timestamp=timestamp,overwrite=overwrite) 
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
+        utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        self.log[timestamp] = {"action": "saved figure",
+                               "file name": figure_file_name}
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+        self.save_log(overwrite=overwrite, verbose=verbose_sub)
+
+    def plot_X_distributions(self,
+                             X=None,
+                             pars=None,
+                             max_points=None,
+                             nbins=50,
+                             pars_labels="original", 
+                             color="green",
+                             figure_file_name=None,
+                             show_plot=False,
+                             timestamp=None,
+                             overwrite=False,
+                             verbose=None,
+                             **step_kwargs):
+        """
+        Plots 1D distributions of the parameters ``pars`` in 
+        the :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset.
+
+        - **Arguments**
+
+            - **X**
+
+                X data to use for the plot. If ``None`` is given the 
+                :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset is used.
+
+                    - **type**: ``list`` or ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndims)``
+                    - **default**: ``None``
+            
+            - **pars**
+
+                List of parameters 
+                for which the plots are produced.
+
+                    - **type**: ``list`` or ``None``
+                    - **shape of list**: ``[ ]``
+                    - **default**: ``None``
+
+            - **max_points**
+
+                Maximum number of points used to make
+                the plot. If the numnber is smaller than the total
+                number of available points, then a random subset is taken.
+                If ``None`` then all available points are used.
+
+                    - **type**: ``int`` or ``None``
+                    - **default**: ``None``
+
+            - **nbins**
+
+                Number of bins used to make 
+                the histograms.
+
+                    - **type**: ``int``
+                    - **default**: ``50``
+
+            - **pars_labels**
+
+                Argument that is passed to the :meth:`Data.__set_pars_labels < DNNLikelihood.Data._Lik__set_pars_labels>`
+                method to set the parameters labels to be used in the plots.
+
+                    - **type**: ``list`` or ``str``
+                    - **shape of list**: ``[]``
+                    - **accepted strings**: ``"original"``, ``"generic"``
+                    - **default**: ``original``
+
+            - **color**
+
+                Plot 
+                color.
+
+                    - **type**: ``str``
+                    - **default**: ``"green"``
+
+            - **figure_file_name**
+
+                File name for the generated figure. If it is ``None`` (default),
+                it is automatically generated.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **show_plot**
+            
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
+
+            - **timestamp**
+            
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **overwrite**
+            
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+            - **step_kwargs**
+
+                Additional keyword arguments to pass to the ``plt.step`` function.
+
+                    - **type**: ``dict``
+
+        - **Updates file**
+
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting 1D distributions summary", show=verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        plt.style.use(mplstyle_path)
+        start = timer()
+        if X is None:
+            X = self.data_X
+        else:
+            X = np.array(X)
+        pars_labels = self.__set_pars_labels(pars_labels)
+        if max_points != None:
+            nnn = np.min([len(X), max_points])
+        else:
+            nnn = len(X)
+        rnd_indices = np.random.choice(np.arange(len(X)),size=nnn,replace=False)
+        for par in pars:
+            counts, bins = np.histogram(X[rnd_indices,par], nbins)
+            integral = 1
+            plt.step(bins[:-1], counts/integral, where='post',color = color,**step_kwargs)
+            plt.xlabel(pars_labels[par])
+            plt.ylabel(r"number of samples")
+            x1,x2,y1,y2 = plt.axis()
+            plt.tight_layout()
+            if figure_file_name is not None:
+                figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+            else:
+                figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_1D_distr_par_"+str(par)+".pdf",timestamp=timestamp,overwrite=overwrite) 
+            utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
+            utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+            utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+            self.log[timestamp] = {"action": "saved figure",
+                                   "file name": figure_file_name}
+            end = timer()
+            print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+            if show_plot:
+                plt.show()
+            plt.close()
+        self.save_log(overwrite=overwrite, verbose=verbose_sub)
+
+    def plot_Y_distribution(self,
+                            Y=None,
+                            max_points=None,
+                            log=True,
+                            nbins=50,
+                            color="green",
+                            figure_file_name=None,
+                            show_plot=False,
+                            timestamp=None,
+                            overwrite=False,
+                            verbose=None,
+                            **step_kwargs):
+        """
+        Plots the distribution of the data in
+        the :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` dataset.
+
+        - **Arguments**
+
+            - **Y**
+
+                Y data to use for the plot. If ``None`` is given the 
+                :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>` dataset is used.
+
+                    - **type**: ``list`` or ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndims)``
+                    - **default**: ``None``
+                    
+            - **max_points**
+
+                Maximum number of points used to make
+                the plot. If the numnber is smaller than the total
+                number of available points, then a random subset is taken.
+                If ``None`` then all available points are used.
+
+                    - **type**: ``int`` or ``None``
+                    - **default**: ``None``
+
+            - **log**
+
+                If ``True`` the plot is made in
+                log scale
+
+                    - **type**: ``bool``
+                    - **default**: ``True``
+
+            - **nbins**
+
+                Number of bins used to make 
+                the histograms.
+
+                    - **type**: ``int``
+                    - **default**: ``50``
+
+            - **color**
+
+                Plot 
+                color.
+
+                    - **type**: ``str``
+                    - **default**: ``"green"``
+
+            - **figure_file_name**
+
+                File name for the generated figure. If it is ``None`` (default),
+                it is automatically generated.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **show_plot**
+            
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
+
+            - **timestamp**
+            
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **overwrite**
+            
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+            - **step_kwargs**
+
+                Additional keyword arguments to pass to the ``plt.step`` function.
+
+                    - **type**: ``dict``
+
+        - **Updates file**
+
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string, "\nPlotting 1D distributions summary", show=verbose)
+        if timestamp is None:
+            timestamp = "datetime_" + \
+                datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        plt.style.use(mplstyle_path)
+        start = timer()
+        if Y is None:
+            Y = self.data_Y
+        else:
+            Y = np.array(Y)
+        if max_points != None:
+            nnn = np.min([len(Y), max_points])
+        else:
+            nnn = len(Y)
+        rnd_indices = np.random.choice(np.arange(len(Y)), size=nnn, replace=False)
+        counts, bins = np.histogram(Y[rnd_indices], nbins)
+        integral = 1
+        plt.step(bins[:-1], counts/integral, where='post', color=color, **step_kwargs)
+        plt.xlabel(r"Y data")
+        plt.ylabel(r"number of samples")
+        x1, x2, y1, y2 = plt.axis()
+        if log:
+            plt.yscale('log')
+        plt.tight_layout()
+        if figure_file_name is not None:
+            figure_file_name = self.update_figures(figure_file=figure_file_name, timestamp=timestamp, overwrite=overwrite)
+        else:
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_Y_distribution.pdf", timestamp=timestamp, overwrite=overwrite)
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
+        utils.check_set_dict_keys(self.predictions["Figures"], [timestamp], [[]], verbose=False)
+        utils.append_without_duplicate(
+            self.predictions["Figures"][timestamp], figure_file_name)
+        self.log[timestamp] = {"action": "saved figure",
+                               "file name": figure_file_name}
+        end = timer()
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name),"\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+        if show_plot:
+            plt.show()
+        plt.close()
+        self.save_log(overwrite=overwrite, verbose=verbose_sub)
+
+    def plot_corners_1samp(self,
+                           X=None,
+                           intervals=inference.CI_from_sigma([1, 2, 3]), 
+                           weights=None, 
+                           pars=None, 
+                           max_points=None, 
+                           nbins=50, 
+                           pars_labels="original",
+                           ranges_extend=None, 
+                           title = "", 
+                           color="green",
+                           plot_title="Corner plot", 
+                           legend_labels=None, 
+                           figure_file_name=None, 
+                           show_plot=False, 
+                           timestamp=None, 
+                           overwrite=False, 
+                           verbose=None, 
+                           **corner_kwargs):
         """
         Plots the 1D and 2D distributions (corner plot) of the distribution of the parameters ``pars`` in the ``X`` array.
 
@@ -1352,12 +1916,13 @@ class Data(Verbosity):
 
             - **X**
 
-                List or |Numpy_link| array with the 
-                values of parameters
+                X data to use for the plot. If ``None`` is given the 
+                :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset is used.
 
-                    - **type**: ``numpy.ndarray``
+                    - **type**: ``list`` or ``numpy.ndarray``
                     - **shape**: ``(npoints,ndims)``
-
+                    - **default**: ``None``
+                    
             - **intervals**
 
                 Probability intervals for which 
@@ -1462,41 +2027,26 @@ class Data(Verbosity):
                     - **default**: ``None``
 
             - **show_plot**
-
-                If ``True`` the plot is shown on the
-                interactive console.
-
-                    - **type**: ``bool``
-                    - **default**: ``False``
+            
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Data.predictions["Figures"] <DNNLikelihood.Data.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Data.log <DNNLikelihood.Data.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
-
-                If ``True`` if a file with the same name already exists, then it gets overwritten. If ``False`` is a file with the same name
-                already exists, then the old file gets renamed with the :func:`utils.check_rename_file < DNNLikelihood.utils.check_rename_file>` 
-                function.
-
-                    - **type**: ``bool``
-                    - **default**: ``False``
+            
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+            - **corner_kwargs**
+
+                Additional keyword arguments to pass to the ``corner`` function.
+
+                    - **type**: ``dict``
 
         - **Updates file**
 
@@ -1511,7 +2061,10 @@ class Data(Verbosity):
                 raise Exception("Legend labels should either be None or a list of strings with the same length as intervals.")
         plt.style.use(mplstyle_path)
         start = timer()
-        X = np.array(X)
+        if X is None:
+            X = self.data_X
+        else:
+            X = np.array(X)
         weigths = np.array(weights)
         if title == None:
             title = ""
@@ -1616,6 +2169,121 @@ class Data(Verbosity):
             figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
         else:
             figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_corner_posterior_1samp_pars_" + "_".join([str(i) for i in pars]) +".pdf",timestamp=timestamp,overwrite=overwrite) 
+        utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
+        utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
+        utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)
+        if show_plot:
+            plt.show()
+        plt.close()
+        end = timer()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        self.log[timestamp] = {"action": "saved figure",
+                               "file name": figure_file_name}
+        print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
+
+    def plot_correlation_matrix(self, 
+                                X=None,
+                                pars_labels="original",
+                                title = None,
+                                figure_file_name=None, 
+                                show_plot=False, 
+                                timestamp=None, 
+                                overwrite=False, 
+                                verbose=None, 
+                                **matshow_kwargs):
+        """
+        Plots the correlation matrix of the  
+        :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset.
+
+        - **Arguments**
+
+            - **X**
+
+                X data to use for the plot. If ``None`` is given the 
+                :attr:`Data.data_X <DNNLikelihood.Data.data_X>` dataset is used.
+
+                    - **type**: ``list`` or ``numpy.ndarray``
+                    - **shape**: ``(npoints,ndims)``
+                    - **default**: ``None``
+                    
+            - **pars_labels**
+
+                Argument that is passed to the :meth:`Data.__set_pars_labels < DNNLikelihood.Data._Lik__set_pars_labels>`
+                method to set the parameters labels to be used in the plots.
+
+                    - **type**: ``list`` or ``str``
+                    - **shape of list**: ``[]``
+                    - **accepted strings**: ``"original"``, ``"generic"``
+                    - **default**: ``original``
+
+            - **title**
+
+                Subplot title to which the 
+                68% HPDI values are appended.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **figure_file_name**
+
+                File name for the generated figure. If it is ``None`` (default),
+                it is automatically generated.
+
+                    - **type**: ``str`` or ``None``
+                    - **default**: ``None``
+
+            - **show_plot**
+            
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
+
+            - **timestamp**
+            
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **overwrite**
+            
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+            - **step_kwargs**
+
+                Additional keyword arguments to pass to the ``plt.matshow`` function.
+
+                    - **type**: ``dict``
+
+        - **Updates file**
+
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nPlotting X data correlation matrix", show=verbose)
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        plt.style.use(mplstyle_path)
+        start = timer()
+        if title == None:
+            title = "Correlation Matrix"
+        if X is None:
+            X = self.data_X
+        else:
+            X = np.array(X)
+        pars_labels = self.__set_pars_labels(pars_labels)
+        df = pd.DataFrame(X)
+        f = plt.figure(figsize=(18, 18))
+        plt.matshow(df.corr(), fignum=f.number, **matshow_kwargs)
+        plt.xticks(range(df.select_dtypes(['number']).shape[1]), pars_labels, fontsize=10, rotation=45)
+        plt.yticks(range(df.select_dtypes(['number']).shape[1]), pars_labels, fontsize=10)
+        cb = plt.colorbar()
+        cb.ax.tick_params(labelsize=11)
+        plt.title('Correlation Matrix', fontsize=13)
+        plt.grid(False)
+        if figure_file_name is not None:
+            figure_file_name = self.update_figures(figure_file=figure_file_name,timestamp=timestamp,overwrite=overwrite)
+        else:
+            figure_file_name = self.update_figures(figure_file=self.output_figures_base_file_name+"_correlation_matrix.pdf",timestamp=timestamp,overwrite=overwrite) 
         utils.savefig(r"%s" % (path.join(self.output_figures_folder, figure_file_name)), dpi=50)
         utils.check_set_dict_keys(self.predictions["Figures"],[timestamp],[[]],verbose=False)
         utils.append_without_duplicate(self.predictions["Figures"][timestamp], figure_file_name)

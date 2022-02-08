@@ -186,6 +186,7 @@ def compute_maximum_logpdf(logpdf=None,
                            pars_init=None, 
                            pars_bounds=None,
                            optimizer = {},
+                           minimization_options={},
                            verbose=True):
     """
     """
@@ -202,19 +203,21 @@ def compute_maximum_logpdf(logpdf=None,
         pars_init = np.full(ndims, 0)
     elif ndims == None and pars_init is None:
         print("Please specify npars or pars_init or both", show = verbose)
-    utils.check_set_dict_keys(optimizer, ["method",
-                                          "options"],
-                                         ["Powell", {}], verbose=verbose_sub)
-    method = optimizer["method"]
-    options = optimizer["options"]
+    utils.check_set_dict_keys(optimizer, ["name",
+                                          "args",
+                                          "kwargs"],
+                                         ["scipy", [], {"method": "Powell"}], verbose=verbose_sub)
+    args = optimizer["args"]
+    kwargs = optimizer["kwargs"]
+    options = minimization_options
     if pars_bounds is None:
         #print("Optimizing")
-        ml = optimize.minimize(minus_logpdf, pars_init, method=method, options=options)
+        ml = optimize.minimize(minus_logpdf, pars_init, *args, options=options, **kwargs)
     else:
         #print("Optimizing")
         pars_bounds = np.array(pars_bounds)
         bounds = optimize.Bounds(pars_bounds[:, 0], pars_bounds[:, 1])
-        ml = optimize.minimize(minus_logpdf, pars_init, bounds=bounds, method=method, options=options)
+        ml = optimize.minimize(minus_logpdf, pars_init, *args, bounds=bounds, options=options, **kwargs)
     return [ml['x'], -ml['fun']]
 
 def compute_profiled_maximum_logpdf(logpdf=None, 
@@ -224,6 +227,7 @@ def compute_profiled_maximum_logpdf(logpdf=None,
                                    pars_init=None, 
                                    pars_bounds=None, 
                                    optimizer={},
+                                   minimization_options={},
                                    verbose=True):
     """
     """
@@ -252,11 +256,13 @@ def compute_profiled_maximum_logpdf(logpdf=None,
         if len(pars_init)!=ndims:
             raise Exception("Parameters initialization has the wrong dimension. The dimensionality should be"+str(ndims)+".")
     pars_init_reduced = np.delete(pars_init, pars)
-    utils.check_set_dict_keys(optimizer, ["method",
-                                          "options"],
-                                         ["Powell", {}], verbose=verbose_sub)
-    method = optimizer["method"]
-    options = optimizer["options"]
+    utils.check_set_dict_keys(optimizer, ["name",
+                                          "args",
+                                          "kwargs"],
+                                         ["scipy", [], {"method": "Powell"}], verbose=verbose_sub)
+    args = optimizer["args"]
+    kwargs = optimizer["kwargs"]
+    options = minimization_options
     def minus_logpdf(x):
         return -logpdf(np.insert(x, pars_insert, pars_val))
     if pars_bounds is not None:
@@ -268,13 +274,13 @@ def compute_profiled_maximum_logpdf(logpdf=None,
             return
     if pars_bounds is None:
         #print("Optimizing")
-        ml = optimize.minimize(minus_logpdf, pars_init_reduced, method=method, options=options)
+        ml = optimize.minimize(minus_logpdf, pars_init_reduced, *args, options=options, **kwargs)
     else:
         #print("Optimizing")
         pars_bounds_reduced = np.delete(pars_bounds, pars,axis=0)
         pars_bounds_reduced = np.array(pars_bounds_reduced)
         bounds=optimize.Bounds(pars_bounds_reduced[:, 0], pars_bounds_reduced[:, 1])
-        ml = optimize.minimize(minus_logpdf, pars_init_reduced, bounds=bounds, method=method, options=options)
+        ml = optimize.minimize(minus_logpdf, pars_init_reduced, *args, bounds=bounds, options=options, **kwargs)
     return [np.insert(ml['x'], pars_insert, pars_val, axis=0), -ml['fun']]
 
 def compute_maximum_sample(X=None,

@@ -230,6 +230,8 @@
 </li>
       <li><a href="data/methods.html#DNNLikelihood.Data._Data__load">_Data__load() (Data method)</a>
 </li>
+      <li><a href="data/methods.html#DNNLikelihood.Data._Data__set_pars_labels">_Data__set_pars_labels() (Data method)</a>
+</li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__check_define_ensemble_folder">_DnnLik__check_define_ensemble_folder() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__check_define_input_files">_DnnLik__check_define_input_files() (DnnLik method)</a>
@@ -252,13 +254,11 @@
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__load_history">_DnnLik__load_history() (DnnLik method)</a>
 </li>
+      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__load_json_and_log">_DnnLik__load_json_and_log() (DnnLik method)</a>
+</li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__load_model">_DnnLik__load_model() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__load_predictions">_DnnLik__load_predictions() (DnnLik method)</a>
-</li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__load_scalers">_DnnLik__load_scalers() (DnnLik method)</a>
-</li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__load_summary_json_and_log">_DnnLik__load_summary_json_and_log() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik._DnnLik__model_callbacks_inputs">_DnnLik__model_callbacks_inputs (DnnLik attribute)</a>
 </li>
@@ -274,10 +274,10 @@
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik._DnnLik__resources_inputs">_DnnLik__resources_inputs (DnnLik attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__set_callbacks">_DnnLik__set_callbacks() (DnnLik method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__set_data">_DnnLik__set_data() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__set_dtype">_DnnLik__set_dtype() (DnnLik method)</a>
@@ -301,6 +301,8 @@
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__set_seed">_DnnLik__set_seed() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik._DnnLik__set_tf_objects">_DnnLik__set_tf_objects() (DnnLik method)</a>
+</li>
+      <li><a href="utils.html#DNNLikelihood.utils._FunctionWrapper">_FunctionWrapper (class in DNNLikelihood.utils)</a>
 </li>
       <li><a href="histfactory/methods.html#DNNLikelihood.Histfactory._Histfactory__check_define_input_files">_Histfactory__check_define_input_files() (Histfactory method)</a>
 </li>
@@ -440,10 +442,10 @@
 </li>
       <li><a href="utils.html#DNNLikelihood.utils.closest_power_of_two">closest_power_of_two() (in module DNNLikelihood.utils)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="sampler/methods.html#DNNLikelihood.Sampler.compute_gelman_rubin">compute_gelman_rubin() (Sampler method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="inference.html#DNNLikelihood.inference.compute_maximum_logpdf">compute_maximum_logpdf() (in module DNNLikelihood.inference)</a>
 
       <ul>
@@ -475,6 +477,13 @@
       </ul></li>
       <li><a href="corner.html#DNNLikelihood.corner.corner">corner() (in module DNNLikelihood.corner)</a>
 </li>
+      <li>
+    custom_losses
+
+      <ul>
+        <li><a href="custom_losses.html#module-custom_losses">module</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -496,6 +505,8 @@
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.data">(DnnLik attribute)</a>
 </li>
       </ul></li>
+      <li><a href="data/methods.html#DNNLikelihood.Data.data_description">data_description() (Data method)</a>
+</li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.data_dictionary">data_dictionary (Data attribute)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.data_max">data_max (DnnLik attribute)</a>
@@ -516,14 +527,20 @@
       </ul></li>
       <li><a href="utils.html#DNNLikelihood.utils.define_pars_labels_auto">define_pars_labels_auto() (in module DNNLikelihood.utils)</a>
 </li>
+      <li><a href="data/methods.html#DNNLikelihood.Data.define_rotation">define_rotation() (Data method)</a>
+
+      <ul>
+        <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.define_rotation">(DnnLik method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data/methods.html#DNNLikelihood.Data.define_scalers">define_scalers() (Data method)</a>
 
       <ul>
         <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.define_scalers">(DnnLik method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data/methods.html#DNNLikelihood.Data.define_test_fraction">define_test_fraction() (Data method)</a>
 </li>
       <li><a href="inference.html#DNNLikelihood.inference.delta_chi2_from_CI">delta_chi2_from_CI() (in module DNNLikelihood.inference)</a>
@@ -708,14 +725,22 @@
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_data_file">(DnnLik attribute)</a>
 </li>
       </ul></li>
-      <li><a href="data/arguments.html#Data.input_file">input_file (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.input_file">input_file (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.input_file">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.input_file">(Data attribute)</a>
+</li>
+        <li><a href="dnn_likelihood/arguments.html#DnnLik.input_file">(DnnLik argument)</a>
+</li>
+        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_file">(DnnLik attribute)</a>, <a href="dnn_likelihood/attributes.html#id0">[1]</a>
 </li>
         <li><a href="histfactory/arguments.html#Histfactory.input_file">(Histfactory argument)</a>
 </li>
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.input_file">(Histfactory attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.input_file">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.input_file">(Lik argument)</a>
 </li>
@@ -726,11 +751,15 @@
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.input_file">(Sampler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_files_base_name">input_files_base_name (DnnLik attribute)</a>
-</li>
-      <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.input_folder">input_folder (Histfactory attribute)</a>
+      <li><a href="data/attributes.html#DNNLikelihood.Data.input_folder">input_folder (Data attribute)</a>
 
       <ul>
+        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_folder">(DnnLik attribute)</a>
+</li>
+        <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.input_folder">(Histfactory attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.input_folder">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.input_folder">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.input_folder">(Sampler attribute)</a>
@@ -738,9 +767,15 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.input_h5_file">input_h5_file (Histfactory attribute)</a>
+      <li><a href="data/attributes.html#DNNLikelihood.Data.input_h5_file">input_h5_file (Data attribute)</a>
 
       <ul>
+        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_h5_file">(DnnLik attribute)</a>
+</li>
+        <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.input_h5_file">(Histfactory attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.input_h5_file">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.input_h5_file">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.input_h5_file">(Sampler attribute)</a>
@@ -757,23 +792,17 @@
 </li>
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.input_log_file">(Histfactory attribute)</a>
 </li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.input_log_file">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.input_log_file">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.input_log_file">(Sampler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="data/attributes.html#DNNLikelihood.Data.input_object_h5_file">input_object_h5_file (Data attribute)</a>
-</li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.input_samples_h5_file">input_samples_h5_file (Data attribute)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_scalers_pickle_file">input_scalers_pickle_file (DnnLik attribute)</a>
 </li>
-      <li><a href="dnn_likelihood/arguments.html#DnnLik.input_summary_json_file">input_summary_json_file (DnnLik argument)</a>
-
-      <ul>
-        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_summary_json_file">(DnnLik attribute)</a>
-</li>
-      </ul></li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.input_tf_model_h5_file">input_tf_model_h5_file (DnnLik attribute)</a>
 </li>
   </ul></td>
@@ -826,6 +855,8 @@
 </li>
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.log">(Histfactory attribute)</a>
 </li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.log">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.log">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.log">(Sampler attribute)</a>
@@ -841,6 +872,8 @@
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.logpdf">(Sampler attribute)</a>
 </li>
       </ul></li>
+      <li><a href="likelihood/methods.html#DNNLikelihood.Lik.logpdf">logpdf() (Lik method)</a>
+</li>
       <li><a href="likelihood/arguments.html#Lik.logpdf_args">logpdf_args (Lik argument)</a>
 
       <ul>
@@ -867,13 +900,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="utils.html#DNNLikelihood.utils.make_pdf_from_img">make_pdf_from_img() (in module DNNLikelihood.utils)</a>
 </li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.mean_error">mean_error() (DnnLik method)</a>
+      <li><a href="custom_losses.html#DNNLikelihood.custom_losses.mean_error">mean_error() (in module DNNLikelihood.custom_losses)</a>
 </li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.mean_percentage_error">mean_percentage_error() (DnnLik method)</a>
+      <li><a href="custom_losses.html#DNNLikelihood.custom_losses.mean_percentage_error">mean_percentage_error() (in module DNNLikelihood.custom_losses)</a>
 </li>
-      <li><a href="utils.html#DNNLikelihood.utils.metric_name_abbreviate">metric_name_abbreviate() (in module DNNLikelihood.utils)</a>
+      <li><a href="custom_losses.html#DNNLikelihood.custom_losses.metric_name_abbreviate">metric_name_abbreviate() (in module DNNLikelihood.custom_losses)</a>
 </li>
-      <li><a href="utils.html#DNNLikelihood.utils.metric_name_unabbreviate">metric_name_unabbreviate() (in module DNNLikelihood.utils)</a>
+      <li><a href="custom_losses.html#DNNLikelihood.custom_losses.metric_name_unabbreviate">metric_name_unabbreviate() (in module DNNLikelihood.custom_losses)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.metrics">metrics (DnnLik attribute)</a>
 </li>
@@ -903,10 +936,10 @@
 </li>
       <li><a href="dnn_likelihood/arguments.html#DnnLik.model_optimizer_inputs">model_optimizer_inputs (DnnLik argument)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.model_predict">model_predict() (DnnLik method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.model_predict_scalar">model_predict_scalar() (DnnLik method)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.model_profiled_max">model_profiled_max (DnnLik attribute)</a>
@@ -915,11 +948,15 @@
 </li>
       <li><a href="dnn_likelihood/arguments.html#DnnLik.model_train_inputs">model_train_inputs (DnnLik argument)</a>
 </li>
+      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.model_train_kwargs">model_train_kwargs (DnnLik attribute)</a>
+</li>
       <li>
     module
 
       <ul>
         <li><a href="corner.html#module-corner">corner</a>
+</li>
+        <li><a href="custom_losses.html#module-custom_losses">custom_losses</a>
 </li>
         <li><a href="data/index.html#module-data">data</a>
 </li>
@@ -956,9 +993,11 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="data/arguments.html#Data.name">name (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.name">name (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.name">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.name">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/arguments.html#DnnLik.name">(DnnLik argument)</a>
@@ -973,6 +1012,8 @@
 </li>
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.name">(Histfactory attribute)</a>
 </li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.name">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/arguments.html#Lik.name">(Lik argument)</a>
 </li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.name">(Lik attribute)</a>
@@ -986,6 +1027,8 @@
 
       <ul>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.ndims">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.ndims">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.ndims">(Lik attribute)</a>
 </li>
@@ -1049,6 +1092,8 @@
       <ul>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_figures_base_file_name">(DnnLik attribute)</a>
 </li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_figures_base_file_name">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_figures_base_file_name">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.output_figures_base_file_name">(Sampler attribute)</a>
@@ -1058,6 +1103,8 @@
 
       <ul>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_figures_base_file_path">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_figures_base_file_path">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_figures_base_file_path">(Lik attribute)</a>
 </li>
@@ -1069,6 +1116,8 @@
       <ul>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_figures_folder">(DnnLik attribute)</a>
 </li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_figures_folder">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_figures_folder">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.output_figures_folder">(Sampler attribute)</a>
@@ -1076,9 +1125,11 @@
       </ul></li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_files_base_name">output_files_base_name (DnnLik attribute)</a>
 </li>
-      <li><a href="data/arguments.html#Data.output_folder">output_folder (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.output_folder">output_folder (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.output_folder">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.output_folder">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/arguments.html#DnnLik.output_folder">(DnnLik argument)</a>
@@ -1088,6 +1139,8 @@
         <li><a href="histfactory/arguments.html#Histfactory.output_folder">(Histfactory argument)</a>
 </li>
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.output_folder">(Histfactory attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_folder">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.output_folder">(Lik argument)</a>
 </li>
@@ -1100,9 +1153,15 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.output_h5_file">output_h5_file (Histfactory attribute)</a>
+      <li><a href="data/attributes.html#DNNLikelihood.Data.output_h5_file">output_h5_file (Data attribute)</a>
 
       <ul>
+        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_h5_file">(DnnLik attribute)</a>
+</li>
+        <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.output_h5_file">(Histfactory attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_h5_file">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_h5_file">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.output_h5_file">(Sampler attribute)</a>
@@ -1112,6 +1171,20 @@
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_idx_h5_file">output_idx_h5_file (DnnLik attribute)</a>
 </li>
+      <li><a href="data/attributes.html#DNNLikelihood.Data.output_json_file">output_json_file (Data attribute)</a>
+
+      <ul>
+        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_json_file">(DnnLik attribute)</a>, <a href="dnn_likelihood/attributes.html#id1">[1]</a>
+</li>
+        <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.output_json_file">(Histfactory attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_json_file">(in module common_classes_attributes)</a>
+</li>
+        <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_json_file">(Lik attribute)</a>
+</li>
+        <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.output_json_file">(Sampler attribute)</a>
+</li>
+      </ul></li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.output_log_file">output_log_file (Data attribute)</a>
 
       <ul>
@@ -1119,26 +1192,30 @@
 </li>
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.output_log_file">(Histfactory attribute)</a>
 </li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_log_file">(in module common_classes_attributes)</a>
+</li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_log_file">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.output_log_file">(Sampler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="data/attributes.html#DNNLikelihood.Data.output_object_h5_file">output_object_h5_file (Data attribute)</a>
-</li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_predictions_h5_file">output_predictions_h5_file (DnnLik attribute)</a>
 </li>
-      <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_predictions_json_file">output_predictions_json_file (Lik attribute)</a>
+      <li><a href="data/attributes.html#DNNLikelihood.Data.output_predictions_json_file">output_predictions_json_file (Data attribute)</a>
 
       <ul>
+        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_predictions_json_file">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.output_predictions_json_file">(in module common_classes_attributes)</a>
+</li>
+        <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.output_predictions_json_file">(Lik attribute)</a>
+</li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.output_predictions_json_file">(Sampler attribute)</a>
 </li>
       </ul></li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.output_samples_h5_file">output_samples_h5_file (Data attribute)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_scalers_pickle_file">output_scalers_pickle_file (DnnLik attribute)</a>
-</li>
-      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_summary_json_file">output_summary_json_file (DnnLik attribute)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_tensorboard_log_dir">output_tensorboard_log_dir (DnnLik attribute)</a>
 </li>
@@ -1149,6 +1226,8 @@
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_tf_model_json_file">output_tf_model_json_file (DnnLik attribute)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.output_tf_model_onnx_file">output_tf_model_onnx_file (DnnLik attribute)</a>
+</li>
+      <li><a href="common_methods_arguments.html#common_methods_arguments.overwrite">overwrite (common_methods_arguments argument)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1162,12 +1241,16 @@
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.parallel_CPU">(Sampler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="data/arguments.html#Data.pars_bounds">pars_bounds (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.pars_bounds">pars_bounds (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.pars_bounds">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.pars_bounds">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_bounds">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.pars_bounds">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.pars_bounds">(Lik argument)</a>
 </li>
@@ -1178,12 +1261,16 @@
       </ul></li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_bounds_train">pars_bounds_train (DnnLik attribute)</a>
 </li>
-      <li><a href="data/arguments.html#Data.pars_central">pars_central (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.pars_central">pars_central (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.pars_central">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.pars_central">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_central">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.pars_central">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.pars_central">(Lik argument)</a>
 </li>
@@ -1194,12 +1281,16 @@
       </ul></li>
       <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.pars_init_vec">pars_init_vec (Sampler attribute)</a>
 </li>
-      <li><a href="data/arguments.html#Data.pars_labels">pars_labels (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.pars_labels">pars_labels (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.pars_labels">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.pars_labels">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_labels">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.pars_labels">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.pars_labels">(Lik argument)</a>
 </li>
@@ -1208,22 +1299,28 @@
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.pars_labels">(Sampler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="data/attributes.html#DNNLikelihood.Data.pars_labels_auto">pars_labels_auto (Data attribute)</a>
+      <li><a href="data/attributes.html#DNNLikelihood.Data.pars_labels_auto">pars_labels_auto (Data attribute)</a>, <a href="data/attributes.html#id0">[1]</a>
 
       <ul>
-        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_labels_auto">(DnnLik attribute)</a>
+        <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_labels_auto">(DnnLik attribute)</a>, <a href="dnn_likelihood/attributes.html#id2">[1]</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.pars_labels_auto">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/attributes.html#DNNLikelihood.Lik.pars_labels_auto">(Lik attribute)</a>
 </li>
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.pars_labels_auto">(Sampler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="data/arguments.html#Data.pars_pos_nuis">pars_pos_nuis (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.pars_pos_nuis">pars_pos_nuis (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.pars_pos_nuis">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.pars_pos_nuis">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_pos_nuis">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.pars_pos_nuis">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.pars_pos_nuis">(Lik argument)</a>
 </li>
@@ -1234,12 +1331,16 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="data/arguments.html#Data.pars_pos_poi">pars_pos_poi (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.pars_pos_poi">pars_pos_poi (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="data/arguments.html#Data.pars_pos_poi">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.pars_pos_poi">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pars_pos_poi">(DnnLik attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.pars_pos_poi">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.pars_pos_poi">(Lik argument)</a>
 </li>
@@ -1268,6 +1369,8 @@
       </ul></li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.plot_corners_2samp">plot_corners_2samp() (DnnLik method)</a>
 </li>
+      <li><a href="data/methods.html#DNNLikelihood.Data.plot_correlation_matrix">plot_correlation_matrix() (Data method)</a>
+</li>
       <li><a href="sampler/methods.html#DNNLikelihood.Sampler.plot_dist">plot_dist() (Sampler method)</a>
 </li>
       <li><a href="sampler/methods.html#DNNLikelihood.Sampler.plot_gelman_rubin">plot_gelman_rubin() (Sampler method)</a>
@@ -1281,6 +1384,12 @@
       <li><a href="likelihood/methods.html#DNNLikelihood.Lik.plot_tmu_1d">plot_tmu_1d() (Lik method)</a>
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.plot_training_history">plot_training_history() (DnnLik method)</a>
+</li>
+      <li><a href="data/methods.html#DNNLikelihood.Data.plot_X_distributions">plot_X_distributions() (Data method)</a>
+</li>
+      <li><a href="data/methods.html#DNNLikelihood.Data.plot_X_distributions_summary">plot_X_distributions_summary() (Data method)</a>
+</li>
+      <li><a href="data/methods.html#DNNLikelihood.Data.plot_Y_distribution">plot_Y_distribution() (Data method)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.pred_bounds_train">pred_bounds_train (DnnLik attribute)</a>
 </li>
@@ -1312,7 +1421,7 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.R2_metric">R2_metric() (DnnLik method)</a>
+      <li><a href="custom_losses.html#DNNLikelihood.custom_losses.R2_metric">R2_metric() (in module DNNLikelihood.custom_losses)</a>
 </li>
       <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.regions">regions (Histfactory attribute)</a>
 </li>
@@ -1322,8 +1431,14 @@
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.regions_folders_base_name">(Histfactory attribute)</a>
 </li>
       </ul></li>
-      <li><a href="likelihood/methods.html#DNNLikelihood.Lik.reset_predictions">reset_predictions() (Lik method)</a>
+      <li><a href="data/methods.html#DNNLikelihood.Data.reset_predictions">reset_predictions() (Data method)</a>
+
+      <ul>
+        <li><a href="likelihood/methods.html#DNNLikelihood.Lik.reset_predictions">(Lik method)</a>
 </li>
+        <li><a href="sampler/methods.html#DNNLikelihood.Sampler.reset_predictions">(Sampler method)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
@@ -1376,8 +1491,22 @@
       </ul></li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_data_indices">save_data_indices() (DnnLik method)</a>
 </li>
+      <li><a href="histfactory/methods.html#DNNLikelihood.Histfactory.save_h5">save_h5() (Histfactory method)</a>
+
+      <ul>
+        <li><a href="likelihood/methods.html#DNNLikelihood.Lik.save_h5">(Lik method)</a>
+</li>
+      </ul></li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_history_json">save_history_json() (DnnLik method)</a>
 </li>
+      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_json">save_json() (DnnLik method)</a>
+
+      <ul>
+        <li><a href="histfactory/methods.html#DNNLikelihood.Histfactory.save_json">(Histfactory method)</a>
+</li>
+        <li><a href="likelihood/methods.html#DNNLikelihood.Lik.save_json">(Lik method)</a>
+</li>
+      </ul></li>
       <li><a href="data/methods.html#DNNLikelihood.Data.save_log">save_log() (Data method)</a>
 
       <ul>
@@ -1402,20 +1531,22 @@
 </li>
       <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_predictions_h5">save_predictions_h5() (DnnLik method)</a>
 </li>
+      <li><a href="likelihood/methods.html#DNNLikelihood.Lik.save_predictions_json">save_predictions_json() (Lik method)</a>
+
+      <ul>
+        <li><a href="sampler/methods.html#DNNLikelihood.Sampler.save_predictions_json">(Sampler method)</a>
+</li>
+      </ul></li>
       <li><a href="utils.html#DNNLikelihood.utils.save_samples">save_samples() (in module DNNLikelihood.utils)</a>
-</li>
-      <li><a href="data/methods.html#DNNLikelihood.Data.save_samples_h5">save_samples_h5() (Data method)</a>
-</li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_scalers">save_scalers() (DnnLik method)</a>
-</li>
-      <li><a href="likelihood/methods.html#DNNLikelihood.Lik.save_script">save_script() (Lik method)</a>
-</li>
-      <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.save_summary_json">save_summary_json() (DnnLik method)</a>
-</li>
-      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.scalerX">scalerX (DnnLik attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="data/methods.html#DNNLikelihood.Data.save_samples_h5">save_samples_h5() (Data method)</a>
+</li>
+      <li><a href="likelihood/methods.html#DNNLikelihood.Lik.save_script">save_script() (Lik method)</a>
+</li>
+      <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.scalerX">scalerX (DnnLik attribute)</a>
+</li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.scalerX_bool">scalerX_bool (DnnLik attribute)</a>
 </li>
       <li><a href="dnn_likelihood/attributes.html#DNNLikelihood.DnnLik.scalerY">scalerY (DnnLik attribute)</a>
@@ -1505,6 +1636,8 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data/attributes.html#DNNLikelihood.Data.test_range">test_range (Data attribute)</a>
 </li>
+      <li><a href="common_methods_arguments.html#common_methods_arguments.timestamp">timestamp (common_methods_arguments argument)</a>
+</li>
       <li><a href="data/attributes.html#DNNLikelihood.Data.train_range">train_range (Data attribute)</a>
 </li>
   </ul></td>
@@ -1519,6 +1652,8 @@
         <li><a href="dnn_likelihood/methods.html#DNNLikelihood.DnnLik.update_figures">(DnnLik method)</a>
 </li>
         <li><a href="likelihood/methods.html#DNNLikelihood.Lik.update_figures">(Lik method)</a>
+</li>
+        <li><a href="sampler/methods.html#DNNLikelihood.Sampler.update_figures">(Sampler method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1546,9 +1681,13 @@
         <li><a href="sampler/attributes.html#DNNLikelihood.Sampler.vectorize">(Sampler attribute)</a>
 </li>
       </ul></li>
-      <li><a href="data/arguments.html#Data.verbose">verbose (Data argument)</a>
+      <li><a href="common_classes_arguments.html#common_classes_arguments.verbose">verbose (common_classes_arguments argument)</a>
 
       <ul>
+        <li><a href="common_methods_arguments.html#common_methods_arguments.verbose">(common_methods_arguments argument)</a>
+</li>
+        <li><a href="data/arguments.html#Data.verbose">(Data argument)</a>
+</li>
         <li><a href="data/attributes.html#DNNLikelihood.Data.verbose">(Data attribute)</a>
 </li>
         <li><a href="dnn_likelihood/arguments.html#DnnLik.verbose">(DnnLik argument)</a>
@@ -1558,6 +1697,8 @@
         <li><a href="histfactory/arguments.html#Histfactory.verbose">(Histfactory argument)</a>
 </li>
         <li><a href="histfactory/attributes.html#DNNLikelihood.Histfactory.verbose">(Histfactory attribute)</a>
+</li>
+        <li><a href="common_classes_attributes.html#common_classes_attributes.verbose">(in module common_classes_attributes)</a>
 </li>
         <li><a href="likelihood/arguments.html#Lik.verbose">(Lik argument)</a>
 </li>

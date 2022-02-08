@@ -1,0 +1,461 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Common classes arguments &mdash; DNNLikelihood</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Common classes attributes" href="common_classes_attributes.html" />
+    <link rel="prev" title="Common" href="common.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html">Notes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="common.html">Common</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Common classes arguments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_classes_attributes.html">Common classes attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common_methods_arguments.html">Common methods arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="code.html">Python module</a> &raquo;</li>
+        
+          <li><a href="common.html">Common</a> &raquo;</li>
+        
+      <li>Common classes arguments</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/common_classes_arguments.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="common-classes-arguments">
+<span id="id1"></span><h1>Common classes arguments<a class="headerlink" href="#common-classes-arguments" title="Permalink to this headline">¶</a></h1>
+<dl class="py argument">
+<dt id="common_classes_arguments.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#common_classes_arguments.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the object.
+It is used to build the corresponding attribute in the objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="histfactory/index.html#module-histfactory" title="histfactory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Histfactory</span></code></a></p></li>
+<li><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">DNNLikelihood</span></code></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.input_file">
+<code class="sig-name descname">input_file</code><a class="headerlink" href="#common_classes_arguments.input_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>File name (either relative to the code execution folder or absolute, with or without extension)
+of a saved object.
+It is used to set the corresponding attribute with the following scheme:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Object</p></th>
+<th class="head"><p>File name scheme</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference internal" href="histfactory/index.html#module-histfactory" title="histfactory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Histfactory</span></code></a></p></td>
+<td><p>&lt;object_name&gt;_histfactory.h5</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></td>
+<td><p>&lt;object_name&gt;_likelihood.h5</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="sampler/index.html#module-sampler" title="sampler"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Sampler</span></code></a></p></td>
+<td><p>&lt;object_name&gt;_sampler.h5</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></td>
+<td><p>&lt;object_name&gt;_data.h5</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">DNNLikelihood</span></code></p></td>
+<td><p>&lt;object_name&gt;_dnnlikelihood.json</p></td>
+</tr>
+</tbody>
+</table>
+<p>where the object name is stored in the corresponding attribute.</p>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.output_folder">
+<code class="sig-name descname">output_folder</code><a class="headerlink" href="#common_classes_arguments.output_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
+It is used to set the corresponding attribute in the objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="histfactory/index.html#module-histfactory" title="histfactory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Histfactory</span></code></a></p></li>
+<li><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></li>
+<li><p><a class="reference internal" href="sampler/index.html#module-sampler" title="sampler"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Sampler</span></code></a></p></li>
+<li><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">DNNLikelihood</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>In the case of the <a class="reference internal" href="sampler/class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object the argument is also used
+when importing an existing object. In this case if it is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default), then the input files
+are searched for in the same directory of the
+<a class="reference internal" href="sampler/attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a> file,
+otherwise, input files are searched for in the
+<a class="reference internal" href="#common_classes_arguments.output_folder" title="common_classes_arguments.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> folder.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.verbose">
+<code class="sig-name descname">verbose</code><a class="headerlink" href="#common_classes_arguments.verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Argument used to set the verbosity mode of the
+<code class="docutils literal notranslate"><span class="pre">__init__</span></code> method and the default verbosity mode of all class methods
+that accept a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
+See <a class="reference internal" href="show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> for more details.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.pars_central">
+<code class="sig-name descname">pars_central</code><a class="headerlink" href="#common_classes_arguments.pars_central" title="Permalink to this definition">¶</a></dt>
+<dd><p>List or <a href="#id2"><span class="problematic" id="id3">|numpy_link|</span></a> array containing central values of the parameters.
+It is used to build the corresponding attribute
+in the objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.pars_pos_poi">
+<code class="sig-name descname">pars_pos_poi</code><a class="headerlink" href="#common_classes_arguments.pars_pos_poi" title="Permalink to this definition">¶</a></dt>
+<dd><p>List or <a href="#id4"><span class="problematic" id="id5">|numpy_link|</span></a> array containing the positions in the parameters list of the
+parameters of interest.
+It is used to build the corresponding attribute
+in the objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_poi,)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.pars_pos_nuis">
+<code class="sig-name descname">pars_pos_nuis</code><a class="headerlink" href="#common_classes_arguments.pars_pos_nuis" title="Permalink to this definition">¶</a></dt>
+<dd><p>List or <a href="#id6"><span class="problematic" id="id7">|numpy_link|</span></a> array containing the positions in the parameters list of the
+nuisance parameters.
+It is used to build the corresponding attribute
+in the objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_nuis,)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.pars_labels">
+<code class="sig-name descname">pars_labels</code><a class="headerlink" href="#common_classes_arguments.pars_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>List containing the parameters names as strings.
+Parameters labels are always parsed as “raw” strings (like, for instance, <code class="docutils literal notranslate"><span class="pre">r&quot;%s&quot;%pars_labels[0]</span></code>)
+and can contain latex expressions that are properly compiled when making plots.
+It is used to build the corresponding attribute
+in the objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py argument">
+<dt id="common_classes_arguments.pars_bounds">
+<code class="sig-name descname">pars_bounds</code><a class="headerlink" href="#common_classes_arguments.pars_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>List or <a href="#id8"><span class="problematic" id="id9">|numpy_link|</span></a> array containing containing bounds for the parameters.
+It is used to build the corresponding attribute
+in the objects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="likelihood/index.html#module-likelihood" title="likelihood"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Likelihood</span></code></a></p></li>
+<li><p><a class="reference internal" href="data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a></p></li>
+<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,2)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="common_classes_attributes.html" class="btn btn-neutral float-right" title="Common classes attributes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="common.html" class="btn btn-neutral float-left" title="Common" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

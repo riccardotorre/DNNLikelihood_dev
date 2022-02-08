@@ -19,42 +19,21 @@ Attributes
 
         - **type**: ``str``
 
-.. py:attribute:: Sampler.input_file   
+.. py:attribute:: Sampler.input_file  
 
-    Absolute path corresponding to the input argument :argument:`input_file`.
-    It is used to reconstructed the object from input files 
-    (see the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>`
-    method for details).
-          
-       - **type**: ``str`` or ``None``
+   See :attr:`input_file <common_classes_attributes.input_file>`.
 
-.. py:attribute:: Sampler.input_folder   
+.. py:attribute:: Sampler.input_folder
 
-    Absolute path corresponding to the folder containing the :argument:`input_file` file.
-    it is used to check the existence of a :attr:`Sampler.backend_file <DNNLikelihood.Sampler.backend_file>` 
-    and copy it to the new :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`.
-          
-       - **type**: ``str`` or ``None``
+    See :attr:`input_folder <common_classes_attributes.input_folder>`.
 
-.. py:attribute:: Sampler.input_h5_file    
+.. py:attribute:: Sampler.input_h5_file
 
-    Absolute path to the .h5 file containing a saved :class:`Sampler <DNNLikelihood.Sampler>` object (see
-    the :meth:`Sampler.save <DNNLikelihood.Sampler.save>` method for details).
-    It is automatically generated from the attribute
-    :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`.
-    When the latter is ``None``, the attribute is set to ``None``.
-         
-        - **type**: ``str`` or ``None``
+   See :attr:`input_h5_file <common_classes_attributes.input_h5_file>`.
 
-.. py:attribute:: Sampler.input_log_file   
+.. py:attribute:: Sampler.input_log_file
 
-    Absolute path to the .log file containing a saved :class:`Sampler <DNNLikelihood.Sampler>` object log (see
-    the :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>` method for details).
-    It is automatically generated from the attribute
-    :attr:`Sampler.input_file <DNNLikelihood.Sampler.input_file>`.
-    When the latter is ``None``, the attribute is set to ``None``.
-          
-       - **type**: ``str`` or ``None``
+   See :attr:`input_log_file <common_classes_attributes.input_log_file>`.
 
 .. py:attribute:: Sampler.likelihood_script_file
 
@@ -69,34 +48,9 @@ Attributes
         - **type**: ``str`` or ``None``
         - **default**: ``None``
 
-.. py:attribute:: Sampler.log    
+.. py:attribute:: Sampler.log
 
-    Dictionary containing a log of the :class:`Sampler <DNNLikelihood.Sampler>` object calls. The dictionary has datetime 
-    strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
-          
-        - **type**: ``dict``
-        - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``
-        - **values**: ``dict`` with the following structure:
-
-            - *"action"* (value type: ``str``)
-               Short description of the action.
-               **possible values**: ``"changed_output_folder"``, ``"created"``, ``"loaded"``, ``"created backend"``, ``"loaded backend"``, 
-               ``"init sampler"``, ``"run sampler"``, ``"saved"``, ``"computed Gelman-Rubin"``, ``"saved figure"``,
-               ``"created data object"``.
-            - *"pars"* (value type: ``list`` of ``int``)
-               ``pars`` involved in the corresponding action.
-            - *"available steps"* (value type: ``int``)
-               Number of steps available in backend.
-            - *"nsteps"* (value type: ``int``)
-               ``nsteps`` involved of the corresponding action.
-            - *"file name"* (value type: ``str``)
-               File name of file involved in the action.
-            - *"files names"* (value type: ``list`` of ``str``)
-               List of file names of files involved in the action.
-            - *"old folder"* (value type: ``str``)
-               Previous path.
-            - *"new folder"* (value type: ``str``)
-               New path.
+   See :attr:`log <common_classes_attributes.log>`.
 
 .. py:attribute:: Sampler.logpdf
 
@@ -174,24 +128,13 @@ Attributes
             This gives a move that is 20% StretchMove with parameter 0.7 and 80% GaussianMove with covariance 0.1 and mode "random" (i.e.
             updating a single randomly chosen parameter at each step).
 
-.. py:attribute:: Sampler.name   
+.. py:attribute:: Sampler.name
 
-    Name of the :class:`Sampler <DNNLikelihood.Sampler>` object. It is used to generate 
-    output files. It is automatically generated from the corresponding attribute of the
-    :class:`Lik <DNNLikelihood.Lik>` object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` 
-    by the :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method
-    by replacing the suffix "_likelihood" with the suffix "_sampler"
-    
-        - **type**: ``str``
+    See :attr:`name <common_classes_attributes.name>`.
 
 .. py:attribute:: Sampler.ndims
 
-    Number of dimensions of the input vector (i.e. number of parameters entering in the logpdf). 
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
-    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
-    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
-
-        - **type**: ``int``
+    See :attr:`ndims <common_classes_attributes.ndims>`.
 
 .. py:attribute:: Sampler.nsteps_available
 
@@ -230,74 +173,35 @@ Attributes
 
 .. py:attribute:: Sampler.output_figures_base_file_name
 
-   Base figures file name. It is 
-   automatically generated from the 
-   :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attribute.
-
-      - **type**: ``str`` 
+    See :attr:`output_figures_base_file_name <common_classes_attributes.output_figures_base_file_name>`.
 
 .. py:attribute:: Sampler.output_figures_base_file_path
 
-   Base figures file name including absolute path. It is 
-   automatically generated from the
-   :attr:`Sampler.output_figures_folder <DNNLikelihood.Sampler.output_figures_folder>` and 
-   :attr:`Sampler.output_figures_base_file_name <DNNLikelihood.Sampler.output_figures_base_file_name>` attributes.
-
-      - **type**: ``str`` 
+    See :attr:`output_figures_base_file_path <common_classes_attributes.output_figures_base_file_path>`.
 
 .. py:attribute:: Sampler.output_figures_folder
 
-   Absolute path to the folder where figures are saved. It is 
-   automatically generated (and created by the 
-   :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
-   if not present) from the
-   :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
-
-      - **type**: ``str`` 
+   See :attr:`output_figures_folder <common_classes_attributes.output_figures_folder>`.
 
 .. py:attribute:: Sampler.output_folder
 
-    Absolute path to the folder where all output files are saved.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
-    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
-    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
-
-       - **type**: ``str``
+   See :attr:`output_folder <common_classes_attributes.output_folder>`.
 
 .. py:attribute:: Sampler.output_h5_file
 
-    Absolute path to the .h5 file where the :class:`Sampler <DNNLikelihood.Lik>` 
-    object is saved (see the :meth:`Sampler.save <DNNLikelihood.Sampler.save>`
-    method for details).
-    It is automatically generated from the attribute
-    :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>`.
-          
-       - **type**: ``str`` 
+   See :attr:`output_h5_file <common_classes_attributes.output_h5_file>`.
+
+.. py:attribute:: Sampler.output_json_file
+
+   See :attr:`output_json_file <common_classes_attributes.output_json_file>`.
 
 .. py:attribute:: Sampler.output_log_file
 
-    Absolute path to the .log file where the :class:`Sampler <DNNLikelihood.Sampler>` 
-    object log is saved (see the :meth:`Sampler.save_log <DNNLikelihood.Sampler.save_log>`
-    method for details).
-    It is automatically generated from the
-    :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
-    :attr:`Sampler.name <DNNLikelihood.Sampler.name>` attributes.
+   See :attr:`output_log_file <common_classes_attributes.output_log_file>`.
 
 .. py:attribute:: Sampler.output_predictions_json_file
 
-    Absolute path to the .json file where the 
-    :attr:`Sampler.predictions <DNNLikelihood.Lik.predictions>`
-    dictionary is saved (see the :meth:`Sampler.save_predictions <DNNLikelihood.Sampler.save_predictions>`
-    method for details).
-    It is automatically generated from the
-    :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` and 
-    :attr:`Sampler.name <DNNLikelihood.Lik.name>` attributes.
-    Notice that the file is only saved to provide human readable predictions. The 
-    :attr:`Sampler.predictions <DNNLikelihood.Sampler.predictions>` attribute is saved
-    and restored together with the other attributes in the 
-    :attr:`Sampler.output_h5_file <DNNLikelihood.Sampler.output_h5_file>` h5 file.
-
-      - **type**: ``str``
+   See :attr:`output_predictions_json_file <common_classes_attributes.output_predictions_json_file>`.
 
 .. py:attribute:: Sampler.parallel_CPU
 
@@ -308,23 +212,11 @@ Attributes
 
 .. py:attribute:: Sampler.pars_bounds   
 
-    |Numpy_link| array containing the parameters bounds.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
-    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
-    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
-
-        - **type**: ``numpy.ndarray``
-        - **shape**: ``(ndims,2)``
+    See :attr:`pars_bounds <common_classes_attributes.pars_bounds>`.
 
 .. py:attribute:: Sampler.pars_central   
 
-    |Numpy_link| array containing central values of the parameters.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
-    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
-    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
-        
-        - **type**: ``numpy.ndarray``
-        - **shape**: ``(ndims,)``
+    See :attr:`pars_central <common_classes_attributes.pars_central>`.
 
 .. py:attribute:: Sampler.pars_init_vec
 
@@ -341,103 +233,76 @@ Attributes
  
 .. py:attribute:: Sampler.pars_labels   
 
-    List containing parameters names as strings.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
-    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
-    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
-    Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
-    and can contain latex expressions that are properly compiled when making plots.
-
-        - **type**: ``list``
-        - **shape**: ``(ndims,)``
+    See :attr:`pars_labels <common_classes_attributes.pars_labels>`.
 
 .. py:attribute:: Sampler.pars_labels_auto   
 
-    List containing parameters names automatically generated by the function
-    :func:`utils.define_pars_labels_auto <DNNLikelihood.utils.define_pars_labels_auto>`.
-    All parameters of interest are named ``r"$\theta_{i}$"`` with ``i`` ranging between
-    one to the number of parameters of interest and all nuisance parameters are named
-    ``r"$\nu_{j}$"`` with ``j`` ranging between one to the number of nuisance parameters.
-    Parameters labels are always used as "raw" strings (like, for instance, ``r"%s"%pars_labels_auto[0]``) 
-    and can contain latex expressions that are properly compiled when making plots.
-
-        - **type**: ``list``
-        - **shape**: ``(ndims,)``
+    See :attr:`pars_labels_auto <common_classes_attributes.pars_labels_auto>`.
 
 .. py:attribute:: Sampler.pars_pos_nuis   
 
-    |Numpy_link| array containing the positions in the parameters list of the nuisance parameters.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
-    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
-    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
-
-        - **type**: ``numpy.ndarray``
-        - **shape**: ``(n_nuis,)``
+    See :attr:`pars_pos_nuis <common_classes_attributes.pars_pos_nuis>`.
 
 .. py:attribute:: Sampler.pars_pos_poi   
 
-    |Numpy_link| array containing the positions in the parameters list of the parameters of interest.
-    It is automatically set to the corresponding attribute of the :class:`Lik <DNNLikelihood.Lik>`
-    object used to initialize the :class:`Sampler <DNNLikelihood.Sampler>` by the
-    :meth:`Sampler.__init_likelihood <DNNLikelihood.Sampler._Sampler__init_likelihood>` method.
-
-        - **type**: ``numpy.ndarray``
-        - **shape**: ``(n_poi,)``
+    See :attr:`pars_pos_poi <common_classes_attributes.pars_pos_poi>`.
 
 .. py:attribute:: Sampler.predictions   
 
     Nested dictionary containing predictions computed with the 
-    :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method,
-    and the list of figures generated by the
-    :meth:`Sampler.plot_gelman_rubin <DNNLikelihood.Sampler.plot_gelman_rubin>`,
-    :meth:`Sampler.plot_dist <DNNLikelihood.Sampler.plot_dist>`,
-    :meth:`Sampler.plot_chains <DNNLikelihood.Sampler.plot_chains>`, and
-    :meth:`Sampler.plot_chains_logpdf <DNNLikelihood.Sampler.plot_chains_logpdf>` methods.   
 
-        - **type**: ``dict`` with the following structure:
+        - :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` 
+        - :meth:`Sampler.plot_gelman_rubin <DNNLikelihood.Sampler.plot_gelman_rubin>`
+        - :meth:`Sampler.plot_dist <DNNLikelihood.Sampler.plot_dist>`
+        - :meth:`Sampler.plot_chains <DNNLikelihood.Sampler.plot_chains>`
+        - :meth:`Sampler.plot_chains_logpdf <DNNLikelihood.Sampler.plot_chains_logpdf>`
+        
+    methods.   
 
-            - *"gelman_rubin"* (value type: ``dict``)
-                Dictionary containing information on Gelman-Rubin convergernce metrics. This dictionary has the following structure:
+        - **type**: ``dict``
 
-                - *"timestamp"* (value type: ``dict``)
-                    Dictionary containing information on Gelman-Rubin convergernce metrics computed at time ``timestamp``. 
-                    The key is a string of the form ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``.
-                    This dictionary has the following structure:
-
-                    - *"pars"* (value type: ``numpy.ndarray``, shape: ``(npars,)``)
-                        |Numpy_link| array of parameters for which the Gelman-Rubin metrics are computed.
-                        It corresponds to the ``pars`` input argument of the 
-                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
-                    - *"pars_vals"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
-                        |Numpy_link| array of values of parameters for each point for which the Gelman-Rubin metrics are computed.
-                        The number of points corresponds to the product of the lengths of the ``pars`` and ``nsteps``
-                        input arguments of the 
-                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
-                    - *"nsteps"* (value type: ``numpy.ndarray``, shape: ``(len(nsteps),)``)
-                        |Numpy_link| array of number of steps for which the Gelman-Rubin metrics are computed.
-                    - *"Rc"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
-                        |Numpy_link| array with :math:`R_{c}` values (see the 
-                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
-                        the definition)
-                    - *"Vhat"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
-                        |Numpy_link| array with :math:`\\hat{V}` values (see the 
-                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
-                        the definition)
-                    - *"W"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
-                        |Numpy_link| array with :math:`W` values (see the 
-                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
-                        the definition)
-                    - *"evaluation_times"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
-                        Evaluation time for each point for which the Gelman-Rubin metrics are computed.
-                    - *"global_evaluation_time"* (value type: ``numpy.ndarray``, shape: ``(ndims,)``)
-                        Total evaluation time for the Gelman-Rubin metrics evaluated in the current call to the 
-                        :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
-
-        - *"Figures"* (value type: ``dict``)
-            Dictionary containing information on figures. This dictionary has the following structure:
-
-            - *"timestamp"* (value type: ``list``)
-                Dictionary containing the list of absolute paths of the figures produced at time ``timestamp``.
+..             - *"gelman_rubin"* (value type: ``dict``)
+..                 Dictionary containing information on Gelman-Rubin convergernce metrics. This dictionary has the following structure:
+.. 
+..                 - *"timestamp"* (value type: ``dict``)
+..                     Dictionary containing information on Gelman-Rubin convergernce metrics computed at time ``timestamp``. 
+..                     The key is a string of the form ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``.
+..                     This dictionary has the following structure:
+.. 
+..                     - *"pars"* (value type: ``numpy.ndarray``, shape: ``(npars,)``)
+..                         |Numpy_link| array of parameters for which the Gelman-Rubin metrics are computed.
+..                         It corresponds to the ``pars`` input argument of the 
+..                         :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
+..                     - *"pars_vals"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+..                         |Numpy_link| array of values of parameters for each point for which the Gelman-Rubin metrics are computed.
+..                         The number of points corresponds to the product of the lengths of the ``pars`` and ``nsteps``
+..                         input arguments of the 
+..                         :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
+..                     - *"nsteps"* (value type: ``numpy.ndarray``, shape: ``(len(nsteps),)``)
+..                         |Numpy_link| array of number of steps for which the Gelman-Rubin metrics are computed.
+..                     - *"Rc"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+..                         |Numpy_link| array with :math:`R_{c}` values (see the 
+..                         :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
+..                         the definition)
+..                     - *"Vhat"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+..                         |Numpy_link| array with :math:`\\hat{V}` values (see the 
+..                         :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
+..                         the definition)
+..                     - *"W"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+..                         |Numpy_link| array with :math:`W` values (see the 
+..                         :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method for
+..                         the definition)
+..                     - *"evaluation_times"* (value type: ``numpy.ndarray``, shape: ``(npoints,)``)
+..                         Evaluation time for each point for which the Gelman-Rubin metrics are computed.
+..                     - *"global_evaluation_time"* (value type: ``numpy.ndarray``, shape: ``(ndims,)``)
+..                         Total evaluation time for the Gelman-Rubin metrics evaluated in the current call to the 
+..                         :meth:`Sampler.compute_gelman_rubin <DNNLikelihood.Sampler.compute_gelman_rubin>` method.
+.. 
+..         - *"Figures"* (value type: ``dict``)
+..             Dictionary containing information on figures. This dictionary has the following structure:
+.. 
+..             - *"timestamp"* (value type: ``list``)
+..                 Dictionary containing the list of absolute paths of the figures produced at time ``timestamp``.
 
       - **schematic example**:
 
@@ -464,7 +329,7 @@ Attributes
                                                                              'ftol': float},
                                                                  'name': str},
                                                    'optimization_times': list,
-                                                   'global_optimization_time': numpy.float64},
+                                                   'total_optimization_time': numpy.float64},
                                      'timestamp2': ...},
              'Figures': {'timestamp1': [str, ...],
                          'timestamp2': [str, ...],
@@ -493,13 +358,6 @@ Attributes
 
 .. py:attribute:: Sampler.verbose
 
-    Attribute corresponding to the input argument :argument:`verbose`.
-    It represents the verbosity mode of the 
-    :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` 
-    method and the default verbosity mode of all class methods that accept a
-    ``verbose`` argument.
-    See :ref:`Verbosity mode <verbosity_mode>`.
-
-        - **type**: ``bool`` or ``int``
+    See :attr:`verbose <common_classes_attributes.verbose>`.
 
 .. include:: ../external_links.rst

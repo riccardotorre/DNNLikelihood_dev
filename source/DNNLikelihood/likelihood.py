@@ -51,26 +51,27 @@ class Lik(Verbosity):
         - :argument:`input_file` is ``None`` (default)
 
             All other arguments are parsed and saved in corresponding attributes. If no :argument:`name` is given, 
-            then one is created. 
-            The object is saved upon creation through the :meth:`Lik.save <DNNLikelihood.Lik.save>` method. 
+            then one is created. The object is saved upon creation through the :meth:`Lik.save <DNNLikelihood.Lik.save>` method. 
         
         - :argument:`input_file` is not ``None``
 
             The object is reconstructed from the input files through the private method
             :meth:`Lik.__load <DNNLikelihood.Lik._Lik__load>`
-            Depending on the value of the input argument :argument:`output_folder` the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` method behaves as follows:
+            Depending on the value of the input argument :argument:`output_folder` the 
+            :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` method behaves as follows:
 
-                - If :argument:`output_folder` is ``None`` (default)
+                - If :argument:`output_folder` is ``None`` (default) or is equal to :argument:`input_folder`
                     
                     The attribute :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>`
-                    is set from the :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>` one.
-                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute
-                    
-                    - if path stored in the loaded :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
-                    - if path stored in the loaded :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` does not exists, then the content of the path :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>` is copied to the new ``output_folder``.
-                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute
-                    
-                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.
+                    is set equal to the :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>` one.
+
+                - If :argument:`output_folder` is not ``None`` and is different than :argument:`input_folder`
+
+                    The new :argument:`output_folder` is saved in the 
+                    :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute and files present in the 
+                    input folder are copied to the new output folder, so that all previous results are preserved in the new path.
+
+            The object is saved upon import through the :meth:`Lik.save <DNNLikelihood.Lik.save>` method.
         
         - **Arguments**
 
@@ -78,20 +79,23 @@ class Lik(Verbosity):
 
         - **Creates/updates files**
 
-            - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)
-            - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
+            - :attr:`Lik.output_h5_file <Lik.Histfactory.output_h5_file>`
+            - :attr:`Lik.output_json_file <Lik.Histfactory.output_json_file>`
+            - :attr:`Lik.output_log_file <Lik.Histfactory.output_log_file>`
+            - :attr:`Lik.output_predictions_json_file <Lik.Histfactory.output_predictions_json_file>`
         """
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         print(header_string,"\nInitialize Likelihood object.\n",show=verbose)
+        self.output_folder = output_folder
         self.input_file = input_file
         self.__check_define_input_files()
         if self.input_file == None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
-            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
+            self.__check_define_output_files(timestamp=timestamp,verbose=verbose_sub)
             self.logpdf = _FunctionWrapper(logpdf, logpdf_args, logpdf_kwargs)
             self.pars_pos_poi = pars_pos_poi
             self.pars_pos_nuis = pars_pos_nuis
@@ -105,27 +109,34 @@ class Lik(Verbosity):
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.__load(verbose=verbose_sub)
-            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
-            self.save_log(overwrite=True, verbose=verbose_sub)
+            self.__check_define_output_files(timestamp=timestamp,verbose=verbose_sub)
             try:
                 self.predictions["logpdf_max"]
                 self.predictions["logpdf_profiled_max"]
                 self.predictions["Figures"]
             except:
-                self.reset_predictions(delete_figures=True, verbose=verbose_sub)
+                self.reset_predictions(delete_figures=True, save=False, verbose=verbose_sub)
             self.predictions["Figures"] = utils.check_figures_dic(self.predictions["Figures"],output_figures_folder=self.output_figures_folder)
+            self.save(overwrite=True, verbose=verbose_sub)
 
     def __check_define_input_files(self,verbose=False):
         """
         Private method used by the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` one
-        to set the attributes corresponding to input files
+        to set the attributes corresponding to input files and folders
         
-            - :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`,
-            - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`,
+            - :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>`
+            - :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`
+            - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
             - :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>`
 
-        depending on the value of the 
+        depending on the initial value of the 
         :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>` attribute.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if self.input_file == None:
@@ -140,32 +151,38 @@ class Lik(Verbosity):
             self.input_folder = path.split(self.input_file)[0]
             print(header_string,"\nLik input folder set to\n\t", self.input_folder,".\n",show=verbose)
 
-    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
+    def __check_define_output_files(self,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` one
-        to set the attributes corresponding to output folders
+        to set the attributes corresponding to output files and folders
         
-            - :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>`
-            - :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>`
-
-        and output files
-
             - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>`
+            - :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>`
+            - :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`
+            - :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>`
             - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>`
+            - :attr:`Lik.output_json_file <DNNLikelihood.Lik.output_json_file>`
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
             - :attr:`Lik.output_predictions_json_file <DNNLikelihood.Lik.output_predictions_json_file>`
-            - :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`
 
-        depending on the value of the
-        :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute.
-        It also creates the folders
-        :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>`
-        and :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>` if 
-        they do not exist.
+        depending on the initial values of the 
+        :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>` and
+        :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attributes.
+        It also creates the output folder if it does not exist.
+
+        - **Arguments**
+
+            - **timestamp**
+            
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if output_folder is not None:
-            self.output_folder = path.abspath(output_folder)
+        if self.output_folder is not None:
+            self.output_folder = path.abspath(self.output_folder)
             if self.input_folder is not None and self.output_folder != self.input_folder:
                 utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
         else:
@@ -176,6 +193,7 @@ class Lik(Verbosity):
         self.output_folder = utils.check_create_folder(self.output_folder)
         self.output_figures_folder =  utils.check_create_folder(path.join(self.output_folder, "figures"))
         self.output_h5_file = path.join(self.output_folder, self.name+".h5")
+        self.output_json_file = path.join(self.output_folder, self.name+".json")
         self.output_log_file = path.join(self.output_folder, self.name+".log")
         self.output_predictions_json_file = path.join(self.output_folder, self.name+"_predictions.json")
         self.script_file = path.join(self.output_folder, self.name+"_script.py")
@@ -187,9 +205,9 @@ class Lik(Verbosity):
         """
         Private method used by the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` one
         to define the :attr:`Lik.name <DNNLikelihood.Lik.name>` attribute.
-        If it is ``None`` it replaces it with 
-        ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_likelihood"``,
-        otherwise it appends the suffix "_likelihood" (preventing duplication if it is already present).
+        If the latter attribute is ``None``, then it is replaced with 
+        ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_likelihood"``, otherwise 
+        the suffix "_likelihood" is appended (preventing duplication if it is already present).  
         """
         if self.name == None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -202,7 +220,7 @@ class Lik(Verbosity):
         Private method used by the :meth:`Lik.__check_define_pars <DNNLikelihood.Lik._Lik__check_define_pars>` one
         to define the :attr:`Lik.ndims <DNNLikelihood.Lik.ndims>` attribute.
         To determine the number of dimensions it computes the logpdf, by calling the
-        :meth:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` passing it a vector of growing size
+        :meth:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` method on a vector of growing size
         until it does not generate an error.
         """
         check = True
@@ -218,7 +236,7 @@ class Lik(Verbosity):
     def __check_define_pars(self, verbose=None):
         """
         Private method used by the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` one
-        to check the consistency and set the attributes
+        to check parameters consistency and set the attributes
 
             - :attr:`Lik.ndims <DNNLikelihood.Lik.ndims>` 
             - :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` (converted into ``numpy.ndarray``)
@@ -233,7 +251,7 @@ class Lik(Verbosity):
         method to determine the number of dimensions :attr:`Lik.ndims <DNNLikelihood.Lik.ndims>`
         and sets :attr:`Lik.pars_central <DNNLikelihood.Lik.pars_central>`
         to a vector of zeros with length :attr:`Lik.ndims <DNNLikelihood.Lik.ndims>`, warning the user that
-        dimensiona and parameters central values have been automatically determined.
+        dimensions and parameters central values have been automatically determined.
         If no parameters positions are specified, all parameters are assumed to be parameters of interest.
         If only the position of the parameters of interest or of the nuisance parameters is specified,
         the other is automatically generated by matching dimensions.
@@ -242,6 +260,12 @@ class Lik(Verbosity):
         If parameters bounds are not provided, they are set to ``(-np.inf,np.inf)``.
         A check is performed on the length of the four attributes and an Exception is raised if the length
         does not match :attr:`Lik.ndims <DNNLikelihood.Lik.ndims>`.
+
+        - **Arguments**
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, _ = self.set_verbosity(verbose)
         if self.pars_central is not None:
@@ -298,25 +322,23 @@ class Lik(Verbosity):
             - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
 
         The method loads, with the |deepdish_link| package, the content od the 
-        :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>` file into a temporary dictionary, subsequently used to update the 
+        :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`
+        file into a temporary dictionary, subsequently used to update the 
         :attr:`Lik.__dict__ <DNNLikelihood.Lik.__dict__>` attribute.
-        The ``"logpdf_dump"`` item of the loaded dictionary is a ``numpy.void`` object containing the a dump of the callable
-        :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` attribute produced by the |cloudpickle_link| package
-        (see the documentation of the :attr:`Lik.save <DNNLikelihood.Lik.save>` method). This item is first
-        converted into a (binary) string, then loaded with |cloudpickle_link| to reconstruct the 
-        :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` attribute.
         The method also loads the content of the :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
         file, assigning it to the :attr:`Lik.log <DNNLikelihood.Lik.log>` attribute.
+
+        The ``"logpdf_dump"`` item of the loaded dictionary is a ``numpy.void`` object containing the a dump of the callable
+        :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` attribute produced by the |cloudpickle_link| package
+        (see the documentation of the :attr:`Lik.save_h5<DNNLikelihood.Lik.save_h5>` method). This item is first
+        converted into a (binary) string, then loaded with |cloudpickle_link| to reconstruct the
+        :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` callable attribute.
 
         - **Arguments**
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
@@ -344,7 +366,7 @@ class Lik(Verbosity):
 
             - **pars_labels**
             
-                Could be either one of the keyword strings ``"original"`` and ``"autp"`` or a list of labels
+                Could be either one of the keyword strings ``"original"`` and ``"auto"`` or a list of labels
                 strings with the length of the parameters array. If ``pars_labels="original"`` or ``pars_labels="auto"``
                 the function returns the value of :attr:`Lik.pars_labels <DNNLikelihood.Lik.pars_labels>`
                 or :attr:`Lik.pars_labels_auto <DNNLikelihood.Lik.pars_labels_auto>`, respectively,
@@ -363,7 +385,7 @@ class Lik(Verbosity):
 
     def save_log(self, timestamp=None, overwrite=False, verbose=None):
         """
-        Saves the content of the :attr:`Lik.log <DNNLikelihood.Lik.log>` attribute in the file
+        Saves the content of the :attr:`Lik.log <DNNLikelihood.Lik.log>` attribute in the json file
         :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`.
 
         This method is called by the methods
@@ -380,47 +402,29 @@ class Lik(Verbosity):
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is passed to the
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
-                to generate the dump file name.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
             
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates file**
 
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if timestamp is None:
-            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         start = timer()
         if type(overwrite) == bool:
             output_log_file = self.output_log_file
             if not overwrite:
                 utils.check_rename_file(output_log_file, verbose=verbose_sub)
         elif overwrite == "dump":
+            if timestamp is None:
+                timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             output_log_file = utils.generate_dump_file_name(self.output_log_file, timestamp=timestamp)
         dictionary = utils.convert_types_dict(self.log)
         with codecs.open(output_log_file, "w", encoding="utf-8") as f:
@@ -462,69 +466,57 @@ class Lik(Verbosity):
         elif overwrite == "dump":
             print(header_string,"\nPredictions json file dump\n\t", output_predictions_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
 
-    def save(self, timestamp=None, overwrite=False, verbose=None):
+    def save_h5(self, timestamp=None, overwrite=False, verbose=None):
         """
-        The :class:`Lik <DNNLikelihood.Lik>` object is saved to the HDF5 file
-        :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>` and the object log is saved
-        to the json file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`.
-        The object is saved by storing the content of the :attr:``Lik.__dict__ <DNNLikelihood.Lik.__dict__>`` 
-        attribute in an h5 file using the |deepdish_link| package.
-        In order to be able to store the callable :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` attribute, this is first
-        serialized to a byte string using the |cloudpickle_link| package, and then encoded into a ``numpy.void`` object.
-        This is stored in a dedicated ``"logpdf_dump"`` key of the object dictionary and is used to restore the 
-        :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` attribute when the object is loaded (see the documentation of the 
-        :meth:`Lik.__load <DNNLikelihood.Lik._Lik__load>` method). The following attributes are excluded from the saved
-        dictionary:
+        Saves the :class:`Lik <DNNLikelihood.Lik>` object to the HDF5 file
+        :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>`.
+        The object is saved by storing the content of the 
+        :attr:``Lik.__dict__ <DNNLikelihood.Lik.__dict__>`` 
+        attribute in a .h5 file using the |deepdish_link| package. 
+        The following attributes are excluded from the saved dictionary:
 
             - :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>`
+            - :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>`
             - :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`
             - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
-            - :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>`
+            - :attr:`Lik.output_figures_base_file_name <DNNLikelihood.Lik.output_figures_base_file_name>`
+            - :attr:`Lik.output_figures_base_file_path <DNNLikelihood.Lik.output_figures_base_file_path>`
+            - :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>`
+            - :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>`
+            - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>`
+            - :attr:`Lik.output_json_file <DNNLikelihood.Lik.output_json_file>`
+            - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
+            - :attr:`Lik.output_predictions_json_file <DNNLikelihood.Lik.output_predictions_json_file>`
+            - :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`
             - :attr:`Lik.log <DNNLikelihood.Lik.log>` (saved to the file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`)
             - :attr:`Lik.verbose <DNNLikelihood.Lik.verbose>`
+
+        In order to save the callable :attr:`Lik.logpdf<DNNLikelihood.Lik.logpdf>` attribute, an item with key ``"logpdf_dump"``
+        is added to the :attr:`Lik.__dict__ < DNNLikelihood.Lik.__dict__>` class dictionary. Such item contains as value 
+        a ``numpy.void`` object created from a dump of the callable function produced with the |cloudpickle_link| package.
 
         - **Arguments**
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used to update the 
-                :attr:`Lik.log <DNNLikelihood.Lik.log>` object and, when ``overwrite="dump"``, is passed to the
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
-                to generate the dump file name.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates files**
 
             - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>`
-            - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        start = timer()
         if type(overwrite) == bool:
             output_h5_file = self.output_h5_file
             if not overwrite:
@@ -540,10 +532,11 @@ class Lik(Verbosity):
                                                           "output_figures_folder",
                                                           "output_folder",
                                                           "output_h5_file",
+                                                          "output_json_file",
                                                           "output_log_file",
                                                           "output_predictions_json_file",
                                                           "script_file",
-                                                          "logpdf", 
+                                                          "logpdf",
                                                           "log", 
                                                           "verbose"])
         dump = np.void(cloudpickle.dumps(self.logpdf))
@@ -552,8 +545,6 @@ class Lik(Verbosity):
         end = timer()
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(output_h5_file)[-1]}
-        self.save_predictions_json(timestamp=timestamp, overwrite=overwrite, verbose=verbose_sub)
-        self.save_log(overwrite=overwrite, verbose=verbose_sub)
         if type(overwrite) == bool:
             if overwrite:
                 print(header_string,"\nLikelihood h5 file\n\t", output_h5_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
@@ -561,6 +552,113 @@ class Lik(Verbosity):
                 print(header_string,"\nLikelihood h5 file\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
         elif overwrite == "dump":
             print(header_string,"\nLikelihood h5 file dump\n\t", output_h5_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+
+    def save_json(self, timestamp=None, overwrite=False, verbose=None):
+        """
+        Part of the :class:`Lik <DNNLikelihood.Lik>` object is also saved to the human
+        readable json file :attr:`Lik.output_json_file <DNNLikelihood.Lik.output_json_file>`.
+
+        The object is saved by storing all json serializable attributes obtained from the
+        :attr:``Lik.__dict__ <DNNLikelihood.Lik.__dict__>`` 
+        attribute. The following attributes are excluded from the saved dictionary:
+
+            - :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>`
+            - :attr:`Lik.input_folder <DNNLikelihood.Lik.input_folder>`
+            - :attr:`Lik.input_h5_file <DNNLikelihood.Lik.input_h5_file>`
+            - :attr:`Lik.input_log_file <DNNLikelihood.Lik.input_log_file>`
+            - :attr:`Lik.output_figures_base_file_name <DNNLikelihood.Lik.output_figures_base_file_name>`
+            - :attr:`Lik.output_figures_base_file_path <DNNLikelihood.Lik.output_figures_base_file_path>`
+            - :attr:`Lik.output_figures_folder <DNNLikelihood.Lik.output_figures_folder>`
+            - :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>`
+            - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>`
+            - :attr:`Lik.output_json_file <DNNLikelihood.Lik.output_json_file>`
+            - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
+            - :attr:`Lik.output_predictions_json_file <DNNLikelihood.Lik.output_predictions_json_file>`
+            - :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`
+            - :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>`
+            - :attr:`Lik.log <DNNLikelihood.Lik.log>` (saved to the file :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`)
+            - :attr:`Lik.verbose <DNNLikelihood.Lik.verbose>`
+
+        - **Arguments**
+
+            Same arguments of the :meth:`Lik.save_h5 <DNNLikelihood.Lik.save_h5>` method.
+
+        - **Creates/updates files**
+
+            - :attr:`Lik.output_json_file <DNNLikelihood.Lik.output_json_file>`
+        """
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
+        if timestamp is None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        if type(overwrite) == bool:
+            output_json_file = self.output_json_file
+            if not overwrite:
+                utils.check_rename_file(output_json_file, verbose=verbose_sub)
+        elif overwrite == "dump":
+            output_json_file = utils.generate_dump_file_name(
+                self.output_json_file, timestamp=timestamp)
+        dictionary = utils.dic_minus_keys(self.__dict__, ["input_file", 
+                                                          "input_folder",
+                                                          "input_h5_file",
+                                                          "input_log_file", 
+                                                          "output_figures_base_file_name",
+                                                          "output_figures_base_file_path",
+                                                          "output_figures_folder",
+                                                          "output_folder",
+                                                          "output_h5_file",
+                                                          "output_json_file",
+                                                          "output_log_file",
+                                                          "output_predictions_json_file",
+                                                          "script_file",
+                                                          "logpdf", 
+                                                          "log", 
+                                                          "verbose"])
+        dictionary = utils.convert_types_dict(dictionary)
+        with codecs.open(output_json_file, "w", encoding="utf-8") as f:
+            json.dump(dictionary, f, separators=(",", ":"), indent=4)
+        end = timer()
+        self.log[timestamp] = {"action": "saved object json",
+                               "file name": path.split(output_json_file)[-1]}
+        if type(overwrite) == bool:
+            if overwrite:
+                print(header_string,"\nLikelihood json file\n\t", output_json_file, "\nupdated (or saved if it did not exist) in", str(end-start), "s.\n", show=verbose)
+            else:
+                print(header_string,"\nLikelihood json file\n\t", output_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+        elif overwrite == "dump":
+            print(header_string,"\nLikelihood json file dump\n\t", output_json_file, "\nsaved in", str(end-start), "s.\n", show=verbose)
+
+    def save(self, timestamp=None, overwrite=False, verbose=None):
+        """
+        Saves the :class:`Lik <DNNLikelihood.Lik>` object by calling, in the following order,
+        the four methods:
+        
+            - :meth:`Lik.save_json <DNNLikelihood.Lik.save_json>`
+            - :meth:`Lik.save_h5 <DNNLikelihood.Lik.save_h5>`
+            - :meth:`Lik.save_predictions_json <DNNLikelihood.Lik.save_json>`
+            - :meth:`Lik.save_log <DNNLikelihood.Lik.save_log>`
+
+        The :class:`Lik <DNNLikelihood.Lik>` object is saved to three files: an HDF5 compressed file
+        used to import back the object, a human-readable json file including json serializable
+        attributes, and a log file including the content of the :attr:`Lik.log <DNNLikelihood.Lik.log>`
+        attribute.
+
+        - **Arguments**
+            
+            Same arguments as the called methods.
+
+        - **Creates/updates files**
+
+            - :attr:`Lik.output_h5_file <Lik.Histfactory.output_h5_file>`
+            - :attr:`Lik.output_json_file <Lik.Histfactory.output_json_file>`
+            - :attr:`Lik.output_log_file <Lik.Histfactory.output_log_file>`
+            - :attr:`Lik.output_predictions_json_file <Lik.Histfactory.output_predictions_json_file>`
+        """
+        verbose, _ = self.set_verbosity(verbose)
+        self.save_json(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
+        self.save_h5(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
+        self.save_predictions_json(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
+        self.save_log(timestamp=timestamp, overwrite=overwrite, verbose=verbose)
 
     def save_script(self, timestamp=None, overwrite=False, verbose=True):
         """
@@ -570,45 +668,24 @@ class Lik(Verbosity):
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used to update the 
-                :attr:`Lik.log <DNNLikelihood.Lik.log>` object and, when ``overwrite="dump"``, is passed to the
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
-                to generate the dump file name.
-                The timestamp input is also used to search in the :attr:`Lik.prediction <DNNLikelihood.Lik.prediction>`
-                attribute for profiled maxima information to be used as parameters initialization for sampling.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
                     
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates file**
 
             - :attr:`Lik.script_file <DNNLikelihood.Lik.script_file>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        start = timer()
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        start = timer()
         if type(overwrite) == bool:
             output_script_file = self.script_file
             if not overwrite:
@@ -624,7 +701,6 @@ class Lik(Verbosity):
                            "name = lik.name\n" +
                            "def logpdf(x_pars,*args,**kwargs):\n" +
                            "\treturn lik.logpdf_fn(x_pars,*args,**kwargs)\n" +
-                           #"logpdf = lik.logpdf_fn\n" +
                            "logpdf_args = lik.logpdf.args\n" +
                            "logpdf_kwargs = lik.logpdf.kwargs\n" +
                            "pars_pos_poi = lik.pars_pos_poi\n" +
@@ -653,24 +729,23 @@ class Lik(Verbosity):
 
     def logpdf_fn(self, x_pars, *args, **kwargs):
         """
-        This function is used to add constraints and standardize input/output of 
-        :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>`.
-        It is constructed from the :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` and 
-        :attr:`Lik.logpdf_args <DNNLikelihood.Lik.logpdf_args>` attributes. 
+        This function is used to add constraints and standardize input/output of the
+        :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` callable attribute.
+        It is constructed from the :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` attribute. 
         In the case :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` accepts a single array of 
         parameters ``x_pars`` and returns the logpdf value one point at a time, then the function returns a ``float``, 
         while if :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` is vectorized,
         i.e. accepts an array of ``x_pars`` arrays and returns an array of logpdf values, then the function returns an array. 
         Moreover, the :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>` method is constructed to return the
         logpdf value ``-np.inf`` if any of the parameters lies outside 
-        :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` or the 
+        :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` or if the 
         :attr:`Lik.logpdf <DNNLikelihood.Lik.logpdf>` function returns ``nan``.
 
         - **Arguments**
 
             - **x_pars**
 
-                Values of the parameters for which logpdf is computed.
+                Values of the parameters for which the logpdf is computed.
                 It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``) 
                 or a list of points corresponding to an array with shape ``(n_points,n_pars)``, depending on the 
                 equivalent argument accepted by ``Lik.logpdf``.
@@ -723,11 +798,13 @@ class Lik(Verbosity):
 
     def reset_predictions(self, 
                           delete_figures=False, 
+                          save=False,
+                          overwrite=True,
                           verbose=None):
         """
         Re-initializes the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary to
 
-         .. code-block:: python
+        .. code-block:: python
 
             predictions = {"logpdf_max": {},
                            "logpdf_profiled_max": {},
@@ -744,18 +821,37 @@ class Lik(Verbosity):
                 folder are deleted and the ``"Figures"`` item is reset to an empty dictionary.
                     
                     - **type**: ``bool``
-                    - **default**: ``True`` 
+                    - **default**: ``True``
+
+            - **save**
             
-            - **verbose**
-            
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
+                If ``True`` the object is saved after resetting the dictionary.
                     
                     - **type**: ``bool``
-                    - **default**: ``None`` 
+                    - **default**: ``False``
+
+            - **overwrite**
+            
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
+
+            - **verbose**
+            
+                See :argument:`verbose <common_methods_arguments.verbose>`.
+
+         - **Creates/updates files**
+
+            - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_predictions_json_file>` (only if ``save=True``)
+            - :attr:`Lik.output_json_file <DNNLikelihood.Lik.output_predictions_json_file>` (only if ``save=True``)
+            - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>`
+            - :attr:`Lik.output_predictions_json_file <DNNLikelihood.Lik.output_predictions_json_file>` (only if ``save=True``)
 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        print(header_string,"\nResetting predictions.\n",show=verbose)
+        start = timer()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if delete_figures:
             utils.check_delete_all_files_in_path(self.output_figures_folder)
             figs = {}
@@ -766,13 +862,22 @@ class Lik(Verbosity):
         self.predictions = {"logpdf_max": {},
                             "logpdf_profiled_max": {},
                             "Figures": figs}
-
+        end = timer()
+        self.log[timestamp] = {"action": "reset predictions"}
+        if save:
+            self.save(overwrite=overwrite, verbose=verbose_sub)
+        else:
+            self.save_log(overwrite=True, verbose=verbose_sub)
+        print(header_string,"\nPredictions reset in", end-start, "s.\n")
+        
     def compute_maximum_logpdf(self,
                                pars_init=None,
+                               pars_bounds=None,
                                optimizer={},
+                               minimization_options={},
                                timestamp = None,
-                               save=False,
-                               overwrite=False,
+                               save=True,
+                               overwrite=True,
                                verbose=None):
         """
         Computes the maximum of :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. 
@@ -780,10 +885,9 @@ class Lik(Verbosity):
         are stored in the ``"logpdf_max"`` item of the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary.
         The method uses the function :func:`inference.compute_maximum_logpdf <DNNLikelihood.inference.compute_maximum_logpdf>`
         based on |scipy_optimize_minimize_link| to find the minimum of minus 
-        :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. Since the latter
-        method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the 
-        :func:`inference.compute_maximum_logpdf <DNNLikelihood.inference.compute_maximum_logpdf>`
-        function to optimize speed. See the documentation of the
+        :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. If ``pars_bounds`` is ``None``, then
+        the parameter bounds stored in the :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` attribute are used. 
+        See the documentation of the
         :func:`inference.compute_maximum_logpdf <DNNLikelihood.inference.compute_maximum_logpdf>` 
         function for details.
 
@@ -798,6 +902,15 @@ class Lik(Verbosity):
                     - **shape**: ``(ndim,)``
                     - **default**: ``None`` (automatically modified to :attr:`Lik.pars_central <DNNLikelihood.Lik.pars_central>`)
 
+            - **pars_bounds**
+            
+                Bounds on the parameters. If it is ``None``, then default parameters bounds stored in the 
+                :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` attribute are used.
+                    
+                    - **type**: ``numpy.ndarray``
+                    - **shape**: ``(ndim,2)``
+                    - **default**: ``None``
+
             - **optimizer**
 
                 Dictionary containing information on the optimizer and its options.
@@ -805,12 +918,13 @@ class Lik(Verbosity):
                     - **type**: ``dict`` with the following structure:
 
                         - *"name"* (value type: ``str``)
-                          This is always set to ``"scipy"``, which is by now the only available optimizer for this task. As more
-                          optimizers will be supported the ``"name"`` key will indicate the chosen one.
-                        - *"method"* (value type: ``str``)
-                          Optimizer method. For the |scipy_optimize_minimize_link| optimizer the default method is given by ``"Powell"``.
-                        - *"options"* (value type: ``dict``)
-                          Dictionary containing additional options to pass to the |scipy_optimize_minimize_link| function.
+                          This is always set to ``"scipy"``, which is, by now, the only available optimizer for this task. 
+                          As more optimizers will be supported the ``"name"`` key will indicate the chosen one.
+                        - *"args"* (value type: ``str``)
+                          Additional positional arguments passed to the |scipy_optimize_minimize_link| method.
+                        - *"kwargs"* (value type: ``dict``)
+                          Additional keyword arguments passed to the |scipy_optimize_minimize_link| method (set to the
+                          ``{"method": "Powell"}`` dictionary by default).
 
                     - **default**: {}
                     - **schematic example**:
@@ -818,48 +932,43 @@ class Lik(Verbosity):
                         .. code-block:: python
                             
                             optimizer={"name": "scipy",
-                                       "method": "Powell",
-                                       "options": {"maxiter": 10000,
-                                                   "ftol": 0.001}}
+                                       "args": [],
+                                       "kwargs": {"method": "Powell"}},
+
+            - **minimization_options**
+
+                Dictionary containing options to be passed to the |scipy_optimize_minimize_link| method 
+                (i.e. value of the "options" keyword argument of the |scipy_optimize_minimize_link| method).
+                    
+                    - **type**: ``dict``
+                    - **default**: {}
+                    - **schematic example**:
+
+                        .. code-block:: python
+                            
+                            minimization_options={"maxiter": 10000,
+                                                  "ftol": 0.0001},
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Lik.predictions["logpdf_max"] <DNNLikelihood.Lik.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Lik.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **save**
             
-                If ``True`` the object is saved (by passing the ``overwrite`` argument to the
-                :meth:`Lik.save <DNNLikelihood.Lik.save>` method).
+                If ``True`` the object is saved after the calculation.
                     
                     - **type**: ``bool``
-                    - **default**: ``False``
+                    - **default**: ``True``
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates files**
 
@@ -867,13 +976,14 @@ class Lik(Verbosity):
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>` (always)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nComputing absolute maximum",show=verbose)
+        print(header_string,"\nComputing global maximum.\n",show=verbose)
+        start = timer()
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         utils.check_set_dict_keys(optimizer, ["name",
-                                              "method",
-                                              "options"],
-                                             ["scipy", "Powell", {}], verbose=verbose_sub)
+                                              "args",
+                                              "kwargs"],
+                                             ["scipy",[],{"method": "Powell"}],verbose=verbose_sub)
         if pars_init is None:
             pars_init = np.array(self.pars_central)
         else:
@@ -881,23 +991,28 @@ class Lik(Verbosity):
         utils.check_set_dict_keys(self.predictions["logpdf_max"],
                                   [timestamp],
                                   [{}], verbose=False)
-        start = timer()
         res = inference.compute_maximum_logpdf(logpdf=lambda x: self.logpdf_fn(x,*self.logpdf.args, *self.logpdf.kwargs), 
                                                pars_init=pars_init,
-                                               pars_bounds=None,
+                                               pars_bounds=pars_bounds,
                                                optimizer=optimizer,
+                                               minimization_options=minimization_options,
                                                verbose=verbose_sub)
         self.predictions["logpdf_max"][timestamp]["x"], self.predictions["logpdf_max"][timestamp]["y"] = res
         end = timer()
         self.predictions["logpdf_max"][timestamp]["pars_init"] = pars_init
+        if pars_bounds is None:
+            self.predictions["logpdf_max"][timestamp]["pars_bounds"] = self.pars_bounds
+        else:
+            self.predictions["logpdf_max"][timestamp]["pars_bounds"] = pars_bounds
         self.predictions["logpdf_max"][timestamp]["optimizer"] = optimizer
+        self.predictions["logpdf_max"][timestamp]["minimization_options"] = minimization_options
         self.predictions["logpdf_max"][timestamp]["optimization_time"] = end-start
-        print("Maximum logpdf computed in",end-start,"s.\n")
         self.log[timestamp] = {"action": "computed maximum logpdf"}
         if save:
             self.save(overwrite=overwrite, verbose=verbose_sub)
         else:
             self.save_log(overwrite=True, verbose=verbose_sub)
+        print("Maximum logpdf computed in",end-start,"s.\n",show=verbose)
 
     def compute_profiled_maxima_logpdf(self,
                                        pars=None,
@@ -906,22 +1021,25 @@ class Lik(Verbosity):
                                        pars_bounds = None,
                                        spacing="grid",
                                        optimizer = {},
-                                       timestamp = None,
+                                       minimization_options={},
                                        progressbar=False,
-                                       save=False,
-                                       overwrite=False,
+                                       timestamp = None,
+                                       save=True,
+                                       overwrite=True,
                                        verbose=None):
         """
-        Computes logal maxima of the logpdf for different values of the parameter ``pars``.
-        For the list of prameters ``pars``, ranges are passed as ``pars_ranges`` in the form ``(par_min,par_max,n_points)``
+        Computes local (profiled) maxima of the logpdf for different values of the parameters ``pars``.
+        For the list of parameters ``pars``, ranges are passed as ``pars_ranges`` in the form ``(par_min,par_max,n_points)``
         and an array of points is generated according to the argument ``spacing`` (either a grid or a random 
-        flat distribution) in the interval. The points in the grid falling outside 
+        flat distribution) in the interval. If ``pars_bounds`` is ``None``, then
+        the parameter bounds stored in the :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` attribute are used. 
+        The points in the grid falling outside 
         :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` are automatically removed.
         All information on the maximum, including parameters initialization, parameters bounds, and optimizer, 
         are stored in the ``"logpdf_profiled_max"`` item of the :attr:`Lik.predictions <DNNLikelihood.Lik.predictions>` dictionary.
-        The method also automatically computes, with the same optimizer, the absolute maximum and the :math:`t_{\\pmb\\mu}`
-        test statistics. The latter is defined, given a vector of parameters of interest :math:`\\pmb\\mu` and a vector of nuisance parameters
-        :math:`\\pmb\\delta` as
+        The method also automatically computes, with the same optimizer, the global maximum and the :math:`t_{\\pmb\\mu}`
+        test statistics. The latter is defined, given a vector of parameters under which the logpdf is not profiled 
+        :math:`\\pmb\\mu` and a vector of parameters under which it is profiled :math:`\\pmb\\delta` as
         
         .. math::
 
@@ -929,14 +1047,12 @@ class Lik(Verbosity):
 
 
         Profiled maxima could be used both for frequentist inference and as initial condition for
-        Markov Chain Monte Carlo through the :class:`Sampler <DNNLikelihood.Sampler>` object
+        Markov Chain Monte Carlo sampling through the :class:`Sampler <DNNLikelihood.Sampler>` object
         (see the :mod:`Sampler <sampler>` object documentation). 
-        The method uses the function :func:`inference.compute_profiled_maximum_logpdf <DNNLikelihood.inference.compute_profiled_maximum_logpdf>`
-        based on |scipy_optimize_minimize_link| to find the (local) minimum of minus
-        :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. Since the latter
-        method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the 
+        The method uses the function 
         :func:`inference.compute_profiled_maximum_logpdf <DNNLikelihood.inference.compute_profiled_maximum_logpdf>`
-        function to optimize speed. See the documentation of the
+        based on |scipy_optimize_minimize_link| to find the (local) minimum of minus
+        :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`. See the documentation of the
         :func:`inference.compute_profiled_maximum_logpdf <DNNLikelihood.inference.compute_profiled_maximum_logpdf>` 
         function for details.
 
@@ -974,12 +1090,12 @@ class Lik(Verbosity):
 
             - **pars_bounds**
             
-                Bounds on the parameters. If it is ``None``, then
-                it is set to the parameters bounds attribute :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>`.
+                Bounds on the parameters. If it is ``None``, then default parameters bounds stored in the 
+                :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` attribute are used.
                     
                     - **type**: ``numpy.ndarray``
                     - **shape**: ``(ndim,2)``
-                    - **default**: ``None`` (automatically modified to :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>`)
+                    - **default**: ``None``
 
             - **spacing**
             
@@ -997,12 +1113,13 @@ class Lik(Verbosity):
                     - **type**: ``dict`` with the following structure:
 
                         - *"name"* (value type: ``str``)
-                          This is always set to ``"scipy"``, which is by now the only available optimizer for this task. As more
-                          optimizers will be supported the ``"name"`` key will indicate the chosen one.
-                        - *"method"* (value type: ``str``)
-                          Optimizer method. For the |scipy_optimize_minimize_link| optimizer the default method is given by ``"Powell"``.
-                        - *"options"* (value type: ``dict``)
-                          Dictionary containing additional options to pass to the |scipy_optimize_minimize_link| function.
+                          This is always set to ``"scipy"``, which is, by now, the only available optimizer for this task. 
+                          As more optimizers will be supported the ``"name"`` key will indicate the chosen one.
+                        - *"args"* (value type: ``str``)
+                          Additional positional arguments passed to the |scipy_optimize_minimize_link| method.
+                        - *"kwargs"* (value type: ``dict``)
+                          Additional keyword arguments passed to the |scipy_optimize_minimize_link| method (set to the
+                          ``{"method": "Powell"}`` dictionary by default).
 
                     - **default**: {}
                     - **schematic example**:
@@ -1010,20 +1127,26 @@ class Lik(Verbosity):
                         .. code-block:: python
                             
                             optimizer={"name": "scipy",
-                                       "method": "Powell",
-                                       "options": {"maxiter": 10000,
-                                                   "ftol": 0.001}}
+                                       "args": [],
+                                       "kwargs": {"method": "Powell"}},
+
+            - **minimization_options**
+
+                Dictionary containing options to be passed to the |scipy_optimize_minimize_link| method 
+                (i.e. value of the "options" keyword argument of the |scipy_optimize_minimize_link| method).
+                    
+                    - **type**: ``dict``
+                    - **default**: {}
+                    - **schematic example**:
+
+                        .. code-block:: python
+                            
+                            minimization_options={"maxiter": 10000,
+                                                  "ftol": 0.0001},
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Lik.predictions["logpdf_max"] <DNNLikelihood.Lik.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Lik.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **progressbar**
             
@@ -1031,35 +1154,24 @@ class Lik(Verbosity):
                 then  a progress bar is shown.
                     
                     - **type**: ``bool``
-                    - **default**: ``True`` 
+                    - **default**: ``False`` 
 
             - **save**
             
-                If ``True`` the object is saved (by passing the ``overwrite`` argument to the
-                :meth:`Lik.save <DNNLikelihood.Lik.save>` method).
+                If ``True`` the object is saved after the calculation.
                     
                     - **type**: ``bool``
-                    - **default**: ``False``
+                    - **default**: ``True``
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates files**
 
@@ -1067,7 +1179,8 @@ class Lik(Verbosity):
             - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>` (always)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nComputing profiled maxima",show=verbose)
+        print(header_string,"\nComputing profiled maxima.\n",show=verbose)
+        start = timer()
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if pars is None:
@@ -1083,7 +1196,6 @@ class Lik(Verbosity):
             except:
                 progressbar = False
                 print("\nIf you want to show a progress bar please install the ipywidgets package.\n",show=True)
-        start = timer()
         if progressbar:
             overall_progress = widgets.FloatProgress(value=0.0, min=0.0, max=1.0, layout={
                 "width": "500px", "height": "14px",
@@ -1094,9 +1206,9 @@ class Lik(Verbosity):
                                   [timestamp],
                                   [{}], verbose=verbose_sub)
         utils.check_set_dict_keys(optimizer, ["name",
-                                              "method",
-                                              "options"],
-                                             ["scipy","Powell", {}], verbose=verbose_sub)
+                                              "args",
+                                              "kwargs"],
+                                             ["scipy",[],{"method": "Powell"}],verbose=verbose_sub)
         if pars_init is None:
             pars_init = np.array(self.pars_central)
         else:
@@ -1130,8 +1242,9 @@ class Lik(Verbosity):
                                                                  pars_val=pars_val,
                                                                  ndims=self.ndims,
                                                                  pars_init=pars_init,
-                                                                 pars_bounds=None,
+                                                                 pars_bounds=pars_bounds,
                                                                  optimizer=optimizer,
+                                                                 minimization_options=minimization_options,
                                                                  verbose=verbose_sub))
             end_sub = timer()
             optimization_times.append(end_sub-start_sub)
@@ -1145,6 +1258,7 @@ class Lik(Verbosity):
         print("Computing global maximum to estimate tmu test statistics.",show=verbose)
         self.compute_maximum_logpdf(pars_init=pars_init,
                                     optimizer=optimizer,
+                                    minimization_options={},
                                     timestamp=timestamp,
                                     save=False,
                                     overwrite=False,
@@ -1153,23 +1267,32 @@ class Lik(Verbosity):
         self.predictions["logpdf_profiled_max"][timestamp]["pars"] = pars
         self.predictions["logpdf_profiled_max"][timestamp]["pars_ranges"] = pars_ranges
         self.predictions["logpdf_profiled_max"][timestamp]["pars_init"] = pars_init
-        self.predictions["logpdf_profiled_max"][timestamp]["pars_bounds"] = pars_bounds
+        if pars_bounds is None:
+            self.predictions["logpdf_profiled_max"][timestamp]["pars_bounds"] = self.pars_bounds
+        else:
+            self.predictions["logpdf_profiled_max"][timestamp]["pars_bounds"] = pars_bounds
         self.predictions["logpdf_profiled_max"][timestamp]["optimizer"] = optimizer
+        self.predictions["logpdf_profiled_max"][timestamp]["minimization_options"] = minimization_options
         self.predictions["logpdf_profiled_max"][timestamp]["optimization_times"] = optimization_times
         end = timer()
-        self.predictions["logpdf_profiled_max"][timestamp]["global_optimization_time"] = np.array(optimization_times).sum()
+        self.predictions["logpdf_profiled_max"][timestamp]["total_optimization_time"] = np.array(optimization_times).sum()
         self.log[timestamp] = {"action": "computed profiled maxima", 
                                "pars": pars,
                                "pars_ranges": pars_ranges, 
                                "number of maxima": len(X_tmp)}
         if save:
             self.save(overwrite=overwrite, verbose=verbose_sub)
+            self.save_log(overwrite=True, verbose=verbose_sub)
         else:
             self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string,"\n"+str(len(pars_vals_bounded)),"local maxima computed in", end-start, "s.",show=verbose)
         print("Log-pdf values lie in the range [", np.min(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), ",", np.max(self.predictions["logpdf_profiled_max"][timestamp]["Y"]), "].\n", show=verbose)
         
-    def update_figures(self,figure_file=None,timestamp=None,overwrite=False,verbose=None):
+    def update_figures(self,
+                       figure_file=None,
+                       timestamp=None,
+                       overwrite=False,
+                       verbose=None):
         """
         Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. 
         When ``overwrite=False`` it calls the :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function and, if 
@@ -1178,7 +1301,7 @@ class Lik(Verbosity):
         (that is the key of the :attr:`Lik.predictions["Figures"] <DNNLikelihood.Lik.predictions>` dictionary).
         When ``overwrite="dump"`` it calls the :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
         to generate the dump file name.
-        It returns the new figure_file.
+        It returns the new figure file name.
 
         - **Arguments**
 
@@ -1195,25 +1318,20 @@ class Lik(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         
         - **Returns**
 
             - **new_figure_file**
                 
-                String identical to the input string ``figure_file`` unless ``verbose="dump"``.
+                String identical to the input string ``figure_file`` unless ``overwrite="dump"``.
 
         - **Creates/updates files**
 
-            - Updates ``figure_file`` file name.
+            - Updates ``figure_file`` file.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print("Checking and updating figures dictionary",show=verbose)
+        print(header_string,"\nChecking and updating figures dictionary,\n",show=verbose)
         if figure_file is None:
             raise Exception("figure_file input argument of update_figures method needs to be specified while it is None.")
         else:
@@ -1228,8 +1346,13 @@ class Lik(Verbosity):
                     old_figure_file = utils.check_rename_file(path.join(self.output_figures_folder,figure_file),timestamp=timestamp,return_value="file_name",verbose=verbose_sub)
                     if timestamp is not None:
                         self.predictions["Figures"][timestamp] = [f.replace(figure_file,old_figure_file) for f in v] 
+                        self.save(overwrite=True, verbose=verbose_sub)
             elif overwrite == "dump":
                 new_figure_file = utils.generate_dump_file_name(figure_file, timestamp=timestamp)
+        self.log[timestamp] = {"action": "checked/updated figures dictionary",
+                               "figure_file": figure_file,
+                               "new_figure_file": new_figure_file}
+        #self.save_log(overwrite=True, verbose=verbose_sub)
         return new_figure_file
 
     def plot_logpdf_par(self, 
@@ -1240,13 +1363,14 @@ class Lik(Verbosity):
                         title_fontsize=12, 
                         show_plot=False,
                         timestamp=None,
-                        overwrite=False, 
+                        save=True,
+                        overwrite=True, 
                         verbose=None):
         """
-        Plots the logpdf as a function of of the parameter ``par`` in the range ``(min,max)``
+        Plots the logpdf as a function of the parameter ``par`` in the range ``(min,max)``
         using a number ``npoints`` of points. Only the parameter ``par`` is veried, while all other parameters are kept
-        fixed to their value given in ``pars_init``. The function used for the plot is provided by the 
-        :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>`.
+        fixed to their value given in ``pars_init``. The logpdf function used for the plot is provided by the 
+        :meth:`Lik.logpdf_fn <DNNLikelihood.Lik.logpdf_fn>` method.
 
         - **Arguments**
 
@@ -1285,7 +1409,7 @@ class Lik(Verbosity):
                     
                     - **type**: ``list`` or ``str``
                     - **shape of list**: ``[ ]``
-                    - **accepted strings**: ``"original"``, ``"generic"``
+                    - **accepted strings**: ``"original"``, ``"auto"``
                     - **default**: ``"original"``
 
             - **title_fontsize**
@@ -1298,50 +1422,37 @@ class Lik(Verbosity):
             
             - **show_plot**
             
-                If ``True`` the plot is shown on the 
-                interactive console.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Lik.predictions["logpdf_max"] <DNNLikelihood.Lik.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Lik.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **save**
+            
+                If ``True`` the object is saved after the calculation.
                     
-                    - **type**: ``str``
-                    - **default**: ``None``
+                    - **type**: ``bool``
+                    - **default**: ``True``
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates files**
 
-            - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>` ``+ "_par_" + str(par[0]) + ".pdf"`` for each ``par`` in ``pars``.
+            - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>` ``+ "_par_" + str(par[0]) + ".pdf"`` for each ``par`` in ``pars``
+            - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>` (only if ``save=True``)
+            - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>` (always)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nMaking plot of logpdf as function of paramerers",show=verbose)
+        print(header_string,"\nMaking plot of logpdf as function of paramerers.\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
@@ -1373,14 +1484,19 @@ class Lik(Verbosity):
             self.log[timestamp] = {"action": "saved figure", 
                                    "file name": figure_file_name}
             print(header_string+"\nFigure file\n\t",r"%s" % (path.join(self.output_figures_folder, figure_file_name)), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
-        self.save_log(overwrite=True, verbose=verbose_sub)
+        if save:
+            self.save(overwrite=overwrite, verbose=verbose_sub)
+        else:
+            self.save_log(overwrite=True, verbose=verbose_sub)
         
     def plot_tmu_1d(self,
+                    timestamp_tmu=None,
                     pars_labels="original",
                     title_fontsize=12,
                     show_plot=False,
                     timestamp=None,
-                    overwrite=False,
+                    save=True,
+                    overwrite=True,
                     verbose=None):
         """
         Plots the 1-dimensional :math:`t_{\\mu}` stored in 
@@ -1388,6 +1504,12 @@ class Lik(Verbosity):
 
         - **Arguments**
 
+            - **timestamp_tmu**
+            
+                Timestamp idendifying the :math:`t_{\mu}` predictions to be plotted, stored in the 
+                :attr:`Lik.predictions["logpdf_profiled_max"][timestamp]["tmu"] <DNNLikelihood.Lik.predictions>`
+                attribute.
+            
             - **pars_labels**
             
                 Argument that is passed to the :meth:`Lik.__set_pars_labels <DNNLikelihood.Lik._Lik__set_pars_labels>`
@@ -1395,7 +1517,7 @@ class Lik(Verbosity):
                     
                     - **type**: ``list`` or ``str``
                     - **shape of list**: ``[ ]``
-                    - **accepted strings**: ``"original"``, ``"generic"``
+                    - **accepted strings**: ``"original"``, ``"auto"``
                     - **default**: ``"original"``
 
             - **title_fontsize**
@@ -1408,61 +1530,50 @@ class Lik(Verbosity):
 
             - **show_plot**
             
-                If ``True`` the plot is shown on the 
-                interactive console.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Lik.predictions["logpdf_max"] <DNNLikelihood.Lik.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Lik.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
+
+            - **save**
+            
+                If ``True`` the object is saved after the calculation.
                     
-                    - **type**: ``str``
-                    - **default**: ``None``
+                    - **type**: ``bool``
+                    - **default**: ``True``
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates files**
 
-            - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>` ``+ "_tmu_" + str(par) + ".pdf"``.
+            - :attr:`Lik.output_figures_base_file <DNNLikelihood.Lik.output_figures_base_file>` ``+ "_tmu_" + str(par) + ".pdf"``
+            - :attr:`Lik.output_h5_file <DNNLikelihood.Lik.output_h5_file>` (only if ``save=True``)
+            - :attr:`Lik.output_log_file <DNNLikelihood.Lik.output_log_file>` (always)
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        print(header_string,"\nMaking plot of t_mu test statistics as function of paramerers",show=verbose)
+        print(header_string,"\nMaking plot of t_mu test statistics as function of paramerers.\n",show=verbose)
+        if timestamp_tmu is None:
+            raise Exception("You need to specify the \"timestamp_tmu\" argument corresponding to the tmu prediction to be plotted.")
+        start = timer()
         if timestamp is None:
             timestamp = "datetime_" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
-        start = timer()
         pars_labels = self.__set_pars_labels(pars_labels)
-        pars_list = self.predictions["logpdf_profiled_max"][timestamp]["pars"]
-        tmu_list = self.predictions["logpdf_profiled_max"][timestamp]["tmu"]
+        pars_list = self.predictions["logpdf_profiled_max"][timestamp_tmu]["pars"]
+        tmu_list = self.predictions["logpdf_profiled_max"][timestamp_tmu]["tmu"]
         if len(pars_list) == 1:
             par = pars_list[0]
         else:
-            raise Exception("Parameters should be  should be the same for the different tmu sources.")
+            raise Exception("Parameters should be should be the same for the different tmu lists.")
         plt.plot(tmu_list[:, 0], tmu_list[:,-1], label="Likelihood")
         plt.title(r"%s" % self.name, fontsize=title_fontsize)
         plt.xlabel(r"$t_{\mu}$(%s)" % (self.pars_labels[par]))
@@ -1479,7 +1590,8 @@ class Lik(Verbosity):
         end = timer()
         self.log[timestamp] = {"action": "saved figure",
                                "file name": figure_file_name}
-        self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string+"\nFigure file\n\t",r"%s" % (path.join(self.output_figures_folder, figure_file_name)), "\ncreated and saved in",str(end-start), "s.\n", show=verbose)
-
-            
+        if save:
+            self.save(overwrite=overwrite, verbose=verbose_sub)
+        else:
+            self.save_log(overwrite=True, verbose=verbose_sub)

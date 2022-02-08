@@ -336,7 +336,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Lengths of weights must match number of samples&quot;</span><span class="p">)</span>
 
     <span class="c1"># Parse the parameter ranges.</span>
-    <span class="k">if</span> <span class="nb">range</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">range</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="s2">&quot;extents&quot;</span> <span class="ow">in</span> <span class="n">hist2d_kwargs</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Deprecated keyword argument &#39;extents&#39;. &quot;</span>
                          <span class="s2">&quot;Use &#39;range&#39; instead.&quot;</span><span class="p">)</span>

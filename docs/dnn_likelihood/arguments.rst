@@ -7,11 +7,7 @@ Arguments
 
 .. argument:: name
 
-   Name of the :class:`DnnLik <DNNLikelihood.DnnLik>` object.
-   It is used to build the :attr:`DnnLik.name <DNNLikelihood.DnnLik.name>` attribute.
-      
-      - **type**: ``str`` or ``None``
-      - **default**: ``None``
+   See :argument:`name <common_classes_arguments.name>`.
 
 .. argument:: data
 
@@ -259,12 +255,12 @@ Arguments
 
 .. argument:: model_train_inputs
 
-   Dictionary specifying inputs related to the |tf_keras_model_fit_link| specifications, including number of epochs
-   and batch size.
+   Dictionary specifying inputs arguments for the |tf_keras_model_fit_link| method. 
+   It must include at least the two items corresponding to the keys `"epochs"` and `"batch_size"`
+   and could optionally include other arguments such as, for instance, `"shuffle"`, `"validation_freq"`, etc. 
+   (see the documentation of the |tf_keras_model_fit_link| method for details).
    It is used to set the private attribute
    :attr:`DnnLik.__model_train_inputs <DNNLikelihood.DnnLik._DnnLik__model_train_inputs>`.
-   Both the short name and the true name of a metrix are allowed (for instance, both ``"mse"`` and ``"mean_squared_error"``
-   are allowed).
 
       - **type**: ``None`` or ``dict`` with the following structure:
 
@@ -272,13 +268,17 @@ Arguments
             Number of epochs to run.
          - *"batch_size"* (value type: ``int``)
             Batch size to use in training, evaluation, and prediction.
+         - *optional*
+            Other keyword arguments to be passed to the |tf_keras_model_fit_link| method.
          
       - **example**: 
 
          .. code-block:: python
  
-            model_train_inputs={"epochs": 300,
-                                "batch_size": 512}
+            model_train_inputs={"epochs": 50,
+                                "batch_size": 512,
+                                "shuffle": False,
+                                "validation_freq": 2}
 
       - **default**: ``None``
 
@@ -305,11 +305,7 @@ Arguments
 
 .. argument:: output_folder
 
-   Path (either relative to the code execution folder or absolute) where output files are saved.
-   It is used to set the :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` attribute.
-         
-         - **type**: ``str`` or ``None``
-         - **default**: ``None``
+   See :argument:`output_folder <common_classes_arguments.output_folder>`.
 
 .. argument:: ensemble_name
 
@@ -324,22 +320,12 @@ Arguments
          - **type**: ``str`` or ``None``
          - **default**: ``None``
 
-.. argument:: input_summary_json_file
+.. argument:: input_file
 
-   File name (either relative to the code execution folder or absolute, with or without the
-   .json extensions) of a saved :class:`DnnLik <DNNLikelihood.DnnLik>` object. 
-   It is used to set the :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
-
-      - **type**: ``str`` or ``None``
-      - **default**: ``None``
+   See :argument:`input_file <common_classes_arguments.input_file>`.
 
 .. argument:: verbose
 
-   Argument used to set the verbosity mode of the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` 
-   method and the default verbosity mode of all class methods that accept a ``verbose`` argument.
-   See :ref:`Verbosity mode <verbosity_mode>`.
-
-      - **type**: ``bool``
-      - **default**: ``True``
-
+   See :argument:`verbose <common_classes_arguments.verbose>`.
+   
 .. include:: ../external_links.rst

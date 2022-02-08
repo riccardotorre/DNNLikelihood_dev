@@ -85,32 +85,19 @@ Attributes
 
 .. py:attribute:: Data.input_file
 
-    Absolute path corresponding to the input argument :argument:`input_file`.
-    Whenever this attribute is not ``None``, it is used to reconstructed the object from input files 
-    (see the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>`
-    method for details).
-          
-        - **type**: ``str`` or ``None``
+    See :attr:`input_file <common_classes_attributes.input_file>`.
+
+.. py:attribute:: Data.input_folder
+
+    See :attr:`input_folder <common_classes_attributes.input_folder>`.
+
+.. py:attribute:: Data.input_h5_file
+
+   See :attr:`input_h5_file <common_classes_attributes.input_h5_file>`.
 
 .. py:attribute:: Data.input_log_file
 
-    Absolute path to the .log file containing a saved :mod:`Data <data>` object log (see
-    the :meth:`Data.save_log <DNNLikelihood.Data.save_log>` method for details).
-    It is automatically generated from the attribute
-    :attr:`Data.input_file <DNNLikelihood.Data.input_file>`.
-    When the latter is ``None``, the attribute is set to ``None``.
-         
-        - **type**: ``str`` or ``None``
-
-.. py:attribute:: Data.input_object_h5_file
-
-    Absolute path to the .h5 file containing a saved :mod:`Data <data>` object (see
-    the :meth:`Data.save_object_h5 <DNNLikelihood.Data.save_object_h5>` method for details).
-    It is automatically generated from the attribute
-    :attr:`Data.input_file <DNNLikelihood.Data.input_file>`.
-    When the latter is ``None``, the attribute is set to ``None``.
-         
-        - **type**: ``str`` or ``None``
+   See :attr:`input_log_file <common_classes_attributes.input_log_file>`.
 
 .. py:attribute:: Data.input_samples_h5_file
 
@@ -136,57 +123,15 @@ Attributes
 
 .. py:attribute:: Data.log
 
-    Dictionary containing a log of the :mod:`Data <data>` object calls. The dictionary has datetime 
-    strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
-          
-        - **type**: ``dict``
-        - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``
-        - **values**: ``dict`` with the following structure:
-
-            - *"action"* (value type: ``str``)
-               Short description of the action.
-               **possible values**: ``"changed_output_folder"``, ``"created"``, ``"loaded"``, ``"saved"``, 
-               ``"updated data dictionary"``, ``"computed sample weights"``, ``"defines scalers"``.
-            - *"data"* (value type: ``list`` of ``str``)
-               List of keys of the :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>`
-               dictionary corresponding to values (data) that have been updated.
-            - *"npoints train"* (value type: ``int``)
-               Number of training points available in the updated 
-               :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
-            - *"npoints val"* (value type: ``int``)
-               Number of validation points available in the updated 
-               :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
-            - *"npoints test"* (value type: ``int``)
-               Number of test points available in the updated 
-               :attr:`Data.data_dictionary <DNNLikelihood.Data.data_dictionary>` dictionary.
-            - *"scaler X"* (value type: ``bool``)
-               When defining scalers it indicates if X points have been scaled.
-            - *"scaler Y"* (value type: ``bool``)
-               When defining scalers it indicates if Y points have been scaled.
-            - *"file name"* (value type: ``str``)
-               File name of file involved in the action.
-            - *"files names"* (value type: ``list`` of ``str``)
-               List of file names of files involved in the action.
+   See :attr:`log <common_classes_attributes.log>`.
 
 .. py:attribute:: Data.name
 
-    Attribute corresponding to the input argument :argument:`name` and containing the
-    name of the :mod:`Data <data>` object. 
-    If ``None`` is passed, then ``name`` is assigned the value 
-    ``model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_data"``, 
-    while if a string is passed, the ``"_data"`` suffix is appended 
-    (preventing duplication if it is already present).
-    It is used to generate output files names.
-
-       - **type**: ``str`` 
+   See :attr:`name <common_classes_attributes.name>`.
 
 .. py:attribute:: Data.ndims
 
-    Number of dimensions of the X data (i.e. number of 
-    parameters entering in the logpdf). It is automatically set to the length of
-    the first vector in the input argument :argument:`data_X`.
-
-        - **type**: ``int``
+    See :attr:`ndims <common_classes_attributes.ndims>`.
 
 .. py:attribute:: Data.npoints
 
@@ -205,61 +150,35 @@ Attributes
 
 .. py:attribute:: Data.output_figures_base_file_name
 
-   Base figures file name. It is 
-   automatically generated from the 
-   :attr:`Data.name <DNNLikelihood.Data.name>` attribute.
-
-      - **type**: ``str`` 
+   See :attr:`output_figures_base_file_name <common_classes_attributes.output_figures_base_file_name>`.
 
 .. py:attribute:: Data.output_figures_base_file_path
 
-   Base figures file name including absolute path. It is 
-   automatically generated from the
-   :attr:`Data.output_figures_folder <DNNLikelihood.Data.output_figures_folder>` and 
-   :attr:`Data.output_figures_base_file_name <DNNLikelihood.Data.output_figures_base_file_name>` attributes.
-
-      - **type**: ``str`` 
+   See :attr:`output_figures_base_file_path <common_classes_attributes.output_figures_base_file_path>`.
 
 .. py:attribute:: Data.output_figures_folder
 
-   Absolute path to the folder where figures are saved. It is 
-   automatically generated (and created by the 
-   :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
-   if not present) from the
-   :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute.
-
-      - **type**: ``str`` 
+   See :attr:`output_figures_folder <common_classes_attributes.output_figures_folder>`.
 
 .. py:attribute:: Data.output_folder
 
-    Absolute path corresponding to the input argument
-    :argument:`output_folder`. If the latter is ``None``, then 
-    :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`
-    is set to the code execution folder. If the folder does not exist it is created
-    by the :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
-    function.
+   See :attr:`output_folder <common_classes_attributes.output_folder>`.
 
-        - **type**: ``str``
+.. py:attribute:: Data.output_h5_file
+
+   See :attr:`output_h5_file <common_classes_attributes.output_h5_file>`.
+
+.. py:attribute:: Data.output_json_file
+
+   See :attr:`output_json_file <common_classes_attributes.output_json_file>`.
 
 .. py:attribute:: Data.output_log_file
 
-    Absolute path to the .log file where the :class:`Data <DNNLikelihood.Data>` 
-    object log is saved (see the :meth:`Data.save_log <DNNLikelihood.Data.save_log>`
-    method for details).
-    It is automatically generated from the attribute
-    :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`.
-         
-        - **type**: ``str`` 
+   See :attr:`output_log_file <common_classes_attributes.output_log_file>`.
 
-.. py:attribute:: Data.output_object_h5_file
+.. py:attribute:: Data.output_predictions_json_file
 
-    Absolute path to the .h5 file where the :class:`Data <DNNLikelihood.Data>` 
-    object is saved (see the :meth:`Data.save_object_h5 <DNNLikelihood.Data.save_object_h5>`
-    method for details).
-    It is automatically generated from the attribute
-    :attr:`Histfactory.output_folder <DNNLikelihood.Histfactory.output_folder>`.
-         
-        - **type**: ``str`` 
+   See :attr:`output_predictions_json_file <common_classes_attributes.output_predictions_json_file>`.
 
 .. py:attribute:: Data.output_samples_h5_file
 
@@ -275,60 +194,34 @@ Attributes
 
 .. py:attribute:: Data.pars_bounds
 
-    Attribute corresponding to the input argument :argument:`pars_bounds` and
-    containing a |numpy_link| array with the parameters bounds. If the input argument is ``None``
-    then bounds for all parameters are set to ``[-np.inf,np.inf]``.
-
-        - **type**: ``numpy.ndarray``
-        - **shape**: ``(ndims,2)``
+    See :attr:`pars_bounds <common_classes_attributes.pars_bounds>`.
 
 .. py:attribute:: Data.pars_central   
 
-    Attribute corresponding to the input argument :argument:`pars_central` and
-    containing a |numpy_link| array with the central values of the parameters. 
-    If the input argument is ``None``
-    then central values for all parameters are set to ``0``.
-        
-        - **type**: ``numpy.ndarray``
-        - **shape**: ``(ndims,)``
+    See :attr:`pars_central <common_classes_attributes.pars_central>`.
 
 .. py:attribute:: Data.pars_labels
 
-    List corresponding to the input argument :argument:`pars_labels`. If the input argument is ``None`` then
-    :attr:`Data.pars_labels <DNNLikelihood.Data.pars_labels>` is set equal to the automatically
-    generated :attr:`Data.pars_labels_auto <DNNLikelihood.Data.pars_labels_auto>`.
-    Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
-    and can contain latex expressions that are properly compiled when making plots.
+    See :attr:`pars_labels <common_classes_attributes.pars_labels>`.
 
-        - **type**: ``list``
-        - **shape**: ``(ndims,)``
+.. py:attribute:: Data.pars_labels_auto   
+
+    See :attr:`pars_labels_auto <common_classes_attributes.pars_labels_auto>`.
 
 .. py:attribute:: Data.pars_pos_nuis   
 
-    |Numpy_link| array corresponding to the input argument :argument:`pars_pos_nuis`.
-
-        - **type**: ``list`` or ``numpy.ndarray``
-        - **shape**: ``(n_nuis,)``
+    See :attr:`pars_pos_nuis <common_classes_attributes.pars_pos_nuis>`.
 
 .. py:attribute:: Data.pars_pos_poi   
 
-    |Numpy_link| array corresponding to the input argument :argument:`pars_pos_poi`.
-
-        - **type**: ``list`` or ``numpy.ndarray``
-        - **shape**: ``(n_poi,)``
+    See :attr:`pars_pos_poi <common_classes_attributes.pars_pos_poi>`.
 
 .. py:attribute:: Data.predictions
 
    Nested dictionary containing all predictions and list of figures generated by the
    :meth:`Data.plot_corners_1samp <DNNLikelihood.Data.plot_corners_1samp>` method.
 
-       - **type**: ``dict`` with the following structure:
-
-            - *"Figures"* (value type: ``dict``)
-                Dictionary containing information on figures. This dictionary has the following structure:
-
-                - *"timestamp"* (value type: ``list``)
-                    Dictionary containing the list of absolute paths of the figures produced at time ``timestamp``.
+       - **type**: ``dict``
 
       - **schematic example**:
 
@@ -361,13 +254,6 @@ Attributes
 
 .. py:attribute:: Data.verbose
 
-    Attribute corresponding to the input argument :argument:`verbose`.
-    It represents the verbosity mode of the 
-    :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` 
-    method and the default verbosity mode of all class methods that accept a
-    ``verbose`` argument.
-    See :ref:`Verbosity mode <verbosity_mode>`.
-
-        - **type**: ``bool`` or ``int``
+    See :attr:`verbose <common_classes_attributes.verbose>`.
 
 .. include:: ../external_links.rst

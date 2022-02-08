@@ -26,7 +26,7 @@ and consists of the following code:
 This gives a :mod:`Data <data>` object with 200K points which gets automatically stored in the files
 
     - <my_output_folder>/toy_data.log
-    - <my_output_folder>/toy_data_object.h5
+    - <my_output_folder>/toy_data.h5
     - <my_output_folder>/toy_data_samples.h5 
     
 To give an example of the creation of the object from input arguments we first define data arrays (for simplicity we use here
@@ -57,7 +57,7 @@ and then create the object as follows:
 This created the new object ``data_new`` and saves it to the files
 
     - <my_output_folder>/new_data.log
-    - <my_output_folder>/new_data_object.h5
+    - <my_output_folder>/new_data.h5
     - <my_output_folder>/new_data_samples.h5
 
 See the documentation of the :meth:`Data.save <DNNLikelihood.Data.save>`, :meth:`Data.save_log <DNNLikelihood.Data.save_log>`,

@@ -39,7 +39,7 @@ Methods
 
 .. automethod:: DnnLik._DnnLik__set_tf_objects
 
-.. automethod:: DnnLik._DnnLik__load_summary_json_and_log
+.. automethod:: DnnLik._DnnLik__load_json_and_log
 
 .. automethod:: DnnLik._DnnLik__load_history
 
@@ -64,6 +64,8 @@ Methods
 .. automethod:: DnnLik._DnnLik__set_pars_labels
 
 .. automethod:: DnnLik.compute_sample_weights
+
+.. automethod:: DnnLik.define_rotation
 
 .. automethod:: DnnLik.define_scalers
 
@@ -117,7 +119,7 @@ Methods
 
 .. automethod:: DnnLik.save_history_json
 
-.. automethod:: DnnLik.save_summary_json
+.. automethod:: DnnLik.save_json
 
 .. automethod:: DnnLik.generate_summary_text
 
@@ -130,12 +132,6 @@ Methods
 .. automethod:: DnnLik.save
 
 .. automethod:: DnnLik.show_figures
-
-.. automethod:: DnnLik.mean_error
-
-.. automethod:: DnnLik.mean_percentage_error
-
-.. automethod:: DnnLik.R2_metric
 
 .. py:method:: DNNLikelihood.DnnLik.get_available_gpus
 

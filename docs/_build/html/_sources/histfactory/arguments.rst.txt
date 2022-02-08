@@ -8,20 +8,17 @@ Arguments
 .. argument:: workspace_folder
 
    Path (either relative to the code execution folder or absolute)
-   containing the ATLAS histfactory workspace (containing the "Regions" subfolders).
+   containing the ATLAS histfactory workspace (the one containing the "Regions" subfolders).
    Unless it is already there, the folder is copied into the 
-   :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>` and renamed "hitfactory_workspace".
+   :attr:`Histfactory.workspace_folder <DNNLikelihood.Histfactory.workspace_folder>` folder
+   and renamed "hitfactory_workspace".
 
       - **type**: ``str`` or ``None``
       - **default**: ``None``   
     
 .. argument:: name
    
-   Name of the :class:`Histfactory <DNNLikelihood.Histfactory>` object.
-   It is used to build the :attr:`Histfactory.name <DNNLikelihood.Histfactory.name>` attribute.
-         
-      - **type**: ``str`` or ``None``
-      - **default**: ``None``   
+   See :argument:`name <common_classes_arguments.name>`.
 
 .. argument:: regions_folders_base_name
 
@@ -58,32 +55,14 @@ Arguments
 
 .. argument:: output_folder
      
-    Path (either relative to the code execution folder or absolute) where output files are saved.
-    It is used to set the :attr:`Lik.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
-        
-        - **type**: ``str`` or ``None``
-        - **default**: ``None``
+   See :argument:`output_folder <common_classes_arguments.output_folder>`.
 
 .. argument:: input_file
-         
-   File name (either relative to the code execution folder or absolute, with or without extension) 
-   of a saved :class:`Histfactory <DNNLikelihood.Histfactory>` object. 
-   It is used to set the 
-   :attr:`Histfactory.input_file <DNNLikelihood.Histfactory.input_file>` 
-   attribute.
-            
-      - **type**: ``str`` or ``None``
-      - **default**: ``None``
 
+    See :argument:`input_file <common_classes_arguments.input_file>`.
+         
 .. argument:: verbose
 
-   Argument used to set the verbosity mode of the 
-   :meth:`Histfactory.__init__ <DNNLikelihood.Histfactory.__init__>` 
-   method and the default verbosity mode of all class methods that accept a
-   ``verbose`` argument.
-   See :ref:`Verbosity mode <verbosity_mode>`.
-
-      - **type**: ``bool`` or ``int``
-      - **default**: ``True``
+    See :argument:`verbose <common_classes_arguments.verbose>`.
 
 .. include:: ../external_links.rst

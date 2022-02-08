@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Arguments &mdash; DNNLikelihood</title>
@@ -99,9 +100,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">The Likelihood object</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Sampler object</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Sampler object</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="class.html">Class</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Arguments</a></li>
@@ -112,15 +113,13 @@
 <li class="toctree-l3"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
@@ -173,7 +172,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-          <li><a href="index.html">The Sampler object</a> &raquo;</li>
+          <li><a href="index.html">Sampler object</a> &raquo;</li>
         
           <li><a href="class.html">Class</a> &raquo;</li>
         
@@ -220,7 +219,7 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="arguments">
+<section id="arguments">
 <span id="sampler-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
 <dl class="py argument">
 <dt id="Sampler.likelihood_script_file">
@@ -330,52 +329,22 @@ It is used to set the <a class="reference internal" href="attributes.html#DNNLik
 <dl class="py argument">
 <dt id="Sampler.output_folder">
 <code class="sig-name descname">output_folder</code><a class="headerlink" href="#Sampler.output_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
-It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.output_folder" title="DNNLikelihood.Sampler.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Sampler.output_folder</span></code></a> attribute.
-The <a class="reference internal" href="#Sampler.output_folder" title="Sampler.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> argument is also used
-when importing and existing <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.
-In this case if it is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default),
-then the input files are searched for in the same directory of the
-<a class="reference internal" href="attributes.html#DNNLikelihood.Sampler.likelihood_script_file" title="DNNLikelihood.Sampler.likelihood_script_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">likelihood_script_file</span></code></a> file,
-otherwise, input files are searched for in the <a class="reference internal" href="#Sampler.output_folder" title="Sampler.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> folder.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.output_folder" title="common_classes_arguments.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Sampler.input_file">
 <code class="sig-name descname">input_file</code><a class="headerlink" href="#Sampler.input_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>File name (either relative to the code execution folder or absolute, with or without extension)
-of a saved <a class="reference internal" href="class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object.
-It is used to set the <a class="reference internal" href="../likelihood/attributes.html#DNNLikelihood.Lik.input_file" title="DNNLikelihood.Lik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_file</span></code></a>
-attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.input_file" title="common_classes_arguments.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Sampler.verbose">
 <code class="sig-name descname">verbose</code><a class="headerlink" href="#Sampler.verbose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Argument used to set the verbosity mode of the <a class="reference internal" href="../likelihood/methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a>
-method and the default verbosity mode of all class methods that accept a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
-See <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a>.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.verbose" title="common_classes_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

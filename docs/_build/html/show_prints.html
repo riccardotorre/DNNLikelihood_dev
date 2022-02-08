@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Verbosity mode &mdash; DNNLikelihood</title>
@@ -44,7 +45,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Use and Citation" href="citations.html" />
+    <link rel="next" title="Common" href="common.html" />
     <link rel="prev" title="Notes on plots" href="plots.html" /> 
 </head>
 
@@ -99,22 +100,25 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plots.html">Notes on plots</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Verbosity mode</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#code-documentation">Code documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="others.html">Others</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="notes.html">Notes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plots.html">Notes on plots</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Verbosity mode</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-documentation">Code documentation</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="citations.html">Use and Citation</a></li>
@@ -167,6 +171,8 @@
         
           <li><a href="code.html">Python module</a> &raquo;</li>
         
+          <li><a href="notes.html">Notes</a> &raquo;</li>
+        
       <li>Verbosity mode</li>
     
     
@@ -210,9 +216,9 @@
     text-align: unset;
 }
 </style>
-<span class="target" id="module-show_prints"><span id="verbosity-mode"></span></span><div class="section" id="id1">
+<span class="target" id="module-show_prints"><span id="verbosity-mode"></span></span><section id="id1">
 <h1>Verbosity mode<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="summary">
+<section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>The verbosity mode is implemented through the file <code class="docutils literal notranslate"><span class="pre">show_prints.py</span></code>. This contains a modification of the built-in <code class="docutils literal notranslate"><span class="pre">print</span></code> function,
 that accepts an additional argument <code class="docutils literal notranslate"><span class="pre">show</span></code> allowing to switch print on and off, and a class
@@ -282,8 +288,8 @@ in that class that accept a <code class="docutils literal notranslate"><span cla
         <span class="o">...</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="code-documentation">
+</section>
+<section id="code-documentation">
 <h2>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="DNNLikelihood.Verbosity">
@@ -303,14 +309,7 @@ then <code class="docutils literal notranslate"><span class="pre">verbose_sub</s
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for more details.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -333,8 +332,8 @@ See the <a class="reference internal" href="#verbosity-mode"><span class="std st
 It accepts an additional argument <code class="docutils literal notranslate"><span class="pre">show</span></code> allowing to switch print on and off.</p>
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -344,7 +343,7 @@ It accepts an additional argument <code class="docutils literal notranslate"><sp
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="citations.html" class="btn btn-neutral float-right" title="Use and Citation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="common.html" class="btn btn-neutral float-right" title="Common" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="plots.html" class="btn btn-neutral float-left" title="Notes on plots" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

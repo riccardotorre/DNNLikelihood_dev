@@ -7,21 +7,18 @@ Arguments
 
 .. argument:: name
 
-    Name of the :class:`Lik <DNNLikelihood.Lik>` object.
-    It is used to build the :attr:`Lik.name <DNNLikelihood.Lik.name>` attribute.
-     
-        - **type**: ``str`` or ``None``
-        - **default**: ``None``   
+    See :argument:`name <common_classes_arguments.name>`.
 
 .. argument:: logpdf
 
     Callable function returning the logpdf given parameters and additional arguments, passed through the
-    :argument:`logpdf_args` argument.
+    :argument:`logpdf_args` argument (for positional arguments) and 
+    :argument:`logpdf_kwargs` argument (for keyword arguments).
         
         - **type**: ``callable`` or ``None``
         - **default**: ``None`` 
 
-    - **Could accept**
+    - **Arguments**
 
         - **x_pars**
             
@@ -47,9 +44,10 @@ Arguments
                 
                 - **type**: ``dict`` or None
      
-    - **Could return**
+    - **Returns**
 
-        ``float`` or ``numpy.ndarray`` with shape ``(n_points,)``
+        - ``Float`` if input shape is ``(ndims,)``
+        - |Numpy_link| array with shape ``(n_points,)`` if input shape is ``(n_points,ndims)``
 
 .. argument:: logpdf_args   
 
@@ -58,6 +56,7 @@ Arguments
         
         - **type**: ``list`` or ``None``
         - **shape**: ``(nargs,)``
+        - **default**: ``None`` 
 
 .. argument:: logpdf_kwargs   
 
@@ -65,82 +64,38 @@ Arguments
     :argument:`logpdf` function.
         
         - **type**: ``dict`` or ``None``
+        - **default**: ``None`` 
 
 .. argument:: pars_central   
 
-    List or |numpy_link| array containing central values of the parameters.
-    It is used to build the :attr:`Lik.pars_central <DNNLikelihood.Lik.pars_central>` attribute.
-        
-        - **type**: ``list`` or ```numpy.ndarray``
-        - **shape**: ``(ndims,)``
-        - **default**: ``None`` 
+    See :argument:`pars_central <common_classes_arguments.pars_central>`.
 
 .. argument:: pars_pos_poi   
 
-    List or |numpy_link| array containing the positions in the parameters list of the
-    parameters of interest.
-    It is used to build the :attr:`Lik.pars_pos_poi <DNNLikelihood.Lik.pars_pos_poi>` attribute.
-
-        - **type**: ``list`` or ```numpy.ndarray``
-        - **shape**: ``(n_poi,)``
-        - **default**: ``None`` 
+    See :argument:`pars_pos_poi <common_classes_arguments.pars_pos_poi>`.
 
 .. argument:: pars_pos_nuis   
 
-    List or |numpy_link| array containing the positions in the parameters list of the
-    nuisance parameters.
-    It is used to build the :attr:`Lik.pars_pos_nuis <DNNLikelihood.Lik.pars_pos_nuis>` attribute.
-
-        - **type**: ``list`` or ``numpy.ndarray``
-        - **shape**: ``(n_nuis,)``
-        - **default**: ``None`` 
+    See :argument:`pars_pos_nuis <common_classes_arguments.pars_pos_nuis>`.
 
 .. argument:: pars_labels   
 
-    List containing the parameters names as strings.
-    Parameters labels are always parsed as "raw" strings (like, for instance, ``r"%s"%pars_labels[0]``) 
-    and can contain latex expressions that are properly compiled when making plots.
-    It is used to build the :attr:`Lik.pars_labels <DNNLikelihood.Lik.pars_labels>` attribute.
-
-        - **type**: ``list``
-        - **shape**: ``(ndims,)``
-        - **default**: ``None`` 
+    See :argument:`pars_labels <common_classes_arguments.pars_labels>`.
 
 .. argument:: pars_bounds   
 
-    List or |numpy_link| array containing containing bounds for the parameters.
-    It is used to build the :attr:`Lik.pars_bounds <DNNLikelihood.Lik.pars_bounds>` attribute.
-
-        - **type**: ``numpy.ndarray`` or ``None``
-        - **shape**: ``(ndims,2)``
-        - **default**: ``None`` 
+    See :argument:`pars_bounds <common_classes_arguments.pars_bounds>`.
 
 .. argument:: output_folder
-     
-    Path (either relative to the code execution folder or absolute) where output files are saved.
-    It is used to set the :attr:`Lik.output_folder <DNNLikelihood.Lik.output_folder>` attribute.
-        
-        - **type**: ``str`` or ``None``
-        - **default**: ``None``
 
-.. argument:: input_file   
+    See :argument:`output_folder <common_classes_arguments.output_folder>`.
 
-    File name (either relative to the code execution folder or absolute, with or without extension) 
-    of a saved :class:`Lik <DNNLikelihood.Lik>` object. 
-    It is used to set the 
-    :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>` 
-    attribute.
+.. argument:: input_file
 
-       - **type**: ``str`` or ``None``
-       - **default**: ``None``
+    See :argument:`input_file <common_classes_arguments.input_file>`.
 
 .. argument:: verbose
 
-    Argument used to set the verbosity mode of the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` 
-    method and the default verbosity mode of all class methods that accept a ``verbose`` argument.
-    See :ref:`Verbosity mode <verbosity_mode>`.
-
-       - **type**: ``bool``
-       - **default**: ``True``
+    See :argument:`verbose <common_classes_arguments.verbose>`.
 
 .. include:: ../external_links.rst

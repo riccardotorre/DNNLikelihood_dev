@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Usage &mdash; DNNLikelihood</title>
@@ -45,7 +46,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Class" href="class.html" />
-    <link rel="prev" title="The Likelihood object" href="index.html" /> 
+    <link rel="prev" title="Lik object" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,22 +100,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Likelihood object</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Lik object</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Usage</a></li>
 <li class="toctree-l3"><a class="reference internal" href="class.html">Class</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
@@ -167,7 +166,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-          <li><a href="index.html">The Likelihood object</a> &raquo;</li>
+          <li><a href="index.html">Lik object</a> &raquo;</li>
         
       <li>Usage</li>
     
@@ -212,33 +211,80 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="usage">
+<section id="usage">
 <span id="likelihood-usage"></span><h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <p>We give here a brief introduction to the use of the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> class. Refer to the
 full class documentation for more details.</p>
-<p>The <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object can be created both by directly inputing the relevant arguments or
-automatically,
-in case the likelihood function comes from an ATLAS histfactory workspace, by the <a class="reference internal" href="../histfactory/class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object
-through the <a class="reference internal" href="../histfactory/methods.html#DNNLikelihood.Histfactory.get_likelihood_object" title="DNNLikelihood.Histfactory.get_likelihood_object"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.get_likelihood_object</span></code></a> method. In the
-<a class="reference internal" href="../histfactory/usage.html#histfactory-usage"><span class="std std-ref">the Histfactory object Usage</span></a> section of the documentation we already gave an example of the latter method.
-We give here a very simple (toy) example of creation of the object from input arguments.</p>
-<p>The first time a <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created, the <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a>, <a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a>
-(optional, if required by <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a>), <a class="reference internal" href="arguments.html#Lik.logpdf_kwargs" title="Lik.logpdf_kwargs"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_kwargs</span></code></a> (optional, if required by
-<a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a>), <a class="reference internal" href="arguments.html#Lik.pars_central" title="Lik.pars_central"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_central</span></code></a>,
-<a class="reference internal" href="arguments.html#Lik.pars_pos_nuis" title="Lik.pars_pos_nuis"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_nuis</span></code></a>, and <a class="reference internal" href="arguments.html#Lik.pars_pos_poi" title="Lik.pars_pos_poi"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_poi</span></code></a> arguments need to be specified.
-Optionally, also the arguments <a class="reference internal" href="arguments.html#Lik.pars_bounds" title="Lik.pars_bounds"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_bounds</span></code></a> and <a class="reference internal" href="arguments.html#Lik.pars_labels" title="Lik.pars_labels"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_labels</span></code></a> related
-to likelihood parameters can be specified. Moreover, the user may specify the additional arguments
-<a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> containing the path (either relative or absolute) to a folder where output files will be saved and
-<a class="reference internal" href="arguments.html#Lik.name" title="Lik.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> with the name of the object (which is otherwise automatically generated).</p>
-<p>To give a simple example, let us start by creating a very simple toy experiment with <code class="docutils literal notranslate"><span class="pre">10</span></code> bins, one nuisance parameter per
-bin and one signal strength parameter. The <code class="docutils literal notranslate"><span class="pre">logpdf</span></code> function could be defined by the code:</p>
+<p>The <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object can be created both by directly inputing the relevant
+arguments or automatically, in case the likelihood function comes from an ATLAS histfactory workspace,
+by the <a class="reference internal" href="../histfactory/class.html#DNNLikelihood.Histfactory" title="DNNLikelihood.Histfactory"><code class="xref py py-class docutils literal notranslate"><span class="pre">Histfactory</span></code></a> object through the
+<a class="reference internal" href="../histfactory/methods.html#DNNLikelihood.Histfactory.get_likelihood_object" title="DNNLikelihood.Histfactory.get_likelihood_object"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Histfactory.get_likelihood_object</span></code></a>
+method. In the <a class="reference internal" href="../histfactory/usage.html#histfactory-usage"><span class="std std-ref">the Histfactory object Usage</span></a> section of the documentation
+we already gave an example of the latter method. We give here a very simple (toy) example of creation
+of the object from input arguments.</p>
+<p>The first time a <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created, the following arguments need to
+be specified:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a></p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> (optional, if required by <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a>)</p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.logpdf_kwargs" title="Lik.logpdf_kwargs"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_kwargs</span></code></a> (optional, if required by <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a>)</p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.pars_central" title="Lik.pars_central"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_central</span></code></a></p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.pars_pos_nuis" title="Lik.pars_pos_nuis"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_nuis</span></code></a></p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.pars_pos_poi" title="Lik.pars_pos_poi"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_poi</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>If only one among the last two is specified, the other is determined from it by using the number of
+dimensions determined from the <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a> argument. Optionally, also the arguments</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="arguments.html#Lik.pars_bounds" title="Lik.pars_bounds"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_bounds</span></code></a></p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.pars_labels" title="Lik.pars_labels"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_labels</span></code></a></p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a></p></li>
+<li><p><a class="reference internal" href="arguments.html#Lik.name" title="Lik.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>can be specified. The first two correspond to Likelihood properties, the third contains the path
+(either relative relative to the code execution folder or absolute) to a folder where output files
+will be saved and the last is the name of the object (which is otherwise automatically generated).</p>
+<p>To give a simple example, let us start by creating a very simple toy experiment with <code class="docutils literal notranslate"><span class="pre">10</span></code> bins,
+one nuisance parameter per bin and one signal strength parameter:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
 
-<span class="n">nbI_nominal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">1100</span><span class="p">,</span><span class="mi">100</span><span class="p">)])))</span>    <span class="c1"># Nominal background</span>
-<span class="n">nbI_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">nbI_nominal</span><span class="p">)</span>                                    <span class="c1"># Observed counts</span>
-<span class="n">nsI_reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">110</span><span class="p">,</span><span class="mi">10</span><span class="p">)])))</span>     <span class="c1"># Signal prediction for signal strength mu=1</span>
-
-<span class="k">def</span> <span class="nf">nbI</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+<span class="n">nbI_nominal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">1100</span><span class="p">,</span><span class="mi">100</span><span class="p">)])))</span>
+<span class="n">nsI_reference</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">110</span><span class="p">,</span><span class="mi">10</span><span class="p">)])))</span>
+<span class="n">nbI_obs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">nbI_nominal</span><span class="o">+</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">nsI_reference</span><span class="p">)</span>
+<span class="n">nbI_obs_up_2sigma</span> <span class="o">=</span> <span class="n">nbI_obs</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nbI_obs</span><span class="p">)</span>
+<span class="n">nbI_obs_down_2sigma</span> <span class="o">=</span> <span class="n">nbI_obs</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nbI_obs</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A graphical representation of this toy experiment can be obtained through:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nbI_nominal</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;expected B&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nbI_nominal</span><span class="o">+</span><span class="n">nsI_reference</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;expected S+B&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nbI_obs</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;observed&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nbI_obs_up_2sigma</span><span class="p">,</span><span class="s2">&quot;--&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">nbI_obs_down_2sigma</span><span class="p">,</span><span class="s2">&quot;--&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                 <span class="n">nbI_obs_up_2sigma</span><span class="p">,</span>
+                 <span class="n">nbI_obs_down_2sigma</span><span class="p">,</span>
+                 <span class="n">color</span><span class="o">=</span><span class="s2">&quot;mediumspringgreen&quot;</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;95\% CL observed&quot;</span><span class="p">,</span>
+                 <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Bin&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Counts&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This prints the following plots in the active console</p>
+<a class="with-shadow reference internal image-reference" href="../_images/toy_counts_bin.png"><img alt="../_images/toy_counts_bin.png" class="with-shadow" src="../_images/toy_counts_bin.png" style="width: 630.0px; height: 470.0px;" /></a>
+<p>The <code class="docutils literal notranslate"><span class="pre">logpdf</span></code> function can be defined as:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">nbI</span><span class="p">(</span><span class="n">delta</span><span class="p">):</span>
     <span class="c1"># Background in each bin as function of the 10 nuisance parameters delta</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">nbI_nominal</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">0.1</span><span class="p">)</span><span class="o">**</span><span class="n">delta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="p">))])</span>
@@ -260,29 +306,33 @@ bin and one signal strength parameter. The <code class="docutils literal notrans
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">logfact</span><span class="o">+</span><span class="n">obs</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span><span class="o">-</span><span class="n">exp</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">logprior</span><span class="p">(</span><span class="n">pars</span><span class="p">):</span>
-    <span class="c1"># Log of normal distribution for deltas and uniform [-5,5] distribution for mu</span>
+    <span class="c1"># Log of prior: normal distribution for deltas and uniform [-5,5] distribution for mu</span>
     <span class="n">mu</span> <span class="o">=</span> <span class="n">pars</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">delta</span> <span class="o">=</span> <span class="n">pars</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="n">delta_prior</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">delta</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">delta</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">delta_prior</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 
 <span class="k">def</span> <span class="nf">logpdf</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="n">obs</span><span class="p">):</span>
-    <span class="c1"># Sum of log-likelihood and log-prior</span>
+    <span class="c1"># Logpdf given by the sum of log-likelihood and log-prior</span>
     <span class="k">return</span> <span class="n">loglik</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="n">obs</span><span class="p">)</span><span class="o">+</span><span class="n">logprior</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This function takes as arguments the parameters (mu, <strong>delta</strong>) and the observed counts. We can now define arguments related to
-parameters (we will not define labels, that will be automatically set by the object initialization)
-and initialize the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> with a few lines of code:</p>
+<p>This function takes as arguments the parameters (mu, <strong>delta</strong>) and the observed counts.
+In this example we will define the Likelihood object from the log-pdf and not from the log-Likelihood
+itself. The difference is only given by the log-prior, which can be added and subtracted at any time.
+We can now define arguments related to parameters (if labels are not defined, then they will be
+automatically generated) and initialize the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> with a few lines of code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
 <span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span>
-<span class="n">pars_central</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">pars_labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="n">pars_central</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_pos_nuis</span><span class="p">),</span><span class="mi">0</span><span class="p">),</span><span class="n">pars_pos_poi</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">]]),</span>
                               <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">),</span>
                                          <span class="n">np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">)])</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+<span class="n">pars_labels</span> <span class="o">=</span> <span class="p">[</span><span class="sa">r</span><span class="s2">&quot;$\mu$&quot;</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_pos_nuis</span><span class="p">)):</span>
+    <span class="n">pars_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\nu_{</span><span class="si">%d</span><span class="s2">}$&quot;</span> <span class="o">%</span> <span class="n">i</span><span class="p">)</span>
 
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Lik</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;toy&#39;</span><span class="p">,</span>
                                <span class="n">logpdf</span> <span class="o">=</span> <span class="n">logpdf</span><span class="p">,</span>
@@ -290,189 +340,386 @@ and initialize the <a class="reference internal" href="class.html#DNNLikelihood.
                                <span class="n">pars_central</span> <span class="o">=</span> <span class="n">pars_central</span><span class="p">,</span>
                                <span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="n">pars_pos_poi</span><span class="p">,</span>
                                <span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">pars_pos_nuis</span><span class="p">,</span>
-                               <span class="n">pars_labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                               <span class="n">pars_labels</span> <span class="o">=</span> <span class="n">pars_labels</span><span class="p">,</span>
                                <span class="n">pars_bounds</span> <span class="o">=</span> <span class="n">pars_bounds</span><span class="p">,</span>
-                               <span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&lt;my_output_folder&gt;&quot;</span><span class="p">)</span>
+                               <span class="n">output_folder</span> <span class="o">=</span> <span class="s2">&quot;&lt;path_to_output_folder&gt;&quot;</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Initialize</span> <span class="n">Likelihood</span> <span class="nb">object</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Lik</span> <span class="n">output</span> <span class="n">folder</span> <span class="nb">set</span> <span class="n">to</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span> <span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0018376000000017711</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">h5</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">h5</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.015376500000002125</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0016533000000009679</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0009189000000020542</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>When the object is created, it is automatically saved and two files are created:</p>
+<p>where we used the placeholders &lt;path_to_output_folder&gt;, and
+&lt;abs_path_to_output_folder&gt; to indicate the corresponding paths
+(relative paths can be given as input and are automatically converted into absolute paths).</p>
+<p>When the object is created, it is automatically saved and four files are created:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>&lt;my_output_folder&gt;/toy_likelihood.h5</p></li>
-<li><p>&lt;my_output_folder&gt;/toy_likelihood.log</p></li>
+<li><p>&lt;abs_path_to_output_folder&gt;/toy_likelihood.h5</p></li>
+<li><p>&lt;abs_path_to_output_folder&gt;/toy_likelihood.json</p></li>
+<li><p>&lt;abs_path_to_output_folder&gt;/toy_likelihood.log</p></li>
+<li><p>&lt;abs_path_to_output_folder&gt;/toy_likelihood_predictions.json</p></li>
 </ul>
 </div></blockquote>
-<p>See the documentation of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a> and
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_log" title="DNNLikelihood.Lik.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_log</span></code></a> methods.</p>
-<p>The object can also be initialized importing it from saved files. In this case only the <a class="reference internal" href="arguments.html#Lik.input_file" title="Lik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>
-argument needs to be specified, while all other arguments are ignored. One could also optionally specify a new
-<a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>. In case this is not specified, the
-<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> attribute from the imported object is used and the object is
-saved updating (overwriting) existing files. If a new <a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is specified,
-then the updated object is saved to the new location. For instance we could import the object created above with</p>
+<p>See the documentation of the</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save" title="DNNLikelihood.Lik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save</span></code></a></p></li>
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_h5" title="DNNLikelihood.Lik.save_h5"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_h5</span></code></a></p></li>
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_json" title="DNNLikelihood.Lik.save_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_json</span></code></a></p></li>
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_log" title="DNNLikelihood.Lik.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_log</span></code></a></p></li>
+<li><p><a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_predictions_json" title="DNNLikelihood.Lik.save_predictions_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_predictions_json</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>methods for more details.</p>
+<p>The object can also be initialized importing it from saved files. In this case only the
+<a class="reference internal" href="arguments.html#Lik.input_file" title="Lik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> argument needs to be specified (with path relative
+to the code execution folder or absolute and with or without extension), while all other arguments
+are ignored. One could also optionally specify a new <a class="reference internal" href="arguments.html#Lik.output_folder" title="Lik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>.
+In case this is not specified, the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a>
+attribute is set equal to the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_folder" title="DNNLikelihood.Lik.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_folder</span></code></a> one, so that the
+object continues to be saved in the same path from which it has been imported.
+For instance we could import the object created above with</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">DNNLikelihood</span>
 
-<span class="n">likelihood</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Lik</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;&lt;my_output_folder&gt;/toy_likelihood&quot;</span><span class="p">)</span>
+<span class="n">likelihood_loaded</span> <span class="o">=</span> <span class="n">DNNLikelihood</span><span class="o">.</span><span class="n">Lik</span><span class="p">(</span><span class="n">input_file</span><span class="o">=</span><span class="s2">&quot;&lt;path_to_output_folder&gt;/toy_likelihood&quot;</span><span class="p">)</span>
+
+ <span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+     <span class="n">Initialize</span> <span class="n">Likelihood</span> <span class="nb">object</span><span class="o">.</span>
+
+     <span class="o">==============================</span>
+     <span class="n">Likelihood</span> <span class="nb">object</span> <span class="n">loaded</span> <span class="ow">in</span> <span class="mf">0.010173800000018218</span> <span class="o">.</span>
+
+     <span class="o">==============================</span>
+     <span class="n">Lik</span> <span class="n">output</span> <span class="n">folder</span> <span class="nb">set</span> <span class="n">to</span>
+              <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span> <span class="o">.</span>
+
+     <span class="o">==============================</span>
+     <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+              <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+     <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0010424000000028855</span> <span class="n">s</span><span class="o">.</span>
+
+     <span class="o">==============================</span>
+     <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+              <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+     <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0011185999999838714</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>When the object is imported, the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a>
-attribute is updated and saved in the corresponding file <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a>.</p>
-<p>When the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created, the <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a> input argument is saved in a FunctionWrapper together
-with the optional <a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> and <a class="reference internal" href="arguments.html#Lik.logpdf_kwargs" title="Lik.logpdf_kwargs"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_kwargs</span></code></a>
+<p>When the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object is created, the <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a>
+input argument is saved in a FunctionWrapper together with the optional
+<a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> and <a class="reference internal" href="arguments.html#Lik.logpdf_kwargs" title="Lik.logpdf_kwargs"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_kwargs</span></code></a>
 arguments. The numerical value of the lofpdf for a given value of the parameters (for instance the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a>) can be obtained through</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">-</span><span class="mf">54.736235046924904</span>
 </pre></div>
 </div>
-<p>The value of the optional <a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> and <a class="reference internal" href="arguments.html#Lik.logpdf_kwargs" title="Lik.logpdf_kwargs"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_kwargs</span></code></a> arguemnts, together with the function provided by the
+<p>The value of the optional <a class="reference internal" href="arguments.html#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> and
+<a class="reference internal" href="arguments.html#Lik.logpdf_kwargs" title="Lik.logpdf_kwargs"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_kwargs</span></code></a> arguemnts, together with the function provided by the
 <a class="reference internal" href="arguments.html#Lik.logpdf" title="Lik.logpdf"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf</span></code></a> argument, can be extracted from the FunctionWrapper as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">f</span>
-<span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span>
-<span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">logpdf</span> <span class="n">at</span> <span class="mh">0x7fc0a7a54550</span><span class="o">&gt;</span>
+    <span class="p">[</span><span class="n">array</span><span class="p">([</span><span class="mi">1018</span><span class="p">,</span>  <span class="mi">939</span><span class="p">,</span>  <span class="mi">865</span><span class="p">,</span>  <span class="mi">717</span><span class="p">,</span>  <span class="mi">620</span><span class="p">,</span>  <span class="mi">537</span><span class="p">,</span>  <span class="mi">412</span><span class="p">,</span>  <span class="mi">315</span><span class="p">,</span>  <span class="mi">222</span><span class="p">,</span>  <span class="mi">101</span><span class="p">])]</span>
+    <span class="p">{}</span>
 </pre></div>
 </div>
-<p>A general logpdf function is given by the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> method, which takes both the function and the
-optional arguments as inputs. For instance one could calclulate the logpdf for different values of <code class="docutils literal notranslate"><span class="pre">args</span></code> (in this case a list containing
-an array with the observed counts) and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> (in this case an empty dictionary) through</p>
+<p>A general logpdf function is given by the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.logpdf_fn" title="DNNLikelihood.Lik.logpdf_fn"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.logpdf_fn</span></code></a> method,
+which takes both the function and the optional arguments as inputs. For instance, one could use it to
+calclulate the logpdf for different values of <code class="docutils literal notranslate"><span class="pre">args</span></code> (in this case a list containing an array with
+the observed counts) and <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> (in this case an empty dictionary) through</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">pars_central</span><span class="p">,</span><span class="o">*</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1031</span><span class="p">,</span>  <span class="mi">903</span><span class="p">,</span>  <span class="mi">810</span><span class="p">,</span>  <span class="mi">720</span><span class="p">,</span>  <span class="mi">597</span><span class="p">,</span>  <span class="mi">477</span><span class="p">,</span>  <span class="mi">421</span><span class="p">,</span>  <span class="mi">304</span><span class="p">,</span>  <span class="mi">211</span><span class="p">,</span>  <span class="mi">104</span><span class="p">])],</span><span class="o">**</span><span class="p">{})</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">-</span><span class="mf">49.754671664827484</span>
 </pre></div>
 </div>
-<p>where we explicitly added empty optional <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> for illustration purposes. In particular, notice the equivalence of the two members in the
-following code:</p>
+<p>where we explicitly added an empty optional <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> for illustration purposes.
+In particular, notice the equivalence of the two members in the following code:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span><span class="o">==</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">pars_central</span><span class="p">,</span><span class="o">*</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">likelihood</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
 
 <span class="o">&gt;&gt;&gt;</span> <span class="kc">True</span>
 </pre></div>
 </div>
-<p>One can check the logpdf depencence on the input parameters by plotting it with the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a> method. For instance, one can get the plot
-for the parameters <code class="docutils literal notranslate"><span class="pre">0</span></code> (signal strength) and <code class="docutils literal notranslate"><span class="pre">5</span></code> (nuisance parameter) in the range <code class="docutils literal notranslate"><span class="pre">(-1,1)</span></code> with all other
-parameters set to their central values (i.e. their values defined in the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a> attribute),
-through</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">plot_logpdf_par</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>Results computed with the various methods of the object are saved in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary attribute, which is saved into the
+output json file corresponding to the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_predictions_json_file" title="DNNLikelihood.Lik.output_predictions_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_predictions_json_file</span></code></a> attribute
+through the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.save_predictions_json" title="DNNLikelihood.Lik.save_predictions_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.save_predictions_json</span></code></a> method.
+The <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary also stores,
+under the item corresponding to the key <code class="docutils literal notranslate"><span class="pre">&quot;Figures&quot;</span></code>, information on the
+generated figures. The <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary
+can be reset at any time as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">reset_predictions</span><span class="p">(</span><span class="n">delete_figures</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Resetting</span> <span class="n">predictions</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">All</span> <span class="n">predictions</span> <span class="ow">and</span> <span class="n">figures</span> <span class="n">have</span> <span class="n">been</span> <span class="n">deleted</span> <span class="ow">and</span> <span class="n">the</span> <span class="s1">&#39;predictions&#39;</span> <span class="n">attribute</span> <span class="n">has</span> <span class="n">been</span> <span class="n">initialized</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.000885500000002537</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.001010800000003087</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">reset</span> <span class="ow">in</span> <span class="mf">0.0007486999999954946</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>This prints the following plots in the active console</p>
+<p>One can check the logpdf dependence on the input parameters by plotting it with the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a> method. For instance, one can get
+the plot for the parameters <code class="docutils literal notranslate"><span class="pre">0</span></code> (signal strength) and <code class="docutils literal notranslate"><span class="pre">5</span></code> (nuisance parameter) in the range
+<code class="docutils literal notranslate"><span class="pre">(-1,1)</span></code> with all other parameters set to their central values (i.e. their values defined in the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a> attribute), through</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">plot_logpdf_par</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],[</span><span class="mi">5</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]],</span><span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Making</span> <span class="n">plot</span> <span class="n">of</span> <span class="n">logpdf</span> <span class="k">as</span> <span class="n">function</span> <span class="n">of</span> <span class="n">paramerers</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Checking</span> <span class="ow">and</span> <span class="n">updating</span> <span class="n">figures</span> <span class="n">dictionary</span>
+
+    <span class="o">&lt;</span><span class="n">plot1</span><span class="o">&gt;</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Figure</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">figures</span><span class="o">/</span><span class="n">toy_likelihood_figure_par_0</span><span class="o">.</span><span class="n">pdf</span>
+    <span class="n">created</span> <span class="ow">and</span> <span class="n">saved</span> <span class="ow">in</span> <span class="mf">8.517387338011758</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Checking</span> <span class="ow">and</span> <span class="n">updating</span> <span class="n">figures</span> <span class="n">dictionary</span>
+
+    <span class="o">&lt;</span><span class="n">plot2</span><span class="o">&gt;</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Figure</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">figures</span><span class="o">/</span><span class="n">toy_likelihood_figure_par_5</span><span class="o">.</span><span class="n">pdf</span>
+    <span class="n">created</span> <span class="ow">and</span> <span class="n">saved</span> <span class="ow">in</span> <span class="mf">3.949587409006199</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0014017000000023927</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0035943260008934885</span> <span class="n">s</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>The plots &lt;plot1&gt; and &lt;plot2&gt; printed on the active console are</p>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_likelihood_figure_par_0.png"><img alt="../_images/toy_likelihood_figure_par_0.png" class="with-shadow" src="../_images/toy_likelihood_figure_par_0.png" style="width: 340.20000000000005px; height: 253.8px;" /></a>
 <a class="with-shadow reference internal image-reference" href="../_images/toy_likelihood_figure_par_5.png"><img alt="../_images/toy_likelihood_figure_par_5.png" class="with-shadow" src="../_images/toy_likelihood_figure_par_5.png" style="width: 340.20000000000005px; height: 253.8px;" /></a>
-<p>and saves two files, whose paths are stored in the <code class="docutils literal notranslate"><span class="pre">&quot;Figures&quot;</span></code> item of the
-<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> attribute:</p>
+<p>and are saved to two files, whose names are stored in the <code class="docutils literal notranslate"><span class="pre">&quot;Figures&quot;</span></code> item of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary attribute (under a corresponding
+timestamp item):</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span>
 
-<span class="o">&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;&lt;timestamp&gt;&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&lt;my_output_folder&gt;/figures/toy_likelihood_figure_par_0.pdf&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;&lt;my_output_folder&gt;/figures/toy_likelihood_figure_par_5.pdf&#39;</span><span class="p">]}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="o">&lt;</span><span class="n">timestamp</span><span class="o">&gt;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;toy_likelihood_figure_par_0.pdf&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;toy_likelihood_figure_par_5.pdf&#39;</span><span class="p">]}</span>
 </pre></div>
 </div>
-<p>Where &lt;timestamp&gt; represents a string of the form “datetime_aaaa_mm_dd_hh_mm_ss_xxxx”.
-One could also optionally choose a different central value for the parameters that are kept fixed by passing an argument
-<code class="docutils literal notranslate"><span class="pre">pars_init</span></code> to the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a> method.</p>
+<p>where &lt;timestamp&gt; is a string of the form “datetime_aaaa_mm_dd_hh_mm_ss_xxxx” containing the
+corresponding timestamp.
+Figures are saved in the folder given by the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_figures_folder" title="DNNLikelihood.Lik.output_figures_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_figures_folder</span></code></a> attribute.
+One could also optionally choose a different central value for the parameters that are kept fixed
+by passing an argument <code class="docutils literal notranslate"><span class="pre">pars_init</span></code> to the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_logpdf_par" title="DNNLikelihood.Lik.plot_logpdf_par"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_logpdf_par</span></code></a> method.</p>
 <p>The maximum of the logpdf, and the corresponding parameters values can be obtained with the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> method and are stored in the <code class="docutils literal notranslate"><span class="pre">&quot;logpdf_max&quot;</span></code>
-item of the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary attribute:</p>
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> method
+and are stored in the item corresponding to the <code class="docutils literal notranslate"><span class="pre">&quot;logpdf_max&quot;</span></code> key of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">compute_maximum_logpdf</span><span class="p">(</span><span class="n">pars_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                                  <span class="n">optimizer</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Powell&quot;</span><span class="p">,</span>
-                                             <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">100000</span><span class="p">,</span>
-                                                         <span class="s2">&quot;ftol&quot;</span><span class="p">:</span> <span class="mf">0.000001</span><span class="p">}},</span>
-                                  <span class="n">timestamp</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                  <span class="n">optimizer</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;scipy&quot;</span><span class="p">,</span>
+                                             <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                                             <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Powell&quot;</span><span class="p">}},</span>
+                                  <span class="n">minimization_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">100000</span><span class="p">,</span>
+                                                        <span class="s2">&quot;ftol&quot;</span><span class="p">:</span> <span class="mf">0.000001</span><span class="p">},</span>
+                                  <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                   <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                   <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">]</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">The</span> <span class="n">key</span> <span class="n">name</span> <span class="n">was</span> <span class="ow">not</span> <span class="n">specified</span> <span class="ow">and</span> <span class="n">has</span> <span class="n">been</span> <span class="nb">set</span> <span class="n">to</span> <span class="n">the</span> <span class="n">default</span> <span class="n">value</span> <span class="n">scipy</span> <span class="o">.</span>
-    <span class="n">Maximum</span> <span class="n">logpdf</span> <span class="n">computed</span> <span class="ow">in</span> <span class="mf">0.09608170000001337</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span> <span class="n">updated</span> <span class="ow">in</span> <span class="mf">0.001088900000013382</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">Likelihood</span> <span class="n">h5</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">h5</span> <span class="n">updated</span> <span class="ow">in</span> <span class="mf">0.021218399999952453</span> <span class="n">s</span><span class="o">.</span>
-    <span class="p">{</span><span class="s1">&#39;&lt;timestamp1&gt;&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">2.98803800e-02</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.59623151e-05</span><span class="p">,</span>  <span class="mf">5.05184623e-01</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.63874465e-01</span><span class="p">,</span>
-                                  <span class="mf">1.42943654e-01</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.22875586e-02</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.04535012e-01</span><span class="p">,</span>  <span class="mf">2.48640857e-01</span><span class="p">,</span>
-                                 <span class="o">-</span><span class="mf">7.96095990e-02</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.05881629e-01</span><span class="p">,</span>  <span class="mf">6.54767624e-01</span><span class="p">]),</span>
-                      <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">47.78488368123806</span><span class="p">,</span>
-                      <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-                      <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">100000</span><span class="p">,</span>
-                                                <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">1e-06</span><span class="p">},</span>
-                                    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">},</span>
-                      <span class="s1">&#39;optimization_time&#39;</span><span class="p">:</span> <span class="mf">0.09608170000001337</span><span class="p">}}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Computing</span> <span class="k">global</span> <span class="n">maximum</span>
+    <span class="n">Maximum</span> <span class="n">logpdf</span> <span class="n">computed</span> <span class="ow">in</span> <span class="mf">0.28266679999978805</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0014535000009345822</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0012204000013298355</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="p">{</span><span class="o">&lt;</span><span class="n">timestamp</span><span class="o">&gt;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mf">0.28835589</span> <span class="p">,</span> <span class="mf">0.</span>         <span class="p">,</span> <span class="mf">0.13434444</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.43674865</span><span class="p">,</span> <span class="mf">0.</span>         <span class="p">,</span>
+                                <span class="mf">0.03920713</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.35602373</span><span class="p">,</span> <span class="mf">0.00895953</span> <span class="p">,</span> <span class="mf">0.16032245</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.51686047</span><span class="p">,</span>
+                                <span class="mf">0.</span>        <span class="p">]),</span>
+                   <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">48.06194074972852</span><span class="p">,</span>
+                   <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+                   <span class="s1">&#39;pars_bounds&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span>   <span class="mf">5.</span><span class="p">],</span>
+                                         <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">],</span>
+                                         <span class="o">...</span>
+                                         <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">]]),</span>
+                   <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">}},</span>
+                   <span class="s1">&#39;minimization_options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">100000</span><span class="p">,</span> <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">1e-06</span><span class="p">},</span>
+                   <span class="s1">&#39;optimization_time&#39;</span><span class="p">:</span> <span class="mf">0.2501852900022641</span><span class="p">}}</span>
 </pre></div>
 </div>
-<p>Finally, one could profile the logpdf with respect to some of the parameters and compute local maxima through
-the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method. This
-is useful both to initialize chains in a MCMC or to perform profiled likelihood inference. The result is stored in the
-“logpdf_profiled_max” item of the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary attribute.
-For instance, profiling with respect to the nuisance parameters for <code class="docutils literal notranslate"><span class="pre">10</span></code> values of the signal strength parameter
-on a grid in the <code class="docutils literal notranslate"><span class="pre">(-1,1)</span></code> interval, can be obtained as follows:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">compute_profiled_maxima_logpdf</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">pars_ranges</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">50</span><span class="p">]],</span><span class="n">spacing</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span><span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">]</span>
-<span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">]</span>
+<p>One could also profile the logpdf with respect to some of the parameters and compute local maxima
+through the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a>
+method. This is useful both to initialize chains in a MCMC or to perform profiled likelihood inference.
+The result is stored in the item corresponding to the “logpdf_profiled_max” key of the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> dictionary.
+For instance, profiling with respect to all the nuisance parameters for <code class="docutils literal notranslate"><span class="pre">10</span></code> values of the
+signal strength parameter on a grid in the <code class="docutils literal notranslate"><span class="pre">(-1,1)</span></code> interval, one obtains:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">compute_profiled_maxima_logpdf</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                          <span class="n">pars_ranges</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">50</span><span class="p">]],</span>
+                                          <span class="n">pars_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                          <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                          <span class="n">spacing</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span>
+                                          <span class="n">optimizer</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;scipy&quot;</span><span class="p">,</span>
+                                                     <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                                                     <span class="s2">&quot;kwargs&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Powell&quot;</span><span class="p">}},</span>
+                                          <span class="n">minimization_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+                                                                <span class="s2">&quot;ftol&quot;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">},</span>
+                                          <span class="n">progressbar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                          <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                          <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">])</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">The</span> <span class="n">key</span> <span class="n">name</span> <span class="n">was</span> <span class="ow">not</span> <span class="n">specified</span> <span class="ow">and</span> <span class="n">has</span> <span class="n">been</span> <span class="nb">set</span> <span class="n">to</span> <span class="n">the</span> <span class="n">default</span> <span class="n">value</span> <span class="n">scipy</span> <span class="o">.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Computing</span> <span class="n">profiled</span> <span class="n">maxima</span>
+
+    <span class="o">&lt;</span><span class="n">progress_bar</span><span class="o">&gt;</span>
+
+    <span class="n">The</span> <span class="n">key</span> <span class="o">&lt;</span><span class="n">timestamp</span><span class="o">&gt;</span> <span class="n">was</span> <span class="ow">not</span> <span class="n">specified</span> <span class="ow">and</span> <span class="n">has</span> <span class="n">been</span> <span class="nb">set</span> <span class="n">to</span> <span class="n">the</span> <span class="n">default</span> <span class="n">value</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span>
     <span class="n">Total</span> <span class="n">number</span> <span class="n">of</span> <span class="n">points</span><span class="p">:</span> <span class="mi">50</span> <span class="o">.</span>
     <span class="n">Optimizing</span> <span class="k">for</span> <span class="n">parameters</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="o">-</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">.</span>
-    <span class="o">....</span>
+    <span class="o">...</span>
     <span class="n">Optimizing</span> <span class="k">for</span> <span class="n">parameters</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="o">-</span> <span class="n">values</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">.</span>
     <span class="n">Computing</span> <span class="k">global</span> <span class="n">maximum</span> <span class="n">to</span> <span class="n">estimate</span> <span class="n">tmu</span> <span class="n">test</span> <span class="n">statistics</span><span class="o">.</span>
-    <span class="n">Maximum</span> <span class="n">logpdf</span> <span class="n">computed</span> <span class="ow">in</span> <span class="mf">0.04120020000000579</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">The</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">h5</span> <span class="n">already</span> <span class="n">exists</span><span class="o">.</span> <span class="n">Renaming</span> <span class="n">the</span> <span class="n">old</span> <span class="n">file</span><span class="o">.</span>
-    <span class="n">The</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span> <span class="n">already</span> <span class="n">exists</span><span class="o">.</span> <span class="n">Renaming</span> <span class="n">the</span> <span class="n">old</span> <span class="n">file</span><span class="o">.</span>
-    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span> <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.003590400000007321</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">Likelihood</span> <span class="n">h5</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">h5</span> <span class="n">saved</span> <span class="ow">in</span> <span class="mf">0.0317582999999928</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span> <span class="n">updated</span> <span class="ow">in</span> <span class="mf">0.001231000000004201</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">Likelihood</span> <span class="n">h5</span> <span class="n">file</span> <span class="o">&lt;</span><span class="n">my_output_folder</span><span class="o">&gt;/</span><span class="n">toy_likelihood</span><span class="o">.</span><span class="n">h5</span> <span class="n">updated</span> <span class="ow">in</span> <span class="mf">0.04504560000000879</span> <span class="n">s</span><span class="o">.</span>
-    <span class="n">Log</span><span class="o">-</span><span class="n">pdf</span> <span class="n">values</span> <span class="n">lie</span> <span class="ow">in</span> <span class="n">the</span> <span class="nb">range</span> <span class="p">[</span> <span class="o">-</span><span class="mf">52.67677189403637</span> <span class="p">,</span> <span class="o">-</span><span class="mf">47.78528836536065</span> <span class="p">]</span>
-    <span class="mi">50</span> <span class="n">local</span> <span class="n">maxima</span> <span class="n">computed</span> <span class="ow">in</span> <span class="mf">2.2449729000000076</span> <span class="n">s</span><span class="o">.</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;&lt;timestamp1&gt;&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">2.98803800e-02</span><span class="p">,</span> <span class="o">-</span><span class="mf">8.59623151e-05</span><span class="p">,</span>  <span class="mf">5.05184623e-01</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.63874465e-01</span><span class="p">,</span>
-                                   <span class="mf">1.42943654e-01</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.22875586e-02</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.04535012e-01</span><span class="p">,</span>  <span class="mf">2.48640857e-01</span><span class="p">,</span>
-                                  <span class="o">-</span><span class="mf">7.96095990e-02</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.05881629e-01</span><span class="p">,</span>  <span class="mf">6.54767624e-01</span><span class="p">]),</span>
-                      <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">47.78488368123806</span><span class="p">,</span>
-                      <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-                      <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">100000</span><span class="p">,</span>
-                                                <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">1e-06</span><span class="p">},</span>
-                                    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">},</span>
-                       <span class="s1">&#39;optimization_time&#39;</span><span class="p">:</span> <span class="mf">0.09841419999997925</span><span class="p">},</span>
-     <span class="s1">&#39;&lt;timestamp2&gt;&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">0.00270918</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.02581853</span><span class="p">,</span>  <span class="mf">0.4807844</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.28919954</span><span class="p">,</span>  <span class="mf">0.1184546</span> <span class="p">,</span>
-                                  <span class="o">-</span><span class="mf">0.08654915</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.32860133</span><span class="p">,</span>  <span class="mf">0.22657899</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.10060766</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.72455281</span><span class="p">,</span>
-                                   <span class="mf">0.64117127</span><span class="p">]),</span>
-                      <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">47.788129773839614</span><span class="p">,</span>
-                      <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-                      <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">,</span>
-                                    <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
-                                                <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">},</span>
-                                    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">},</span>
-                      <span class="s1">&#39;optimization_time&#39;</span><span class="p">:</span> <span class="mf">0.04022250000002714</span><span class="p">}}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;&lt;timestamp2&gt;&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">1.</span>        <span class="p">,</span>  <span class="mf">0.8899313</span> <span class="p">,</span>  <span class="mf">1.35465335</span><span class="p">,</span>  <span class="mf">0.6245335</span> <span class="p">,</span>  <span class="mf">0.9935237</span> <span class="p">,</span>
-                                    <span class="mf">0.78380467</span><span class="p">,</span>  <span class="mf">0.53103722</span><span class="p">,</span>  <span class="mf">1.0283211</span> <span class="p">,</span>  <span class="mf">0.6661937</span> <span class="p">,</span> <span class="o">-</span><span class="mf">0.03512531</span><span class="p">,</span>
-                                    <span class="mf">1.17126314</span><span class="p">],</span>
-                                  <span class="p">[</span><span class="o">-</span><span class="mf">0.95918367</span><span class="p">,</span>  <span class="mf">0.8535685</span> <span class="p">,</span>  <span class="mf">1.31989687</span><span class="p">,</span>  <span class="mf">0.58812031</span><span class="p">,</span>  <span class="mf">0.95857745</span><span class="p">,</span>
-                                    <span class="mf">0.74894469</span><span class="p">,</span>  <span class="mf">0.49644844</span><span class="p">,</span>  <span class="mf">0.99593946</span><span class="p">,</span>  <span class="mf">0.63494348</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.06376707</span><span class="p">,</span>
-                                    <span class="mf">1.14898673</span><span class="p">],</span>
-                                  <span class="o">...</span><span class="p">]),</span>
-                      <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">51.614645206056835</span><span class="p">,</span> <span class="o">-</span><span class="mf">51.30792801592227</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span>
-                      <span class="s1">&#39;tmu&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">1.00000000e+00</span><span class="p">,</span>  <span class="mf">7.65303086e+00</span><span class="p">],</span>
-                                    <span class="p">[</span><span class="o">-</span><span class="mf">9.59183673e-01</span><span class="p">,</span>  <span class="mf">7.03959648e+00</span><span class="p">],</span>
-                                    <span class="o">...</span><span class="p">]),</span>
-                      <span class="s1">&#39;pars&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                      <span class="s1">&#39;pars_ranges&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]],</span>
-                      <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
-                      <span class="s1">&#39;pars_bounds&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-                      <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span> <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">},</span>
-                       <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">},</span>
-                      <span class="s1">&#39;optimization_times&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.04293149999999457</span><span class="p">,</span>
-                                             <span class="mf">0.04377169999999353</span><span class="p">,</span>
-                                             <span class="o">...</span><span class="p">],</span>
-                      <span class="s1">&#39;global_optimization_time&#39;</span><span class="p">:</span> <span class="mf">2.1081501000000173</span><span class="p">}}</span>
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.005493800001204363</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.001368900000670692</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="mi">50</span> <span class="n">local</span> <span class="n">maxima</span> <span class="n">computed</span> <span class="ow">in</span> <span class="mf">5.734996799999863</span> <span class="n">s</span><span class="o">.</span>
+    <span class="n">Log</span><span class="o">-</span><span class="n">pdf</span> <span class="n">values</span> <span class="n">lie</span> <span class="ow">in</span> <span class="n">the</span> <span class="nb">range</span> <span class="p">[</span> <span class="o">-</span><span class="mf">57.07828497740044</span> <span class="p">,</span> <span class="o">-</span><span class="mf">48.09221672868154</span> <span class="p">]</span><span class="o">.</span>
+
+    <span class="p">{</span><span class="o">&lt;</span><span class="n">timestamp1</span><span class="o">&gt;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mf">0.28835589</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.13434444</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.43674865</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>
+                                 <span class="mf">0.03920713</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.35602373</span><span class="p">,</span>  <span class="mf">0.00895953</span><span class="p">,</span>  <span class="mf">0.16032245</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.51686047</span><span class="p">,</span>
+                                 <span class="mf">0.</span>        <span class="p">]),</span>
+                    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">48.06194074972852</span><span class="p">,</span>
+                    <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+                    <span class="s1">&#39;pars_bounds&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span>   <span class="mf">5.</span><span class="p">],</span>
+                                          <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">],</span>
+                                          <span class="o">...</span>
+                                          <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">]]),</span>
+                    <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">}},</span>
+                    <span class="s1">&#39;minimization_options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">100000</span><span class="p">,</span> <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">1e-06</span><span class="p">},</span>
+                    <span class="s1">&#39;optimization_time&#39;</span><span class="p">:</span> <span class="mf">0.2501852900022641</span><span class="p">},</span>
+     <span class="o">&lt;</span><span class="n">timestamp2</span><span class="o">&gt;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span> <span class="mf">0.28903846</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>  <span class="mf">0.13370308</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.43622569</span><span class="p">,</span>  <span class="mf">0.</span>        <span class="p">,</span>
+                                 <span class="mf">0.03690392</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.35563725</span><span class="p">,</span>  <span class="mf">0.00608195</span><span class="p">,</span>  <span class="mf">0.15979295</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.51643255</span><span class="p">,</span>
+                                 <span class="mf">0.</span>        <span class="p">]),</span>
+                    <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">48.06198053689947</span><span class="p">,</span>
+                    <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+                    <span class="s1">&#39;pars_bounds&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span>   <span class="mf">5.</span><span class="p">],</span>
+                                          <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">],</span>
+                                          <span class="o">...</span>
+                                          <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">]]),</span>
+                    <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">}},</span>
+                    <span class="s1">&#39;minimization_options&#39;</span><span class="p">:</span> <span class="p">{},</span>
+                    <span class="s1">&#39;optimization_time&#39;</span><span class="p">:</span> <span class="mf">0.16715143001056276</span><span class="p">}}</span>
+    <span class="p">{</span><span class="o">&lt;</span><span class="n">timestamp2</span><span class="o">&gt;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">1.00000000e+00</span><span class="p">,</span>  <span class="mf">1.07368376e+00</span><span class="p">,</span>  <span class="mf">1.27984277e+00</span><span class="p">,</span>
+                                  <span class="mf">1.57830130e+00</span><span class="p">,</span>  <span class="mf">1.08953930e+00</span><span class="p">,</span>  <span class="mf">1.14335977e+00</span><span class="p">,</span>
+                                  <span class="mf">1.43461139e+00</span><span class="p">,</span>  <span class="mf">1.04765467e+00</span><span class="p">,</span>  <span class="mf">1.13227833e+00</span><span class="p">,</span>
+                                  <span class="mf">1.40150676e+00</span><span class="p">,</span>  <span class="mf">5.70153228e-01</span><span class="p">],</span>
+                                  <span class="o">...</span>
+                                <span class="p">[</span> <span class="mf">1.00000000e+00</span><span class="p">,</span>  <span class="mf">0.00000000e+00</span><span class="p">,</span>  <span class="mf">0.00000000e+00</span><span class="p">,</span>
+                                  <span class="mf">0.00000000e+00</span><span class="p">,</span>  <span class="mf">0.00000000e+00</span><span class="p">,</span>  <span class="mf">0.00000000e+00</span><span class="p">,</span>
+                                  <span class="mf">0.00000000e+00</span><span class="p">,</span>  <span class="mf">0.00000000e+00</span><span class="p">,</span>  <span class="mf">0.00000000e+00</span><span class="p">,</span>
+                                  <span class="mf">6.55629299e-02</span><span class="p">,</span>  <span class="mf">0.00000000e+00</span><span class="p">]]),</span>
+                    <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">56.336064718100715</span><span class="p">,</span> <span class="o">-</span><span class="mf">55.893978669360074</span><span class="p">,</span> <span class="o">-</span><span class="mf">55.4627652463664</span><span class="p">,</span>
+                                <span class="o">...</span>
+                                <span class="o">-</span><span class="mf">55.98431131656419</span><span class="p">,</span> <span class="o">-</span><span class="mf">57.07828497740044</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">),</span>
+                    <span class="s1">&#39;tmu&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">1.</span>        <span class="p">,</span> <span class="mf">16.54816836</span><span class="p">],</span>
+                                  <span class="o">...</span>
+                                  <span class="p">[</span> <span class="mf">1.</span>        <span class="p">,</span> <span class="mf">18.03260888</span><span class="p">]]),</span>
+                    <span class="s1">&#39;pars&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="s1">&#39;pars_ranges&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">]],</span>
+                    <span class="s1">&#39;pars_init&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]),</span>
+                    <span class="s1">&#39;pars_bounds&#39;</span><span class="p">:</span> <span class="n">array</span><span class="p">([[</span> <span class="o">-</span><span class="mf">5.</span><span class="p">,</span>   <span class="mf">5.</span><span class="p">],</span>
+                                          <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">],</span>
+                                          <span class="o">...</span>
+                                          <span class="p">[</span><span class="o">-</span><span class="n">inf</span><span class="p">,</span>  <span class="n">inf</span><span class="p">]]),</span>
+                    <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;scipy&#39;</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;method&#39;</span><span class="p">:</span> <span class="s1">&#39;Powell&#39;</span><span class="p">}},</span>
+                    <span class="s1">&#39;minimization_options&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span> <span class="s1">&#39;ftol&#39;</span><span class="p">:</span> <span class="mf">0.0001</span><span class="p">},</span>
+                    <span class="s1">&#39;optimization_times&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.040598378982394934</span><span class="p">,</span> <span class="mf">0.041676215012557805</span><span class="p">,</span>
+                                           <span class="o">...</span>
+                                           <span class="mf">0.12507603599806316</span><span class="p">,</span> <span class="mf">0.060885928018251434</span><span class="p">],</span>
+                    <span class="s1">&#39;total_optimization_time&#39;</span><span class="p">:</span> <span class="mf">3.9257324769569095</span><span class="p">}}</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">progressbar=True</span></code> argument allows one to print a progress bar to monitor the evolution of the calculation of the maxima.
-If one prefers to scan randomly (with a flat distribution) with respect to using a grid, the
-argument <code class="docutils literal notranslate"><span class="pre">spacing=&quot;random&quot;</span></code> can be passed. For additional functionality of the
-<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method, such as the choice of
-the <code class="docutils literal notranslate"><span class="pre">scipy.optimize</span></code> optimizer, refer to the method documentation.
-Finally notice that the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method
-also calls the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> method to computes the
-global maximum with the same optimizer and timestamp, used to compute a <span class="math notranslate nohighlight">\(t_{\\mu}\)</span> test statistics. The latter is saved in the
-<code class="docutils literal notranslate"><span class="pre">&quot;tmu&quot;</span></code> item as a list of pairs with parameters in the first column and <span class="math notranslate nohighlight">\(t_{\\mu}\)</span> values in the second one.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">progressbar=True</span></code> argument allows one to print a progress bar to monitor the evolution of the
+calculation of the maxima. If one prefers to scan randomly (with a flat distribution) with respect
+to using an evenly spaced grid, the argument <code class="docutils literal notranslate"><span class="pre">spacing=&quot;random&quot;</span></code> can be passed.
+For additional functionality of the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method,
+such as the choice of the <code class="docutils literal notranslate"><span class="pre">scipy.optimize</span></code> optimizer, refer to the method documentation.
+Finally notice that the
+<a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf" title="DNNLikelihood.Lik.compute_profiled_maxima_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_profiled_maxima_logpdf</span></code></a> method
+also calls the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.compute_maximum_logpdf" title="DNNLikelihood.Lik.compute_maximum_logpdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.compute_maximum_logpdf</span></code></a> method
+to computes the global maximum with the same optimizer and timestamp (&lt;timestamp2&gt; in the example
+above), used to compute a <span class="math notranslate nohighlight">\(t_{\\mu}\)</span> test statistics. As shown in the code above,
+the latter is saved in the <code class="docutils literal notranslate"><span class="pre">&quot;tmu&quot;</span></code> item as a list of pairs with parameters in the first column
+and <span class="math notranslate nohighlight">\(t_{\\mu}\)</span> values in the second one.</p>
 <p>The computed values of <span class="math notranslate nohighlight">\(t_{\\mu}\)</span> can be plotted with the
 <a class="reference internal" href="methods.html#DNNLikelihood.Lik.plot_tmu_1d" title="DNNLikelihood.Lik.plot_tmu_1d"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.plot_tmu_1d</span></code></a> method as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timestamp</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -480,38 +727,102 @@ global maximum with the same optimizer and timestamp, used to compute a <span cl
                        <span class="n">title_fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
                        <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
                        <span class="n">show_plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                       <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                       <span class="n">overwrite</span><span class="o">=</span><span class="s2">&quot;dump&quot;</span><span class="p">,</span>
                        <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Making</span> <span class="n">plot</span> <span class="n">of</span> <span class="n">t_mu</span> <span class="n">test</span> <span class="n">statistics</span> <span class="k">as</span> <span class="n">function</span> <span class="n">of</span> <span class="n">paramerers</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Checking</span> <span class="ow">and</span> <span class="n">updating</span> <span class="n">figures</span> <span class="n">dictionary</span>
+
+    <span class="o">&lt;</span><span class="n">plot3</span><span class="o">&gt;</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Figure</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;/</span><span class="n">figures</span><span class="o">/</span><span class="n">dump_toy_likelihood_figure_tmu_0_datetime_2022_01_24_10_41_08_2717</span><span class="o">.</span><span class="n">pdf</span>
+    <span class="n">created</span> <span class="ow">and</span> <span class="n">saved</span> <span class="ow">in</span> <span class="mf">3.554831576999277</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.006060300000001462</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+        <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0011037999999530257</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>This prints the following plot in the active console</p>
+<p>where &lt;plot3&gt; is given by</p>
 <a class="with-shadow reference internal image-reference" href="../_images/likelihood_tmu.png"><img alt="../_images/likelihood_tmu.png" class="with-shadow" src="../_images/likelihood_tmu.png" style="width: 630.0px; height: 470.0px;" /></a>
-<p>and saves the corresponding file, whose path gets addded to the <code class="docutils literal notranslate"><span class="pre">&quot;Figures&quot;</span></code> item of the
+<p>The figure is also saved in the corresponding file, whose name is addded to the <code class="docutils literal notranslate"><span class="pre">&quot;Figures&quot;</span></code> item of the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> attribute:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span>
 
-<span class="o">&gt;&gt;</span> <span class="p">{</span><span class="s1">&#39;timestamp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&lt;my_output_folder&gt;/figures/toy_likelihood_figure_par_0.pdf&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;&lt;my_output_folder&gt;/figures/toy_likelihood_figure_par_5.pdf&#39;</span><span class="p">],</span>
-    <span class="s1">&#39;timestamp2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;&lt;my_output_folder&gt;/figures/toy_likelihood_figure_tmu_0.pdf&#39;</span><span class="p">]}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">{</span><span class="o">&lt;</span><span class="n">timestamp1</span><span class="o">&gt;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;toy_likelihood_figure_par_0.pdf&#39;</span><span class="p">,</span>
+                    <span class="s1">&#39;toy_likelihood_figure_par_5.pdf&#39;</span><span class="p">],</span>
+     <span class="o">&lt;</span><span class="n">timestamp2</span><span class="o">&gt;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;toy_likelihood_figure_tmu_0.pdf&#39;</span><span class="p">]}</span>
 </pre></div>
 </div>
+<p>Finally, one can save a likelihood script file that can be used to initialize a
+<a class="reference internal" href="../sampler/class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object (see <a class="reference internal" href="../sampler/index.html#sampler-object"><span class="std std-ref">the Sampler object</span></a>) as</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">timestamp</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">likelihood</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">likelihood</span><span class="o">.</span><span class="n">save_script</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0012540999999828273</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">script</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_script</span><span class="o">.</span><span class="n">py</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.0010519999999587526</span> <span class="n">s</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>which produces the file &lt;abs_path_to_output_folder&gt;/toy_likelihood_script.py. By providing the <code class="docutils literal notranslate"><span class="pre">timestamp</span></code>
+argument, one ensures that the chains in the <a class="reference internal" href="../sampler/class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> are initialized
+using the profiled maxima saved in the <code class="docutils literal notranslate"><span class="pre">likelihood.predictions[&quot;logpdf_profiled_max&quot;][timestamp]</span></code>
+item.</p>
 <p>Each of the above calls to <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> methods updates the
 <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.log" title="DNNLikelihood.Lik.log"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.log</span></code></a> attribute and the corresponding
-<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a> file (that stores a log of the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object).
-Even though the files corresponding to the saved object are usually kept sync with the object state, manual change of some attributes
-does not update them. Nevertheless, the full object can be saved at any time through</p>
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_log_file" title="DNNLikelihood.Lik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_log_file</span></code></a> file (that stores a log of the
+<a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object). Moreover, any method that modifies the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.predictions" title="DNNLikelihood.Lik.predictions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.predictions</span></code></a> attribute, updates by default (through the
+default argument <code class="docutils literal notranslate"><span class="pre">save=True</span></code> and <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code>) the
+<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_predictions_json_file" title="DNNLikelihood.Lik.output_predictions_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_predictions_json_file</span></code></a> file.
+Even though the files corresponding to the saved object
+are usually kept sync with the object state, manual change of some attributes does not update them.
+Nevertheless, the full object can be saved at any time through</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.005770800000050258</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">h5</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">h5</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.036816899999962516</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Predictions</span> <span class="n">json</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood_predictions</span><span class="o">.</span><span class="n">json</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.005177099999968959</span> <span class="n">s</span><span class="o">.</span>
+
+    <span class="o">==============================</span>
+    <span class="n">Likelihood</span> <span class="n">log</span> <span class="n">file</span>
+             <span class="o">&lt;</span><span class="n">abs_path_to_output_folder</span><span class="o">&gt;</span>\<span class="n">toy_likelihood</span><span class="o">.</span><span class="n">log</span>
+    <span class="n">updated</span> <span class="p">(</span><span class="ow">or</span> <span class="n">saved</span> <span class="k">if</span> <span class="n">it</span> <span class="n">did</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">)</span> <span class="ow">in</span> <span class="mf">0.001476699999898301</span> <span class="n">s</span><span class="o">.</span>
 </pre></div>
 </div>
-<p>The <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> ensure that the output files (generated when initializing the object) are updated. If one aims at saving the object
-to new files, the <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code> argument should be passed.</p>
-<p>Finally, one can save a likelihood script file that will be used to initialize a <a class="reference internal" href="../sampler/class.html#DNNLikelihood.Sampler" title="DNNLikelihood.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a> object
-(see <a class="reference internal" href="../sampler/index.html#sampler-object"><span class="std std-ref">the Sampler object</span></a>) as</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood</span><span class="o">.</span><span class="n">save_script</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>which produces the file &lt;my_output_folder&gt;/toy_likelihood_script.py.</p>
-</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">overwrite=True</span></code> ensure that the output files are updated.
+If one aims at saving the object to new files, the <code class="docutils literal notranslate"><span class="pre">overwrite=False</span></code> argument should be passed.
+Finally, one can make a full “dump” of the object, without modifying its current state and output files
+with the <code class="docutils literal notranslate"><span class="pre">overwrite=&quot;dump&quot;</span></code> option.</p>
+</section>
 
 
            </div>
@@ -524,7 +835,7 @@ to new files, the <code class="docutils literal notranslate"><span class="pre">o
         <a href="class.html" class="btn btn-neutral float-right" title="Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral float-left" title="The Likelihood object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Lik object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

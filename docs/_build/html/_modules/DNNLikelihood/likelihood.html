@@ -215,26 +215,27 @@
 <span class="sd">        - :argument:`input_file` is ``None`` (default)</span>
 
 <span class="sd">            All other arguments are parsed and saved in corresponding attributes. If no :argument:`name` is given, </span>
-<span class="sd">            then one is created. </span>
-<span class="sd">            The object is saved upon creation through the :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method. </span>
+<span class="sd">            then one is created. The object is saved upon creation through the :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method. </span>
 <span class="sd">        </span>
 <span class="sd">        - :argument:`input_file` is not ``None``</span>
 
 <span class="sd">            The object is reconstructed from the input files through the private method</span>
 <span class="sd">            :meth:`Lik.__load &lt;DNNLikelihood.Lik._Lik__load&gt;`</span>
-<span class="sd">            Depending on the value of the input argument :argument:`output_folder` the :meth:`Lik.__init__ &lt;DNNLikelihood.Lik.__init__&gt;` method behaves as follows:</span>
+<span class="sd">            Depending on the value of the input argument :argument:`output_folder` the </span>
+<span class="sd">            :meth:`Lik.__init__ &lt;DNNLikelihood.Lik.__init__&gt;` method behaves as follows:</span>
 
-<span class="sd">                - If :argument:`output_folder` is ``None`` (default)</span>
+<span class="sd">                - If :argument:`output_folder` is ``None`` (default) or is equal to :argument:`input_folder`</span>
 <span class="sd">                    </span>
 <span class="sd">                    The attribute :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;`</span>
-<span class="sd">                    is set from the :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;` one.</span>
-<span class="sd">                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` attribute</span>
-<span class="sd">                    </span>
-<span class="sd">                    - if path stored in the loaded :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);</span>
-<span class="sd">                    - if path stored in the loaded :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` does not exists, then the content of the path :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;` is copied to the new ``output_folder``.</span>
-<span class="sd">                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` attribute</span>
-<span class="sd">                    </span>
-<span class="sd">                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.</span>
+<span class="sd">                    is set equal to the :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;` one.</span>
+
+<span class="sd">                - If :argument:`output_folder` is not ``None`` and is different than :argument:`input_folder`</span>
+
+<span class="sd">                    The new :argument:`output_folder` is saved in the </span>
+<span class="sd">                    :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` attribute and files present in the </span>
+<span class="sd">                    input folder are copied to the new output folder, so that all previous results are preserved in the new path.</span>
+
+<span class="sd">            The object is saved upon import through the :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method.</span>
 <span class="sd">        </span>
 <span class="sd">        - **Arguments**</span>
 
@@ -242,20 +243,23 @@
 
 <span class="sd">        - **Creates/updates files**</span>
 
-<span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)</span>
-<span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_h5_file &lt;Lik.Histfactory.output_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_json_file &lt;Lik.Histfactory.output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_log_file &lt;Lik.Histfactory.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_predictions_json_file &lt;Lik.Histfactory.output_predictions_json_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Initialize Likelihood object.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">output_folder</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_input_files</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="p">{</span><span class="n">timestamp</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;created&quot;</span><span class="p">}}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_name</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span> <span class="o">=</span> <span class="n">_FunctionWrapper</span><span class="p">(</span><span class="n">logpdf</span><span class="p">,</span> <span class="n">logpdf_args</span><span class="p">,</span> <span class="n">logpdf_kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_poi</span> <span class="o">=</span> <span class="n">pars_pos_poi</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pars_pos_nuis</span> <span class="o">=</span> <span class="n">pars_pos_nuis</span>
@@ -269,27 +273,34 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__load</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span>
             <span class="k">except</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">reset_predictions</span><span class="p">(</span><span class="n">delete_figures</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],</span><span class="n">output_figures_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">)</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reset_predictions</span><span class="p">(</span><span class="n">delete_figures</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],</span><span class="n">output_figures_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__check_define_input_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method used by the :meth:`Lik.__init__ &lt;DNNLikelihood.Lik.__init__&gt;` one</span>
-<span class="sd">        to set the attributes corresponding to input files</span>
+<span class="sd">        to set the attributes corresponding to input files and folders</span>
 <span class="sd">        </span>
-<span class="sd">            - :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;`,</span>
-<span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`,</span>
+<span class="sd">            - :attr:`Lik.input_file &lt;DNNLikelihood.Lik.input_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;`</span>
 
-<span class="sd">        depending on the value of the </span>
+<span class="sd">        depending on the initial value of the </span>
 <span class="sd">        :attr:`Lik.input_file &lt;DNNLikelihood.Lik.input_file&gt;` attribute.</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
@@ -304,32 +315,38 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Lik input folder set to</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span><span class="p">,</span><span class="s2">&quot;.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__check_define_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__check_define_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method used by the :meth:`Lik.__init__ &lt;DNNLikelihood.Lik.__init__&gt;` one</span>
-<span class="sd">        to set the attributes corresponding to output folders</span>
+<span class="sd">        to set the attributes corresponding to output files and folders</span>
 <span class="sd">        </span>
-<span class="sd">            - :attr:`Lik.output_figures_folder &lt;DNNLikelihood.Lik.output_figures_folder&gt;`</span>
-<span class="sd">            - :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;`</span>
-
-<span class="sd">        and output files</span>
-
 <span class="sd">            - :attr:`Lik.output_figures_base_file &lt;DNNLikelihood.Lik.output_figures_base_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_figures_folder &lt;DNNLikelihood.Lik.output_figures_folder&gt;`</span>
+<span class="sd">            - :attr:`Lik.script_file &lt;DNNLikelihood.Lik.script_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;`</span>
 <span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_json_file &lt;DNNLikelihood.Lik.output_json_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.output_predictions_json_file &lt;DNNLikelihood.Lik.output_predictions_json_file&gt;`</span>
-<span class="sd">            - :attr:`Lik.script_file &lt;DNNLikelihood.Lik.script_file&gt;`</span>
 
-<span class="sd">        depending on the value of the</span>
-<span class="sd">        :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` attribute.</span>
-<span class="sd">        It also creates the folders</span>
-<span class="sd">        :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;`</span>
-<span class="sd">        and :attr:`Lik.output_figures_folder &lt;DNNLikelihood.Lik.output_figures_folder&gt;` if </span>
-<span class="sd">        they do not exist.</span>
+<span class="sd">        depending on the initial values of the </span>
+<span class="sd">        :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;` and</span>
+<span class="sd">        :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;` attributes.</span>
+<span class="sd">        It also creates the output folder if it does not exist.</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **timestamp**</span>
+<span class="sd">            </span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span><span class="p">:</span>
                 <span class="n">utils</span><span class="o">.</span><span class="n">copy_and_save_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -340,6 +357,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span> <span class="o">=</span>  <span class="n">utils</span><span class="o">.</span><span class="n">check_create_folder</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="s2">&quot;figures&quot;</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.h5&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;.log&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_predictions_json_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_predictions.json&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">script_file</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">+</span><span class="s2">&quot;_script.py&quot;</span><span class="p">)</span>
@@ -351,9 +369,9 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method used by the :meth:`Lik.__init__ &lt;DNNLikelihood.Lik.__init__&gt;` one</span>
 <span class="sd">        to define the :attr:`Lik.name &lt;DNNLikelihood.Lik.name&gt;` attribute.</span>
-<span class="sd">        If it is ``None`` it replaces it with </span>
-<span class="sd">        ``&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_likelihood&quot;``,</span>
-<span class="sd">        otherwise it appends the suffix &quot;_likelihood&quot; (preventing duplication if it is already present).</span>
+<span class="sd">        If the latter attribute is ``None``, then it is replaced with </span>
+<span class="sd">        ``&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_likelihood&quot;``, otherwise </span>
+<span class="sd">        the suffix &quot;_likelihood&quot; is appended (preventing duplication if it is already present).  </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
@@ -366,7 +384,7 @@
 <span class="sd">        Private method used by the :meth:`Lik.__check_define_pars &lt;DNNLikelihood.Lik._Lik__check_define_pars&gt;` one</span>
 <span class="sd">        to define the :attr:`Lik.ndims &lt;DNNLikelihood.Lik.ndims&gt;` attribute.</span>
 <span class="sd">        To determine the number of dimensions it computes the logpdf, by calling the</span>
-<span class="sd">        :meth:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` passing it a vector of growing size</span>
+<span class="sd">        :meth:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` method on a vector of growing size</span>
 <span class="sd">        until it does not generate an error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span>
@@ -382,7 +400,7 @@
     <span class="k">def</span> <span class="nf">__check_define_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method used by the :meth:`Lik.__init__ &lt;DNNLikelihood.Lik.__init__&gt;` one</span>
-<span class="sd">        to check the consistency and set the attributes</span>
+<span class="sd">        to check parameters consistency and set the attributes</span>
 
 <span class="sd">            - :attr:`Lik.ndims &lt;DNNLikelihood.Lik.ndims&gt;` </span>
 <span class="sd">            - :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;` (converted into ``numpy.ndarray``)</span>
@@ -397,7 +415,7 @@
 <span class="sd">        method to determine the number of dimensions :attr:`Lik.ndims &lt;DNNLikelihood.Lik.ndims&gt;`</span>
 <span class="sd">        and sets :attr:`Lik.pars_central &lt;DNNLikelihood.Lik.pars_central&gt;`</span>
 <span class="sd">        to a vector of zeros with length :attr:`Lik.ndims &lt;DNNLikelihood.Lik.ndims&gt;`, warning the user that</span>
-<span class="sd">        dimensiona and parameters central values have been automatically determined.</span>
+<span class="sd">        dimensions and parameters central values have been automatically determined.</span>
 <span class="sd">        If no parameters positions are specified, all parameters are assumed to be parameters of interest.</span>
 <span class="sd">        If only the position of the parameters of interest or of the nuisance parameters is specified,</span>
 <span class="sd">        the other is automatically generated by matching dimensions.</span>
@@ -406,6 +424,12 @@
 <span class="sd">        If parameters bounds are not provided, they are set to ``(-np.inf,np.inf)``.</span>
 <span class="sd">        A check is performed on the length of the four attributes and an Exception is raised if the length</span>
 <span class="sd">        does not match :attr:`Lik.ndims &lt;DNNLikelihood.Lik.ndims&gt;`.</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -462,25 +486,23 @@
 <span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`</span>
 
 <span class="sd">        The method loads, with the |deepdish_link| package, the content od the </span>
-<span class="sd">        :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;` file into a temporary dictionary, subsequently used to update the </span>
+<span class="sd">        :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;`</span>
+<span class="sd">        file into a temporary dictionary, subsequently used to update the </span>
 <span class="sd">        :attr:`Lik.__dict__ &lt;DNNLikelihood.Lik.__dict__&gt;` attribute.</span>
-<span class="sd">        The ``&quot;logpdf_dump&quot;`` item of the loaded dictionary is a ``numpy.void`` object containing the a dump of the callable</span>
-<span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` attribute produced by the |cloudpickle_link| package</span>
-<span class="sd">        (see the documentation of the :attr:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method). This item is first</span>
-<span class="sd">        converted into a (binary) string, then loaded with |cloudpickle_link| to reconstruct the </span>
-<span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` attribute.</span>
 <span class="sd">        The method also loads the content of the :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`</span>
 <span class="sd">        file, assigning it to the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` attribute.</span>
+
+<span class="sd">        The ``&quot;logpdf_dump&quot;`` item of the loaded dictionary is a ``numpy.void`` object containing the a dump of the callable</span>
+<span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` attribute produced by the |cloudpickle_link| package</span>
+<span class="sd">        (see the documentation of the :attr:`Lik.save_h5&lt;DNNLikelihood.Lik.save_h5&gt;` method). This item is first</span>
+<span class="sd">        converted into a (binary) string, then loaded with |cloudpickle_link| to reconstruct the</span>
+<span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` callable attribute.</span>
 
 <span class="sd">        - **Arguments**</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
@@ -508,7 +530,7 @@
 
 <span class="sd">            - **pars_labels**</span>
 <span class="sd">            </span>
-<span class="sd">                Could be either one of the keyword strings ``&quot;original&quot;`` and ``&quot;autp&quot;`` or a list of labels</span>
+<span class="sd">                Could be either one of the keyword strings ``&quot;original&quot;`` and ``&quot;auto&quot;`` or a list of labels</span>
 <span class="sd">                strings with the length of the parameters array. If ``pars_labels=&quot;original&quot;`` or ``pars_labels=&quot;auto&quot;``</span>
 <span class="sd">                the function returns the value of :attr:`Lik.pars_labels &lt;DNNLikelihood.Lik.pars_labels&gt;`</span>
 <span class="sd">                or :attr:`Lik.pars_labels_auto &lt;DNNLikelihood.Lik.pars_labels_auto&gt;`, respectively,</span>
@@ -527,7 +549,7 @@
 
 <div class="viewcode-block" id="Lik.save_log"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save_log">[docs]</a>    <span class="k">def</span> <span class="nf">save_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Saves the content of the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` attribute in the file</span>
+<span class="sd">        Saves the content of the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` attribute in the json file</span>
 <span class="sd">        :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`.</span>
 
 <span class="sd">        This method is called by the methods</span>
@@ -544,47 +566,29 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is passed to the</span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function</span>
-<span class="sd">                to generate the dump file name.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 <span class="sd">            </span>
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode.</span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates file**</span>
 
 <span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="n">output_log_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
                 <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">output_log_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
             <span class="n">output_log_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
         <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -598,7 +602,7 @@
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood log file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">save_predictions_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Lik.save_predictions_json"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save_predictions_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_predictions_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Save predictions json</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
@@ -624,71 +628,59 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predictions json file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predictions json file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predictions json file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Lik.save"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Lik.save_h5"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save_h5">[docs]</a>    <span class="k">def</span> <span class="nf">save_h5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The :class:`Lik &lt;DNNLikelihood.Lik&gt;` object is saved to the HDF5 file</span>
-<span class="sd">        :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;` and the object log is saved</span>
-<span class="sd">        to the json file :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`.</span>
-<span class="sd">        The object is saved by storing the content of the :attr:``Lik.__dict__ &lt;DNNLikelihood.Lik.__dict__&gt;`` </span>
-<span class="sd">        attribute in an h5 file using the |deepdish_link| package.</span>
-<span class="sd">        In order to be able to store the callable :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` attribute, this is first</span>
-<span class="sd">        serialized to a byte string using the |cloudpickle_link| package, and then encoded into a ``numpy.void`` object.</span>
-<span class="sd">        This is stored in a dedicated ``&quot;logpdf_dump&quot;`` key of the object dictionary and is used to restore the </span>
-<span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` attribute when the object is loaded (see the documentation of the </span>
-<span class="sd">        :meth:`Lik.__load &lt;DNNLikelihood.Lik._Lik__load&gt;` method). The following attributes are excluded from the saved</span>
-<span class="sd">        dictionary:</span>
+<span class="sd">        Saves the :class:`Lik &lt;DNNLikelihood.Lik&gt;` object to the HDF5 file</span>
+<span class="sd">        :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;`.</span>
+<span class="sd">        The object is saved by storing the content of the </span>
+<span class="sd">        :attr:``Lik.__dict__ &lt;DNNLikelihood.Lik.__dict__&gt;`` </span>
+<span class="sd">        attribute in a .h5 file using the |deepdish_link| package. </span>
+<span class="sd">        The following attributes are excluded from the saved dictionary:</span>
 
 <span class="sd">            - :attr:`Lik.input_file &lt;DNNLikelihood.Lik.input_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;`</span>
 <span class="sd">            - :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`</span>
-<span class="sd">            - :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_figures_base_file_name &lt;DNNLikelihood.Lik.output_figures_base_file_name&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_figures_base_file_path &lt;DNNLikelihood.Lik.output_figures_base_file_path&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_figures_folder &lt;DNNLikelihood.Lik.output_figures_folder&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_json_file &lt;DNNLikelihood.Lik.output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_predictions_json_file &lt;DNNLikelihood.Lik.output_predictions_json_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.script_file &lt;DNNLikelihood.Lik.script_file&gt;`</span>
 <span class="sd">            - :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` (saved to the file :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`)</span>
 <span class="sd">            - :attr:`Lik.verbose &lt;DNNLikelihood.Lik.verbose&gt;`</span>
+
+<span class="sd">        In order to save the callable :attr:`Lik.logpdf&lt;DNNLikelihood.Lik.logpdf&gt;` attribute, an item with key ``&quot;logpdf_dump&quot;``</span>
+<span class="sd">        is added to the :attr:`Lik.__dict__ &lt; DNNLikelihood.Lik.__dict__&gt;` class dictionary. Such item contains as value </span>
+<span class="sd">        a ``numpy.void`` object created from a dump of the callable function produced with the |cloudpickle_link| package.</span>
 
 <span class="sd">        - **Arguments**</span>
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used to update the </span>
-<span class="sd">                :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` object and, when ``overwrite=&quot;dump&quot;``, is passed to the</span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function</span>
-<span class="sd">                to generate the dump file name.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates files**</span>
 
 <span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;`</span>
-<span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="n">output_h5_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_h5_file</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
@@ -704,10 +696,11 @@
                                                           <span class="s2">&quot;output_figures_folder&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;output_folder&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;output_h5_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_json_file&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;output_log_file&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;output_predictions_json_file&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;script_file&quot;</span><span class="p">,</span>
-                                                          <span class="s2">&quot;logpdf&quot;</span><span class="p">,</span> 
+                                                          <span class="s2">&quot;logpdf&quot;</span><span class="p">,</span>
                                                           <span class="s2">&quot;log&quot;</span><span class="p">,</span> 
                                                           <span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
         <span class="n">dump</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">void</span><span class="p">(</span><span class="n">cloudpickle</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="p">))</span>
@@ -716,8 +709,6 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved&quot;</span><span class="p">,</span>
                                <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">output_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_predictions_json</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood h5 file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_h5_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">updated (or saved if it did not exist) in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -725,6 +716,113 @@
                 <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood h5 file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_h5_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood h5 file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_h5_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Lik.save_json"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Part of the :class:`Lik &lt;DNNLikelihood.Lik&gt;` object is also saved to the human</span>
+<span class="sd">        readable json file :attr:`Lik.output_json_file &lt;DNNLikelihood.Lik.output_json_file&gt;`.</span>
+
+<span class="sd">        The object is saved by storing all json serializable attributes obtained from the</span>
+<span class="sd">        :attr:``Lik.__dict__ &lt;DNNLikelihood.Lik.__dict__&gt;`` </span>
+<span class="sd">        attribute. The following attributes are excluded from the saved dictionary:</span>
+
+<span class="sd">            - :attr:`Lik.input_file &lt;DNNLikelihood.Lik.input_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_folder &lt;DNNLikelihood.Lik.input_folder&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_h5_file &lt;DNNLikelihood.Lik.input_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.input_log_file &lt;DNNLikelihood.Lik.input_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_figures_base_file_name &lt;DNNLikelihood.Lik.output_figures_base_file_name&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_figures_base_file_path &lt;DNNLikelihood.Lik.output_figures_base_file_path&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_figures_folder &lt;DNNLikelihood.Lik.output_figures_folder&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_folder &lt;DNNLikelihood.Lik.output_folder&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_json_file &lt;DNNLikelihood.Lik.output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_predictions_json_file &lt;DNNLikelihood.Lik.output_predictions_json_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.script_file &lt;DNNLikelihood.Lik.script_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;`</span>
+<span class="sd">            - :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` (saved to the file :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`)</span>
+<span class="sd">            - :attr:`Lik.verbose &lt;DNNLikelihood.Lik.verbose&gt;`</span>
+
+<span class="sd">        - **Arguments**</span>
+
+<span class="sd">            Same arguments of the :meth:`Lik.save_h5 &lt;DNNLikelihood.Lik.save_h5&gt;` method.</span>
+
+<span class="sd">        - **Creates/updates files**</span>
+
+<span class="sd">            - :attr:`Lik.output_json_file &lt;DNNLikelihood.Lik.output_json_file&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="n">output_json_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">output_json_file</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="n">output_json_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_name</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">output_json_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">dic_minus_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;input_file&quot;</span><span class="p">,</span> 
+                                                          <span class="s2">&quot;input_folder&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;input_h5_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;input_log_file&quot;</span><span class="p">,</span> 
+                                                          <span class="s2">&quot;output_figures_base_file_name&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_figures_base_file_path&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_figures_folder&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_folder&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_h5_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_json_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_log_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;output_predictions_json_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;script_file&quot;</span><span class="p">,</span>
+                                                          <span class="s2">&quot;logpdf&quot;</span><span class="p">,</span> 
+                                                          <span class="s2">&quot;log&quot;</span><span class="p">,</span> 
+                                                          <span class="s2">&quot;verbose&quot;</span><span class="p">])</span>
+        <span class="n">dictionary</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">convert_types_dict</span><span class="p">(</span><span class="n">dictionary</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_json_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dictionary</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved object json&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">output_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]}</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">overwrite</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood json file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">updated (or saved if it did not exist) in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood json file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood json file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Lik.save"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Saves the :class:`Lik &lt;DNNLikelihood.Lik&gt;` object by calling, in the following order,</span>
+<span class="sd">        the four methods:</span>
+<span class="sd">        </span>
+<span class="sd">            - :meth:`Lik.save_json &lt;DNNLikelihood.Lik.save_json&gt;`</span>
+<span class="sd">            - :meth:`Lik.save_h5 &lt;DNNLikelihood.Lik.save_h5&gt;`</span>
+<span class="sd">            - :meth:`Lik.save_predictions_json &lt;DNNLikelihood.Lik.save_json&gt;`</span>
+<span class="sd">            - :meth:`Lik.save_log &lt;DNNLikelihood.Lik.save_log&gt;`</span>
+
+<span class="sd">        The :class:`Lik &lt;DNNLikelihood.Lik&gt;` object is saved to three files: an HDF5 compressed file</span>
+<span class="sd">        used to import back the object, a human-readable json file including json serializable</span>
+<span class="sd">        attributes, and a log file including the content of the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;`</span>
+<span class="sd">        attribute.</span>
+
+<span class="sd">        - **Arguments**</span>
+<span class="sd">            </span>
+<span class="sd">            Same arguments as the called methods.</span>
+
+<span class="sd">        - **Creates/updates files**</span>
+
+<span class="sd">            - :attr:`Lik.output_h5_file &lt;Lik.Histfactory.output_h5_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_json_file &lt;Lik.Histfactory.output_json_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_log_file &lt;Lik.Histfactory.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_predictions_json_file &lt;Lik.Histfactory.output_predictions_json_file&gt;`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_json</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_h5</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_predictions_json</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Lik.save_script"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.save_script">[docs]</a>    <span class="k">def</span> <span class="nf">save_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -734,45 +832,24 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used to update the </span>
-<span class="sd">                :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` object and, when ``overwrite=&quot;dump&quot;``, is passed to the</span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function</span>
-<span class="sd">                to generate the dump file name.</span>
-<span class="sd">                The timestamp input is also used to search in the :attr:`Lik.prediction &lt;DNNLikelihood.Lik.prediction&gt;`</span>
-<span class="sd">                attribute for profiled maxima information to be used as parameters initialization for sampling.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
 <span class="sd">                    </span>
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates file**</span>
 
 <span class="sd">            - :attr:`Lik.script_file &lt;DNNLikelihood.Lik.script_file&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">overwrite</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">:</span>
             <span class="n">output_script_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">script_file</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">overwrite</span><span class="p">:</span>
@@ -788,7 +865,6 @@
                            <span class="s2">&quot;name = lik.name</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;def logpdf(x_pars,*args,**kwargs):</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">return lik.logpdf_fn(x_pars,*args,**kwargs)</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
-                           <span class="c1">#&quot;logpdf = lik.logpdf_fn\n&quot; +</span>
                            <span class="s2">&quot;logpdf_args = lik.logpdf.args</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;logpdf_kwargs = lik.logpdf.kwargs</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
                            <span class="s2">&quot;pars_pos_poi = lik.pars_pos_poi</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span>
@@ -817,24 +893,23 @@
 
 <div class="viewcode-block" id="Lik.logpdf_fn"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.logpdf_fn">[docs]</a>    <span class="k">def</span> <span class="nf">logpdf_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pars</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function is used to add constraints and standardize input/output of </span>
-<span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;`.</span>
-<span class="sd">        It is constructed from the :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` and </span>
-<span class="sd">        :attr:`Lik.logpdf_args &lt;DNNLikelihood.Lik.logpdf_args&gt;` attributes. </span>
+<span class="sd">        This function is used to add constraints and standardize input/output of the</span>
+<span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` callable attribute.</span>
+<span class="sd">        It is constructed from the :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` attribute. </span>
 <span class="sd">        In the case :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` accepts a single array of </span>
 <span class="sd">        parameters ``x_pars`` and returns the logpdf value one point at a time, then the function returns a ``float``, </span>
 <span class="sd">        while if :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` is vectorized,</span>
 <span class="sd">        i.e. accepts an array of ``x_pars`` arrays and returns an array of logpdf values, then the function returns an array. </span>
 <span class="sd">        Moreover, the :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;` method is constructed to return the</span>
 <span class="sd">        logpdf value ``-np.inf`` if any of the parameters lies outside </span>
-<span class="sd">        :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;` or the </span>
+<span class="sd">        :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;` or if the </span>
 <span class="sd">        :attr:`Lik.logpdf &lt;DNNLikelihood.Lik.logpdf&gt;` function returns ``nan``.</span>
 
 <span class="sd">        - **Arguments**</span>
 
 <span class="sd">            - **x_pars**</span>
 
-<span class="sd">                Values of the parameters for which logpdf is computed.</span>
+<span class="sd">                Values of the parameters for which the logpdf is computed.</span>
 <span class="sd">                It could be a single point in parameter space corresponding to an array with shape ``(n_pars,)``) </span>
 <span class="sd">                or a list of points corresponding to an array with shape ``(n_points,n_pars)``, depending on the </span>
 <span class="sd">                equivalent argument accepted by ``Lik.logpdf``.</span>
@@ -887,11 +962,13 @@
 
 <div class="viewcode-block" id="Lik.reset_predictions"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.reset_predictions">[docs]</a>    <span class="k">def</span> <span class="nf">reset_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                           <span class="n">delete_figures</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                          <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                           <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Re-initializes the :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary to</span>
 
-<span class="sd">         .. code-block:: python</span>
+<span class="sd">        .. code-block:: python</span>
 
 <span class="sd">            predictions = {&quot;logpdf_max&quot;: {},</span>
 <span class="sd">                           &quot;logpdf_profiled_max&quot;: {},</span>
@@ -908,18 +985,37 @@
 <span class="sd">                folder are deleted and the ``&quot;Figures&quot;`` item is reset to an empty dictionary.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``True`` </span>
+<span class="sd">                    - **default**: ``True``</span>
+
+<span class="sd">            - **save**</span>
 <span class="sd">            </span>
-<span class="sd">            - **verbose**</span>
-<span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
+<span class="sd">                If ``True`` the object is saved after resetting the dictionary.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                    - **default**: ``False``</span>
+
+<span class="sd">            - **overwrite**</span>
+<span class="sd">            </span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
+
+<span class="sd">            - **verbose**</span>
+<span class="sd">            </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
+
+<span class="sd">         - **Creates/updates files**</span>
+
+<span class="sd">            - :attr:`Lik.output_h5_file &lt;DNNLikelihood.Lik.output_predictions_json_file&gt;` (only if ``save=True``)</span>
+<span class="sd">            - :attr:`Lik.output_json_file &lt;DNNLikelihood.Lik.output_predictions_json_file&gt;` (only if ``save=True``)</span>
+<span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;`</span>
+<span class="sd">            - :attr:`Lik.output_predictions_json_file &lt;DNNLikelihood.Lik.output_predictions_json_file&gt;` (only if ``save=True``)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Resetting predictions.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">delete_figures</span><span class="p">:</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">check_delete_all_files_in_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">)</span>
             <span class="n">figs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -929,14 +1025,23 @@
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">All predictions have been deleted and the &#39;predictions&#39; attribute has been initialized. No figure file has been deleted.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">:</span> <span class="p">{},</span>
                             <span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">:</span> <span class="p">{},</span>
-                            <span class="s2">&quot;Figures&quot;</span><span class="p">:</span> <span class="n">figs</span><span class="p">}</span></div>
-
+                            <span class="s2">&quot;Figures&quot;</span><span class="p">:</span> <span class="n">figs</span><span class="p">}</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;reset predictions&quot;</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predictions reset in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        
 <div class="viewcode-block" id="Lik.compute_maximum_logpdf"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.compute_maximum_logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_maximum_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                <span class="n">pars_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                               <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                                <span class="n">optimizer</span><span class="o">=</span><span class="p">{},</span>
+                               <span class="n">minimization_options</span><span class="o">=</span><span class="p">{},</span>
                                <span class="n">timestamp</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                               <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                               <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                               <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the maximum of :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;`. </span>
@@ -944,10 +1049,9 @@
 <span class="sd">        are stored in the ``&quot;logpdf_max&quot;`` item of the :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary.</span>
 <span class="sd">        The method uses the function :func:`inference.compute_maximum_logpdf &lt;DNNLikelihood.inference.compute_maximum_logpdf&gt;`</span>
 <span class="sd">        based on |scipy_optimize_minimize_link| to find the minimum of minus </span>
-<span class="sd">        :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;`. Since the latter</span>
-<span class="sd">        method already contains a bounded logpdf, ``pars_bounds`` is set to ``None`` in the </span>
-<span class="sd">        :func:`inference.compute_maximum_logpdf &lt;DNNLikelihood.inference.compute_maximum_logpdf&gt;`</span>
-<span class="sd">        function to optimize speed. See the documentation of the</span>
+<span class="sd">        :meth:`Lik.logpdf_fn &lt;DNNLikelihood.Lik.logpdf_fn&gt;`. If ``pars_bounds`` is ``None``, then</span>
+<span class="sd">        the :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;` attribute are used. </span>
+<span class="sd">        See the documentation of the</span>
 <span class="sd">        :func:`inference.compute_maximum_logpdf &lt;DNNLikelihood.inference.compute_maximum_logpdf&gt;` </span>
 <span class="sd">        function for details.</span>
 
@@ -962,6 +1066,15 @@
 <span class="sd">                    - **shape**: ``(ndim,)``</span>
 <span class="sd">                    - **default**: ``None`` (automatically modified to :attr:`Lik.pars_central &lt;DNNLikelihood.Lik.pars_central&gt;`)</span>
 
+<span class="sd">            - **pars_bounds**</span>
+<span class="sd">            </span>
+<span class="sd">                Bounds on the parameters. If it is ``None``, then default parameters bounds stored in the </span>
+<span class="sd">                :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;` attribute are used.</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``numpy.ndarray``</span>
+<span class="sd">                    - **shape**: ``(ndim,2)``</span>
+<span class="sd">                    - **default**: ``None``</span>
+
 <span class="sd">            - **optimizer**</span>
 
 <span class="sd">                Dictionary containing information on the optimizer and its options.</span>
@@ -969,12 +1082,13 @@
 <span class="sd">                    - **type**: ``dict`` with the following structure:</span>
 
 <span class="sd">                        - *&quot;name&quot;* (value type: ``str``)</span>
-<span class="sd">                          This is always set to ``&quot;scipy&quot;``, which is by now the only available optimizer for this task. As more</span>
-<span class="sd">                          optimizers will be supported the ``&quot;name&quot;`` key will indicate the chosen one.</span>
-<span class="sd">                        - *&quot;method&quot;* (value type: ``str``)</span>
-<span class="sd">                          Optimizer method. For the |scipy_optimize_minimize_link| optimizer the default method is given by ``&quot;Powell&quot;``.</span>
-<span class="sd">                        - *&quot;options&quot;* (value type: ``dict``)</span>
-<span class="sd">                          Dictionary containing additional options to pass to the |scipy_optimize_minimize_link| function.</span>
+<span class="sd">                          This is always set to ``&quot;scipy&quot;``, which is, by now, the only available optimizer for this task. </span>
+<span class="sd">                          As more optimizers will be supported the ``&quot;name&quot;`` key will indicate the chosen one.</span>
+<span class="sd">                        - *&quot;args&quot;* (value type: ``str``)</span>
+<span class="sd">                          Additional positional arguments passed to the |scipy_optimize_minimize_link| method.</span>
+<span class="sd">                        - *&quot;kwargs&quot;* (value type: ``dict``)</span>
+<span class="sd">                          Additional keyword arguments passed to the |scipy_optimize_minimize_link| method (set to the</span>
+<span class="sd">                          ``{&quot;method&quot;: &quot;Powell&quot;}`` dictionary by default).</span>
 
 <span class="sd">                    - **default**: {}</span>
 <span class="sd">                    - **schematic example**:</span>
@@ -982,48 +1096,43 @@
 <span class="sd">                        .. code-block:: python</span>
 <span class="sd">                            </span>
 <span class="sd">                            optimizer={&quot;name&quot;: &quot;scipy&quot;,</span>
-<span class="sd">                                       &quot;method&quot;: &quot;Powell&quot;,</span>
-<span class="sd">                                       &quot;options&quot;: {&quot;maxiter&quot;: 10000,</span>
-<span class="sd">                                                   &quot;ftol&quot;: 0.001}}</span>
+<span class="sd">                                       &quot;args&quot;: [],</span>
+<span class="sd">                                       &quot;kwargs&quot;: {&quot;method&quot;: &quot;Powell&quot;}},</span>
+
+<span class="sd">            - **minimization_options**</span>
+
+<span class="sd">                Dictionary containing options to be passed to the |scipy_optimize_minimize_link| method </span>
+<span class="sd">                (i.e. value of the &quot;options&quot; keyword argument of the |scipy_optimize_minimize_link| method).</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``dict``</span>
+<span class="sd">                    - **default**: {}</span>
+<span class="sd">                    - **schematic example**:</span>
+
+<span class="sd">                        .. code-block:: python</span>
+<span class="sd">                            </span>
+<span class="sd">                            minimization_options={&quot;maxiter&quot;: 10000,</span>
+<span class="sd">                                                  &quot;ftol&quot;: 0.0001},</span>
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Lik.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Lik.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **save**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` the object is saved (by passing the ``overwrite`` argument to the</span>
-<span class="sd">                :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method).</span>
+<span class="sd">                If ``True`` the object is saved after the calculation.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates files**</span>
 
@@ -1031,13 +1140,14 @@
 <span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;` (always)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Computing absolute maximum&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Computing global maximum.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">check_set_dict_keys</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
-                                              <span class="s2">&quot;method&quot;</span><span class="p">,</span>
-                                              <span class="s2">&quot;options&quot;</span><span class="p">],</span>
-                                             <span class="p">[</span><span class="s2">&quot;scipy&quot;</span><span class="p">,</span> <span class="s2">&quot;Powell&quot;</span><span class="p">,</span> <span class="p">{}],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+                                              <span class="s2">&quot;args&quot;</span><span class="p">,</span>
+                                              <span class="s2">&quot;kwargs&quot;</span><span class="p">],</span>
+                                             <span class="p">[</span><span class="s2">&quot;scipy&quot;</span><span class="p">,[],{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Powell&quot;</span><span class="p">}],</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pars_init</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1045,23 +1155,28 @@
         <span class="n">utils</span><span class="o">.</span><span class="n">check_set_dict_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">],</span>
                                   <span class="p">[</span><span class="n">timestamp</span><span class="p">],</span>
                                   <span class="p">[{}],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">inference</span><span class="o">.</span><span class="n">compute_maximum_logpdf</span><span class="p">(</span><span class="n">logpdf</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">logpdf_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">logpdf</span><span class="o">.</span><span class="n">kwargs</span><span class="p">),</span> 
                                                <span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
-                                               <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                               <span class="n">pars_bounds</span><span class="o">=</span><span class="n">pars_bounds</span><span class="p">,</span>
                                                <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                                               <span class="n">minimization_options</span><span class="o">=</span><span class="n">minimization_options</span><span class="p">,</span>
                                                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;x&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;y&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars_init</span>
+        <span class="k">if</span> <span class="n">pars_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars_bounds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;minimization_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minimization_options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;optimization_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum logpdf computed in&quot;</span><span class="p">,</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span><span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;computed maximum logpdf&quot;</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Maximum logpdf computed in&quot;</span><span class="p">,</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span><span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Lik.compute_profiled_maxima_logpdf"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.compute_profiled_maxima_logpdf">[docs]</a>    <span class="k">def</span> <span class="nf">compute_profiled_maxima_logpdf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                                        <span class="n">pars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1070,10 +1185,11 @@
                                        <span class="n">pars_bounds</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                                        <span class="n">spacing</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span>
                                        <span class="n">optimizer</span> <span class="o">=</span> <span class="p">{},</span>
-                                       <span class="n">timestamp</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                       <span class="n">minimization_options</span><span class="o">=</span><span class="p">{},</span>
                                        <span class="n">progressbar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                       <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                       <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                       <span class="n">timestamp</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                       <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                       <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                        <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes logal maxima of the logpdf for different values of the parameter ``pars``.</span>
@@ -1083,7 +1199,7 @@
 <span class="sd">        :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;` are automatically removed.</span>
 <span class="sd">        All information on the maximum, including parameters initialization, parameters bounds, and optimizer, </span>
 <span class="sd">        are stored in the ``&quot;logpdf_profiled_max&quot;`` item of the :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` dictionary.</span>
-<span class="sd">        The method also automatically computes, with the same optimizer, the absolute maximum and the :math:`t_{\\pmb\\mu}`</span>
+<span class="sd">        The method also automatically computes, with the same optimizer, the global maximum and the :math:`t_{\\pmb\\mu}`</span>
 <span class="sd">        test statistics. The latter is defined, given a vector of parameters of interest :math:`\\pmb\\mu` and a vector of nuisance parameters</span>
 <span class="sd">        :math:`\\pmb\\delta` as</span>
 <span class="sd">        </span>
@@ -1138,12 +1254,12 @@
 
 <span class="sd">            - **pars_bounds**</span>
 <span class="sd">            </span>
-<span class="sd">                Bounds on the parameters. If it is ``None``, then</span>
-<span class="sd">                it is set to the parameters bounds attribute :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;`.</span>
+<span class="sd">                Bounds on the parameters. If it is ``None``, then default parameters bounds stored in the </span>
+<span class="sd">                :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;` attribute are used.</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``numpy.ndarray``</span>
 <span class="sd">                    - **shape**: ``(ndim,2)``</span>
-<span class="sd">                    - **default**: ``None`` (automatically modified to :attr:`Lik.pars_bounds &lt;DNNLikelihood.Lik.pars_bounds&gt;`)</span>
+<span class="sd">                    - **default**: ``None``</span>
 
 <span class="sd">            - **spacing**</span>
 <span class="sd">            </span>
@@ -1161,12 +1277,13 @@
 <span class="sd">                    - **type**: ``dict`` with the following structure:</span>
 
 <span class="sd">                        - *&quot;name&quot;* (value type: ``str``)</span>
-<span class="sd">                          This is always set to ``&quot;scipy&quot;``, which is by now the only available optimizer for this task. As more</span>
-<span class="sd">                          optimizers will be supported the ``&quot;name&quot;`` key will indicate the chosen one.</span>
-<span class="sd">                        - *&quot;method&quot;* (value type: ``str``)</span>
-<span class="sd">                          Optimizer method. For the |scipy_optimize_minimize_link| optimizer the default method is given by ``&quot;Powell&quot;``.</span>
-<span class="sd">                        - *&quot;options&quot;* (value type: ``dict``)</span>
-<span class="sd">                          Dictionary containing additional options to pass to the |scipy_optimize_minimize_link| function.</span>
+<span class="sd">                          This is always set to ``&quot;scipy&quot;``, which is, by now, the only available optimizer for this task. </span>
+<span class="sd">                          As more optimizers will be supported the ``&quot;name&quot;`` key will indicate the chosen one.</span>
+<span class="sd">                        - *&quot;args&quot;* (value type: ``str``)</span>
+<span class="sd">                          Additional positional arguments passed to the |scipy_optimize_minimize_link| method.</span>
+<span class="sd">                        - *&quot;kwargs&quot;* (value type: ``dict``)</span>
+<span class="sd">                          Additional keyword arguments passed to the |scipy_optimize_minimize_link| method (set to the</span>
+<span class="sd">                          ``{&quot;method&quot;: &quot;Powell&quot;}`` dictionary by default).</span>
 
 <span class="sd">                    - **default**: {}</span>
 <span class="sd">                    - **schematic example**:</span>
@@ -1174,20 +1291,26 @@
 <span class="sd">                        .. code-block:: python</span>
 <span class="sd">                            </span>
 <span class="sd">                            optimizer={&quot;name&quot;: &quot;scipy&quot;,</span>
-<span class="sd">                                       &quot;method&quot;: &quot;Powell&quot;,</span>
-<span class="sd">                                       &quot;options&quot;: {&quot;maxiter&quot;: 10000,</span>
-<span class="sd">                                                   &quot;ftol&quot;: 0.001}}</span>
+<span class="sd">                                       &quot;args&quot;: [],</span>
+<span class="sd">                                       &quot;kwargs&quot;: {&quot;method&quot;: &quot;Powell&quot;}},</span>
+
+<span class="sd">            - **minimization_options**</span>
+
+<span class="sd">                Dictionary containing options to be passed to the |scipy_optimize_minimize_link| method </span>
+<span class="sd">                (i.e. value of the &quot;options&quot; keyword argument of the |scipy_optimize_minimize_link| method).</span>
+<span class="sd">                    </span>
+<span class="sd">                    - **type**: ``dict``</span>
+<span class="sd">                    - **default**: {}</span>
+<span class="sd">                    - **schematic example**:</span>
+
+<span class="sd">                        .. code-block:: python</span>
+<span class="sd">                            </span>
+<span class="sd">                            minimization_options={&quot;maxiter&quot;: 10000,</span>
+<span class="sd">                                                  &quot;ftol&quot;: 0.0001},</span>
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Lik.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Lik.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **progressbar**</span>
 <span class="sd">            </span>
@@ -1199,31 +1322,21 @@
 
 <span class="sd">            - **save**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` the object is saved (by passing the ``overwrite`` argument to the</span>
-<span class="sd">                :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method).</span>
+<span class="sd">                If ``True`` the reset :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` attribute</span>
+<span class="sd">                is saved (by passing the ``overwrite`` argument to the :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method).</span>
 <span class="sd">                    </span>
 <span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates files**</span>
 
@@ -1231,7 +1344,8 @@
 <span class="sd">            - :attr:`Lik.output_log_file &lt;DNNLikelihood.Lik.output_log_file&gt;` (always)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Computing profiled maxima&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Computing profiled maxima.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">pars</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -1247,7 +1361,6 @@
             <span class="k">except</span><span class="p">:</span>
                 <span class="n">progressbar</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">If you want to show a progress bar please install the ipywidgets package.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">progressbar</span><span class="p">:</span>
             <span class="n">overall_progress</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">FloatProgress</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="p">{</span>
                 <span class="s2">&quot;width&quot;</span><span class="p">:</span> <span class="s2">&quot;500px&quot;</span><span class="p">,</span> <span class="s2">&quot;height&quot;</span><span class="p">:</span> <span class="s2">&quot;14px&quot;</span><span class="p">,</span>
@@ -1258,9 +1371,9 @@
                                   <span class="p">[</span><span class="n">timestamp</span><span class="p">],</span>
                                   <span class="p">[{}],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">check_set_dict_keys</span><span class="p">(</span><span class="n">optimizer</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
-                                              <span class="s2">&quot;method&quot;</span><span class="p">,</span>
-                                              <span class="s2">&quot;options&quot;</span><span class="p">],</span>
-                                             <span class="p">[</span><span class="s2">&quot;scipy&quot;</span><span class="p">,</span><span class="s2">&quot;Powell&quot;</span><span class="p">,</span> <span class="p">{}],</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+                                              <span class="s2">&quot;args&quot;</span><span class="p">,</span>
+                                              <span class="s2">&quot;kwargs&quot;</span><span class="p">],</span>
+                                             <span class="p">[</span><span class="s2">&quot;scipy&quot;</span><span class="p">,[],{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;Powell&quot;</span><span class="p">}],</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pars_init</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pars_init</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pars_central</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1294,8 +1407,9 @@
                                                                  <span class="n">pars_val</span><span class="o">=</span><span class="n">pars_val</span><span class="p">,</span>
                                                                  <span class="n">ndims</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">,</span>
                                                                  <span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
-                                                                 <span class="n">pars_bounds</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                                                 <span class="n">pars_bounds</span><span class="o">=</span><span class="n">pars_bounds</span><span class="p">,</span>
                                                                  <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                                                                 <span class="n">minimization_options</span><span class="o">=</span><span class="n">minimization_options</span><span class="p">,</span>
                                                                  <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">))</span>
             <span class="n">end_sub</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
             <span class="n">optimization_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_sub</span><span class="o">-</span><span class="n">start_sub</span><span class="p">)</span>
@@ -1309,6 +1423,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Computing global maximum to estimate tmu test statistics.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compute_maximum_logpdf</span><span class="p">(</span><span class="n">pars_init</span><span class="o">=</span><span class="n">pars_init</span><span class="p">,</span>
                                     <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+                                    <span class="n">minimization_options</span><span class="o">=</span><span class="p">{},</span>
                                     <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span>
                                     <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                     <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -1317,23 +1432,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_ranges&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars_ranges</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_init&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars_init</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars_bounds</span>
+        <span class="k">if</span> <span class="n">pars_bounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pars_bounds</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pars_bounds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;optimizer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">optimizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;minimization_options&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minimization_options</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;optimization_times&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">optimization_times</span>
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;global_optimization_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">optimization_times</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;total_optimization_time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">optimization_times</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;computed profiled maxima&quot;</span><span class="p">,</span> 
                                <span class="s2">&quot;pars&quot;</span><span class="p">:</span> <span class="n">pars</span><span class="p">,</span>
                                <span class="s2">&quot;pars_ranges&quot;</span><span class="p">:</span> <span class="n">pars_ranges</span><span class="p">,</span> 
                                <span class="s2">&quot;number of maxima&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_tmp</span><span class="p">)}</span>
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pars_vals_bounded</span><span class="p">)),</span><span class="s2">&quot;local maxima computed in&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">,</span> <span class="s2">&quot;s.&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Log-pdf values lie in the range [&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">]),</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;Y&quot;</span><span class="p">]),</span> <span class="s2">&quot;].</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
         
-<div class="viewcode-block" id="Lik.update_figures"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.update_figures">[docs]</a>    <span class="k">def</span> <span class="nf">update_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">figure_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Lik.update_figures"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.update_figures">[docs]</a>    <span class="k">def</span> <span class="nf">update_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                       <span class="n">figure_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                       <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. </span>
 <span class="sd">        When ``overwrite=False`` it calls the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function and, if </span>
@@ -1359,12 +1483,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        </span>
 <span class="sd">        - **Returns**</span>
 
@@ -1377,7 +1496,7 @@
 <span class="sd">            - Updates ``figure_file`` file name.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Checking and updating figures dictionary&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Checking and updating figures dictionary,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">figure_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;figure_file input argument of update_figures method needs to be specified while it is None.&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1392,8 +1511,13 @@
                     <span class="n">old_figure_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_rename_file</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span><span class="n">figure_file</span><span class="p">),</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">return_value</span><span class="o">=</span><span class="s2">&quot;file_name&quot;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span><span class="n">old_figure_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span> 
+                        <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
                 <span class="n">new_figure_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_name</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;checked/updated figures dictionary&quot;</span><span class="p">,</span>
+                               <span class="s2">&quot;figure_file&quot;</span><span class="p">:</span> <span class="n">figure_file</span><span class="p">,</span>
+                               <span class="s2">&quot;new_figure_file&quot;</span><span class="p">:</span> <span class="n">new_figure_file</span><span class="p">}</span>
+        <span class="c1">#self.save_log(overwrite=True, verbose=verbose_sub)</span>
         <span class="k">return</span> <span class="n">new_figure_file</span></div>
 
 <div class="viewcode-block" id="Lik.plot_logpdf_par"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.plot_logpdf_par">[docs]</a>    <span class="k">def</span> <span class="nf">plot_logpdf_par</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
@@ -1404,7 +1528,8 @@
                         <span class="n">title_fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> 
                         <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                         <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                        <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                        <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                        <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                         <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the logpdf as a function of of the parameter ``par`` in the range ``(min,max)``</span>
@@ -1470,42 +1595,32 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Lik.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Lik.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
+
+<span class="sd">            - **save**</span>
+<span class="sd">            </span>
+<span class="sd">                If ``True`` the reset :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` attribute</span>
+<span class="sd">                is saved (by passing the ``overwrite`` argument to the :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method).</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates files**</span>
 
 <span class="sd">            - :attr:`Lik.output_figures_base_file &lt;DNNLikelihood.Lik.output_figures_base_file&gt;` ``+ &quot;_par_&quot; + str(par[0]) + &quot;.pdf&quot;`` for each ``par`` in ``pars``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Making plot of logpdf as function of paramerers&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Making plot of logpdf as function of paramerers.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">mplstyle_path</span><span class="p">)</span>
@@ -1537,14 +1652,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved figure&quot;</span><span class="p">,</span> 
                                    <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">figure_file_name</span><span class="p">}</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Figure file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span> <span class="n">figure_file_name</span><span class="p">)),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">created and saved in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div>
         
 <div class="viewcode-block" id="Lik.plot_tmu_1d"><a class="viewcode-back" href="../../likelihood/methods.html#DNNLikelihood.Lik.plot_tmu_1d">[docs]</a>    <span class="k">def</span> <span class="nf">plot_tmu_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                     <span class="n">pars_labels</span><span class="o">=</span><span class="s2">&quot;original&quot;</span><span class="p">,</span>
                     <span class="n">title_fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
                     <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                    <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                     <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the 1-dimensional :math:`t_{\\mu}` stored in </span>
@@ -1580,46 +1699,36 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Lik.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Lik.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
+
+<span class="sd">            - **save**</span>
+<span class="sd">            </span>
+<span class="sd">                If ``True`` the reset :attr:`Lik.predictions &lt;DNNLikelihood.Lik.predictions&gt;` attribute</span>
+<span class="sd">                is saved (by passing the ``overwrite`` argument to the :meth:`Lik.save &lt;DNNLikelihood.Lik.save&gt;` method).</span>
 <span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                    - **type**: ``bool``</span>
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates files**</span>
 
 <span class="sd">            - :attr:`Lik.output_figures_base_file &lt;DNNLikelihood.Lik.output_figures_base_file&gt;` ``+ &quot;_tmu_&quot; + str(par) + &quot;.pdf&quot;``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Making plot of t_mu test statistics as function of paramerers&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Making plot of t_mu test statistics as function of paramerers.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">timestamp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">mplstyle_path</span><span class="p">)</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="n">pars_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__set_pars_labels</span><span class="p">(</span><span class="n">pars_labels</span><span class="p">)</span>
         <span class="n">pars_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;pars&quot;</span><span class="p">]</span>
         <span class="n">tmu_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;logpdf_profiled_max&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">][</span><span class="s2">&quot;tmu&quot;</span><span class="p">]</span>
@@ -1643,10 +1752,11 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;saved figure&quot;</span><span class="p">,</span>
                                <span class="s2">&quot;file name&quot;</span><span class="p">:</span> <span class="n">figure_file_name</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Figure file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span> <span class="n">figure_file_name</span><span class="p">)),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">created and saved in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div></div>
-
-            
+        <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Figure file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span><span class="sa">r</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">,</span> <span class="n">figure_file_name</span><span class="p">)),</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">created and saved in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

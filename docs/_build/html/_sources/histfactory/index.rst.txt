@@ -2,8 +2,8 @@
 
 .. module:: histfactory
 
-The Histfactory object
-----------------------
+Histfactory object
+------------------
 
 The :class:`Histfactory <DNNLikelihood.Histfactory>` class is an API to the |pyhf_link| Python package that can be used to import 
 likelihoods in the ATLAS histfactory format into the DNNLikelihood module. 
@@ -15,12 +15,12 @@ is also saved in json format into a log file.
 
 Code examples shown below refer to the following ATLAS histfactory likelihood:
 
-   - |histfactory_sbottom_link|.
+    - |histfactory_sbottom_link|.
 
 .. toctree::
-   :maxdepth: 8
+    :maxdepth: -1
 
-   usage
-   class
+    usage
+    class
 
 .. include:: ../external_links.rst

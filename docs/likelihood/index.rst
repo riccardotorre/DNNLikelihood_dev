@@ -2,8 +2,8 @@
 
 .. module:: likelihood
 
-The Likelihood object
-----------------------
+Lik object
+-----------------
 
 The :class:`Lik <DNNLikelihood.Lik>` class acts as a container for the likelihood function. 
 It contains information on parameters initializations, positions, bounds, and labels, the logpdf function and its arguments, and methods that allow 
@@ -14,9 +14,9 @@ The :class:`Lik <DNNLikelihood.Lik>` object is stored in an HDF5 file. A log of 
 is also saved in json format into a log file.
 
 .. toctree::
-   :maxdepth: 8
-
-   usage
-   class
+    :maxdepth: -1
+    
+    usage
+    class
 
 .. include:: ../external_links.rst

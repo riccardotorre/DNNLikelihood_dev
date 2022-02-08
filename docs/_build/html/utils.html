@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Useful functions &mdash; DNNLikelihood</title>
@@ -44,7 +45,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Notes on corner.py" href="corner.html" />
+    <link rel="next" title="Custom losses" href="custom_losses.html" />
     <link rel="prev" title="Inference functions" href="inference.html" /> 
 </head>
 
@@ -99,23 +100,26 @@
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inference.html">Inference functions</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Useful functions</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources/index.html">Resources</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="others.html">Others</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="inference.html">Inference functions</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Useful functions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_losses.html">Custom losses</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="citations.html">Use and Citation</a></li>
@@ -168,6 +172,8 @@
         
           <li><a href="code.html">Python module</a> &raquo;</li>
         
+          <li><a href="others.html">Others</a> &raquo;</li>
+        
       <li>Useful functions</li>
     
     
@@ -211,17 +217,25 @@
     text-align: unset;
 }
 </style>
-<span class="target" id="module-utils"></span><div class="section" id="useful-functions">
+<span class="target" id="module-utils"></span><section id="useful-functions">
 <h1>Useful functions<a class="headerlink" href="#useful-functions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="summary">
+<section id="summary">
 <h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
 <p>Bla bla bla</p>
-</div>
-<div class="section" id="usage">
+</section>
+<section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="functions">
+</section>
+<section id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="DNNLikelihood.utils._FunctionWrapper">
+<em class="property">class </em><code class="sig-name descname">_FunctionWrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#_FunctionWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils._FunctionWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is a hack to make the likelihood function pickleable when <code class="docutils literal notranslate"><span class="pre">args</span></code>
+or <code class="docutils literal notranslate"><span class="pre">kwargs</span></code> are also included.
+Copied from emcee.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt id="DNNLikelihood.utils.flatten_list">
 <code class="sig-name descname">flatten_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lst</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#flatten_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.flatten_list" title="Permalink to this definition">¶</a></dt>
@@ -321,16 +335,6 @@ Used to circumvent bud in plot_model which does not allow to export pdf</p>
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="DNNLikelihood.utils.metric_name_abbreviate">
-<code class="sig-name descname">metric_name_abbreviate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#metric_name_abbreviate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.metric_name_abbreviate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="DNNLikelihood.utils.metric_name_unabbreviate">
-<code class="sig-name descname">metric_name_unabbreviate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">metric_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#metric_name_unabbreviate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.metric_name_unabbreviate" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
 <dt id="DNNLikelihood.utils.strip_suffix">
 <code class="sig-name descname">strip_suffix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span></em>, <em class="sig-param"><span class="n">suff</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#strip_suffix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.strip_suffix" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -360,8 +364,8 @@ Used to circumvent bud in plot_model which does not allow to export pdf</p>
 <code class="sig-name descname">define_pars_labels_auto</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars_pos_poi</span></em>, <em class="sig-param"><span class="n">pars_pos_nuis</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/DNNLikelihood/utils.html#define_pars_labels_auto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.utils.define_pars_labels_auto" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
@@ -371,7 +375,7 @@ Used to circumvent bud in plot_model which does not allow to export pdf</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="corner.html" class="btn btn-neutral float-right" title="Notes on corner.py" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="custom_losses.html" class="btn btn-neutral float-right" title="Custom losses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="inference.html" class="btn btn-neutral float-left" title="Inference functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

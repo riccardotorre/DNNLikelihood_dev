@@ -2,8 +2,8 @@
 
 .. module:: data
 
-The Data object
-----------------------
+Data object
+-----------
 
 The :class:`Data <DNNLikelihood.Data>` class acts as a data container. It is used by the :mod:`DNNLikelihood <dnn_likelihood>` object 
 and the :mod:`DNNLikEnsemble <dnn_likelihood_ensemble>` object to manage training/validation/test data
@@ -13,7 +13,7 @@ the :mod:`DNNLikEnsemble <dnn_likelihood_ensemble>` object for more details on h
 :mod:`Data <data>` object is used when building the DNNLikelihood.
 
 .. toctree::
-   :maxdepth: 8
+   :maxdepth: -1
 
    usage
    class

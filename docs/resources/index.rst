@@ -2,13 +2,13 @@
 
 .. module:: resources
 
-Resources management
---------------------
+Resources
+---------
 
 Description
 
 .. toctree::
-   :maxdepth: 8
+   :maxdepth: -1
 
    usage
    class

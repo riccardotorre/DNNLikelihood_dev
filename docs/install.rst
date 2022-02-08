@@ -67,6 +67,8 @@ The Likelihood object
 
     - External modules
 
+        - |deepdish_link|        
+
         - |cloudpickle_link|        
         
         - |ipywidgets_link| (optional)

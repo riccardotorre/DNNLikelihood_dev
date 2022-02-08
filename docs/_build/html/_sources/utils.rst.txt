@@ -16,6 +16,8 @@ Functions
 
 .. .. currentmodule:: DNNLikelihood
 
+.. autoclass:: DNNLikelihood.utils._FunctionWrapper
+
 .. autofunction:: DNNLikelihood.utils.flatten_list
 
 .. autofunction:: DNNLikelihood.utils.make_pdf_from_img
@@ -53,10 +55,6 @@ Functions
 .. autofunction:: DNNLikelihood.utils.string_split_at_char
 
 .. autofunction:: DNNLikelihood.utils.string_add_newline_at_char
-
-.. autofunction:: DNNLikelihood.utils.metric_name_abbreviate
-
-.. autofunction:: DNNLikelihood.utils.metric_name_unabbreviate
 
 .. autofunction:: DNNLikelihood.utils.strip_suffix
 

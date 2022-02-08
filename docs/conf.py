@@ -153,6 +153,11 @@ html_sidebars = {
     'using/windows': ['windowssidebar.html', 'searchbox.html'],
 }
 
+html_theme_options = {
+    'globaltoc_collapse': True,
+    'globaltoc_maxdepth': 10,
+}
+
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.

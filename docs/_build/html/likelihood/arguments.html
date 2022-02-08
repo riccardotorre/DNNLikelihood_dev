@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Arguments &mdash; DNNLikelihood</title>
@@ -99,8 +100,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">The Likelihood object</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Lik object</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="class.html">Class</a><ul class="current">
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Arguments</a></li>
@@ -110,16 +111,14 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">The DNNLikelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">Data object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood/index.html">DNNLik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
@@ -172,7 +171,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-          <li><a href="index.html">The Likelihood object</a> &raquo;</li>
+          <li><a href="index.html">Lik object</a> &raquo;</li>
         
           <li><a href="class.html">Class</a> &raquo;</li>
         
@@ -219,26 +218,20 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="arguments">
+<section id="arguments">
 <span id="likelihood-arguments"></span><h1>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h1>
 <dl class="py argument">
 <dt id="Lik.name">
 <code class="sig-name descname">name</code><a class="headerlink" href="#Lik.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Name of the <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object.
-It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.name" title="DNNLikelihood.Lik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.name</span></code></a> attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.name" title="common_classes_arguments.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.logpdf">
 <code class="sig-name descname">logpdf</code><a class="headerlink" href="#Lik.logpdf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Callable function returning the logpdf given parameters and additional arguments, passed through the
-<a class="reference internal" href="#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> argument.</p>
+<a class="reference internal" href="#Lik.logpdf_args" title="Lik.logpdf_args"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_args</span></code></a> argument (for positional arguments) and
+<a class="reference internal" href="#Lik.logpdf_kwargs" title="Lik.logpdf_kwargs"><code class="xref py py-argument docutils literal notranslate"><span class="pre">logpdf_kwargs</span></code></a> argument (for keyword arguments).</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">callable</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
@@ -246,7 +239,7 @@ It is used to build the <a class="reference internal" href="attributes.html#DNNL
 </ul>
 </div></blockquote>
 <ul>
-<li><p><strong>Could accept</strong></p>
+<li><p><strong>Arguments</strong></p>
 <blockquote>
 <div><ul>
 <li><p><strong>x_pars</strong></p>
@@ -288,9 +281,12 @@ by the <a class="reference internal" href="#Lik.logpdf" title="Lik.logpdf"><code
 </ul>
 </div></blockquote>
 </li>
-<li><p><strong>Could return</strong></p>
+<li><p><strong>Returns</strong></p>
 <blockquote>
-<div><p><code class="docutils literal notranslate"><span class="pre">float</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> with shape <code class="docutils literal notranslate"><span class="pre">(n_points,)</span></code></p>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Float</span></code> if input shape is <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
+<li><p><a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a> array with shape <code class="docutils literal notranslate"><span class="pre">(n_points,)</span></code> if input shape is <code class="docutils literal notranslate"><span class="pre">(n_points,ndims)</span></code></p></li>
+</ul>
 </div></blockquote>
 </li>
 </ul>
@@ -305,6 +301,7 @@ by the <a class="reference internal" href="#Lik.logpdf" title="Lik.logpdf"><code
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 <li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(nargs,)</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -317,6 +314,7 @@ by the <a class="reference internal" href="#Lik.logpdf" title="Lik.logpdf"><code
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">dict</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -324,121 +322,52 @@ by the <a class="reference internal" href="#Lik.logpdf" title="Lik.logpdf"><code
 <dl class="py argument">
 <dt id="Lik.pars_central">
 <code class="sig-name descname">pars_central</code><a class="headerlink" href="#Lik.pars_central" title="Permalink to this definition">¶</a></dt>
-<dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing central values of the parameters.
-It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_central" title="DNNLikelihood.Lik.pars_central"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_central</span></code></a> attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
-<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.pars_central" title="common_classes_arguments.pars_central"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_central</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.pars_pos_poi">
 <code class="sig-name descname">pars_pos_poi</code><a class="headerlink" href="#Lik.pars_pos_poi" title="Permalink to this definition">¶</a></dt>
-<dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing the positions in the parameters list of the
-parameters of interest.
-It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_poi" title="DNNLikelihood.Lik.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_poi</span></code></a> attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">`numpy.ndarray</span></code></p></li>
-<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_poi,)</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.pars_pos_poi" title="common_classes_arguments.pars_pos_poi"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_poi</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.pars_pos_nuis">
 <code class="sig-name descname">pars_pos_nuis</code><a class="headerlink" href="#Lik.pars_pos_nuis" title="Permalink to this definition">¶</a></dt>
-<dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing the positions in the parameters list of the
-nuisance parameters.
-It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_pos_nuis" title="DNNLikelihood.Lik.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_pos_nuis</span></code></a> attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code> or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></p></li>
-<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(n_nuis,)</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.pars_pos_nuis" title="common_classes_arguments.pars_pos_nuis"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_pos_nuis</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.pars_labels">
 <code class="sig-name descname">pars_labels</code><a class="headerlink" href="#Lik.pars_labels" title="Permalink to this definition">¶</a></dt>
-<dd><p>List containing the parameters names as strings.
-Parameters labels are always parsed as “raw” strings (like, for instance, <code class="docutils literal notranslate"><span class="pre">r&quot;%s&quot;%pars_labels[0]</span></code>)
-and can contain latex expressions that are properly compiled when making plots.
-It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_labels" title="DNNLikelihood.Lik.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_labels</span></code></a> attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">list</span></code></p></li>
-<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,)</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.pars_labels" title="common_classes_arguments.pars_labels"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_labels</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.pars_bounds">
 <code class="sig-name descname">pars_bounds</code><a class="headerlink" href="#Lik.pars_bounds" title="Permalink to this definition">¶</a></dt>
-<dd><p>List or <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> numpy</a> array containing containing bounds for the parameters.
-It is used to build the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.pars_bounds" title="DNNLikelihood.Lik.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.pars_bounds</span></code></a> attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>shape</strong>: <code class="docutils literal notranslate"><span class="pre">(ndims,2)</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.pars_bounds" title="common_classes_arguments.pars_bounds"><code class="xref py py-argument docutils literal notranslate"><span class="pre">pars_bounds</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.output_folder">
 <code class="sig-name descname">output_folder</code><a class="headerlink" href="#Lik.output_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Path (either relative to the code execution folder or absolute) where output files are saved.
-It is used to set the <a class="reference internal" href="attributes.html#DNNLikelihood.Lik.output_folder" title="DNNLikelihood.Lik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.output_folder</span></code></a> attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.output_folder" title="common_classes_arguments.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.input_file">
 <code class="sig-name descname">input_file</code><a class="headerlink" href="#Lik.input_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>File name (either relative to the code execution folder or absolute, with or without extension)
-of a saved <a class="reference internal" href="class.html#DNNLikelihood.Lik" title="DNNLikelihood.Lik"><code class="xref py py-class docutils literal notranslate"><span class="pre">Lik</span></code></a> object.
-It is used to set the
-<a class="reference internal" href="attributes.html#DNNLikelihood.Lik.input_file" title="DNNLikelihood.Lik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Lik.input_file</span></code></a>
-attribute.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">str</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.input_file" title="common_classes_arguments.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py argument">
 <dt id="Lik.verbose">
 <code class="sig-name descname">verbose</code><a class="headerlink" href="#Lik.verbose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Argument used to set the verbosity mode of the <a class="reference internal" href="methods.html#DNNLikelihood.Lik.__init__" title="DNNLikelihood.Lik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Lik.__init__</span></code></a>
-method and the default verbosity mode of all class methods that accept a <code class="docutils literal notranslate"><span class="pre">verbose</span></code> argument.
-See <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a>.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
-</ul>
-</div></blockquote>
+<dd><p>See <a class="reference internal" href="../common_classes_arguments.html#common_classes_arguments.verbose" title="common_classes_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

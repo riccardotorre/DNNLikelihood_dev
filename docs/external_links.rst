@@ -6,6 +6,11 @@
     
     <a href="https://docs.scipy.org/doc/numpy/index.html"  target="_blank"> Numpy</a>
 
+.. |Pandas_dataframe_describe| raw:: html
+    
+    <a href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.describe.html?highlight=describe#pandas.DataFrame.describe"  target="_blank"> Pandas.Dataframe.describe</a>
+
+
 .. |histfactory_sbottom_link| raw:: html
     
     <a href="https://www.hepdata.net/record/ins1748602"  target="_blank"> Search for bottom-squark pair production with the ATLAS detector 
@@ -146,6 +151,10 @@
 .. |tensorboard_link| raw:: html
     
    <a href="https://www.tensorflow.org/tensorboard"  target="_blank"> TensorBoard</a> 
+
+.. |tf_keras_tensorboard_callback_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/TensorBoard"  target="_blank"> tf.keras.callbacks.ModelCheckpoint</a> 
 
 .. |onnx_link| raw:: html
     

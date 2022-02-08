@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DNNLikelihood.custom_losses &mdash; DNNLikelihood</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Python module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DNNLikelihood</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>DNNLikelihood.custom_losses</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for DNNLikelihood.custom_losses</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras</span> <span class="kn">import</span> <span class="n">backend</span> <span class="k">as</span> <span class="n">K</span>
+
+<div class="viewcode-block" id="mean_error"><a class="viewcode-back" href="../../custom_losses.html#DNNLikelihood.custom_losses.mean_error">[docs]</a><span class="k">def</span> <span class="nf">mean_error</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bla  bla  bla</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y_true</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">ME_model</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_true</span><span class="o">-</span><span class="n">y_pred</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">K</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ME_model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="mean_percentage_error"><a class="viewcode-back" href="../../custom_losses.html#DNNLikelihood.custom_losses.mean_percentage_error">[docs]</a><span class="k">def</span> <span class="nf">mean_percentage_error</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bla  bla  bla</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y_true</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">MPE_model</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">y_true</span><span class="o">-</span><span class="n">y_pred</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span><span class="o">*</span><span class="n">K</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">y_true</span><span class="p">),</span>
+                                                              <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">(),</span>
+                                                              <span class="kc">None</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">K</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">MPE_model</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="R2_metric"><a class="viewcode-back" href="../../custom_losses.html#DNNLikelihood.custom_losses.R2_metric">[docs]</a><span class="k">def</span> <span class="nf">R2_metric</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bla  bla  bla</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">y_true</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">convert_to_tensor</span><span class="p">(</span><span class="n">y_pred</span><span class="p">)</span>
+    <span class="n">MSE_model</span> <span class="o">=</span>  <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">square</span><span class="p">(</span> <span class="n">y_true</span><span class="o">-</span><span class="n">y_pred</span> <span class="p">))</span> 
+    <span class="n">MSE_baseline</span> <span class="o">=</span> <span class="n">K</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">K</span><span class="o">.</span><span class="n">square</span><span class="p">(</span> <span class="n">y_true</span> <span class="o">-</span> <span class="n">K</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span> 
+    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">MSE_model</span><span class="o">/</span><span class="p">(</span><span class="n">MSE_baseline</span> <span class="o">+</span> <span class="n">K</span><span class="o">.</span><span class="n">epsilon</span><span class="p">()))</span></div>
+
+<span class="k">def</span> <span class="nf">losses</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;mean_error&quot;</span><span class="p">:</span> <span class="n">mean_error</span><span class="p">,</span>
+            <span class="s2">&quot;mean_percentage_error&quot;</span><span class="p">:</span> <span class="n">mean_percentage_error</span><span class="p">,</span>
+            <span class="s2">&quot;R2_metric&quot;</span><span class="p">:</span> <span class="n">R2_metric</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="metric_name_abbreviate"><a class="viewcode-back" href="../../custom_losses.html#DNNLikelihood.custom_losses.metric_name_abbreviate">[docs]</a><span class="k">def</span> <span class="nf">metric_name_abbreviate</span><span class="p">(</span><span class="n">metric_name</span><span class="p">):</span>
+    <span class="n">name_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="s2">&quot;acc&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_error&quot;</span><span class="p">:</span> <span class="s2">&quot;me&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_percentage_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mpe&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_squared_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mse&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;mean_absolute_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mae&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_absolute_percentage_error&quot;</span><span class="p">:</span> <span class="s2">&quot;mape&quot;</span><span class="p">,</span> <span class="s2">&quot;mean_squared_logarithmic_error&quot;</span><span class="p">:</span> <span class="s2">&quot;msle&quot;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">name_dict</span><span class="p">:</span>
+        <span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">name_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">metric_name</span></div>
+
+
+<div class="viewcode-block" id="metric_name_unabbreviate"><a class="viewcode-back" href="../../custom_losses.html#DNNLikelihood.custom_losses.metric_name_unabbreviate">[docs]</a><span class="k">def</span> <span class="nf">metric_name_unabbreviate</span><span class="p">(</span><span class="n">metric_name</span><span class="p">):</span>
+    <span class="n">name_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;acc&quot;</span><span class="p">:</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;me&quot;</span><span class="p">:</span> <span class="s2">&quot;mean_error&quot;</span><span class="p">,</span> <span class="s2">&quot;mpe&quot;</span><span class="p">:</span> <span class="s2">&quot;mean_percentage_error&quot;</span><span class="p">,</span> <span class="s2">&quot;mse&quot;</span><span class="p">:</span> <span class="s2">&quot;mean_squared_error&quot;</span><span class="p">,</span>
+                 <span class="s2">&quot;mae&quot;</span><span class="p">:</span> <span class="s2">&quot;mean_absolute_error&quot;</span><span class="p">,</span> <span class="s2">&quot;mape&quot;</span><span class="p">:</span> <span class="s2">&quot;mean_absolute_percentage_error&quot;</span><span class="p">,</span> <span class="s2">&quot;msle&quot;</span><span class="p">:</span> <span class="s2">&quot;mean_squared_logarithmic_error&quot;</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">name_dict</span><span class="p">:</span>
+        <span class="n">metric_name</span> <span class="o">=</span> <span class="n">metric_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">name_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">metric_name</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

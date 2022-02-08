@@ -14,6 +14,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from datetime import datetime
 from timeit import default_timer as timer
+from tensorflow.keras import layers, initializers, regularizers, constraints, callbacks, optimizers, metrics, losses
 
 from . import show_prints
 from .show_prints import print
@@ -154,6 +155,109 @@ def savefig(path,**kwargs):
         plt.savefig("\\\\?\\" + path, **kwargs)
     else:
         plt.savefig(path, **kwargs)
+
+def build_method_string_from_dict(class_name=None, method_name=None, args=None, kwargs=None):
+    if class_name != None:
+        method_string = class_name+"."+method_name+"("
+    else:
+        method_string = method_name+"("
+    if args != []:
+        for arg in args:
+            if type(arg) == str:
+                method_string = method_string+"'"+arg+"', "
+            else:
+                method_string = method_string+str(arg)+", "
+    for key, val in kwargs.items():
+        if type(val) != dict:
+            if "(" in str(val):
+                if "initializer" in key:
+                    val = str(val).lstrip("initializers.")
+                    try:
+                        eval("initializers."+val)
+                        method_string = method_string+key + "="+"initializers."+val+", "
+                    except:
+                        method_string = method_string+key+"='"+val+"', "
+                elif "regularizer" in key:
+                    val = str(val).lstrip("regularizer.")
+                    try:
+                        eval("regularizers."+val)
+                        method_string = method_string+key + "="+"regularizers."+val+", "
+                    except:
+                        method_string = method_string+key+"='"+val+"', "
+                elif "constraint" in key:
+                    val = str(val).lstrip("constraints.")
+                    try:
+                        eval("constraints."+val)
+                        method_string = method_string+key + "="+"constraints."+val+", "
+                    except:
+                        method_string = method_string+key+"='"+val+"', "
+                elif "callback" in key:
+                    val = str(val).lstrip("callbacks.")
+                    try:
+                        eval("callbacks."+val)
+                        method_string = method_string+key + "="+"callbacks."+val+", "
+                    except:
+                        method_string = method_string+key+"='"+val+"', "
+                elif "optimizers" in key:
+                    val = str(val).lstrip("optimizers.")
+                    try:
+                        eval("optimizers."+val)
+                        method_string = method_string+key + "="+"optimizers."+val+", "
+                    except:
+                        method_string = method_string+key+"='"+val+"', "
+                elif "losses" in key:
+                    val = str(val).lstrip("losses.")
+                    try:
+                        eval("losses."+val)
+                        method_string = method_string+key + "="+"losses."+val+", "
+                    except:
+                        method_string = method_string+key+"='"+val+"', "
+                elif "metrics" in key:
+                    val = str(val).lstrip("metrics.")
+                    try:
+                        eval("metrics."+val)
+                        method_string = method_string+key + "="+"metrics."+val+", "
+                    except:
+                        method_string = method_string+key+"='"+val+"', "
+            elif type(val) == str:
+                try:
+                    str_val = str(eval(str(val)))
+                except:
+                    str_val = ""
+                if "<built-in function" in str_val:
+                    method_string = method_string+key+"='"+val+"', "
+                else:
+                    try:
+                        eval(method_string+key+"="+val+")")
+                        method_string = method_string+key+"="+val+", "
+                    except Exception as e:
+                        if "\\" in val:
+                            method_string = method_string+key+"=r'"+val+"', "
+                        else:
+                            method_string = method_string+key+"='"+val+"', "
+            else:
+                method_string = method_string+key+"="+str(val)+", "
+            #else:
+            #    try:
+            #        eval(str(val))
+            #        method_string = method_string+key+"="+str(val)+", "
+            #    except:
+            #        method_string = method_string+key+"='"+str(val)+"', "
+        else:
+            if "initializer" in key:
+                method_string = method_string+key+"=initializers."
+            elif "regularizer" in key:
+                method_string = method_string+key+"=regularizers."
+            elif "constraint" in key:
+                method_string = method_string+key+"=constraints."
+            elif "callback" in key:
+                method_string = method_string+key+"=callbacks."
+            elif "optimizer" in key:
+                method_string = method_string+key+"=optimizers."
+            method_string = method_string+build_method_string_from_dict(
+                class_name=None, method_name=val["name"], args=val["args"], kwargs=val["kwargs"])+", "
+    method_string = method_string.rstrip(", ")+")"
+    return method_string
 
 def check_rename_file(path,timestamp=None,return_value=None,verbose=True):
     if os.path.exists(path):
@@ -370,27 +474,12 @@ def string_split_at_char(s, c):
         break_at = mid + min(-s[mid::-1].index(c), s[mid:].index(c), key=abs)
     except ValueError:  # if '\n' not in s
         break_at = len(s)
-    firstpart, secondpart = s[:break_at +
-                              1].rstrip(), s[break_at:].lstrip(c).rstrip()
+    firstpart, secondpart = s[:break_at + 1].rstrip(), s[break_at:].lstrip(c).rstrip()
     return [firstpart, secondpart]
 
 def string_add_newline_at_char(s, c):
     firstpart, secondpart = string_split_at_char(s, c)
     return firstpart+"\n"+"\t"+secondpart
-
-def metric_name_abbreviate(metric_name):
-    name_dict = {"accuracy": "acc", "mean_error": "me", "mean_percentage_error": "mpe", "mean_squared_error": "mse",
-                 "mean_absolute_error": "mae", "mean_absolute_percentage_error": "mape", "mean_squared_logarithmic_error": "msle"}
-    for key in name_dict:
-        metric_name = metric_name.replace(key, name_dict[key])
-    return metric_name
-
-def metric_name_unabbreviate(metric_name):
-    name_dict = {"acc": "accuracy", "me": "mean_error", "mpe": "mean_percentage_error", "mse": "mean_squared_error",
-                 "mae": "mean_absolute_error", "mape": "mean_absolute_percentage_error", "msle": "mean_squared_logarithmic_error"}
-    for key in name_dict:
-        metric_name = metric_name.replace(key, name_dict[key])
-    return metric_name
 
 def strip_suffix(s, suff):
     if s.endswith(suff):

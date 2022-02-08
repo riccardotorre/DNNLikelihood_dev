@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Methods &mdash; DNNLikelihood</title>
@@ -44,7 +45,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The DnnLikEnsemble object" href="../dnn_likelihood_ensemble/index.html" />
+    <link rel="next" title="DnnLikEnsemble object" href="../dnn_likelihood_ensemble/index.html" />
     <link rel="prev" title="Attributes" href="attributes.html" /> 
 </head>
 
@@ -99,11 +100,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../code.html">Python module</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../summary.html">Summary</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">The Histfactory object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">The Likelihood object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">The Sampler object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../data/index.html">The Data object</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="index.html">The DNNLikelihood object</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../histfactory/index.html">Histfactory object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../likelihood/index.html">Lik object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sampler/index.html">Sampler object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../data/index.html">Data object</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">DNNLik object</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="class.html">Class</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="arguments.html">Arguments</a></li>
@@ -113,13 +114,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">The DnnLikEnsemble object</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../inference.html">Inference functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../utils.html">Useful functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../corner.html">Notes on corner.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../plots.html">Notes on plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../show_prints.html">Verbosity mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../dnn_likelihood_ensemble/index.html">DnnLikEnsemble object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../resources/index.html">Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../others.html">Others</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes.html">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../common.html">Common</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../citations.html">Use and Citation</a></li>
@@ -172,7 +171,7 @@
         
           <li><a href="../code.html">Python module</a> &raquo;</li>
         
-          <li><a href="index.html">The DNNLikelihood object</a> &raquo;</li>
+          <li><a href="index.html">DNNLik object</a> &raquo;</li>
         
           <li><a href="class.html">Class</a> &raquo;</li>
         
@@ -219,15 +218,15 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="methods">
+<section id="methods">
 <span id="dnnlik-methods"></span><h1>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
 <dt id="DNNLikelihood.DnnLik.__init__">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_data_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_likelihood_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_on_RAM</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">same_data</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">model_data_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_define_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_optimizer_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_compile_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_callbacks_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_train_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">resources_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ensemble_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_summary_json_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_data_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_likelihood_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_on_RAM</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">same_data</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">model_data_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_define_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_optimizer_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_compile_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_callbacks_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">model_train_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">resources_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ensemble_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_file</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>The <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object can be initialized in two different ways,
-depending on the value of the <a class="reference internal" href="arguments.html#DnnLik.input_summary_json_file" title="DnnLik.input_summary_json_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_summary_json_file</span></code></a> argument.</p>
+depending on the value of the <a class="reference internal" href="arguments.html#DnnLik.input_file" title="DnnLik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> argument.</p>
 <ul>
-<li><p><a class="reference internal" href="arguments.html#DnnLik.input_summary_json_file" title="DnnLik.input_summary_json_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_summary_json_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
+<li><p><a class="reference internal" href="arguments.html#DnnLik.input_file" title="DnnLik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
 <blockquote>
 <div><p>All other arguments are parsed and saved in corresponding attributes. If no <a class="reference internal" href="arguments.html#DnnLik.name" title="DnnLik.name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">name</span></code></a> is given,
 then one is created. If the input argument <a class="reference internal" href="arguments.html#DnnLik.ensemble_name" title="DnnLik.ensemble_name"><code class="xref py py-argument docutils literal notranslate"><span class="pre">ensemble_name</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code> the object is assumed to be
@@ -238,11 +237,11 @@ The full object is saved through the
 <a class="reference internal" href="#DNNLikelihood.DnnLik.save" title="DNNLikelihood.DnnLik.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.save</span></code></a> method.</p>
 </div></blockquote>
 </li>
-<li><p><a class="reference internal" href="arguments.html#DnnLik.input_summary_json_file" title="DnnLik.input_summary_json_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_summary_json_file</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<li><p><a class="reference internal" href="arguments.html#DnnLik.input_file" title="DnnLik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 <blockquote>
-<div><p>The object is reconstructed from the input files. First the log and summary_json files are loaded through
+<div><p>The object is reconstructed from the input files. First the log and json files are loaded through
 the private method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_summary_json_and_log</span></code>,
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_json_and_log</span></code>,
 then, if the input arguments <a class="reference internal" href="arguments.html#DnnLik.dtype" title="DnnLik.dtype"><code class="xref py py-argument docutils literal notranslate"><span class="pre">dtype</span></code></a> and/or <a class="reference internal" href="arguments.html#DnnLik.seed" title="DnnLik.seed"><code class="xref py py-argument docutils literal notranslate"><span class="pre">seed</span></code></a> are provided,
 the corresponding attributes are set to their values (overwriting the values imported from files), and finally
 all other attributes are loaded through the private methods:</p>
@@ -252,7 +251,7 @@ all other attributes are loaded through the private methods:</p>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_history_and_log</span></code></p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_model</span></code></p></li>
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_predictions</span></code></p></li>
-<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_scalers_and_log</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__load_preprocessing_and_log</span></code></p></li>
 </ul>
 </div></blockquote>
 <p>Moreover, depending on the value of the input argument <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> the <a class="reference internal" href="#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a> method behaves as follows:</p>
@@ -261,14 +260,14 @@ all other attributes are loaded through the private methods:</p>
 <li><p>If <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> is <code class="docutils literal notranslate"><span class="pre">None</span></code> (default)</p>
 <blockquote>
 <div><p>The attribute <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a>
-is set from the <code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_folder</span></code> one.</p>
+is set from the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_folder" title="DNNLikelihood.DnnLik.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_folder</span></code></a> one.</p>
 </div></blockquote>
 </li>
 <li><p>If <a class="reference internal" href="arguments.html#DnnLik.output_folder" title="DnnLik.output_folder"><code class="xref py py-argument docutils literal notranslate"><span class="pre">output_folder</span></code></a> corresponds to a path different from that stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a> attribute</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>if path stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a> attribute exists, then its content is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code> (if the new <code class="docutils literal notranslate"><span class="pre">output_foler</span></code> already exists it is renamed by adding a timestamp);</p></li>
-<li><p>if path stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a> does not exists, then the content of the path <code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_folder</span></code> is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code>.</p></li>
+<li><p>if path stored in the loaded <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a> does not exists, then the content of the path <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_folder" title="DNNLikelihood.DnnLik.input_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_folder</span></code></a> is copied to the new <code class="docutils literal notranslate"><span class="pre">output_folder</span></code>.</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -279,10 +278,10 @@ is set from the <code class="xref py py-attr docutils literal notranslate"><span
 </li>
 </ul>
 </div></blockquote>
-<p>Only the json summary and log files are saved (overwriting the old ones) through the methods:</p>
+<p>Only the json and log files are saved (overwriting the old ones) through the methods:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="#DNNLikelihood.DnnLik.save_summary_json" title="DNNLikelihood.DnnLik.save_summary_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.save_summary_json</span></code></a></p></li>
+<li><p><a class="reference internal" href="#DNNLikelihood.DnnLik.save_json" title="DNNLikelihood.DnnLik.save_json"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.save_json</span></code></a></p></li>
 <li><p><a class="reference internal" href="#DNNLikelihood.DnnLik.save_log" title="DNNLikelihood.DnnLik.save_log"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.save_log</span></code></a></p></li>
 </ul>
 </div></blockquote>
@@ -290,7 +289,7 @@ is set from the <code class="xref py py-attr docutils literal notranslate"><span
 </li>
 </ul>
 <p>Resources, data, seed, dtype and <a href="https://www.tensorflow.org/"  target="_blank"> TensorFlow</a> objects are set in the same way, independently of the value of
-<a class="reference internal" href="arguments.html#DnnLik.input_summary_json_file" title="DnnLik.input_summary_json_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_summary_json_file</span></code></a>, through the private methods:</p>
+<a class="reference internal" href="arguments.html#DnnLik.input_file" title="DnnLik.input_file"><code class="xref py py-argument docutils literal notranslate"><span class="pre">input_file</span></code></a>, through the private methods:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__set_data</span></code></p></li>
@@ -310,7 +309,7 @@ is set from the <code class="xref py py-attr docutils literal notranslate"><span
 <blockquote>
 <div><ul class="simple">
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_log_file" title="DNNLikelihood.DnnLik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_log_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_summary_json_file" title="DNNLikelihood.DnnLik.output_summary_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_summary_json_file</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#id1" title="DNNLikelihood.DnnLik.output_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_json_file</span></code></a></p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -334,14 +333,7 @@ The latter method is needed, when the object is a member of an esemble, to pass 
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -357,17 +349,17 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 to set the attributes corresponding to input files:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_files_base_name" title="DNNLikelihood.DnnLik.input_files_base_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_files_base_name</span></code></a></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_files_base_name</span></code></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_history_json_file" title="DNNLikelihood.DnnLik.input_history_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_history_json_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_idx_h5_file" title="DNNLikelihood.DnnLik.input_idx_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_idx_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_log_file" title="DNNLikelihood.DnnLik.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_log_file</span></code></a></p></li>
 <li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_predictions_h5_file</span></code></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_scalers_pickle_file" title="DNNLikelihood.DnnLik.input_scalers_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_scalers_pickle_file</span></code></a></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_preprocessing_pickle_file</span></code></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_tf_model_h5_file" title="DNNLikelihood.DnnLik.input_tf_model_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_tf_model_h5_file</span></code></a></p></li>
 </ul>
 </div></blockquote>
 <p>depending on the value of the
-<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_summary_json_file" title="DNNLikelihood.DnnLik.input_summary_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_summary_json_file</span></code></a> attribute.
+<a class="reference internal" href="attributes.html#id0" title="DNNLikelihood.DnnLik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_file</span></code></a> attribute.
 It also sets the attribute
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_data_file" title="DNNLikelihood.DnnLik.input_data_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_data_file</span></code></a> if the object has
 been initialized directly from a <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object.</p>
@@ -375,7 +367,7 @@ been initialized directly from a <a class="reference internal" href="../data/ind
 
 <dl class="py method">
 <dt id="DNNLikelihood.DnnLik._DnnLik__check_define_output_files">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">_DnnLik__check_define_output_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_folder</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DnnLik._DnnLik__check_define_output_files" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">_DnnLik__check_define_output_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DnnLik._DnnLik__check_define_output_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a> one
 to set the attributes corresponding to output folders</p>
 <blockquote>
@@ -393,8 +385,8 @@ to set the attributes corresponding to output folders</p>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_idx_h5_file" title="DNNLikelihood.DnnLik.output_idx_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_idx_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_log_file" title="DNNLikelihood.DnnLik.output_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_log_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_predictions_h5_file" title="DNNLikelihood.DnnLik.output_predictions_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_predictions_h5_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_scalers_pickle_file" title="DNNLikelihood.DnnLik.output_scalers_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_scalers_pickle_file</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_summary_json_file" title="DNNLikelihood.DnnLik.output_summary_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_summary_json_file</span></code></a></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_preprocessing_pickle_file</span></code></p></li>
+<li><p><a class="reference internal" href="attributes.html#id1" title="DNNLikelihood.DnnLik.output_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_json_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_tf_model_graph_pdf_file" title="DNNLikelihood.DnnLik.output_tf_model_graph_pdf_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_tf_model_graph_pdf_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_tf_model_h5_file" title="DNNLikelihood.DnnLik.output_tf_model_h5_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_tf_model_h5_file</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_tf_model_json_file" title="DNNLikelihood.DnnLik.output_tf_model_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_tf_model_json_file</span></code></a></p></li>
@@ -402,7 +394,7 @@ to set the attributes corresponding to output folders</p>
 </ul>
 </div></blockquote>
 <p>depending on the value of the
-<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_files_base_name" title="DNNLikelihood.DnnLik.input_files_base_name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_file</span></code></a> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_file</span></code> and
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.output_folder" title="DNNLikelihood.DnnLik.output_folder"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.output_folder</span></code></a> attributes.
 It also initializes (to <code class="docutils literal notranslate"><span class="pre">None</span></code>) the attributes:</p>
 <blockquote>
@@ -426,7 +418,9 @@ if they do not exist.</p>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a> one
 to define the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.name" title="DNNLikelihood.DnnLik.name"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.name</span></code></a> attribute.
 If it is <code class="docutils literal notranslate"><span class="pre">None</span></code> it replaces it with
-<code class="docutils literal notranslate"><span class="pre">&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_DNNLikelihood&quot;</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">&quot;model_&quot;+datetime.now().strftime(&quot;%Y-%m-%d-%H-%M-%S.%fZ&quot;)[:-3]+&quot;_dnnlikelihood&quot;</span></code>,
+otherwise it appends the suffix “_dnnlikelihood”
+(preventing duplication if it is already present).</p>
 </dd></dl>
 
 <dl class="py method">
@@ -475,14 +469,7 @@ it sets them to their default values <code class="docutils literal notranslate">
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -519,14 +506,7 @@ they are set to <code class="docutils literal notranslate"><span class="pre">Non
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -581,14 +561,7 @@ are called.</p>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -608,7 +581,7 @@ to set parameters info. It sets the attributes:</p>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.pars_pos_poi" title="DNNLikelihood.DnnLik.pars_pos_poi"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.pars_pos_poi</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.pars_pos_nuis" title="DNNLikelihood.DnnLik.pars_pos_nuis"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.pars_pos_nuis</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.pars_labels" title="DNNLikelihood.DnnLik.pars_labels"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.pars_labels</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.pars_labels_auto" title="DNNLikelihood.DnnLik.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.pars_labels_auto</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#id2" title="DNNLikelihood.DnnLik.pars_labels_auto"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.pars_labels_auto</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.pars_bounds" title="DNNLikelihood.DnnLik.pars_bounds"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.pars_bounds</span></code></a></p></li>
 </ul>
 </div></blockquote>
@@ -633,6 +606,7 @@ to set attributes corresponding to model hyperparameters from the private dictio
 <div><ul class="simple">
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.scalerX_bool" title="DNNLikelihood.DnnLik.scalerX_bool"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.scalerX_bool</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.scalerY_bool" title="DNNLikelihood.DnnLik.scalerY_bool"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.scalerY_bool</span></code></a></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.rotationX_bool</span></code></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.weighted" title="DNNLikelihood.DnnLik.weighted"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.weighted</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.hidden_layers" title="DNNLikelihood.DnnLik.hidden_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.hidden_layers</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.act_func_out_layer" title="DNNLikelihood.DnnLik.act_func_out_layer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.act_func_out_layer</span></code></a></p></li>
@@ -640,6 +614,7 @@ to set attributes corresponding to model hyperparameters from the private dictio
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.batch_norm" title="DNNLikelihood.DnnLik.batch_norm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.batch_norm</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.epochs_required" title="DNNLikelihood.DnnLik.epochs_required"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.epochs_required</span></code></a></p></li>
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.batch_size" title="DNNLikelihood.DnnLik.batch_size"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.batch_size</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.model_train_kwargs" title="DNNLikelihood.DnnLik.model_train_kwargs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.model_train_kwargs</span></code></a></p></li>
 </ul>
 </div></blockquote>
 </dd></dl>
@@ -663,14 +638,7 @@ to set attributes corresponding to <a href="https://www.tensorflow.org/api_docs/
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -680,12 +648,12 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 </dd></dl>
 
 <dl class="py method">
-<dt id="DNNLikelihood.DnnLik._DnnLik__load_summary_json_and_log">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">_DnnLik__load_summary_json_and_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DnnLik._DnnLik__load_summary_json_and_log" title="Permalink to this definition">¶</a></dt>
+<dt id="DNNLikelihood.DnnLik._DnnLik__load_json_and_log">
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">_DnnLik__load_json_and_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DnnLik._DnnLik__load_json_and_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a> one
 to import part of a previously saved
 <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object from the files
-<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_summary_json_file" title="DNNLikelihood.DnnLik.input_summary_json_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_summary_json_file</span></code></a> and
+<a class="reference internal" href="attributes.html#id0" title="DNNLikelihood.DnnLik.input_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_file</span></code></a> and
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_log_file" title="DNNLikelihood.DnnLik.input_log_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_log_file</span></code></a>.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
@@ -693,14 +661,7 @@ to import part of a previously saved
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -728,14 +689,7 @@ an empty dictionary <code class="docutils literal notranslate"><span class="pre"
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -758,44 +712,7 @@ If the file is not found the attribute is set to <code class="docutils literal n
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-</li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
-</dd></dl>
-
-<dl class="py method">
-<dt id="DNNLikelihood.DnnLik._DnnLik__load_scalers">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">_DnnLik__load_scalers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DnnLik._DnnLik__load_scalers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Private method used by the <a class="reference internal" href="#DNNLikelihood.DnnLik.__init__" title="DNNLikelihood.DnnLik.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__init__</span></code></a> one
-to set the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.scalerX" title="DNNLikelihood.DnnLik.scalerX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.scalerX</span></code></a> and
-<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.scalerY" title="DNNLikelihood.DnnLik.scalerY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.scalerY</span></code></a> attributes from the file
-<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.input_scalers_pickle_file" title="DNNLikelihood.DnnLik.input_scalers_pickle_file"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.input_scalers_pickle_file</span></code></a>.
-If the file is not found the attributes are set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-<ul>
-<li><p><strong>Arguments</strong></p>
-<blockquote>
-<div><ul>
-<li><p><strong>verbose</strong></p>
-<blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -829,14 +746,7 @@ not touched.</p>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -859,14 +769,7 @@ If the file is not found the attributes is set to an empty dictionary <code clas
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -882,23 +785,17 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 <a class="reference internal" href="#DNNLikelihood.DnnLik._DnnLik__set_tf_objects" title="DNNLikelihood.DnnLik._DnnLik__set_tf_objects"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__set_tf_objects</span></code></a> one
 to set the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/optimizers"  target="_blank"> tf.keras.optimizers</a> object. It sets the
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.optimizer_string" title="DNNLikelihood.DnnLik.optimizer_string"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.optimizer_string</span></code></a>
-and <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.optimizer" title="DNNLikelihood.DnnLik.optimizer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.optimizer</span></code></a> attributes. The former is set from the
-<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_optimizer_inputs</span></code></a>
-dictionary, while the latter is set by evaluating the former.</p>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.optimizer" title="DNNLikelihood.DnnLik.optimizer"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.optimizer</span></code></a> attributes.
+The former is set from the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_optimizer_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_optimizer_inputs</span></code></a>
+dictionary.  The latter is set to <code class="docutils literal notranslate"><span class="pre">None</span></code> and then updated by the
+<a class="reference internal" href="#DNNLikelihood.DnnLik.model_compile" title="DNNLikelihood.DnnLik.model_compile"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.model_compile</span></code></a> method during model compilation).</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
 <blockquote>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -912,7 +809,8 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">_DnnLik__set_loss</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DnnLik._DnnLik__set_loss" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the
 <a class="reference internal" href="#DNNLikelihood.DnnLik._DnnLik__set_tf_objects" title="DNNLikelihood.DnnLik._DnnLik__set_tf_objects"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__set_tf_objects</span></code></a> one
-to set the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/losses"  target="_blank"> loss</a> object. It sets the
+to set the loss object (it could be a <a href="https://www.tensorflow.org/api_docs/python/tf/keras/losses"  target="_blank"> loss</a> object or a custom loss defined
+in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">Dnn_likelihood</span></code> module). It sets the
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.loss_string" title="DNNLikelihood.DnnLik.loss_string"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.loss_string</span></code></a>
 and <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.loss" title="DNNLikelihood.DnnLik.loss"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.loss</span></code></a> attributes. The former is set from the
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_compile_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_compile_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_compile_inputs</span></code></a>
@@ -923,14 +821,7 @@ dictionary, while the latter is set by evaluating the former.</p>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -944,8 +835,9 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">_DnnLik__set_metrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#DNNLikelihood.DnnLik._DnnLik__set_metrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Private method used by the
 <a class="reference internal" href="#DNNLikelihood.DnnLik._DnnLik__set_tf_objects" title="DNNLikelihood.DnnLik._DnnLik__set_tf_objects"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__set_tf_objects</span></code></a> one
-to set the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics"  target="_blank"> metrics</a> objects. It sets the
-<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.metrics_string" title="DNNLikelihood.DnnLik.metrics_string"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.metrics_string</span></code></a>
+to set the metrics objects (as for the loss, metrics could be <a href="https://www.tensorflow.org/api_docs/python/tf/keras/metrics"  target="_blank"> metrics</a>
+objects or a custom metrics defined in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">Dnn_likelihood</span></code> module).
+It sets the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.metrics_string" title="DNNLikelihood.DnnLik.metrics_string"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.metrics_string</span></code></a>
 and <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.metrics" title="DNNLikelihood.DnnLik.metrics"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.metrics</span></code></a> attributes. The former is set from the
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik._DnnLik__model_compile_inputs" title="DNNLikelihood.DnnLik._DnnLik__model_compile_inputs"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.__model_compile_inputs</span></code></a>
 dictionary, while the latter is set by evaluating each item in the the former.</p>
@@ -955,14 +847,7 @@ dictionary, while the latter is set by evaluating each item in the the former.</
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -987,14 +872,7 @@ dictionary, while the latter is set by evaluating each item in the the former.</
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1083,14 +961,7 @@ to assign weights.</p>
 </li>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1112,6 +983,34 @@ the required weights.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="DNNLikelihood.DnnLik.define_rotation">
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">define_rotation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.define_rotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.define_rotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that defines the rotation matrix that diagonalizes the covariance matrix of the
+<code class="docutils literal notranslate"><span class="pre">data_X</span></code>, making them uncorrelated.
+Such matrix is defined based on the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.rotationX_bool</span></code> attribute
+When the boolean attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code> the matrix is set to the identity matrix.
+The method computes the rotation matrix by calling the corresponding method
+<a class="reference internal" href="../data/methods.html#DNNLikelihood.Data.define_rotation" title="DNNLikelihood.Data.define_rotation"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.define_rotation</span></code></a> method of the
+<a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a>.</p>
+<p>Note: Data are transformed with the matrix <code class="docutils literal notranslate"><span class="pre">V</span></code> through <code class="docutils literal notranslate"><span class="pre">np.dot(X,V)</span></code> and transformed back throug
+<code class="docutils literal notranslate"><span class="pre">np.dot(X_diag,np.transpose(V))</span></code>.</p>
+<ul>
+<li><p><strong>Arguments</strong></p>
+<blockquote>
+<div><ul>
+<li><p><strong>verbose</strong></p>
+<blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
 <dt id="DNNLikelihood.DnnLik.define_scalers">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">define_scalers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.define_scalers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.define_scalers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that defines <a href="https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html"  target="_blank"> StandardScalers</a> based on the values of the
@@ -1122,20 +1021,15 @@ equal to the identity.
 The method computes the scalers by calling the corresponding method
 <a class="reference internal" href="../data/methods.html#DNNLikelihood.Data.define_scalers" title="DNNLikelihood.Data.define_scalers"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.define_scalers</span></code></a> method of the
 <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a>.</p>
+<p>Note: The X scaler is defined on data rotated with the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.rotationX</span></code> matrix.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
 <blockquote>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1177,6 +1071,20 @@ if the number of points is increased, data are added to the existing ones and ar
 <a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object and the
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.same_data" title="DNNLikelihood.DnnLik.same_data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.same_data</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
 data are re-generated from scratch at each call of the method.</p>
+<p>The method also generates the attributes</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.scalerX" title="DNNLikelihood.DnnLik.scalerX"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.scalerX</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.scalerY" title="DNNLikelihood.DnnLik.scalerY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.scalerY</span></code></a></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.rotationX</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>by calling the
+<a class="reference internal" href="../data/methods.html#DNNLikelihood.Data.update_train_data" title="DNNLikelihood.Data.update_train_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.update_train_data</span></code></a>,
+<a class="reference internal" href="../data/methods.html#DNNLikelihood.Data.update_train_data" title="DNNLikelihood.Data.update_train_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.update_train_data</span></code></a>, and
+<a class="reference internal" href="../data/methods.html#DNNLikelihood.Data.update_train_data" title="DNNLikelihood.Data.update_train_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.update_train_data</span></code></a> methods. All transformations
+are defined starting from the training data <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.X_train" title="DNNLikelihood.DnnLik.X_train"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.X_train</span></code></a>
+and <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.Y_train" title="DNNLikelihood.DnnLik.Y_train"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.Y_train</span></code></a>.</p>
 <p>If the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.weighted" title="DNNLikelihood.DnnLik.weighted"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.weighted</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">True</span></code> the
 <a class="reference internal" href="#DNNLikelihood.DnnLik.compute_sample_weights" title="DNNLikelihood.DnnLik.compute_sample_weights"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.compute_sample_weights</span></code></a> is called
 with default arguments. In order to compute sample weights with different arguments, the user should call again the
@@ -1188,14 +1096,7 @@ data generation.</p>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1217,34 +1118,42 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 <dd><p>Method that generates test data corresponding to the attributes</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.idx_test" title="DNNLikelihood.DnnLik.idx_test"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.idx_train</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.X_test" title="DNNLikelihood.DnnLik.X_test"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.X_train</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.Y_test" title="DNNLikelihood.DnnLik.Y_test"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.Y_train</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.idx_test" title="DNNLikelihood.DnnLik.idx_test"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.idx_test</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.X_test" title="DNNLikelihood.DnnLik.X_test"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.X_test</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.Y_test" title="DNNLikelihood.DnnLik.Y_test"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.Y_test</span></code></a></p></li>
 </ul>
 </div></blockquote>
-<p>Differently from the training and validation data, the test data are always shared by different
-<a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> objects within an
-<a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object.
-Therefore test data are always kept up-to-date in the
-<a class="reference internal" href="../data/attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> attribute of the
+<p>Data are generated by calling the methods
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.update_test_data</span></code> or
+<a class="reference internal" href="../data/methods.html#DNNLikelihood.Data.generate_test_data" title="DNNLikelihood.Data.generate_test_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_test_data</span></code></a> of the
 <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a>
-and are always generated by calling the <a class="reference internal" href="../data/methods.html#DNNLikelihood.Data.generate_test_data" title="DNNLikelihood.Data.generate_test_data"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Data.generate_test_data</span></code></a> of the
+depending on the value of <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.same_data" title="DNNLikelihood.DnnLik.same_data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.same_data</span></code></a>.</p>
+<p>When the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object is not part of a
+<a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object, that is when the
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.standalone" title="DNNLikelihood.DnnLik.standalone"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.standalone</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">True</span></code>,
+or when the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.same_data" title="DNNLikelihood.DnnLik.same_data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.same_data</span></code></a>
+attribute is <code class="docutils literal notranslate"><span class="pre">True</span></code>, that means that all members of the ensemble will share the same data (or a
+subset of the same data if they have different number of points), then data are kept up-to-date in the
+<a class="reference internal" href="../data/attributes.html#DNNLikelihood.Data.data_dictionary" title="DNNLikelihood.Data.data_dictionary"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Data.data_dictionary</span></code></a> attribute of the
 <a class="reference internal" href="../data/index.html#module-data" title="data"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Data</span></code></a> object <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.data" title="DNNLikelihood.DnnLik.data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.data</span></code></a>.
-In this way test data are never re-generated if they are (even partially) available.</p>
+This means that data are not generated again if they are already available from another member and that
+if the number of points is increased, data are added to the existing ones and are not re-generated from scratch.</p>
+<p>When instead the <a class="reference internal" href="class.html#DNNLikelihood.DnnLik" title="DNNLikelihood.DnnLik"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLik</span></code></a> object is part of a
+<a class="reference internal" href="../dnn_likelihood_ensemble/class.html#DNNLikelihood.DnnLikEnsemble" title="DNNLikelihood.DnnLikEnsemble"><code class="xref py py-class docutils literal notranslate"><span class="pre">DnnLikEnsemble</span></code></a> object and the
+<a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.same_data" title="DNNLikelihood.DnnLik.same_data"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.same_data</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+data are re-generated from scratch at each call of the method.</p>
+<p>If the <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.weighted" title="DNNLikelihood.DnnLik.weighted"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.weighted</span></code></a> attribute is <code class="docutils literal notranslate"><span class="pre">True</span></code> the
+<a class="reference internal" href="#DNNLikelihood.DnnLik.compute_sample_weights" title="DNNLikelihood.DnnLik.compute_sample_weights"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.compute_sample_weights</span></code></a> is called
+with default arguments. In order to compute sample weights with different arguments, the user should call again the
+<a class="reference internal" href="#DNNLikelihood.DnnLik.compute_sample_weights" title="DNNLikelihood.DnnLik.compute_sample_weights"><code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.compute_sample_weights</span></code></a> method after
+data generation.</p>
 <ul>
 <li><p><strong>Arguments</strong></p>
 <blockquote>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1265,19 +1174,15 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">model_define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.model_define"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.model_define" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that defines the <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model"  target="_blank"> tf.keras.Model</a> stored in the
 <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.model" title="DNNLikelihood.DnnLik.model"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.model</span></code></a> attribute.
-The model is defined from the attributes</p>
+The model is defined from the attribute</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.hidden_layers" title="DNNLikelihood.DnnLik.hidden_layers"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.hidden_layers</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.batch_norm" title="DNNLikelihood.DnnLik.batch_norm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.batch_norm</span></code></a></p></li>
-<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.dropout_rate" title="DNNLikelihood.DnnLik.dropout_rate"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.dropout_rate</span></code></a></p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.layers_string</span></code></p></li>
 </ul>
 </div></blockquote>
-<p>All hidden layers in the module are <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense"  target="_blank"> Dense</a> layers.
-If <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.batch_norm" title="DNNLikelihood.DnnLik.batch_norm"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.batch_norm</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, then a
-<a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/BatchNormalization"  target="_blank"> batch normalization</a> layer is added after the input layer and after each hidden layer.
-If <a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.dropout_rate" title="DNNLikelihood.DnnLik.dropout_rate"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.dropout_rate</span></code></a> is larger than <code class="docutils literal notranslate"><span class="pre">0</span></code>, then
-a <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout"  target="_blank"> Dropout</a> layer is added after each hidden layer with the given dropout rate.</p>
+<p>created by the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">DnnLik.__set_layers</span></code>
+during initialization. Each layer string is evaluated and appended to the list attribute
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.layers</span></code></p>
 <p>The method also sets the three attributes:</p>
 <blockquote>
 <div><ul class="simple">
@@ -1292,14 +1197,7 @@ a <a href="https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dropout"  
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1328,20 +1226,21 @@ The model is compiled by calling the <a href="https://www.tensorflow.org/api_doc
 <li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.metrics" title="DNNLikelihood.DnnLik.metrics"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.metrics</span></code></a></p></li>
 </ul>
 </div></blockquote>
+<p>constructed from the corresponding string attributes</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.loss_string" title="DNNLikelihood.DnnLik.loss_string"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.loss_string</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.optimizer_string" title="DNNLikelihood.DnnLik.optimizer_string"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.optimizer_string</span></code></a></p></li>
+<li><p><a class="reference internal" href="attributes.html#DNNLikelihood.DnnLik.metrics_string" title="DNNLikelihood.DnnLik.metrics_string"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DnnLik.metrics_string</span></code></a></p></li>
+</ul>
+</div></blockquote>
 <ul>
 <li><p><strong>Arguments</strong></p>
 <blockquote>
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1405,14 +1304,7 @@ available.</p>
 </li>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1460,16 +1352,8 @@ The model is trained by calling the <a href="https://www.tensorflow.org/api_docs
 <div><ul>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode. The second value returned by the
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">DNNLik.set_verbosity</span></code> method is the verbosity mode passed to the
-<a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit"  target="_blank"> tf.keras.Model.fit</a>. See the documentation of <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit"  target="_blank"> tf.keras.Model.fit</a> for the available verbosity modes.
-Also see the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.
+Also see the documentation of <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#fit"  target="_blank"> tf.keras.Model.fit</a> for the available verbosity modes.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1591,14 +1475,7 @@ saved. This option is used to switch off log updated when the method is called b
 </li>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1662,14 +1539,7 @@ is computed</p>
 </li>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1680,7 +1550,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.DnnLik.compute_maximum_model">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">compute_maximum_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">x_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">y_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.compute_maximum_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.compute_maximum_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">compute_maximum_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">minimization_options</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">x_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">y_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.compute_maximum_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.compute_maximum_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method that computes the maximum of the DNNLikelihood predictor with an optimizer given by the user.
 The two optimizer that are supported are <a href="https://docs.scipy.org/doc/scipy/reference/"  target="_blank"> scipy</a> and <a href="https://www.tensorflow.org/api_docs/python/tf/keras"  target="_blank"> tf.keras</a>. They work as follows.</p>
 <ul>
@@ -1838,14 +1708,7 @@ optimization. It could have the following values:</p>
 </li>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1863,7 +1726,7 @@ See the <a class="reference internal" href="../show_prints.html#verbosity-mode">
 
 <dl class="py method">
 <dt id="DNNLikelihood.DnnLik.compute_profiled_maximum_model">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">compute_profiled_maximum_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_val</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">x_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">y_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.compute_profiled_maximum_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.compute_profiled_maximum_model" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">compute_profiled_maximum_model</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pars</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_val</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pars_init</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">optimizer</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">minimization_options</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">x_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">y_boundaries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">save</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.compute_profiled_maximum_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.compute_profiled_maximum_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bla bla bla</p>
 </dd></dl>
 
@@ -1927,14 +1790,7 @@ for all <code class="docutils literal notranslate"><span class="pre">X</span></c
 </li>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -1987,15 +1843,7 @@ If <code class="docutils literal notranslate"><span class="pre">overwrite=True</
 </li>
 <li><p><strong>verbose</strong></p>
 <blockquote>
-<div><p>Verbosity mode.
-See the <a class="reference internal" href="../show_prints.html#verbosity-mode"><span class="std std-ref">Verbosity mode</span></a> documentation for the general behavior.
-The plots are shown in the interactive console calling <code class="docutils literal notranslate"><span class="pre">plt.show()</span></code> only if <code class="docutils literal notranslate"><span class="pre">verbose=True</span></code>.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>type</strong>: <code class="docutils literal notranslate"><span class="pre">bool</span></code></p></li>
-<li><p><strong>default</strong>: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
-</ul>
-</div></blockquote>
+<div><p>See <a class="reference internal" href="../common_methods_arguments.html#common_methods_arguments.verbose" title="common_methods_arguments.verbose"><code class="xref py py-argument docutils literal notranslate"><span class="pre">verbose</span></code></a>.</p>
 </div></blockquote>
 </li>
 </ul>
@@ -2085,13 +1933,13 @@ The plots are shown in the interactive console calling <code class="docutils lit
 <dl class="py method">
 <dt id="DNNLikelihood.DnnLik.save_history_json">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">save_history_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.save_history_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.save_history_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save summary log (history plus model specifications) to json</p>
+<dd><p>Save training history to json</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="DNNLikelihood.DnnLik.save_summary_json">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">save_summary_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.save_summary_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.save_summary_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save summary log (history plus model specifications) to json</p>
+<dt id="DNNLikelihood.DnnLik.save_json">
+<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">save_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.save_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.save_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save object to json</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2103,12 +1951,6 @@ The plots are shown in the interactive console calling <code class="docutils lit
 <dt id="DNNLikelihood.DnnLik.save_predictions_h5">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">save_predictions_h5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.save_predictions_h5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.save_predictions_h5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save predictions h5</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="DNNLikelihood.DnnLik.save_scalers">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">save_scalers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timestamp</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.save_scalers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.save_scalers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save scalers to pickle</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2133,21 +1975,6 @@ The plots are shown in the interactive console calling <code class="docutils lit
 <dl class="py method">
 <dt id="DNNLikelihood.DnnLik.show_figures">
 <code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">show_figures</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fig_list</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.show_figures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.show_figures" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="DNNLikelihood.DnnLik.mean_error">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">mean_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.mean_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.mean_error" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="DNNLikelihood.DnnLik.mean_percentage_error">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">mean_percentage_error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.mean_percentage_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.mean_percentage_error" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="DNNLikelihood.DnnLik.R2_metric">
-<code class="sig-prename descclassname">DnnLik.</code><code class="sig-name descname">R2_metric</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">y_true</span></em>, <em class="sig-param"><span class="n">y_pred</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/DNNLikelihood/dnn_likelihood.html#DnnLik.R2_metric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#DNNLikelihood.DnnLik.R2_metric" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2185,7 +2012,7 @@ See the documentation of <a class="reference internal" href="../resources/method
 See the documentation of <a class="reference internal" href="../show_prints.html#DNNLikelihood.Verbosity.set_verbosity" title="DNNLikelihood.Verbosity.set_verbosity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Verbosity.set_verbosity</span></code></a>.</p>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
@@ -2195,7 +2022,7 @@ See the documentation of <a class="reference internal" href="../show_prints.html
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../dnn_likelihood_ensemble/index.html" class="btn btn-neutral float-right" title="The DnnLikEnsemble object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../dnn_likelihood_ensemble/index.html" class="btn btn-neutral float-right" title="DnnLikEnsemble object" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="attributes.html" class="btn btn-neutral float-left" title="Attributes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -8,7 +8,7 @@ Attributes
    Private attribute corresponding to the input argument :argument:`model_callbacks_inputs`. 
    If the object is initialized from input arguments it is set to the value of :argument:`model_callbacks_inputs`,
    otherwise it is set from the file corresponding to the 
-   :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+   :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
 
       - **type**: ``list``
       - **list items type**: ``str`` and/or ``dict`` (see :argument:`model_callbacks_inputs` for the dictionary structure).
@@ -19,7 +19,7 @@ Attributes
    If the object is initialized from input arguments it is set to the value of :argument:`model_compile_inputs` if present,
    otherwise it is constructed setting the loss to ``"mse"`` and the metrics to ``["mse","mae","mape","msle"]``. If the
    object is imported from files the attribute is set from the file corresponding to the 
-   :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+   :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
 
       - **type**: ``dict`` (see :argument:`model_compile_inputs` for the dictionary structure).
 
@@ -28,7 +28,7 @@ Attributes
    Private attribute corresponding to the input argument :argument:`model_data_inputs`.
    If the object is initialized from input arguments it is set to the value of :argument:`model_data_inputs`
    otherwise is set from the file corresponding to the 
-   :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+   :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
    If the number of validation and test data points are smaller than one, then they are treated as fractions of the
    corresponding number of training points and are replaced by the absolute numbers. If ``"scaleX"`, ``"scaleY"``,
    and/or ``"weighted"`` are not specified than they are set to ``False``.
@@ -40,7 +40,7 @@ Attributes
    Private attribute corresponding to the input argument :argument:`model_define_inputs`.
    If the object is initialized from input arguments it is set to the value of :argument:`model_define_inputs`
    otherwise is set from the file corresponding to the 
-   :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+   :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
    If ``"act_func_out_layer"`, ``"dropout_rate"``,
    and/or ``"batch_norm"`` are not specified than they are set to ``"linear"``, ``0``, and ``False``, respectively.
 
@@ -51,7 +51,7 @@ Attributes
    Private attribute corresponding to the input argument :argument:`model_optimizer_inputs`. 
    If the object is initialized from input arguments it is set to the value of :argument:`model_optimizer_inputs`,
    otherwise it is set from the file corresponding to the 
-   :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+   :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
    For all arguments of the |tf_keras_optimizers_link_2| that are not specified the default value is used.
 
       - **type**: ``str`` or ``dict`` (see :argument:`model_optimizer_inputs` for the dictionary structure).
@@ -61,7 +61,7 @@ Attributes
    Private attribute corresponding to the input argument :argument:`model_train_inputs`. 
    If the object is initialized from input arguments it is set to the value of :argument:`model_train_inputs`,
    otherwise it is set from the file corresponding to the 
-   :attr:`DnnLik.input_summary_json_file <DNNLikelihood.DnnLik.input_summary_json_file>` attribute.
+   :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
 
       - **type**: ``dict`` (see :argument:`model_train_inputs` for the dictionary structure).
 
@@ -366,14 +366,17 @@ Attributes
            
         - **type**: ``str``
 
-.. py:attribute:: DnnLik.input_files_base_name
+.. py:attribute:: DnnLik.input_file
 
-   Absolute path with base file name corresponding to the input argument :argument:`input_summary_json_file` without
-   the "_summary" suffix. Whenever this attribute is not ``None``, it is used to set all input file names and to
-   reconstructed the object from input files (see the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>`
-   method for details).
-           
-      - **type**: ``str`` or ``None``
+   See :attr:`input_file <common_classes_attributes.input_file>`.
+
+.. py:attribute:: DnnLik.input_folder
+
+   See :attr:`input_folder <common_classes_attributes.input_folder>`.
+
+.. py:attribute:: DnnLik.input_h5_file
+
+   See :attr:`input_h5_file <common_classes_attributes.input_h5_file>`.
 
 .. py:attribute:: DnnLik.input_history_json_file
 
@@ -399,14 +402,7 @@ Attributes
 
 .. py:attribute:: DnnLik.input_log_file
 
-   Absolute path to the .log file containing saved :class:`DnnLik <DNNLikelihood.DnnLik>`log (see the 
-   :meth:`DnnLik.save_log <DNNLikelihood.DnnLik.save_log>`
-   method for details).
-   It is automatically generated from the attribute 
-   :attr:`DnnLik.input_files_base_name <DNNLikelihood.DnnLik.input_files_base_name>`.
-   When the latter is ``None``, the attribute is set to ``None``.
-          
-      - **type**: ``str`` or ``None``
+   See :attr:`input_log_file <common_classes_attributes.input_log_file>`.
 
 .. py:attribute:: DnnLik.input_predictions.h5_file
 
@@ -431,10 +427,10 @@ Attributes
           
       - **type**: ``str`` or ``None``
 
-.. py:attribute:: DnnLik.input_summary_json_file
+.. py:attribute:: DnnLik.input_file
 
    Absolute path to the .json file containing saved :class:`DnnLik <DNNLikelihood.DnnLik>` object 
-   (see the :meth:`DnnLik.save_summary_json <DNNLikelihood.DnnLik.save_summary_json>`
+   (see the :meth:`DnnLik.save_json <DNNLikelihood.DnnLik.save_json>`
    method for details).
    It is automatically generated from the attribute 
    :attr:`DnnLik.input_files_base_name <DNNLikelihood.DnnLik.input_files_base_name>`.
@@ -446,7 +442,7 @@ Attributes
 
    Absolute path to the .h5 file containing saved |tf_keras_model_link| corresponding to the 
    :attr:`DnnLik.model <DNNLikelihood.DnnLik.model>` 
-   (see the :meth:`DnnLik.save_summary_json <DNNLikelihood.DnnLik.save_summary_json>`
+   (see the :meth:`DnnLik.save_json <DNNLikelihood.DnnLik.save_json>`
    method for details).
    It is automatically generated from the attribute 
    :attr:`DnnLik.input_files_base_name <DNNLikelihood.DnnLik.input_files_base_name>`.
@@ -466,85 +462,7 @@ Attributes
 
 .. py:attribute:: DnnLik.log
 
-   Dictionary containing a log of the :class:`Data <DNNLikelihood.DnnLik>` object calls. The dictionary has datetime 
-   strings as keys and actions as values. Actions are also dictionaries, containing details of the methods calls.
-           
-      - **type**: ``dict``
-      - **keys**: ``datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]``
-      - **values**: ``dict`` with the following structure:
-
-         - *"action"* (value type: ``str``)
-            Short description of the action.
-            **possible values**: ``"changed_output_folder"``, ``"created"``, ``""loaded summary json""``, ``"loaded history json"``, ``"loaded tf model h5"``, 
-            ``"loaded scalers h5"``, ``"loaded data indices h5"``, ``"loaded predictions json"``, ``"optimizer set"``,
-            ``"loss set"``, ``"metrics set"``, ``"callbacks set"``, ``"computed sample weights"``, ``"defined scalers"``,
-            ``"generated train data"``, ``"generated test data"``, ``"defined tf model"``, ``"compiled tf model"``, ``"built tf model"``, 
-            ``"trained tf model"``, ``"predicted with tf model"``, ``"computed maximum logpdf"``, ``"evaluated tf model"``,
-            ``"saved figure"``, ``"computed predictions"``, ``"saved indices"``, ``"saved tf model json"``, ``"saved tf model h5"``,
-            ``"saved tf model onnx"``, ``"saved history json"``, ``"saved summary json"``, ``"saved predictions json"``, 
-            ``"saved scalers h5"``, ``"saved model graph pdf"``.
-         - *"file name"* (value type: ``str``)
-            File name of file involved in the action.
-         - *"files names"* (value type: ``list`` of ``str``)
-            List of file names of files involved in the action.
-         - *"optimizer"* (value type: ``str``)
-            String corresponding to the attribute :attr:`DnnLik.optimizer_string <DNNLikelihood.DnnLik.optimizer_string>`.
-         - *"loss"* (value type: ``str``)
-            String corresponding to the attribute :attr:`DnnLik.loss_string <DNNLikelihood.DnnLik.loss_string>`.
-         - *"metrics"* (value type: ``list`` of ``str``)
-            List corresponding to the attribute :attr:`DnnLik.metrics_string <DNNLikelihood.DnnLik.metrics_string>`.
-         - *"callbacks"* (value type: ``list`` of ``str``)
-            List corresponding to the attribute :attr:`DnnLik.callbacks_strings <DNNLikelihood.DnnLik.callbacks_strings>`.
-         - *"scaler X"* (value type: ``bool``)
-            Boolean corresponding to the attribute :attr:`DnnLik.scalerX_bool <DNNLikelihood.DnnLik.scalerX_bool>`.
-         - *"scaler Y"* (value type: ``bool``)
-            Boolean corresponding to the attribute :attr:`DnnLik.scalerY_bool <DNNLikelihood.DnnLik.scalerY_bool>`.
-         - *"data"* (value type: ``list`` of ``str``)
-            List of data involved in the action. It could include the strings: "idx_train", "X_train", "Y_train", 
-            "idx_val", "X_val", "Y_val", "idx_test", "X_test", "Y_test".
-         - *"npoints train"* (value type: ``int``)
-            Number of training points corresponding to the attribute
-            :attr:`DnnLik.npoints_train <DNNLikelihood.DnnLik.npoints_train>`.
-         - *"npoints val"* (value type: ``int``)
-            Number of validation points corresponding to the attribute
-            :attr:`DnnLik.npoints_val <DNNLikelihood.DnnLik.npoints_val>`.
-         - *"npoints test"* (value type: ``int``)
-            Number of test points corresponding to the attribute
-            :attr:`DnnLik.npoints_test <DNNLikelihood.DnnLik.npoints_test>`.
-         - *"model summary"* (value type: ``list``)
-            List rendering a print of the ``model.summary()`` method of |tf_keras_model_link|.
-         - *"gpu mode"* (value type: ``bool``)
-            Boolean corresponding to the attribute :attr:`DnnLik.gpu_mode <DNNLikelihood.DnnLik.gpu_mode>`. 
-         - *"device id"* (value type: ``str``)
-            String with the ID of the device on which model has been built (see the
-            :meth:`DnnLik.model_build <DNNLikelihood.DnnLik.model_build>` method).
-         - *"epochs run"* (value type: ``int``)
-            Number of epochs of the current training run.
-         - *"epochs total"* (value type: ``int``)
-            Total number of training epochs.
-         - *"batch size"* (value type: ``int``)
-            Batch size used for action (training, predicting, evaluating), corresponding to the attribute
-            :attr:`DnnLik.batch_size <DNNLikelihood.DnnLik.batch_size>`.
-         - *"training time"* (value type: ``float``)
-            Training time in seconds of the last training.
-         - *"prediction time"* (value type: ``float``)
-            Prediction time in seconds of the last prediction.
-         - *"evaluation time"* (value type: ``float``)
-            Evaluation time in seconds of the last evaluation.
-         - *"npoints"* (value type: ``int``)
-            Number of points involved in the corresponding action.
-         - *"optimizer"* (value type: ``str``)
-            String representing the optimizer used to maximise the logpdf.
-         - *"optimization time"* (value type: ``float``)
-            Time in second for computation of the maximum of logpdf.
-         - *"probability intervals"* (value type: ``list``)
-            Probability intervals used for predictions.
-         - *"pars"* (value type: ``list``)
-            Parameters involved in predictions.
-         - *"old folder"* (value type: ``str``)
-            Previous path.
-         - *"new folder"* (value type: ``str``)
-            New path.
+   See :attr:`log <common_classes_attributes.log>`.
                      
 .. py:attribute:: DnnLik.loss
 
@@ -608,27 +526,24 @@ Attributes
          - *"y"* (value type: ``float``)
             Value of the model at its maximum
 
+.. py:attribute:: DnnLik.model_train_kwargs
+
+   Dictionary corresponding to the additional keyword arguments to be passed to the 
+   |tf_keras_model_fit_link| method. It is constructed from the input dictionary
+   :argument:`model_train_inputs` by removing the two items corresponding to 
+   `"epochs"` and `"batch_size"`, which are saved into dedicated attributes.
+
 .. py:attribute:: DnnLik.model_profiled_max
 
    To be written
 
 .. py:attribute:: DnnLik.name
 
-   Name of the :class:`DnnLik <DNNLikelihood.DnnLik>` object generated from
-   the :argument:`name` input argument. If ``None`` is passed, then ``name`` is assigned the value 
-   ``model_" + datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_DNNLikelihood"``.
-   It is used to generate output files names.
-       
-      - **type**: ``str`` 
+   See :attr:`name <common_classes_attributes.name>`.
 
 .. py:attribute:: DnnLik.ndims
 
-   Number of dimensions of the input vector (i.e. number of 
-   parameters entering in the logpdf). It is automatically set to the corresponding attribute 
-   :attr:`Data.ndims <DNNLikelihood.Data.ndims>` of the :mod:`Data <data>` object
-   :attr:`DnnLik.data <DNNLikelihood.DnnLik.data>`. 
-
-      - **type**: ``int``
+   See :attr:`ndims <common_classes_attributes.ndims>`.
 
 .. py:attribute:: DnnLik.npoints_available
 
@@ -747,28 +662,15 @@ Attributes
 
 .. py:attribute:: DnnLik.output_figures_base_file_name
 
-   Base figures file name. It is 
-   automatically generated from the 
-   :attr:`DnnLik.name <DNNLikelihood.DnnLik.name>` attribute.
-
-      - **type**: ``str`` 
+   See :attr:`output_figures_base_file_name <common_classes_attributes.output_figures_base_file_name>`.
 
 .. py:attribute:: DnnLik.output_figures_base_file_path
 
-   Base figures file name including absolute path. It is 
-   automatically generated from the
-   :attr:`DnnLik.output_figures_folder <DNNLikelihood.DnnLik.output_figures_folder>` and 
-   :attr:`DnnLik.output_figures_base_file_name <DNNLikelihood.DnnLik.output_figures_base_file_name>` attributes.
-
-      - **type**: ``str`` 
+   See :attr:`output_figures_base_file_path <common_classes_attributes.output_figures_base_file_path>`.
 
 .. py:attribute:: DnnLik.output_figures_folder
 
-   Absolute path to the folder where figures are saved. It includes the base figure name and is 
-   automatically generated from the
-   :attr:`DnnLik.output_folder <DNNLikelihood.DnnLik.output_folder>` attribute.
-
-      - **type**: ``str``
+   See :attr:`output_figures_folder <common_classes_attributes.output_figures_folder>`.
 
 .. py:attribute:: DnnLik.output_files_base_name
 
@@ -781,14 +683,11 @@ Attributes
 
 .. py:attribute:: DnnLik.output_folder
 
-   Absolute path corresponding to the input argument
-   :argument:`output_folder`. If the latter is ``None``, then 
-   :attr:`output_folder <DNNLikelihood.DnnLik.output_folder>`
-   is set to the code execution folder. If the folder does not exist it is created
-   by the :func:`utils.check_create_folder <DNNLikelihood.utils.check_create_folder>`
-   function.
+   See :attr:`output_folder <common_classes_attributes.output_folder>`.
 
-      - **type**: ``str``
+.. py:attribute:: DnnLik.output_h5_file
+
+   See :attr:`output_h5_file <common_classes_attributes.output_h5_file>`.
 
 .. py:attribute:: DnnLik.output_history_json_file
 
@@ -810,16 +709,13 @@ Attributes
          
       - **type**: ``str`` 
 
+.. py:attribute:: DnnLik.output_json_file
+
+   See :attr:`output_json_file <common_classes_attributes.output_json_file>`.
+
 .. py:attribute:: DnnLik.output_log_file
 
-   Absolute path to the .log file where the :attr:`DnnLik.log <DNNLikelihood.DnnLik.log>` 
-   is saved (see the 
-   :meth:`DnnLik.save_log <DNNLikelihood.DnnLik.save_log>`
-   method for details).
-   It is automatically generated from the 
-   :attr:`DnnLik.output_files_base_name <DNNLikelihood.DnnLik.output_files_base_name>` attribute.
-         
-      - **type**: ``str``
+   See :attr:`output_log_file <common_classes_attributes.output_log_file>`.
 
 .. py:attribute:: DnnLik.output_predictions_h5_file
 
@@ -831,6 +727,10 @@ Attributes
          
       - **type**: ``str`` 
 
+.. py:attribute:: DnnLik.output_predictions_json_file
+
+   See :attr:`output_predictions_json_file <common_classes_attributes.output_predictions_json_file>`.
+
 .. py:attribute:: DnnLik.output_scalers_pickle_file
 
    Absolute path to the .pickle file where the data standard scalers are saved (see the 
@@ -841,11 +741,11 @@ Attributes
          
       - **type**: ``str`` 
 
-.. py:attribute:: DnnLik.output_summary_json_file
+.. py:attribute:: DnnLik.output_json_file
 
    Absolute path to the .json file where where part of the :class:`DnnLik <DNNLikelihood.DnnLik>` 
    object is saved (see the 
-   :meth:`DnnLik.save_summary_json <DNNLikelihood.DnnLik.save_summary_json>`
+   :meth:`DnnLik.save_json <DNNLikelihood.DnnLik.save_json>`
    method for details).
    It is automatically generated from the 
    :attr:`DnnLik.output_files_base_name <DNNLikelihood.DnnLik.output_files_base_name>` attribute.
@@ -906,11 +806,7 @@ Attributes
 
 .. py:attribute:: DnnLik.pars_bounds
 
-   Copy of the :attr:`DnnLik.data.pars_bounds <DNNLikelihood.Data.pars_bounds>`
-   attribute of the :mod:`Data <data>` object used for data management.
-
-      - **type**: ``numpy.ndarray``
-      - **shape**: ``(ndims,2)``
+   See :attr:`pars_bounds <common_classes_attributes.pars_bounds>`.
 
 .. py:attribute:: DnnLik.pars_bounds_train
 
@@ -924,35 +820,23 @@ Attributes
 
 .. py:attribute:: DnnLik.pars_central   
 
-   Copy of the :attr:`DnnLik.data.pars_central <DNNLikelihood.Data.pars_central>`
-   attribute of the :mod:`Data <data>` object used for data management.
-        
-      - **type**: ``numpy.ndarray``
-      - **shape**: ``(ndims,)``
+   See :attr:`pars_central <common_classes_attributes.pars_central>`.
 
 .. py:attribute:: DnnLik.pars_labels
 
-   Copy of the :attr:`DnnLik.data.pars_labels <DNNLikelihood.Data.pars_labels>`
-   attribute of the :mod:`Data <data>` object used for data management.
+   See :attr:`pars_labels <common_classes_attributes.pars_labels>`.
 
-      - **type**: ``list``
-      - **shape**: ``(ndims,)``
+.. py:attribute:: DnnLik.pars_labels_auto   
+
+   See :attr:`pars_labels_auto <common_classes_attributes.pars_labels_auto>`.
 
 .. py:attribute:: DnnLik.pars_pos_nuis
 
-   Copy of the :attr:`DnnLik.data.pars_pos_nuis <DNNLikelihood.Data.pars_pos_nuis>`
-   attribute of the :mod:`Data <data>` object used for data management.
-
-      - **type**: ``list`` or ``numpy.ndarray``
-      - **shape**: ``(n_nuis,)``
+   See :attr:`pars_pos_nuis <common_classes_attributes.pars_pos_nuis>`.
 
 .. py:attribute:: DnnLik.pars_pos_poi
 
-   Copy of the :attr:`DnnLik.data.pars_pos_poi <DNNLikelihood.Data.pars_pos_poi>`
-   attribute of the :mod:`Data <data>` object used for data management.
-
-      - **type**: ``list`` or ``numpy.ndarray``
-      - **shape**: ``(n_poi,)``
+   See :attr:`pars_pos_poi <common_classes_attributes.pars_pos_poi>`.
 
 .. py:attribute:: DnnLik.pred_bounds_train
 
@@ -972,147 +856,147 @@ Attributes
    :attr:`DnnLik.output_predictions_h5_file <DNNLikelihood.DnnLik.output_predictions_h5_file>`.
 
       - **type**: ``dict`` with the following structure:
-
-         - *"HPDI"* (value type: ``dict``)
-            Highest posterior density intervals (HPDI) for the parameters. This dictionary has the following structure:
-
-            - *"par"* (value type: ``dict``)
-               Dictionary corresponding to parameter par. This dictionary has the following structure:
-
-               - *"pred"* (value type: ``dict``)
-                  Dictionary corresponding to the prediction computed reweighting distributions using the DNN prediction. 
-                  Has the same structure as the item "true".
-               - *"true"* (value type: ``dict``)
-                  Dictionary corresponding to the prediction computed using the original data. 
-                  This dictionary has the following structure:
-
-                  - *"test"* (value type: ``dict``)
-                     Dictionary corresponding to the prediction computed from test data.
-                     Has the same structure as the items "train" and "val".
-                  - *"train"* (value type: ``dict``)
-                     Dictionary corresponding to the prediction computed from test data. 
-                     Has the same structure as the items "test" and "val".
-                  - *"val"* (value type: ``dict``)
-                     Dictionary corresponding to the prediction computed from test data. 
-                     This dictionary has the following structure:
-
-                     - *"Probability"* (value type: ``dict``)
-                        Dictionary with HPDI corresponding to the interval ``interval``. Default intervals for the
-                        :meth:`DnnLik.model_compute_predictions <DNNLikelihood.DnnLik.model_compute_predictions>`
-                        method are ``"0.5"``, ``"0.6826894921370859"``, ``"0.9544997361036416"``, and ``"0.9973002039367398"``.
-                        The latter three correspond to 1,2,3 standard deviations for a 1D normal distribution (obtained through the
-                        :func:`inference.CI_from_sigma <DNNLikelihood.inference.CI_from_sigma>` function).
-                        This dictionary has the following structure:
-
-                        - *"Bin width"* (value type: ``float``)
-                           Width of the binning used to compute the HPDI (see the 
-                           :func:`inference.HPDI <DNNLikelihood.inference.HPDI>`
-                           function for details). It gives an estimate of the uncertainty due to the algorithm for computing
-                           HPDI.
-                        - *"Intervals"* (value type: ``list`` of ``list``)
-                           List of intervals of parameter values for the given probability.
-                        - *"Number of bins"* (value type: ``int``)
-                           Number of bins used for the computation of HPDI (see the 
-                           :func:`inference.HPDI <DNNLikelihood.inference.HPDI>`
-                           function for details).
-                        - *"Probability"* (value type: ``float``)
-                           Probability interval.
-
-         - *"HPDI_error"* (value type: ``dict``)
-            Errors on the HPDI quantified as differences (absolute and relative) between the predictions of HPDI computed
-            with input data and with DNN reweight. This dictionary has the following structure:
-
-            - *"par"* (value type: ``dict``)
-               Dictionary corresponding to parameter par. This dictionary has the following structure:
-
-               - *"test"* (value type: ``dict``)
-                  Dictionary corresponding to the prediction computed from test data.
-                  Has the same structure as the items "train" and "val".
-               - *"train"* (value type: ``dict``)
-                  Dictionary corresponding to the prediction computed from test data. 
-                  Has the same structure as the items "test" and "val".
-               - *"val"* (value type: ``dict``)
-                  Dictionary corresponding to the prediction computed from test data. 
-                  This dictionary has the following structure:
-
-                  - *"Probability"* (value type: ``dict``)
-                     Dictionary with HPDI corresponding to the interval ``interval``. Default intervals for the
-                     :meth:`DnnLik.model_compute_predictions <DNNLikelihood.DnnLik.model_compute_predictions>`
-                     method are ``"0.5"``, ``"0.6826894921370859"``, ``"0.9544997361036416"``, and ``"0.9973002039367398"``.
-                     The latter three correspond to 1,2,3 standard deviations for a 1D normal distribution (obtained through the
-                     :func:`inference.CI_from_sigma <DNNLikelihood.inference.CI_from_sigma>` function).
-                     This dictionary has the following structure:
-
-                     - *"Absolute error"* (value type: ``list`` of ``list``)
-                        List of absolute errors (computed as ``true-pred``) for each boundary of the intervals (see the 
-                        :func:`inference.HPDI_error <DNNLikelihood.inference.HPDI_error>`
-                        function for details)
-                     - *"Probability"* (value type: ``float``)
-                        Probability interval.
-                     - *"Relative error"* (value type: ``list`` of ``list``)
-                        List of relative errors (computed as ``(true-pred)/true``) for each boundary of the intervals (see the 
-                        :func:`inference.HPDI_error <DNNLikelihood.inference.HPDI_error>`
-                        function for details)
-
-         - *"KS"* (value type: ``dict``)
-            Weighted Kolmogorov-Smirnov test statistics and p-values for two sample distributions for each parameter
-            (see the :func:`inference.ks_w <DNNLikelihood.inference.ks_w>` function for details).
-            This dictionary has the following structure:
-
-            - *"Test vs pred on train"* (value type: ``list``, shape: ``(ndims,2)``)
-               List of KS test statistics and p-value for each parameter for two sample KS test between input test data and
-               DNN reweighted prediction on train data.
-            - *"Test vs pred on val"* (value type: ``list``, shape: ``(ndims,2)``)
-               List of KS test statistics and p-value for each parameter for two sample KS test between input test data and
-               DNN reweighted prediction on validation data.
-            - *"Train vs pred on train"* (value type: ``list``, shape: ``(ndims,2)``)
-               List of KS test statistics and p-value for each parameter for two sample KS test between input train data and
-               DNN reweighted prediction on train data.
-            - *"Val vs pred on test"* (value type: ``list``, shape: ``(ndims,2)``)
-               List of KS test statistics and p-value for each parameter for two sample KS test between input validation data and
-               DNN reweighted prediction on test data.
-
-         - *"KS medians"* (value type: ``dict``)
-            Median over parameters of the KS p-values for two sample distributions.
-            This dictionary has the following structure:
-
-            - *"Test vs pred on train"* (value type: ``float``)
-               Median over parameters of the p-values for two sample KS test between input test data and
-               DNN reweighted prediction on train data.
-            - *"Test vs pred on val"* (value type: ``float``)
-               Median over parameters of the p-values for two sample KS test between input test data and
-               DNN reweighted prediction on validation data.
-            - *"Train vs pred on train"* (value type: ``float``)
-               Median over parameters of the p-values for two sample KS test between input train data and
-               DNN reweighted prediction on train data.
-            - *"Val vs pred on test"* (value type: ``float``)
-               Median over parameters of the p-values for two sample KS test between input validation data and
-               DNN reweighted prediction on test data.
-
-         - *"Metrics on scaled data"* (value type: ``dict``)
-            Value of all metrics (loss and metrics) evaluated on scaled data for train/val/test data.
-            This dictionary has the following structure:
-
-            - *"metric_best"* (value type: ``float``)
-               Value of each metric evaluated on train data.
-               This key is present for all metric with the corresponding full name of the metric, such as,
-               for instance, ``"mean_squared_error_best", etc. Metrics include ``"loss"``.
-            - *"test_metric_best"* (value type: ``float``)
-               Value of each metric evaluated on test data.
-               This key is present for all metric with the corresponding full name of the metric, such as,
-               for instance, ``"test_mean_squared_error_best", etc. Metrics include ``"loss"``.
-            - *"val_metric_best"* (value type: ``float``)
-               Value of each metric evaluated on validation data.
-               This key is present for all metric with the corresponding full name of the metric, such as,
-               for instance, ``"val_mean_squared_error_best", etc. Metrics include ``"loss"``.
-      
-         - *"Metrics on unscaled data"* (value type: ``dict``)
-            Value of all metrics (loss and metrics) evaluated on original data for train/val/test data.
-            This dictionary has the same structure of the previous one with all keys having the suffix "_unscaled".
-
-         - *"Prediction time"* (value type: ``float``)
-            Averege prediction time per point in second with batch size equal to 
-            :attr:`DnnLik.batch_size <DNNLikelihood.DnnLik.batch_size>`. 
+.. 
+..          - *"HPDI"* (value type: ``dict``)
+..             Highest posterior density intervals (HPDI) for the parameters. This dictionary has the following structure:
+.. 
+..             - *"par"* (value type: ``dict``)
+..                Dictionary corresponding to parameter par. This dictionary has the following structure:
+.. 
+..                - *"pred"* (value type: ``dict``)
+..                   Dictionary corresponding to the prediction computed reweighting distributions using the DNN prediction. 
+..                   Has the same structure as the item "true".
+..                - *"true"* (value type: ``dict``)
+..                   Dictionary corresponding to the prediction computed using the original data. 
+..                   This dictionary has the following structure:
+.. 
+..                   - *"test"* (value type: ``dict``)
+..                      Dictionary corresponding to the prediction computed from test data.
+..                      Has the same structure as the items "train" and "val".
+..                   - *"train"* (value type: ``dict``)
+..                      Dictionary corresponding to the prediction computed from test data. 
+..                      Has the same structure as the items "test" and "val".
+..                   - *"val"* (value type: ``dict``)
+..                      Dictionary corresponding to the prediction computed from test data. 
+..                      This dictionary has the following structure:
+.. 
+..                      - *"Probability"* (value type: ``dict``)
+..                         Dictionary with HPDI corresponding to the interval ``interval``. Default intervals for the
+..                         :meth:`DnnLik.model_compute_predictions <DNNLikelihood.DnnLik.model_compute_predictions>`
+..                         method are ``"0.5"``, ``"0.6826894921370859"``, ``"0.9544997361036416"``, and ``"0.9973002039367398"``.
+..                         The latter three correspond to 1,2,3 standard deviations for a 1D normal distribution (obtained through the
+..                         :func:`inference.CI_from_sigma <DNNLikelihood.inference.CI_from_sigma>` function).
+..                         This dictionary has the following structure:
+.. 
+..                         - *"Bin width"* (value type: ``float``)
+..                            Width of the binning used to compute the HPDI (see the 
+..                            :func:`inference.HPDI <DNNLikelihood.inference.HPDI>`
+..                            function for details). It gives an estimate of the uncertainty due to the algorithm for computing
+..                            HPDI.
+..                         - *"Intervals"* (value type: ``list`` of ``list``)
+..                            List of intervals of parameter values for the given probability.
+..                         - *"Number of bins"* (value type: ``int``)
+..                            Number of bins used for the computation of HPDI (see the 
+..                            :func:`inference.HPDI <DNNLikelihood.inference.HPDI>`
+..                            function for details).
+..                         - *"Probability"* (value type: ``float``)
+..                            Probability interval.
+.. 
+..          - *"HPDI_error"* (value type: ``dict``)
+..             Errors on the HPDI quantified as differences (absolute and relative) between the predictions of HPDI computed
+..             with input data and with DNN reweight. This dictionary has the following structure:
+.. 
+..             - *"par"* (value type: ``dict``)
+..                Dictionary corresponding to parameter par. This dictionary has the following structure:
+.. 
+..                - *"test"* (value type: ``dict``)
+..                   Dictionary corresponding to the prediction computed from test data.
+..                   Has the same structure as the items "train" and "val".
+..                - *"train"* (value type: ``dict``)
+..                   Dictionary corresponding to the prediction computed from test data. 
+..                   Has the same structure as the items "test" and "val".
+..                - *"val"* (value type: ``dict``)
+..                   Dictionary corresponding to the prediction computed from test data. 
+..                   This dictionary has the following structure:
+.. 
+..                   - *"Probability"* (value type: ``dict``)
+..                      Dictionary with HPDI corresponding to the interval ``interval``. Default intervals for the
+..                      :meth:`DnnLik.model_compute_predictions <DNNLikelihood.DnnLik.model_compute_predictions>`
+..                      method are ``"0.5"``, ``"0.6826894921370859"``, ``"0.9544997361036416"``, and ``"0.9973002039367398"``.
+..                      The latter three correspond to 1,2,3 standard deviations for a 1D normal distribution (obtained through the
+..                      :func:`inference.CI_from_sigma <DNNLikelihood.inference.CI_from_sigma>` function).
+..                      This dictionary has the following structure:
+.. 
+..                      - *"Absolute error"* (value type: ``list`` of ``list``)
+..                         List of absolute errors (computed as ``true-pred``) for each boundary of the intervals (see the 
+..                         :func:`inference.HPDI_error <DNNLikelihood.inference.HPDI_error>`
+..                         function for details)
+..                      - *"Probability"* (value type: ``float``)
+..                         Probability interval.
+..                      - *"Relative error"* (value type: ``list`` of ``list``)
+..                         List of relative errors (computed as ``(true-pred)/true``) for each boundary of the intervals (see the 
+..                         :func:`inference.HPDI_error <DNNLikelihood.inference.HPDI_error>`
+..                         function for details)
+.. 
+..          - *"KS"* (value type: ``dict``)
+..             Weighted Kolmogorov-Smirnov test statistics and p-values for two sample distributions for each parameter
+..             (see the :func:`inference.ks_w <DNNLikelihood.inference.ks_w>` function for details).
+..             This dictionary has the following structure:
+.. 
+..             - *"Test vs pred on train"* (value type: ``list``, shape: ``(ndims,2)``)
+..                List of KS test statistics and p-value for each parameter for two sample KS test between input test data and
+..                DNN reweighted prediction on train data.
+..             - *"Test vs pred on val"* (value type: ``list``, shape: ``(ndims,2)``)
+..                List of KS test statistics and p-value for each parameter for two sample KS test between input test data and
+..                DNN reweighted prediction on validation data.
+..             - *"Train vs pred on train"* (value type: ``list``, shape: ``(ndims,2)``)
+..                List of KS test statistics and p-value for each parameter for two sample KS test between input train data and
+..                DNN reweighted prediction on train data.
+..             - *"Val vs pred on test"* (value type: ``list``, shape: ``(ndims,2)``)
+..                List of KS test statistics and p-value for each parameter for two sample KS test between input validation data and
+..                DNN reweighted prediction on test data.
+.. 
+..          - *"KS medians"* (value type: ``dict``)
+..             Median over parameters of the KS p-values for two sample distributions.
+..             This dictionary has the following structure:
+.. 
+..             - *"Test vs pred on train"* (value type: ``float``)
+..                Median over parameters of the p-values for two sample KS test between input test data and
+..                DNN reweighted prediction on train data.
+..             - *"Test vs pred on val"* (value type: ``float``)
+..                Median over parameters of the p-values for two sample KS test between input test data and
+..                DNN reweighted prediction on validation data.
+..             - *"Train vs pred on train"* (value type: ``float``)
+..                Median over parameters of the p-values for two sample KS test between input train data and
+..                DNN reweighted prediction on train data.
+..             - *"Val vs pred on test"* (value type: ``float``)
+..                Median over parameters of the p-values for two sample KS test between input validation data and
+..                DNN reweighted prediction on test data.
+.. 
+..          - *"Metrics on scaled data"* (value type: ``dict``)
+..             Value of all metrics (loss and metrics) evaluated on scaled data for train/val/test data.
+..             This dictionary has the following structure:
+.. 
+..             - *"metric_best"* (value type: ``float``)
+..                Value of each metric evaluated on train data.
+..                This key is present for all metric with the corresponding full name of the metric, such as,
+..                for instance, ``"mean_squared_error_best", etc. Metrics include ``"loss"``.
+..             - *"test_metric_best"* (value type: ``float``)
+..                Value of each metric evaluated on test data.
+..                This key is present for all metric with the corresponding full name of the metric, such as,
+..                for instance, ``"test_mean_squared_error_best", etc. Metrics include ``"loss"``.
+..             - *"val_metric_best"* (value type: ``float``)
+..                Value of each metric evaluated on validation data.
+..                This key is present for all metric with the corresponding full name of the metric, such as,
+..                for instance, ``"val_mean_squared_error_best", etc. Metrics include ``"loss"``.
+..       
+..          - *"Metrics on unscaled data"* (value type: ``dict``)
+..             Value of all metrics (loss and metrics) evaluated on original data for train/val/test data.
+..             This dictionary has the same structure of the previous one with all keys having the suffix "_unscaled".
+.. 
+..          - *"Prediction time"* (value type: ``float``)
+..             Averege prediction time per point in second with batch size equal to 
+..             :attr:`DnnLik.batch_size <DNNLikelihood.DnnLik.batch_size>`. 
 
       - **schematic example**:
 
@@ -1240,14 +1124,7 @@ Attributes
 
 .. py:attribute:: DnnLik.verbose
 
-   Attribute corresponding to the input argument :argument:`verbose`.
-   It represents the verbosity mode of the 
-   :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` 
-   method and the default verbosity mode of all class methods that accept a
-   ``verbose`` argument.
-   See :ref:`Verbosity mode <verbosity_mode>`.
-
-       - **type**: ``bool`` or ``int``
+   See :attr:`verbose <common_classes_attributes.verbose>`.
 
 .. py:attribute:: DnnLik.W_train
 

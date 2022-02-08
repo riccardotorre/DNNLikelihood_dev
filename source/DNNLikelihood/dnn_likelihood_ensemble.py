@@ -5,6 +5,7 @@ import json
 import codecs
 import numpy as np
 import os
+import random
 import shutil
 from timeit import default_timer as timer
 import time
@@ -194,6 +195,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         self.save_summary_log_json()
 
     def __set_seed(self):
+        random.seed(self.seed)
         np.random.seed(self.seed)
         tf.random.set_seed(self.seed)
 

@@ -326,6 +326,7 @@
         <span class="c1"># Setting all arguments</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_script_file</span> <span class="o">=</span> <span class="n">likelihood_script_file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likelihood</span> <span class="o">=</span> <span class="n">likelihood</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">output_folder</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">new_sampler</span><span class="o">=</span><span class="kc">True</span>
@@ -358,7 +359,7 @@
                 <span class="k">if</span> <span class="n">vectorize</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">vectorize</span> <span class="o">=</span> <span class="n">vectorize</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">__init_likelihood</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span> <span class="c1"># Also sets self.name</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;gelman_rubin&quot;</span><span class="p">]</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">]</span>
@@ -375,7 +376,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gelman_rubin&quot;</span><span class="p">:</span> <span class="p">{},</span> 
                                 <span class="s2">&quot;Figures&quot;</span><span class="p">:</span> <span class="p">{}}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__init_likelihood</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span> <span class="c1"># Also sets self.name</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">output_folder</span><span class="o">=</span><span class="n">output_folder</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__check_define_output_files</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">moves</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">moves_str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__check_vectorize</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__init_backend</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
@@ -420,11 +421,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="c1">### Sets output folder if needed to find existing files</span>
@@ -457,7 +454,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">No Sampler input files and folders specified.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
                 
-    <span class="k">def</span> <span class="nf">__check_define_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">output_folder</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__check_define_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Private method used by the :meth:`Sampler.__init__ &lt;DNNLikelihood.Sampler.__init__&gt;` one</span>
 <span class="sd">        to set the attributes corresponding to the output folder</span>
@@ -487,11 +484,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates folders if they do not exist**</span>
 
@@ -499,8 +492,8 @@
 <span class="sd">            - :attr:`Sampler.output_figures_folder &lt;DNNLikelihood.Sampler.output_figures_folder&gt;`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output_folder</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span><span class="p">:</span>
                 <span class="n">utils</span><span class="o">.</span><span class="n">copy_and_save_folder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_folder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_folder</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -538,11 +531,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">tmp_likelihood</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood</span><span class="p">)</span>
@@ -588,11 +577,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="c1">#Set verbosity in likelihood_script_file</span>
@@ -656,11 +641,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">timer</span><span class="p">()</span>
@@ -705,11 +686,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">timestamp</span> <span class="o">=</span> <span class="s2">&quot;datetime_&quot;</span><span class="o">+</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y_%m_</span><span class="si">%d</span><span class="s2">_%H_%M_%S_</span><span class="si">%f</span><span class="s2">Z&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
@@ -776,11 +753,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -846,11 +819,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectorize</span><span class="p">:</span>
@@ -878,11 +847,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="n">nwalkers_from_backend</span><span class="p">,</span> <span class="n">ndims_from_backend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">shape</span>
@@ -960,12 +925,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                If ``verbose=2`` a progress bar is shown.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Running sampler&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
@@ -1027,33 +987,15 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is passed to the</span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function</span>
-<span class="sd">                to generate the dump file name.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 <span class="sd">                    </span>
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode.</span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates file**</span>
 
@@ -1081,7 +1023,7 @@
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Likelihood log file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_log_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">save_predictions_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Sampler.save_predictions_json"><a class="viewcode-back" href="../../sampler/methods.html#DNNLikelihood.Sampler.save_predictions_json">[docs]</a>    <span class="k">def</span> <span class="nf">save_predictions_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Save predictions json</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
@@ -1107,7 +1049,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predictions json file</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predictions json file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Predictions json file dump</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_predictions_json_file</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">saved in&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span> <span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Sampler.save"><a class="viewcode-back" href="../../sampler/methods.html#DNNLikelihood.Sampler.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1147,34 +1089,15 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used to update the </span>
-<span class="sd">                :attr:`Lik.log &lt;DNNLikelihood.Lik.log&gt;` object and, when ``overwrite=&quot;dump&quot;``, is passed to the</span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function</span>
-<span class="sd">                to generate the dump file name.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Creates/updates files**</span>
 
@@ -1233,7 +1156,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">save_predictions_json</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="n">overwrite</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
     
-    <span class="k">def</span> <span class="nf">reset_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+<div class="viewcode-block" id="Sampler.reset_predictions"><a class="viewcode-back" href="../../sampler/methods.html#DNNLikelihood.Sampler.reset_predictions">[docs]</a>    <span class="k">def</span> <span class="nf">reset_predictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                           <span class="n">delete_figures</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                           <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1259,11 +1182,7 @@
 <span class="sd">            </span>
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">verbose</span><span class="p">,</span> <span class="n">verbose_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
@@ -1275,7 +1194,7 @@
             <span class="n">figs</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">check_figures_dic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">],</span><span class="n">output_figures_folder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_figures_folder</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">All predictions have been deleted and the &#39;predictions&#39; attribute has been initialized. No figure file has been deleted.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;gelman_rubin&quot;</span><span class="p">:</span> <span class="p">{},</span>
-                            <span class="s2">&quot;Figures&quot;</span><span class="p">:</span> <span class="n">figs</span><span class="p">}</span>
+                            <span class="s2">&quot;Figures&quot;</span><span class="p">:</span> <span class="n">figs</span><span class="p">}</span></div>
 
     <span class="c1">##### Functions from the emcee documentation (with some modifications) #####</span>
 
@@ -1429,7 +1348,7 @@
 <span class="sd">            - **nsteps**</span>
 
 <span class="sd">                Array or list of number of steps at which the metrics are computed. If it is an integer it is automatically converted</span>
-<span class="sd">                in a numpy array with a single entry. It it is ``&quot;all&quot;`` it is set to a list with the only entry</span>
+<span class="sd">                in a |Numpy_link| array with a single entry. It it is ``&quot;all&quot;`` it is set to a list with the only entry</span>
 <span class="sd">                :attr:`Sampler.nsteps_available &lt;DNNLikelihood.Sampler.nsteps_available&gt;`. </span>
 
 <span class="sd">                    - **type**: ``str`` or ``int`` or ``list`` or ``numpy.ndarray``</span>
@@ -1440,22 +1359,11 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Sampler.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Sampler.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Sampler.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        </span>
 <span class="sd">        - **Returns**</span>
 
@@ -1523,7 +1431,7 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Gelman-Rubin statistics for parameters&quot;</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span><span class="s2">&quot;computed in&quot;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="n">start</span><span class="p">),</span><span class="s2">&quot;s.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">show</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
         <span class="c1">#return np.array(res)</span>
 
-    <span class="k">def</span> <span class="nf">update_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">figure_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Sampler.update_figures"><a class="viewcode-back" href="../../sampler/methods.html#DNNLikelihood.Sampler.update_figures">[docs]</a>    <span class="k">def</span> <span class="nf">update_figures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">figure_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Method that generates new file names and renames old figure files when new ones are produced with the argument ``overwrite=False``. </span>
 <span class="sd">        When ``overwrite=False`` it calls the :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function and, if </span>
@@ -1549,12 +1457,7 @@
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 <span class="sd">        </span>
 <span class="sd">        - **Returns**</span>
 
@@ -1584,7 +1487,7 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">predictions</span><span class="p">[</span><span class="s2">&quot;Figures&quot;</span><span class="p">][</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span><span class="n">old_figure_file</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span> 
             <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
                 <span class="n">new_figure_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_name</span><span class="p">(</span><span class="n">figure_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">new_figure_file</span>
+        <span class="k">return</span> <span class="n">new_figure_file</span></div>
 
 <div class="viewcode-block" id="Sampler.plot_gelman_rubin"><a class="viewcode-back" href="../../sampler/methods.html#DNNLikelihood.Sampler.plot_gelman_rubin">[docs]</a>    <span class="k">def</span> <span class="nf">plot_gelman_rubin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                           <span class="n">pars</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
@@ -1592,7 +1495,7 @@
                           <span class="n">pars_labels</span><span class="o">=</span><span class="s2">&quot;original&quot;</span><span class="p">,</span> 
                           <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                           <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                          <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                          <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                           <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the evolution with the number of steps of the convergence metrics :math:`R_{c}`, </span>
@@ -1639,35 +1542,17 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Sampler.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Sampler.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Sampler.log &lt;DNNLikelihood.Sampler.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Updates file**</span>
 
@@ -1752,7 +1637,7 @@
                   <span class="n">pars_labels</span><span class="o">=</span><span class="s2">&quot;original&quot;</span><span class="p">,</span> 
                   <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
                   <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                  <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                   <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the 1D distribution of parameter (or list of parameters) ``pars``.</span>
@@ -1787,43 +1672,21 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Sampler.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Sampler.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Sampler.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Updates file**</span>
 
@@ -1865,7 +1728,7 @@
                       <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;G&amp;W 2010&quot;</span><span class="p">,</span> <span class="s2">&quot;Fardal 2017&quot;</span><span class="p">,</span> <span class="s2">&quot;DFM 2017: ML&quot;</span><span class="p">],</span> 
                       <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                       <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                      <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                      <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                       <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the integrated autocorrelation time estimate evolution with the number of steps for parameter (or list of parameters) ``pars``.</span>
@@ -1917,35 +1780,17 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Sampler.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Sampler.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Sampler.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Updates file**</span>
 
@@ -2045,7 +1890,7 @@
                     <span class="n">pars_labels</span><span class="o">=</span><span class="s2">&quot;original&quot;</span><span class="p">,</span> 
                     <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                    <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                    <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                     <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the evolution of chains (walkers) with the number of steps for ``n_chains`` randomly selected chains among the </span>
@@ -2090,35 +1935,17 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Sampler.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Sampler.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Sampler.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Updates file**</span>
 
@@ -2163,7 +1990,7 @@
                            <span class="n">n_chains</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> 
                            <span class="n">show_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                            <span class="n">timestamp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+                           <span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
                            <span class="n">verbose</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plots the evolution of minus the logpdf values with the number of steps for ``n_chains`` randomly selected chains among the </span>
@@ -2190,35 +2017,17 @@
 
 <span class="sd">            - **timestamp**</span>
 <span class="sd">            </span>
-<span class="sd">                A timestamp string with format ``&quot;datetime_&quot;+datetime.now().strftime(&quot;%Y_%m_%d_%H_%M_%S_%fZ&quot;)[:-3]``.</span>
-<span class="sd">                If it is not passed, then it is generated. It is used as key in the </span>
-<span class="sd">                :attr:`Sampler.predictions[&quot;logpdf_max&quot;] &lt;DNNLikelihood.Sampler.predictions&gt;` dictionary to save the current prediction.</span>
-<span class="sd">                It is also used to update the :attr:`Lik.log &lt;DNNLikelihood.Sampler.log&gt;` dictionary and to save the object when </span>
-<span class="sd">                ``overwrite=&quot;dump&quot;``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``str``</span>
-<span class="sd">                    - **default**: ``None``</span>
+<span class="sd">                See :argument:`timestamp &lt;common_methods_arguments.timestamp&gt;`.</span>
 
 <span class="sd">            - **overwrite**</span>
 <span class="sd">            </span>
-<span class="sd">                If ``True`` if a file with the same name already exists, then it gets overwritten. </span>
-<span class="sd">                If ``False`` is a file with the same name already exists, then the old file gets renamed with the </span>
-<span class="sd">                :func:`utils.check_rename_file &lt;DNNLikelihood.utils.check_rename_file&gt;` function.</span>
-<span class="sd">                If ``&quot;dump&quot;``, a dump of the file is saved through the </span>
-<span class="sd">                :func:`utils.generate_dump_file_name &lt;DNNLikelihood.utils.generate_dump_file_name&gt;` function.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool`` or ``str``</span>
-<span class="sd">                    - **allowed str**: ``&quot;dump&quot;``</span>
-<span class="sd">                    - **default**: ``False``</span>
+<span class="sd">                See :argument:`overwrite &lt;common_methods_arguments.overwrite&gt;`.</span>
+
+<span class="sd">                    - **default**: ``True``</span>
 
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Updates file**</span>
 
@@ -2336,11 +2145,7 @@
 <span class="sd">            </span>
 <span class="sd">            - **verbose**</span>
 <span class="sd">            </span>
-<span class="sd">                Verbosity mode. </span>
-<span class="sd">                See the :ref:`Verbosity mode &lt;verbosity_mode&gt;` documentation for the general behavior.</span>
-<span class="sd">                    </span>
-<span class="sd">                    - **type**: ``bool``</span>
-<span class="sd">                    - **default**: ``None`` </span>
+<span class="sd">                See :argument:`verbose &lt;common_methods_arguments.verbose&gt;`.</span>
 
 <span class="sd">        - **Returns**</span>
 
@@ -2428,7 +2233,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;created data object&quot;</span><span class="p">,</span> 
                                <span class="s2">&quot;files names&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">output_predictions_json_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                                               <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">output_object_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                               <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">output_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">ds</span><span class="o">.</span><span class="n">output_samples_h5_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
                                                <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_log_file</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">save_log</span><span class="p">(</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose_sub</span><span class="p">)</span>

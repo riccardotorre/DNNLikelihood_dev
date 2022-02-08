@@ -2,11 +2,11 @@
 
 .. module:: dnn_likelihood_ensemble
 
-The DnnLikEnsemble object
+DnnLikEnsemble object
 ----------------------------------
 
 .. toctree::
-   :maxdepth: 8
+   :maxdepth: -1
 
    usage
    class

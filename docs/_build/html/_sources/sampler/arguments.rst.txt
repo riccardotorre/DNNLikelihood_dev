@@ -78,35 +78,14 @@ Arguments
 
 .. argument:: output_folder
      
-    Path (either relative to the code execution folder or absolute) where output files are saved.
-    It is used to set the :attr:`Sampler.output_folder <DNNLikelihood.Sampler.output_folder>` attribute.
-    The :argument:`output_folder <Sampler.output_folder>` argument is also used
-    when importing and existing :class:`Sampler <DNNLikelihood.Sampler>` object. 
-    In this case if it is ``None`` (default), 
-    then the input files are searched for in the same directory of the 
-    :attr:`likelihood_script_file <DNNLikelihood.Sampler.likelihood_script_file>` file,
-    otherwise, input files are searched for in the :argument:`output_folder <Sampler.output_folder>` folder.
-        
-        - **type**: ``str`` or ``None``
-        - **default**: ``None``
+    See :argument:`output_folder <common_classes_arguments.output_folder>`.
 
-.. argument:: input_file   
+.. argument:: input_file
 
-    File name (either relative to the code execution folder or absolute, with or without extension) 
-    of a saved :class:`Sampler <DNNLikelihood.Sampler>` object. 
-    It is used to set the :attr:`Lik.input_file <DNNLikelihood.Lik.input_file>` 
-    attribute.
-
-       - **type**: ``str`` or ``None``
-       - **default**: ``None``
+    See :argument:`input_file <common_classes_arguments.input_file>`.
 
 .. argument:: verbose
 
-    Argument used to set the verbosity mode of the :meth:`Lik.__init__ <DNNLikelihood.Lik.__init__>` 
-    method and the default verbosity mode of all class methods that accept a ``verbose`` argument.
-    See :ref:`Verbosity mode <verbosity_mode>`.
-
-       - **type**: ``bool``
-       - **default**: ``True``
+   See :argument:`verbose <common_classes_arguments.verbose>`.
 
 .. include:: ../external_links.rst

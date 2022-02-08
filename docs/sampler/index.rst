@@ -2,8 +2,8 @@
 
 .. module:: sampler
 
-The Sampler object
-------------------
+Sampler object
+--------------
 
 The :class:`Sampler <DNNLikelihood.Sampler>` class is an API to the |emcee_link| Python package that can be used to sample
 :class:`Lik <DNNLikelihood.Lik>` objects (more precisely the corresponding logpdf function) and export data
@@ -15,7 +15,7 @@ at any time of the sampling process. See also :ref:`the Likelihood object <likel
 :class:`Sampler <DNNLikelihood.Sampler>` class and to export the :mod:`Data <data>` object.
 
 .. toctree::
-   :maxdepth: 8
+   :maxdepth: -1
 
    usage
    class

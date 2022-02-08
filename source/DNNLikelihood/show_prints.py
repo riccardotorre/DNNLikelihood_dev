@@ -26,11 +26,7 @@ class Verbosity():
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for more details.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Returns**
 

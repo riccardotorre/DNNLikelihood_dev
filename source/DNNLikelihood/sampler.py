@@ -162,6 +162,7 @@ class Sampler(Verbosity):
         # Setting all arguments
         self.likelihood_script_file = likelihood_script_file
         self.likelihood = likelihood
+        self.output_folder = output_folder
         self.input_file = input_file
         if self.input_file is None:
             new_sampler=True
@@ -194,7 +195,7 @@ class Sampler(Verbosity):
                 if vectorize != None:
                     self.vectorize = vectorize
                 self.__init_likelihood(verbose=verbose_sub) # Also sets self.name
-                self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
+                self.__check_define_output_files(timestamp=timestamp,verbose=verbose_sub)
                 try:
                     self.predictions["gelman_rubin"]
                     self.predictions["Figures"]
@@ -211,7 +212,7 @@ class Sampler(Verbosity):
             self.predictions = {"gelman_rubin": {}, 
                                 "Figures": {}}
             self.__init_likelihood(verbose=verbose_sub) # Also sets self.name
-            self.__check_define_output_files(output_folder=output_folder,timestamp=timestamp,verbose=verbose_sub)
+            self.__check_define_output_files(timestamp=timestamp,verbose=verbose_sub)
         self.moves = eval(self.moves_str)
         self.__check_vectorize(verbose=verbose_sub)
         self.__init_backend(verbose=verbose_sub)
@@ -256,11 +257,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         ### Sets output folder if needed to find existing files
@@ -293,7 +290,7 @@ class Sampler(Verbosity):
             self.input_folder = None
             print(header_string,"\nNo Sampler input files and folders specified.\n", show=verbose)
                 
-    def __check_define_output_files(self,output_folder=None,timestamp=None,verbose=False):
+    def __check_define_output_files(self,timestamp=None,verbose=False):
         """
         Private method used by the :meth:`Sampler.__init__ <DNNLikelihood.Sampler.__init__>` one
         to set the attributes corresponding to the output folder
@@ -323,11 +320,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates folders if they do not exist**
 
@@ -335,8 +328,8 @@ class Sampler(Verbosity):
             - :attr:`Sampler.output_figures_folder <DNNLikelihood.Sampler.output_figures_folder>`
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if output_folder is not None:
-            self.output_folder = path.abspath(output_folder)
+        if self.output_folder is not None:
+            self.output_folder = path.abspath(self.output_folder)
             if self.input_folder is not None and self.output_folder != self.input_folder:
                 utils.copy_and_save_folder(self.input_folder, self.output_folder, timestamp=timestamp, verbose=verbose)
         else:
@@ -374,11 +367,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         tmp_likelihood = copy(self.likelihood)
@@ -424,11 +413,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         #Set verbosity in likelihood_script_file
@@ -492,11 +477,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, _ = self.set_verbosity(verbose)
         start = timer()
@@ -541,11 +522,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
@@ -612,11 +589,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         if self.input_file is None:
@@ -682,11 +655,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, _ = self.set_verbosity(verbose)
         if self.vectorize:
@@ -714,11 +683,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         nwalkers_from_backend, ndims_from_backend = self.backend.shape
@@ -796,12 +761,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                If ``verbose=2`` a progress bar is shown.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nRunning sampler", show=verbose)
@@ -863,33 +823,15 @@ class Sampler(Verbosity):
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is passed to the
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
-                to generate the dump file name.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
                     
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode.
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates file**
 
@@ -983,34 +925,15 @@ class Sampler(Verbosity):
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used to update the 
-                :attr:`Lik.log <DNNLikelihood.Lik.log>` object and, when ``overwrite="dump"``, is passed to the
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function
-                to generate the dump file name.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Creates/updates files**
 
@@ -1095,11 +1018,7 @@ class Sampler(Verbosity):
             
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
@@ -1265,7 +1184,7 @@ class Sampler(Verbosity):
             - **nsteps**
 
                 Array or list of number of steps at which the metrics are computed. If it is an integer it is automatically converted
-                in a numpy array with a single entry. It it is ``"all"`` it is set to a list with the only entry
+                in a |Numpy_link| array with a single entry. It it is ``"all"`` it is set to a list with the only entry
                 :attr:`Sampler.nsteps_available <DNNLikelihood.Sampler.nsteps_available>`. 
 
                     - **type**: ``str`` or ``int`` or ``list`` or ``numpy.ndarray``
@@ -1276,22 +1195,11 @@ class Sampler(Verbosity):
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Sampler.predictions["logpdf_max"] <DNNLikelihood.Sampler.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         
         - **Returns**
 
@@ -1385,12 +1293,7 @@ class Sampler(Verbosity):
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
         
         - **Returns**
 
@@ -1428,7 +1331,7 @@ class Sampler(Verbosity):
                           pars_labels="original", 
                           show_plot=False, 
                           timestamp=None,
-                          overwrite=False, 
+                          overwrite=True, 
                           verbose=None):
         """
         Plots the evolution with the number of steps of the convergence metrics :math:`R_{c}`, 
@@ -1467,43 +1370,21 @@ class Sampler(Verbosity):
 
             - **show_plot**
             
-                If ``True`` the plot is shown on the 
-                interactive console.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Sampler.predictions["logpdf_max"] <DNNLikelihood.Sampler.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Sampler.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Updates file**
 
@@ -1588,7 +1469,7 @@ class Sampler(Verbosity):
                   pars_labels="original", 
                   show_plot=False, 
                   timestamp=None,
-                  overwrite=False, 
+                  overwrite=True, 
                   verbose=None):
         """
         Plots the 1D distribution of parameter (or list of parameters) ``pars``.
@@ -1615,51 +1496,25 @@ class Sampler(Verbosity):
 
             - **show_plot**
             
-                If ``True`` the plot is shown on the 
-                interactive console.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Sampler.predictions["logpdf_max"] <DNNLikelihood.Sampler.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Updates file**
 
@@ -1701,7 +1556,7 @@ class Sampler(Verbosity):
                       methods=["G&W 2010", "Fardal 2017", "DFM 2017: ML"], 
                       show_plot=False,
                       timestamp=None,
-                      overwrite=False, 
+                      overwrite=True, 
                       verbose=None):
         """
         Plots the integrated autocorrelation time estimate evolution with the number of steps for parameter (or list of parameters) ``pars``.
@@ -1745,43 +1600,21 @@ class Sampler(Verbosity):
 
             - **show_plot**
             
-                If ``True`` the plot is shown on the 
-                interactive console.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Sampler.predictions["logpdf_max"] <DNNLikelihood.Sampler.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Updates file**
 
@@ -1881,7 +1714,7 @@ class Sampler(Verbosity):
                     pars_labels="original", 
                     show_plot=False,
                     timestamp=None,
-                    overwrite=False, 
+                    overwrite=True, 
                     verbose=None):
         """
         Plots the evolution of chains (walkers) with the number of steps for ``n_chains`` randomly selected chains among the 
@@ -1918,43 +1751,21 @@ class Sampler(Verbosity):
 
             - **show_plot**
             
-                If ``True`` the plot is shown on the 
-                interactive console.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Sampler.predictions["logpdf_max"] <DNNLikelihood.Sampler.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None``
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Updates file**
 
@@ -1999,7 +1810,7 @@ class Sampler(Verbosity):
                            n_chains=100, 
                            show_plot=False,
                            timestamp=None,
-                           overwrite=False, 
+                           overwrite=True, 
                            verbose=None):
         """
         Plots the evolution of minus the logpdf values with the number of steps for ``n_chains`` randomly selected chains among the 
@@ -2018,43 +1829,21 @@ class Sampler(Verbosity):
 
             - **show_plot**
             
-                If ``True`` the plot is shown on the 
-                interactive console.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``False``
+                See :argument:`show_plot <common_methods_arguments.show_plot>`.
 
             - **timestamp**
             
-                A timestamp string with format ``"datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]``.
-                If it is not passed, then it is generated. It is used as key in the 
-                :attr:`Sampler.predictions["logpdf_max"] <DNNLikelihood.Sampler.predictions>` dictionary to save the current prediction.
-                It is also used to update the :attr:`Lik.log <DNNLikelihood.Sampler.log>` dictionary and to save the object when 
-                ``overwrite="dump"``.
-                    
-                    - **type**: ``str``
-                    - **default**: ``None``
+                See :argument:`timestamp <common_methods_arguments.timestamp>`.
 
             - **overwrite**
             
-                If ``True`` if a file with the same name already exists, then it gets overwritten. 
-                If ``False`` is a file with the same name already exists, then the old file gets renamed with the 
-                :func:`utils.check_rename_file <DNNLikelihood.utils.check_rename_file>` function.
-                If ``"dump"``, a dump of the file is saved through the 
-                :func:`utils.generate_dump_file_name <DNNLikelihood.utils.generate_dump_file_name>` function.
-                    
-                    - **type**: ``bool`` or ``str``
-                    - **allowed str**: ``"dump"``
-                    - **default**: ``False``
+                See :argument:`overwrite <common_methods_arguments.overwrite>`.
+
+                    - **default**: ``True``
 
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                The plots are shown in the interactive console calling ``plt.show()`` only if ``verbose=True``.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Updates file**
 
@@ -2172,11 +1961,7 @@ class Sampler(Verbosity):
             
             - **verbose**
             
-                Verbosity mode. 
-                See the :ref:`Verbosity mode <verbosity_mode>` documentation for the general behavior.
-                    
-                    - **type**: ``bool``
-                    - **default**: ``None`` 
+                See :argument:`verbose <common_methods_arguments.verbose>`.
 
         - **Returns**
 
@@ -2264,7 +2049,7 @@ class Sampler(Verbosity):
         self.log[timestamp] = {"action": "created data object", 
                                "files names": [path.split(ds.output_log_file)[-1],
                                                path.split(ds.output_predictions_json_file)[-1],
-                                               path.split(ds.output_object_h5_file)[-1],
+                                               path.split(ds.output_h5_file)[-1],
                                                path.split(ds.output_samples_h5_file)[-1],
                                                path.split(self.output_log_file)[-1]]}
         self.save_log(overwrite=True, verbose=verbose_sub)
