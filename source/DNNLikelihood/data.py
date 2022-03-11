@@ -803,9 +803,9 @@ class Data(Verbosity):
         _, verbose_sub = self.set_verbosity(verbose)
         np.random.seed(seed)
         idx_train = np.random.choice(self.train_range, npoints_train+npoints_val, replace=False)
-        idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val, shuffle=False)]
-        self.data_dictionary["idx_train"] = idx_train
-        self.data_dictionary["idx_val"] = idx_val
+        idx_train, idx_val = train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val, shuffle=False)
+        self.data_dictionary["idx_train"] = np.sort(idx_train)
+        self.data_dictionary["idx_val"] = np.sort(idx_val)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_train", "idx_val"],
@@ -1015,7 +1015,7 @@ class Data(Verbosity):
         _, verbose_sub = self.set_verbosity(verbose)
         np.random.seed(seed)
         idx_test = np.random.choice(self.test_range, npoints_test, replace=False)
-        self.data_dictionary["idx_test"] = idx_test
+        self.data_dictionary["idx_test"] = np.sort(idx_test)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_test"],
@@ -1095,9 +1095,9 @@ class Data(Verbosity):
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        existing_test = np.sort(self.data_dictionary["idx_test"])
+        existing_test = self.data_dictionary["idx_test"]
         np.random.seed(seed)
-        idx_test = np.random.choice(np.setdiff1d(np.array(self.test_range), existing_test), npoints_test, replace=False)
+        idx_test = np.sort(np.random.choice(np.setdiff1d(np.array(self.test_range), existing_test), npoints_test, replace=False))
         self.data_dictionary["idx_test"] = np.sort(np.concatenate((self.data_dictionary["idx_test"],idx_test)))
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",

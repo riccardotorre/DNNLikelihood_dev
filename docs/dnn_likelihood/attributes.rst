@@ -509,6 +509,14 @@ Attributes
 
       - **type**: |tf_keras_model_link| object
 
+.. py:attribute:: DnnLik.model_compile_kwargs
+
+   Additional keyword arguments (on top of "loss" and "metrics") to be
+   passed to the |tf_keras_model_compile_link| method in the
+   :meth:`DNNLik.model_compile <DNNLikelihood.DNNLik.model_compile>`
+
+      - **type**: ``dict``
+
 .. py:attribute:: DnnLik.model_max
 
    Dictionary containing the maximum of the DNNLikelihood computed with the 

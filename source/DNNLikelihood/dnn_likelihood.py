@@ -496,6 +496,11 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         It checks if the attribure exists and, if it does not, it defines it as an empty dictionary.
         It checks if the items ``"loss"`` and ``"metrics"`` are defined and, if they are not, 
         it sets them to their default values ``"mse"`` and ``["mse","mae","mape","msle"]``, respectively.
+        It sets the additional attribute 
+        :attr:`DnnLik.model_compile_kwargs <DNNLikelihood.DnnLik.model_compile_kwargs>` equal to the
+        private dictionary 
+        :attr:`DnnLik.__model_compile_inputs <DNNLikelihood.DnnLik._DnnLik__model_compile_inputs>` without the
+        ``"loss"`` and ``"metrics"`` items.
 
         - **Arguments**
 
@@ -509,6 +514,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         utils.check_set_dict_keys(self.__model_compile_inputs, ["loss",
                                                                "metrics"],
                                                                ["mse",["mse","mae","mape","msle"]], verbose=verbose_sub)
+        self.model_compile_kwargs = utils.dic_minus_keys(self.__model_compile_inputs, ["loss","metrics"])
 
     def __check_define_model_train_inputs(self):
         """
@@ -688,7 +694,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.act_func_out_layer = self.__model_define_inputs["act_func_out_layer"]
         self.dropout_rate = self.__model_define_inputs["dropout_rate"]
         self.batch_norm = self.__model_define_inputs["batch_norm"]
-        #self.kernel_initializer = self.__model_define_inputs["kernel_initializer"]
         self.epochs_required = self.__model_train_inputs["epochs"]
         self.batch_size = self.__model_train_inputs["batch_size"]
         self.model_train_kwargs = utils.dic_minus_keys(self.__model_train_inputs, ["epochs", "batch_size"])
@@ -698,6 +703,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
         to set attributes corresponding to |tf_keras_link| objects by calling the private methods:
 
+            - :meth:`DnnLik.__set_layers <DNNLikelihood.DnnLik._DnnLik__set_layers>`
             - :meth:`DnnLik.__set_optimizer <DNNLikelihood.DnnLik._DnnLik__set_optimizer>`
             - :meth:`DnnLik.__set_loss <DNNLikelihood.DnnLik._DnnLik__set_loss>`
             - :meth:`DnnLik.__set_metrics <DNNLikelihood.DnnLik._DnnLik__set_metrics>`
@@ -731,6 +737,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        #print(header_string,"\nLoading main object attributes and log\n",show=verbose)
         start = timer()
         with open(self.input_json_file) as json_file:
             dictionary = json.load(json_file)
@@ -768,6 +775,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        #print(header_string, "\nLoading tf.keras model history\n", show=verbose)
         start = timer()
         try:
             with open(self.input_history_json_file) as json_file:
@@ -800,6 +808,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        #print(header_string,"\nLoading tf.keras model and weights\n",show=verbose)
         start = timer()
         custom_objects = custom_losses.losses()
         try:
@@ -840,6 +849,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        #print(header_string,"\nLoading preprocessing attributes\n",show=verbose)
         start = timer()
         try:
             pickle_in = open(self.input_preprocessing_pickle_file, "rb")
@@ -884,6 +894,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        #print(header_string, "\nLoading data indices\n", show=verbose)
         start = timer()
         try:
             h5_in = h5py.File(self.input_idx_h5_file, "r")
@@ -921,6 +932,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
+        #print(header_string, "\nLoading existing predictions\n", show=verbose)
         start = timer()
         try:
             dictionary = dd.io.load(self.input_predictions_h5_file)
@@ -1818,8 +1830,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.loss <DNNLikelihood.DnnLik.loss>`
             - :attr:`DnnLik.optimizer <DNNLikelihood.DnnLik.optimizer>`
             - :attr:`DnnLik.metrics <DNNLikelihood.DnnLik.metrics>`
+            - :attr:`DnnLik.model_compile_kwargs <DNNLikelihood.DnnLik.model_compile_kwargs>`
 
-        constructed from the corresponding string attributes
+        The first three are constructed from the corresponding string attributes
 
             - :attr:`DnnLik.loss_string <DNNLikelihood.DnnLik.loss_string>`
             - :attr:`DnnLik.optimizer_string <DNNLikelihood.DnnLik.optimizer_string>`
@@ -1844,7 +1857,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.metrics = []
         for metric_string in self.metrics_string:
             self.metrics.append(eval(metric_string))
-        self.model.compile(loss=self.loss, optimizer=self.optimizer, metrics=self.metrics)
+        self.model.compile(loss=self.loss, optimizer=self.optimizer, metrics=self.metrics, **self.model_compile_kwargs)
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "compiled tf model"}
@@ -1992,8 +2005,8 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             # If PlotLossesKeras == in callbacks set plot style
             if "PlotLossesKeras" in str(self.callbacks_strings):
                 plt.style.use(mplstyle_path)
-            for callback_string in self.callbacks_strings:
-                self.callbacks.append(eval(callback_string))
+            #for callback_string in self.callbacks_strings:
+            #    self.callbacks.append(eval(callback_string))
             # Train model
             print("Start training of model for DNNLikelihood",self.name, ".\n",show=verbose)
             if self.weighted:
