@@ -1,5 +1,10 @@
+import sys
 import builtins
+#from builtins import print
+from pathlib import Path
+from typing import Union, Any, TextIO, Text, Optional
 
+IntBool = Union[int,bool]
 #verbose = True
 #def print(*args, **kwargs):
 #    global verbose
@@ -15,7 +20,12 @@ class Verbosity():
     Class inherited by all other classes to provide the 
     :meth:`Verbosity.set_verbosity <DNNLikelihood.Verbosity.set_verbosity>` method.
     """
-    def set_verbosity(self, verbose):
+    def __init__(self,
+                 verbose: Optional[IntBool] = True) -> None:
+                 self.verbose = True if verbose is None else verbose
+
+    def set_verbosity(self, 
+                      verbose: Optional[IntBool]) -> list[IntBool]:
         """
         Method inherited by all classes (from the :class:`Verbosity <DNNLikelihood.Verbosity>` class)
         used to set the verbosity mode. If the input argument ``verbose`` is ``None``, ``verbose`` is
@@ -33,24 +43,30 @@ class Verbosity():
             ``[verbose,verbose_sub]``.
         """
         #global verbose
-        if verbose == None:
-            verbose = self.verbose
-        if verbose < 0:
+        if verbose is None:
+            verbose_main: IntBool = self.verbose
+            verbose_sub: IntBool = self.verbose
+        elif verbose < 0:
+            verbose_main = verbose
             verbose_sub = 0
         else:
+            verbose_main = verbose
             verbose_sub = verbose
-        return [verbose, verbose_sub]
+        return [verbose_main, verbose_sub]
 
-
-def print(*args, **kwargs):
+def print(*objects: Any,
+          sep: str =' ',
+          end: str ='\n',
+          file: Union[Text, Path, TextIO] = sys.stdout,
+          flush: bool = False,
+          show: Union[int,bool,None] = True
+         ) -> None:
     """
     Redefinition of the built-in print function.
     It accepts an additional argument ``show`` allowing to switch print on and off.
     """
-    try:
-        show = kwargs.pop("show")
-    except:
-        # default show=True
+    if show is None:
         show = True
     if show:
-        return builtins.print(*args, **kwargs)
+        builtins.print(*objects, sep =' ', end ='\n', file = sys.stdout, flush = False)
+
