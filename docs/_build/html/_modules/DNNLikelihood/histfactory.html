@@ -1,132 +1,128 @@
+
+
 <!DOCTYPE html>
-
-<html class="writer-html5" lang="en">
-
+<html class="writer-html5" lang="en" >
 <head>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>DNNLikelihood.histfactory &mdash; DNNLikelihood</title>
+  
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
 
-    <title>DNNLikelihood.histfactory &mdash; DNNLikelihood</title>
+  
+  
+  
+  
 
-
-
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/copybutton.css" type="text/css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.2/gh-fork-ribbon.min.css" type="text/css" />
-
-
-
-
-
-
-
-    <!--[if lt IE 9]>
+  
+  <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
-
-
-    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
-    <script src="../../_static/clipboard.min.js"></script>
-    <script src="../../_static/copybutton.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
-
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/clipboard.min.js"></script>
+        <script src="../../_static/copybutton.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-
+    
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
 
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
 
-    <div class="wy-grid-for-nav">
-
-        <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-            <div class="wy-side-scroll">
-                <div class="wy-side-nav-search">
-
-
-
-                    <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> DNNLikelihood
           
 
           
           </a>
 
+          
+            
+            
+              <div class="version">
+                0.0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Python module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../citations.html">Use and Citation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../indices_tables.html">Indices</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DNNLikelihood</a>
+        
+      </nav>
 
 
-
-                    <div class="version">
-                        0.0.1
-                    </div>
-
-
-
-
-                    <div role="search">
-                        <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-                            <input type="text" name="q" placeholder="Search docs" />
-                            <input type="hidden" name="check_keywords" value="yes" />
-                            <input type="hidden" name="area" value="default" />
-                        </form>
-                    </div>
-
-
-                </div>
-
-
-                <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-
-
-
-
-
-
-                    <ul>
-                        <li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
-                        <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
-                        <li class="toctree-l1"><a class="reference internal" href="../../code.html">Python module</a></li>
-                        <li class="toctree-l1"><a class="reference internal" href="../../citations.html">Use and Citation</a></li>
-                        <li class="toctree-l1"><a class="reference internal" href="../../indices_tables.html">Indices</a></li>
-                    </ul>
-
-
-
-                </div>
-
-            </div>
-        </nav>
-
-        <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-
-            <nav class="wy-nav-top" aria-label="top navigation">
-
-                <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-                <a href="../../index.html">DNNLikelihood</a>
-
-            </nav>
-
-
-            <div class="wy-nav-content">
-
-                <div class="rst-content">
-
-
-
-
-
-
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
 
 
 
@@ -138,32 +134,34 @@
 
 
 
-                    <div role="navigation" aria-label="breadcrumbs navigation">
-
-                        <ul class="wy-breadcrumbs">
-
-                            <li>
-                                <a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-
-                            <li><a href="../index.html">Module code</a> &raquo;</li>
-
-                            <li>DNNLikelihood.histfactory</li>
 
 
-                            <li class="wy-breadcrumbs-aside">
-
-                            </li>
-
-                        </ul>
 
 
-                        <hr/>
-                    </div>
-                    <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-                        <div itemprop="articleBody">
+<div role="navigation" aria-label="breadcrumbs navigation">
 
-                            <h1>Source code for DNNLikelihood.histfactory</h1>
-                            <div class="highlight"><pre>
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>DNNLikelihood.histfactory</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for DNNLikelihood.histfactory</h1><div class="highlight"><pre>
 <span></span><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Histfactory&quot;</span><span class="p">]</span>
 
 <span class="kn">import</span> <span class="nn">builtins</span>
@@ -371,7 +369,7 @@
 <span class="sd">        an histfactory workspace. The method scans through the regions folders in the </span>
 <span class="sd">        :attr:`Histfactory.workspace_folder &lt;DNNLikelihood.Histfactory.workspace_folder&gt;`,</span>
 <span class="sd">        determines all background and signal (patch) files and generates the dictionary attribute</span>
-<span class="sd">        :attr:`Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`. Upon creation, all items in this</span>
+<span class="sd">        :attr:`Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`. Upon creation, all items in this</span>
 <span class="sd">        dictionary, corresponding to all available likelihoods, have the flag ``load_model = False``.</span>
 <span class="sd">        </span>
 <span class="sd">        - **Arguments**</span>
@@ -463,7 +461,7 @@
 
 <span class="sd">            - **lik_list**</span>
 <span class="sd">            </span>
-<span class="sd">                List of likelihoods numbers (keys of the ``Histfactory.likelihoods_dict`` dictionary) to</span>
+<span class="sd">                List of likelihoods numbers (keys of the ``Histfactory.likelihood_dict`` dictionary) to</span>
 <span class="sd">                import. The dictionary items corresponding to the keys ``lik_list`` are changed</span>
 <span class="sd">                while all others are left unchanged. This allows to only quickly import some</span>
 <span class="sd">                likelihoods corresponding to interesting regions of the parameter space without having </span>
@@ -627,16 +625,16 @@
 <span class="sd">            - :attr:`Histfactory.log &lt;DNNLikelihood.Histfactory.log&gt;` (saved to the file :attr:`Histfactory.output_log_file &lt;DNNLikelihood.Histfactory.output_log_file&gt;`)</span>
 <span class="sd">            - :attr:`Histfactory.verbose &lt;DNNLikelihood.Histfactory.verbose&gt;`</span>
 <span class="sd">        </span>
-<span class="sd">        In order to save space, in the :attr:``Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`` </span>
+<span class="sd">        In order to save space, in the :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` </span>
 <span class="sd">        the members corresponding to the keys ``lik_list`` and that have been imported are saved in the </span>
 <span class="sd">        ``dic[&quot;model_loaded&quot;]=True`` mode, while the others are saved in the ``dic[&quot;model_loaded&quot;]=False``mode. </span>
-<span class="sd">        See the documentation of :attr:``Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`` for more details.</span>
+<span class="sd">        See the documentation of :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` for more details.</span>
 
 <span class="sd">        - **Arguments**</span>
 
 <span class="sd">            - **lik_list**</span>
 <span class="sd">            </span>
-<span class="sd">                List of likelihoods numbers (keys of the :attr:``Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;``</span>
+<span class="sd">                List of likelihoods numbers (keys of the :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;``</span>
 <span class="sd">                dictionary) that are saved in the ``dic[&quot;model_loaded&quot;]=True`` &quot;mode&quot;. The default value ``None`` implies that all members </span>
 <span class="sd">                are saved with all available information.</span>
 <span class="sd">                    </span>
@@ -727,12 +725,12 @@
 <span class="sd">            - :attr:`Histfactory.log &lt;DNNLikelihood.Histfactory.log&gt;` (saved to the file :attr:`Histfactory.output_log_file &lt;DNNLikelihood.Histfactory.output_log_file&gt;`)</span>
 <span class="sd">            - :attr:`Histfactory.verbose &lt;DNNLikelihood.Histfactory.verbose&gt;`</span>
 <span class="sd">        </span>
-<span class="sd">        In order to save space, in the :attr:``Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`` </span>
+<span class="sd">        In order to save space, in the :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` </span>
 <span class="sd">        the members corresponding to the keys ``lik_list`` and that have been imported are saved in the </span>
 <span class="sd">        ``dic[&quot;model_loaded&quot;]=True`` &quot;mode&quot;, while the others are saved in the ``dic[&quot;model_loaded&quot;]=False``&quot;mode&quot;. </span>
-<span class="sd">        The ``likelihoods_dict[&quot;model&quot;]`` item of the :attr:``Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;``</span>
+<span class="sd">        The ``likelihoods_dict[&quot;model&quot;]`` item of the :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;``</span>
 <span class="sd">        attribute is not saved, since it is not a json serializable object.</span>
-<span class="sd">        See the documentation of :attr:``Histfactory.likelihoods_dict &lt;DNNLikelihood.Histfactory.likelihoods_dict&gt;`` for more details.</span>
+<span class="sd">        See the documentation of :attr:``Histfactory.likelihood_dict &lt;DNNLikelihood.Histfactory.likelihood_dict&gt;`` for more details.</span>
 
 <span class="sd">        - **Arguments**</span>
 
@@ -906,49 +904,50 @@
         <span class="k">return</span> <span class="n">lik_obj</span></div></div>
 </pre></div>
 
-                        </div>
+           </div>
+           
+          </div>
+          <footer>
+  
 
-                    </div>
-                    <footer>
+  <hr/>
 
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
 
-                        <hr/>
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-                        <div role="contentinfo">
-                            <p>
+</footer>
 
-                                &copy; Copyright 2020, Andrea Coccaro; Maurizio Pierini; Luca Silvestrini; Riccardo Torre
+        </div>
+      </div>
 
-                            </p>
-                        </div>
+    </section>
 
+  </div>
+  
 
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
 
-                        Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-
-                        <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-
-                    </footer>
-
-                </div>
-            </div>
-
-        </section>
-
-    </div>
-
-
-    <script type="text/javascript">
-        jQuery(function() {
-            SphinxRtdTheme.Navigation.enable(true);
-        });
-    </script>
-
-
-
-
-
+  
+  
+    
+   
 
 </body>
-
 </html>

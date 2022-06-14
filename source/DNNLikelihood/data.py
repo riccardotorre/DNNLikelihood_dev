@@ -1,5 +1,4 @@
-__all__ = ["DataFileManager",
-           "Data"]
+__all__ = ["Data"]
 
 import builtins
 import codecs
@@ -22,7 +21,6 @@ from sklearn.preprocessing import StandardScaler
 from . import inference, utils
 from .corner import corner, extend_corner_range, get_1d_hist
 from .show_prints import Verbosity, print
-from utils_new import FileManager
 
 sns.set()
 kubehelix = sns.color_palette("cubehelix", 30)
@@ -35,37 +33,12 @@ mplstyle_path = path.join(path.split(path.realpath(__file__))[0],"matplotlib.mpl
 header_string = "=============================="
 footer_string = "------------------------------"
 
-class DataFileManager(FileManager):
-    obj_name = "Data"
-
-    def __init__(self,
-                 name: Union[str,None] = None,
-                 input_file: Optional[StrPath] = None, 
-                 output_folder: Optional[StrPath] = None, 
-                 verbose: Union[int,bool,None] = None
-                ) -> None:
-        # Define self.input_file, self.output_folder
-        super().__init__(name=name,
-                         input_file=input_file,
-                         output_folder=output_folder,
-                         verbose=verbose)
-        verbose, verbose_sub = self.set_verbosity(verbose)
-        self.__define_predictions_files()
-        
-    def __define_predictions_files(self) -> None:
-        self.output_figures_folder = self.check_create_folder(self.output_folder.joinpath("figures"))
-        self.output_figures_base_file_name = self.name+"_figure"
-        self.output_figures_base_file_path = self.output_figures_folder.joinpath(self.output_figures_base_file_name)
-        self.output_predictions_json_file = self.output_folder.joinpath(self.name+"_predictions.json")
-
-
 class Data(Verbosity):
     """
     This class contains the ``Data`` object representing the dataset used for training, validating and testing
     the DNNLikelihood. It can be creaded both feeding X and Y data or by loading an existing ``Data`` object.
     """
     def __init__(self,
-                 file_manager: DataFileManager,
                  name = None,
                  data_X = None,
                  data_Y = None,
@@ -79,19 +52,56 @@ class Data(Verbosity):
                  load_on_RAM=False,
                  output_folder = None,
                  input_file=None,
-                 verbose: IntBool = True
+                 verbose = True
                  ):
         """
+        The :mod:`Data <data>` object can be initialized in two different ways, depending on the value of
+        the :argument:`input_file` argument.
+
+        - :argument:`input_file` is ``None`` (default)
+
+            All other arguments are parsed and saved in corresponding attributes. If no :argument:`name` is given,
+            then one is created.
+            The object is saved upon creation through the :meth:`Data.save <DNNLikelihood.Data.save>` method.
+
+        - :argument:`input_file` is not ``None``
+
+            The object is reconstructed from the input files through the private method
+            :meth:`Data.__load <DNNLikelihood.Data._Data__load>`.
+            If the :argument:`load_on_RAM` argument is ``True``, then all samples are loaded into RAM, otherwise the dataset is
+            kept open and data are retrieved on demand.
+            Depending on the value of the input argument :argument:`output_folder` the :meth:`Data.__init__ <DNNLikelihood.Data.__init__>` method behaves as follows:
+
+                - If :argument:`output_folder` is ``None`` (default)
+                    
+                    The attribute :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>`
+                    is set from the :attr:`Data.input_folder <DNNLikelihood.Data.input_folder>` one.
+                - If :argument:`output_folder` corresponds to a path different from that stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute
+                    
+                    - if path stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute exists, then its content is copied to the new ``output_folder`` (if the new ``output_foler`` already exists it is renamed by adding a timestamp);
+                    - if path stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` does not exists, then the content of the path :attr:`Data.input_folder <DNNLikelihood.Data.input_folder>` is copied to the new ``output_folder``.
+                - If :argument:`output_folder` corresponds to the same path stored in the loaded :attr:`Data.output_folder <DNNLikelihood.Data.output_folder>` attribute
+                    
+                    Output folder, files, and path attributes are not updated and everything is read from the loaded object.
+
+        - **Arguments**
+
+            See class :ref:`Arguments documentation <data_arguments>`.
+
+        - **Creates files**
+
+            - :attr:`Data.output_log_file <DNNLikelihood.Data.output_log_file>`
+            - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)
+            - :attr:`Data.output_samples_h5_file <DNNLikelihood.Data.output_samples_h5_file>` (only the first time the object is created, i.e. if :argument:`input_file` is ``None``)
         """
-        super().__init__(verbose)
-        verbose, verbose_sub = self.set_verbosity(self.verbose)
-        timestamp = utils.generate_timestamp()
+        self.verbose = verbose
+        verbose, verbose_sub = self.set_verbosity(verbose)
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         print(header_string, "\nInitialize Data object.\n", show=verbose)
-        self.file_manager = file_manager
         self.output_folder = output_folder
         self.input_file = input_file
         self.__check_define_input_files(verbose=verbose_sub)
-        if self.input_file is None:
+        if self.input_file == None:
             self.log = {timestamp: {"action": "created"}}
             self.name = name
             self.__check_define_name()
@@ -115,7 +125,7 @@ class Data(Verbosity):
             self.save(overwrite=False, verbose=verbose_sub)
         else:
             self.load_on_RAM = load_on_RAM
-            if dtype is not None:
+            if dtype != None:
                 if type(dtype) == str:
                     self.dtype_required = dtype
                 elif type(dtype) == list:
@@ -149,7 +159,7 @@ class Data(Verbosity):
         :attr:`Data.input_file <DNNLikelihood.Data.input_file>` attribute.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
-        if self.input_file is None:
+        if self.input_file == None:
             self.input_h5_file = None
             self.input_samples_h5_file = None
             self.input_log_file = None
@@ -213,8 +223,8 @@ class Data(Verbosity):
         ``"model_"+datetime.now().strftime("%Y-%m-%d-%H-%M-%S.%fZ")[:-3]+"_data"``,
         otherwise it appends the suffix "_data" (preventing duplication if it is already present).
         """
-        if self.name is None:
-            timestamp = utils.generate_timestamp()
+        if self.name == None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
             self.name = "model_"+timestamp+"_data"
         else:
             self.name = utils.check_add_suffix(self.name, "_data")
@@ -228,7 +238,7 @@ class Data(Verbosity):
         :attr:`Data.data_X <DNNLikelihood.Data.data_X>` and :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`
         into the dtype corresponding to :attr:`Data.dtype_stored <DNNLikelihood.Data.dtype_stored>`.
         """
-        if self.dtype is None:
+        if self.dtype == None:
             self.dtype_stored = "float64"
             self.dtype_required = "float64"
         elif type(self.dtype) == str:
@@ -350,7 +360,7 @@ class Data(Verbosity):
             self.data_Y = self.data_Y[:].astype(self.dtype_required)
             self.opened_dataset.close()
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded", 
                                "files names": [path.split(self.input_samples_h5_file)[-1],
                                                path.split(self.input_log_file)[-1],
@@ -369,7 +379,7 @@ class Data(Verbosity):
         :attr:`Data.data_X <DNNLikelihood.Data.data_X>` and
         :attr:`Data.data_Y <DNNLikelihood.Data.data_Y>`.
         """
-        if self.test_fraction is None:
+        if self.test_fraction == None:
             self.test_fraction = 0
         self.train_range = range(int(round(self.npoints*(1-self.test_fraction))))
         self.test_range = range(int(round(self.npoints*(1-self.test_fraction))),self.npoints)
@@ -448,7 +458,7 @@ class Data(Verbosity):
             - :attr:`Data.output_h5_file <DNNLikelihood.Data.output_h5_file>`
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        if self.test_fraction is None:
+        if self.test_fraction == None:
             self.test_fraction = 0
         self.train_range = range(int(round(self.npoints*(1-self.test_fraction))))
         self.test_range = range(int(round(self.npoints*(1-self.test_fraction))),self.npoints)
@@ -567,7 +577,7 @@ class Data(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         start = timer()
         if timestamp is None:
-            timestamp = utils.generate_timestamp()
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         if type(overwrite) == bool:
             output_predictions_json_file = self.output_predictions_json_file
             if not overwrite:
@@ -669,7 +679,7 @@ class Data(Verbosity):
                                                           "verbose"])
         dd.io.save(self.output_h5_file, dictionary)
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_h5_file)[-1]}
         print(header_string,"\nData object saved to file\n\t", self.output_h5_file,"in", str(end-start), "s.\n",show=verbose)
@@ -715,7 +725,7 @@ class Data(Verbosity):
         data["Y"] = self.data_Y.astype(self.dtype_stored)
         h5_out.close()
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved",
                                "file name": path.split(self.output_samples_h5_file)[-1]}
         print(header_string,"\n"+str(self.npoints), "data samples (data_X, data_Y) saved to file\n\t", self.output_samples_h5_file,"\nin", end-start, "s.\n",show=verbose)
@@ -796,7 +806,7 @@ class Data(Verbosity):
         idx_train, idx_val = train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val, shuffle=False)
         self.data_dictionary["idx_train"] = np.sort(idx_train)
         self.data_dictionary["idx_val"] = np.sort(idx_val)
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_train", "idx_val"],
                                "npoints train": npoints_train,
@@ -849,7 +859,7 @@ class Data(Verbosity):
         self.data_dictionary["X_val"] = self.data_X[self.data_dictionary["idx_val"]].astype(self.dtype_required)
         self.data_dictionary["Y_val"] = self.data_Y[self.data_dictionary["idx_val"]].astype(self.dtype_required)
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["X_train", "Y_train", "X_val", "Y_val"],
                                "npoints train": npoints_train,
@@ -902,7 +912,7 @@ class Data(Verbosity):
             idx_val = idx_train
         self.data_dictionary["idx_train"] = np.sort(np.concatenate((self.data_dictionary["idx_train"],idx_train)))
         self.data_dictionary["idx_val"] = np.sort(np.concatenate((self.data_dictionary["idx_val"],idx_val)))
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_train", "idx_val"],
                                "npoints train": npoints_train,
@@ -966,7 +976,7 @@ class Data(Verbosity):
                 self.data_dictionary["X_val"] = np.concatenate((self.data_dictionary["X_val"], self.data_X[idx_val])).astype(self.dtype_required)
                 self.data_dictionary["Y_val"] = np.concatenate((self.data_dictionary["Y_val"], self.data_Y[idx_val])).astype(self.dtype_required)
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["X_train", "Y_train", "X_val", "Y_val"],
                                "npoints train": npoints_train,
@@ -1006,7 +1016,7 @@ class Data(Verbosity):
         np.random.seed(seed)
         idx_test = np.random.choice(self.test_range, npoints_test, replace=False)
         self.data_dictionary["idx_test"] = np.sort(idx_test)
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_test"],
                                "npoints test": npoints_test}
@@ -1049,7 +1059,7 @@ class Data(Verbosity):
         self.data_dictionary["X_test"] = self.data_X[self.data_dictionary["idx_test"]].astype(self.dtype_required)
         self.data_dictionary["Y_test"] = self.data_Y[self.data_dictionary["idx_test"]].astype(self.dtype_required)
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["X_test", "Y_test"],
                                "npoints test": npoints_test}
@@ -1089,7 +1099,7 @@ class Data(Verbosity):
         np.random.seed(seed)
         idx_test = np.sort(np.random.choice(np.setdiff1d(np.array(self.test_range), existing_test), npoints_test, replace=False))
         self.data_dictionary["idx_test"] = np.sort(np.concatenate((self.data_dictionary["idx_test"],idx_test)))
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_test"],
                                "npoints test": npoints_test}
@@ -1137,7 +1147,7 @@ class Data(Verbosity):
                 self.data_dictionary["X_test"] = np.concatenate((self.data_dictionary["X_test"],self.data_X[idx_test])).astype(self.dtype_required)
                 self.data_dictionary["Y_test"] = np.concatenate((self.data_dictionary["Y_test"],self.data_Y[idx_test])).astype(self.dtype_required)
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["X_test", "Y_test"],
                                "npoints test": npoints_test}
@@ -1197,7 +1207,7 @@ class Data(Verbosity):
         W = 1/np.power(hist[np.where(tmp == nbins, nbins-1, tmp)], power)
         W = W/np.sum(W)*len(sample)
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "computed sample weights"}
         self.save_log(overwrite=True, verbose=verbose_sub)
         print(header_string,"\nSample weights computed in", end-start, "s.\n",show=verbose)
@@ -1269,7 +1279,7 @@ class Data(Verbosity):
             scalerY = StandardScaler(with_mean=False, with_std=False)
             scalerY.fit(data_Y.reshape(-1, 1))
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "defined scalers",
                                "scaler X": scalerX_bool,
                                "scaler Y": scalerY_bool}
@@ -1439,7 +1449,7 @@ class Data(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nGenerating data description", show=verbose)
         if timestamp is None:
-            timestamp = utils.generate_timestamp()
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         start = timer()
         if X is None:
             X = self.data_X
@@ -1552,7 +1562,7 @@ class Data(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nPlotting 1D distributions summary", show=verbose)
         if timestamp is None:
-            timestamp = utils.generate_timestamp()
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         start = timer()
         if X is None:
@@ -1561,7 +1571,7 @@ class Data(Verbosity):
             X = np.array(X)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels).tolist()
-        if max_points is not None:
+        if max_points != None:
             nnn = np.min([len(X), max_points])
         else:
             nnn = len(X)
@@ -1706,7 +1716,7 @@ class Data(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nPlotting 1D distributions summary", show=verbose)
         if timestamp is None:
-            timestamp = utils.generate_timestamp()
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         start = timer()
         if X is None:
@@ -1714,7 +1724,7 @@ class Data(Verbosity):
         else:
             X = np.array(X)
         pars_labels = self.__set_pars_labels(pars_labels)
-        if max_points is not None:
+        if max_points != None:
             nnn = np.min([len(X), max_points])
         else:
             nnn = len(X)
@@ -1849,7 +1859,7 @@ class Data(Verbosity):
             Y = self.data_Y
         else:
             Y = np.array(Y)
-        if max_points is not None:
+        if max_points != None:
             nnn = np.min([len(Y), max_points])
         else:
             nnn = len(Y)
@@ -2045,8 +2055,8 @@ class Data(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nPlotting 2D marginal posterior density", show=verbose)
         if timestamp is None:
-            timestamp = utils.generate_timestamp()
-        if legend_labels is not None:
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        if legend_labels != None:
             if len(legend_labels) != len(intervals):
                 raise Exception("Legend labels should either be None or a list of strings with the same length as intervals.")
         plt.style.use(mplstyle_path)
@@ -2056,17 +2066,17 @@ class Data(Verbosity):
         else:
             X = np.array(X)
         weigths = np.array(weights)
-        if title is None:
+        if title == None:
             title = ""
         linewidth = 1.3
-        if ranges_extend is None:
+        if ranges_extend == None:
             ranges = extend_corner_range(X, X, pars, 0)
         else:
             ranges = extend_corner_range(X, X, pars, ranges_extend)
         pars_labels = self.__set_pars_labels(pars_labels)
         labels = np.array(pars_labels)[pars].tolist()
         nndims = len(pars)
-        if max_points is not None:
+        if max_points != None:
             if type(max_points) == list:
                 nnn = np.min([len(X), max_points[0]])
             else:
@@ -2166,7 +2176,7 @@ class Data(Verbosity):
             plt.show()
         plt.close()
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
                                "file name": figure_file_name}
         print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)
@@ -2251,10 +2261,10 @@ class Data(Verbosity):
         verbose, verbose_sub = self.set_verbosity(verbose)
         print(header_string,"\nPlotting X data correlation matrix", show=verbose)
         if timestamp is None:
-            timestamp = utils.generate_timestamp()
+            timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         plt.style.use(mplstyle_path)
         start = timer()
-        if title is None:
+        if title == None:
             title = "Correlation Matrix"
         if X is None:
             X = self.data_X
@@ -2281,7 +2291,7 @@ class Data(Verbosity):
             plt.show()
         plt.close()
         end = timer()
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "saved figure",
                                "file name": figure_file_name}
         print("\n"+header_string+"\nFigure file\n\t", r"%s" % (figure_file_name), "\ncreated and saved in", str(end-start), "s.\n", show=verbose)

@@ -51,7 +51,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
                  ):
         self.verbose = verbose
         verbose, verbose_sub = self.set_verbosity(verbose)
-        timestamp = utils.generate_timestamp()
+        timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         #### Set model date time
         self.ensemble_date_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         #### Set resources
@@ -60,7 +60,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         self.set_gpus(gpus_id_list,verbose=True)
         ############ Check wheather to create a new DNNLik_ensemble object from inputs or from files
         self.DNNLik_ensemble_input_folder = DNNLik_ensemble_input_folder
-        if self.DNNLik_ensemble_input_folder is None:
+        if self.DNNLik_ensemble_input_folder == None:
             ############ Initialize input parameters from arguments
             #### Set main inputs and DataSample
             self.ensemble_name = ensemble_name
@@ -69,7 +69,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
             self.ensemble_folder = ensemble_folder
             self.load_on_RAM = load_on_RAM
             self.seed = seed
-            if dtype is None:
+            if dtype == None:
                 self.dtype = "float64"
             else:
                 self.dtype = dtype
@@ -100,7 +100,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
             self.load_on_RAM = load_on_RAM
             self.seed = summary_log['seed']
             self.dtype = dtype
-            if self.dtype is None:
+            if self.dtype == None:
                 self.dtype = summary_log['dtype']
             self.same_data = summary_log['same_data']
             self.__set_seed()
@@ -187,7 +187,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
 
         #### Generate or import members (and save summary_log)
         #
-        if self.DNNLik_ensemble_input_folder is None:
+        if self.DNNLik_ensemble_input_folder == None:
             self.generate_members(verbose=-1)
         else:
             self.__import_members()
@@ -204,11 +204,11 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         #tf.DType = ""
 
     def __set_data(self):
-        if self.data is not None and self.input_data_file is not None:
+        if self.data != None and self.input_data_file != None:
             print("Input file is ignored when a data object is provided")
-        elif self.data is None and self.input_data_file is None:
+        elif self.data == None and self.input_data_file == None:
             raise Exception("Either a DataSample object or a dataset input file name should be passed while you passed none.\nPlease input one and retry.")
-        elif self.data is None and self.input_data_file is not None:
+        elif self.data == None and self.input_data_file != None:
             self.data = Data(name=None,
                              data_X=None,
                              data_Y=None,
@@ -232,7 +232,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         self.pars_labels = self.data.pars_labels
         
     def __set_ensemble_name(self):
-        if self.ensemble_name is None:
+        if self.ensemble_name == None:
             string = self.data.name
             try:
                 match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', string).group()
@@ -256,7 +256,7 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
     def __set_ensemble_folder(self, verbose=True):
         global ShowPrints
         ShowPrints = verbose
-        if self.ensemble_folder is not None:
+        if self.ensemble_folder != None:
             utils.check_rename_folder(self.ensemble_folder)
         else:
             utils.check_rename_folder(os.getcwd().replace('\\', '/')+"/"+self.ensemble_name)
