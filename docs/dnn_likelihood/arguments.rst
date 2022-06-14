@@ -122,8 +122,6 @@ Arguments
             List with hidden layers specifications. All hidden layers in the module are |tf_keras_layers_dense_link| layers.
             Each hidden layer is represented by a list with number of nodes (``int``),
             activation function (``str``), and (optionally) initializer (``str``).
-         - *"act_func_out_layer"* (value type: ``str``)
-            Activation function for the output layer. If not specified it is automatically set to ``"linear"``.
          - *"dropout_rate"* (value type: ``float``)
             If different than ``0``, then |tf_keras_dropout_link| layers with the given dropout_rate are added
             between each pair of hidden layers. If not specified it is automatically set to ``0``.
@@ -138,8 +136,8 @@ Arguments
             model_define_inputs = {"hidden_layers": [[300, "selu"],
                                                      [300, "relu"], 
                                                      [300, "selu", "lecun_normal"], 
-                                                     [300, "relu", "glorot_uniform"]],
-                                   "act_func_out_layer": "linear",
+                                                     [300, "relu", "glorot_uniform"],
+                                                     [1, "relu"]],
                                    "dropout_rate": 0,
                                    "batch_norm": True}
 

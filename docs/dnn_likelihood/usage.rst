@@ -90,8 +90,8 @@ not represent a "meaningful" choice of model and hyperparameters).
                                                                                 "bias_regularizer": None, 
                                                                                 "activity_regularizer": None, 
                                                                                 "kernel_constraint": None,
-                                                                                "bias_constraint": None}}], 
-                                                  "act_func_out_layer": "linear",
+                                                                                "bias_constraint": None}},
+                                                                   "Dense(1,activation='linear',kernel_regularizer=regularizers.L1L2(l1=0.001, l2=0.001))"], 
                                                   "dropout_rate": 0,
                                                   "batch_norm": False}
     #model_optimizer_inputs = "optimizers.Adam(learning_rate = 0.001, beta_1 = 0.9, beta_2 = 0.999, amsgrad = False)"
@@ -354,7 +354,6 @@ The :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` method sets several 
     dnnlikelihood.__dict__
 
     >>> ['active_gpus', [['/device:GPU:0', 'device: 0, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:18:00.0, compute capability: 7.5'], ['/device:GPU:1', 'device: 1, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:3b:00.0, compute capability: 7.5'], ['/device:GPU:2', 'device: 2, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:5e:00.0, compute capability: 7.5'], ['/device:GPU:3', 'device: 3, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:86:00.0, compute capability: 7.5']]]
-        ['act_func_out_layer', 'linear']
         ['available_cpu', ['/device:CPU:0', 'Intel(R) Xeon(R) Gold 6152 CPU @ 2.10GHz', 88]]
         ['available_gpus', [['/device:GPU:0', 'device: 0, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:18:00.0, compute capability: 7.5'], ['/device:GPU:1', 'device: 1, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:3b:00.0, compute capability: 7.5'], ['/device:GPU:2', 'device: 2, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:5e:00.0, compute capability: 7.5'], ['/device:GPU:3', 'device: 3, name: NVIDIA GeForce RTX 2080 Ti, pci bus id: 0000:86:00.0, compute capability: 7.5']]]
         ['batch_norm', 'custom']
@@ -463,7 +462,7 @@ The :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` method sets several 
         ['_DnnLik__model_callbacks_inputs', [{'name': 'EarlyStopping', 'args': [], 'kwargs': {'monitor': 'loss', 'mode': 'min', 'patience': 100, 'min_delta': 0.0001, 'restore_best_weights': True}}, 'TerminateOnNaN', 'PlotLossesKeras', {'name': 'TensorBoard', 'args': [], 'kwargs': {'log_dir': '<abs_path_to_output_folder>\\tensorboard_logs', 'histogram_freq': 0, 'write_graph': True, 'write_images': True, 'update_freq': 'epoch', 'profile_batch': 2, 'embeddings_freq': 0, 'embeddings_metadata': None}}, {'name': 'ReduceLROnPlateau', 'args': [], 'kwargs': {'monitor': 'loss', 'mode': 'min', 'factor': 0.2, 'min_lr': 8e-05, 'patience': 10, 'min_delta': 0.0001}}, {'name': 'ModelCheckpoint', 'args': [], 'kwargs': {'filepath': '<abs_path_to_output_folder>\\checkpoints\\DNNLikelihood_toy_checkpoint.{epoch:02d}-{val_loss:.2f}.h5', 'monitor': 'loss', 'mode': 'min', 'save_best_only': True, 'save_freq': 'epoch'}}]]
         ['_DnnLik__model_compile_inputs', {'loss': 'mse', 'metrics': ['mean_squared_error', {'name': 'MeanAbsoluteError', 'args': [], 'kwargs': {'dtype': 'float32'}}, "MeanSquaredLogarithmicError(dtype='float32')", 'mape', 'me']}]
         ['_DnnLik__model_data_inputs', {'npoints': [10000, 3000, 5000], 'scalerX': True, 'scalerY': True, 'weighted': False}]
-        ['_DnnLik__model_define_inputs', {'hidden_layers': ["Dense(1000,activation='relu',kernel_initializer='glorot_uniform',kernel_regularizer=regularizers.L1L2(l1=0.001, l2=0.001))", {'name': 'Dense', 'args': [1000], 'kwargs': {'activation': 'relu', 'use_bias': True, 'kernel_initializer': 'GlorotUniform(seed=None)', 'bias_initializer': 'zeros', 'kernel_regularizer': 'L1L2(l1=0.001, l2=0.001)', 'bias_regularizer': 'L1(l1=0.0001)', 'activity_regularizer': 'L1(l1=0.0001)', 'kernel_constraint': 'MaxNorm(max_value=2, axis=0)', 'bias_constraint': None}}, 'Dense(500)', {'name': 'Activation', 'args': ['relu']}, [100, 'selu'], [100, 'relu', 'glorot_uniform'], {'name': 'Dense', 'args': [1000], 'kwargs': {'use_bias': True, 'kernel_initializer': {'name': 'GlorotUniform', 'args': [], 'kwargs': {'seed': None}}, 'bias_initializer': 'zeros', 'kernel_regularizer': {'name': 'L1L2', 'args': [], 'kwargs': {'l1': 0.001, 'l2': 0.001}}, 'bias_regularizer': 'L1(l1=0.0001)', 'activity_regularizer': 'L1(l1=0.0001)', 'kernel_constraint': {'name': 'MaxNorm', 'args': [], 'kwargs': {'max_value': 2, 'axis': 0}}, 'bias_constraint': 'MaxNorm(max_value=2, axis=0)'}}, "Activation('selu')", {'name': 'BatchNormalization', 'args': [], 'kwargs': {'axis': -1, 'momentum': 0.99, 'epsilon': 0.001, 'center': True, 'scale': True, 'beta_initializer': 'zeros', 'gamma_initializer': 'ones', 'moving_mean_initializer': 'zeros', 'moving_variance_initializer': 'ones', 'beta_regularizer': None, 'gamma_regularizer': None, 'beta_constraint': None, 'gamma_constraint': None}}, {'name': 'Dropout', 'args': [0.1], 'kwargs': {'noise_shape': None, 'seed': None}}, 'BatchNormalization', 'AlphaDropout(0.1, seed=2)', {'name': 'AlphaDropout', 'args': [0.1], 'kwargs': {'noise_shape': None, 'seed': None}}, {'name': 'Dense', 'args': [1000], 'kwargs': {'activation': 'relu', 'use_bias': True, 'kernel_initializer': 'glorot_uniform', 'bias_initializer': 'zeros', 'kernel_regularizer': None, 'bias_regularizer': None, 'activity_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None}}], 'act_func_out_layer': 'linear', 'dropout_rate': 0, 'batch_norm': False}]
+        ['_DnnLik__model_define_inputs', {'hidden_layers': ["Dense(1000,activation='relu',kernel_initializer='glorot_uniform',kernel_regularizer=regularizers.L1L2(l1=0.001, l2=0.001))", {'name': 'Dense', 'args': [1000], 'kwargs': {'activation': 'relu', 'use_bias': True, 'kernel_initializer': 'GlorotUniform(seed=None)', 'bias_initializer': 'zeros', 'kernel_regularizer': 'L1L2(l1=0.001, l2=0.001)', 'bias_regularizer': 'L1(l1=0.0001)', 'activity_regularizer': 'L1(l1=0.0001)', 'kernel_constraint': 'MaxNorm(max_value=2, axis=0)', 'bias_constraint': None}}, 'Dense(500)', {'name': 'Activation', 'args': ['relu']}, [100, 'selu'], [100, 'relu', 'glorot_uniform'], {'name': 'Dense', 'args': [1000], 'kwargs': {'use_bias': True, 'kernel_initializer': {'name': 'GlorotUniform', 'args': [], 'kwargs': {'seed': None}}, 'bias_initializer': 'zeros', 'kernel_regularizer': {'name': 'L1L2', 'args': [], 'kwargs': {'l1': 0.001, 'l2': 0.001}}, 'bias_regularizer': 'L1(l1=0.0001)', 'activity_regularizer': 'L1(l1=0.0001)', 'kernel_constraint': {'name': 'MaxNorm', 'args': [], 'kwargs': {'max_value': 2, 'axis': 0}}, 'bias_constraint': 'MaxNorm(max_value=2, axis=0)'}}, "Activation('selu')", {'name': 'BatchNormalization', 'args': [], 'kwargs': {'axis': -1, 'momentum': 0.99, 'epsilon': 0.001, 'center': True, 'scale': True, 'beta_initializer': 'zeros', 'gamma_initializer': 'ones', 'moving_mean_initializer': 'zeros', 'moving_variance_initializer': 'ones', 'beta_regularizer': None, 'gamma_regularizer': None, 'beta_constraint': None, 'gamma_constraint': None}}, {'name': 'Dropout', 'args': [0.1], 'kwargs': {'noise_shape': None, 'seed': None}}, 'BatchNormalization', 'AlphaDropout(0.1, seed=2)', {'name': 'AlphaDropout', 'args': [0.1], 'kwargs': {'noise_shape': None, 'seed': None}}, {'name': 'Dense', 'args': [1000], 'kwargs': {'activation': 'relu', 'use_bias': True, 'kernel_initializer': 'glorot_uniform', 'bias_initializer': 'zeros', 'kernel_regularizer': None, 'bias_regularizer': None, 'activity_regularizer': None, 'kernel_constraint': None, 'bias_constraint': None}}], 'dropout_rate': 0, 'batch_norm': False}]
         ['_DnnLik__model_optimizer_inputs', 'optimizers.Adam(learning_rate = 0.001, beta_1 = 0.9, beta_2 = 0.999, amsgrad = False)']
         ['_DnnLik__model_train_inputs', {'epochs': 50, 'batch_size': 512, 'shuffle': False, 'validation_freq': 1}]
         ['_DnnLik__resources_inputs', None]
@@ -1516,15 +1515,15 @@ devoted to a comprehensive evaluation of the model performances. An example of i
         Model h5 file
         	 <abs_path_to_output_folder>\DNNLikelihood_toy_model.h5
         tf executing eager_mode: True
-        INFO:keras2onnx:tf executing eager_mode: True
+        INFO:tf2onnx:tf executing eager_mode: True
         tf.keras model eager_mode: False
-        INFO:keras2onnx:tf.keras model eager_mode: False
+        INFO:tf2onnx:tf.keras model eager_mode: False
 
         saved in 0.16234810000003108 s.
 
 
         The ONNX operator number change on the optimization: 35 -> 25
-        INFO:keras2onnx:The ONNX operator number change on the optimization: 35 -> 25
+        INFO:tf2onnx:The ONNX operator number change on the optimization: 35 -> 25
         WARNING:onnxmltools:The maximum opset needed by this model is only 9.
         ============================== 
         Model onnx file

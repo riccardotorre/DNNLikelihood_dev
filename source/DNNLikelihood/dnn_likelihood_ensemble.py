@@ -131,7 +131,6 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
 
         #### Set model_define_ensemble_inputs
         # example: model_define_ensemble_inputs={"hidden_layers_list": [[[50, "selu"], [50, "selu"]],[[100, "selu"], [100, "selu"]], ...],
-        #                                        "act_func_out_layer_list": ["linear"], 
         #                                        "dropout_rate_list": [0.1], 
         #                                        "batch_norm_list": [True], 
         #                                        "kernel_initializer_list": ['glorot_uniform']}
@@ -318,14 +317,10 @@ class DnnLikEnsemble(Resources): #show_prints.Verbosity inherited from resources
         except:
             print(
                 "model_define_kwargs dictionary should contain at least the keyword 'hidden_layers_list'. \
-                It may also contain keys 'act_func_out_layer_list', 'dropout_rate_list', 'batch_norm_list', and 'kernel_initializer_list'. \
-                In case these are not present by default they are set to {'act_func_out_layer_list': ['linear']}, {'batch_norm_list': [False]},\
+                It may also contain keys 'dropout_rate_list', 'batch_norm_list' and 'kernel_initializer_list'. \
+                In case these are not present by default they are set to {'batch_norm_list': [False]},\
                 {'dropout_rate_list': [0]}, {'kernel_initializers': ['glorot_uniform']}. In case of selu activation Dropout layers are replaced \
                 with AlphaDropout and kernel_initializers is set to ['lecun_normal'].")
-        try:
-            self.__model_define_ensemble_inputs["act_func_out_layer_list"]
-        except:
-            self.__model_define_ensemble_inputs["act_func_out_layer_list"] = ["linear"] # Batch normalization layers are added between each pair of layers
         try:
             self.__model_define_ensemble_inputs["batch_norm_list"]
         except:

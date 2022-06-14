@@ -180,7 +180,7 @@
 <span class="kn">import</span> <span class="nn">deepdish</span> <span class="k">as</span> <span class="nn">dd</span>
 <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="kn">import</span> <span class="nn">onnx</span>
-<span class="kn">import</span> <span class="nn">keras2onnx</span>
+<span class="kn">import</span> <span class="nn">tf2onnx</span>
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -4544,7 +4544,7 @@
         <span class="k">elif</span> <span class="n">overwrite</span> <span class="o">==</span> <span class="s2">&quot;dump&quot;</span><span class="p">:</span>
             <span class="n">output_tf_model_onnx_file</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">generate_dump_file_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_tf_model_onnx_file</span><span class="p">,</span> <span class="n">timestamp</span><span class="o">=</span><span class="n">timestamp</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">onnx_model</span> <span class="o">=</span> <span class="n">keras2onnx</span><span class="o">.</span><span class="n">convert_keras</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">onnx_model</span> <span class="o">=</span> <span class="n">tf2onnx</span><span class="o">.</span><span class="n">convert_keras</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">header_string</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Model not defined. No file is saved.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">return</span>

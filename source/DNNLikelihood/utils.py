@@ -161,6 +161,8 @@ def build_method_string_from_dict(class_name=None, method_name=None, args=None, 
         method_string = class_name+"."+method_name+"("
     else:
         method_string = method_name+"("
+    if method_name == "PlotLossesKeras":
+        method_string = method_string+"outputs=[MatplotlibPlot("
     if args != []:
         for arg in args:
             if type(arg) == str:
@@ -268,7 +270,10 @@ def build_method_string_from_dict(class_name=None, method_name=None, args=None, 
                 method_string = method_string+key+"=optimizers."
             method_string = method_string+build_method_string_from_dict(
                 class_name=None, method_name=val["name"], args=val["args"], kwargs=val["kwargs"])+", "
-    method_string = method_string.rstrip(", ")+")"
+    if method_name == "PlotLossesKeras":
+        method_string = method_string.rstrip(", ")+")])"
+    else:
+        method_string = method_string.rstrip(", ")+")"
     return method_string
 
 def check_rename_file(path,timestamp=None,return_value=None,verbose=True):
@@ -446,7 +451,7 @@ def convert_types_dict(d):
 
 def sort_dict(dictionary):
     new_dict={}
-    keys_sorted = sorted(list(dictionary.keys()),key= v: (str(v).upper(), str(v)[0].islower()))
+    keys_sorted = sorted(list(dictionary.keys()),key= lambda v: (str(v).upper(), str(v)[0].islower()))
     for k in keys_sorted:
         if isinstance(dictionary[k], dict):
             new_dict[k] = sort_dict(dictionary[k])

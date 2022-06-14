@@ -16,7 +16,7 @@ from timeit import default_timer as timer
 import deepdish as dd
 import h5py
 import onnx
-import keras2onnx
+import tf2onnx
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -41,6 +41,7 @@ footer_string = "------------------------------"
 
 try:
     from livelossplot import PlotLossesKerasTF as PlotLossesKeras
+    from livelossplot.outputs import MatplotlibPlot
 except:
     print(header_string,"\nNo module named 'livelossplot's. Continuing without.\nIf you wish to plot the loss in real time please install 'livelossplot'.\n")
 
@@ -475,18 +476,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         Private method used by the :meth:`DnnLik.__init__ <DNNLikelihood.DnnLik.__init__>` one
         to check the private dictionary 
         :attr:`DnnLik.__model_define_inputs <DNNLikelihood.DnnLik._DnnLik__model_define_inputs>`.
-        It checks if the items ``"act_func_out_layer"``, ``"dropout_rate"``, and ``"batch_norm"`` are defined and, if they are not, 
-        it sets them to their default values ``"linear"``, ``0``, and ``False``, respectively.
+        It checks if the items ``"dropout_rate"`` and ``"batch_norm"`` are defined and, if they are not, 
+        it sets them to their default values ``0`` and ``False``, respectively.
         """
         verbose, verbose_sub = self.set_verbosity(verbose)
         try:
             self.__model_define_inputs["hidden_layers"]
         except:
             raise Exception("model_define_inputs dictionary should contain at least a key 'hidden_layers'.")
-        utils.check_set_dict_keys(self.__model_define_inputs, ["act_func_out_layer",
-                                                               "dropout_rate",
+        utils.check_set_dict_keys(self.__model_define_inputs, ["dropout_rate",
                                                                "batch_norm"],
-                                                              ["linear", 0, False], verbose=verbose_sub)
+                                                              [0, False], verbose=verbose_sub)
 
     def __check_define_model_compile_inputs(self,verbose=None):
         """
@@ -679,7 +679,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             - :attr:`DnnLik.rotationX_bool <DNNLikelihood.DnnLik.rotationX_bool>`
             - :attr:`DnnLik.weighted <DNNLikelihood.DnnLik.weighted>`
             - :attr:`DnnLik.hidden_layers <DNNLikelihood.DnnLik.hidden_layers>`
-            - :attr:`DnnLik.act_func_out_layer <DNNLikelihood.DnnLik.act_func_out_layer>`
             - :attr:`DnnLik.dropout_rate <DNNLikelihood.DnnLik.dropout_rate>`
             - :attr:`DnnLik.batch_norm <DNNLikelihood.DnnLik.batch_norm>`
             - :attr:`DnnLik.epochs_required <DNNLikelihood.DnnLik.epochs_required>`
@@ -691,7 +690,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.rotationX_bool = self.__model_data_inputs["rotationX"]
         self.weighted = self.__model_data_inputs["weighted"]
         self.hidden_layers = self.__model_define_inputs["hidden_layers"]
-        self.act_func_out_layer = self.__model_define_inputs["act_func_out_layer"]
         self.dropout_rate = self.__model_define_inputs["dropout_rate"]
         self.batch_norm = self.__model_define_inputs["batch_norm"]
         self.epochs_required = self.__model_train_inputs["epochs"]
@@ -1058,42 +1056,34 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             if self.batch_norm == True and "dense" in layer_string.lower():
                 self.layers_string.append("layers.BatchNormalization()")
                 print("Added hidden layer: layers.BatchNormalization()", show=verbose)
-                i = i + 1
             if layer_string is not None:
                 try:
                     eval(layer_string)
                     self.layers_string.append(layer_string)
-                    print("Added hidden layer: ", layer_string, show=verbose)
+                    i = i + 1
+                    if i < len(self.hidden_layers):
+                        print("Added hidden layer: ", layer_string, show=verbose)
                 except Exception as e:
                     print(e)
                     print("Could not add layer", layer_string, "\n", show=verbose)
-                i = i + 1
-            if insert_dropout:
-                try:
-                    act = eval(layer_string+".activation")
-                    if "selu" in str(act).lower():
+            if i < len(self.hidden_layers):
+                if insert_dropout:
+                    try:
+                        act = eval(layer_string+".activation")
+                        if "selu" in str(act).lower():
+                            layer_string = "layers.AlphaDropout("+str(self.dropout_rate)+")"
+                            self.layers_string.append(layer_string)
+                            print("Added hidden layer: ", layer_string, show=verbose)
+                        elif "linear" not in str(act):
+                            layer_string = "layers.Dropout("+str(self.dropout_rate)+")"
+                            self.layers_string.append(layer_string)
+                            print("Added hidden layer: ", layer_string, show=verbose)
+                    except:
                         layer_string = "layers.AlphaDropout("+str(self.dropout_rate)+")"
                         self.layers_string.append(layer_string)
                         print("Added hidden layer: ", layer_string, show=verbose)
-                        i = i + 1
-                    elif "linear" not in str(act):
-                        layer_string = "layers.Dropout("+str(self.dropout_rate)+")"
-                        self.layers_string.append(layer_string)
-                        print("Added hidden layer: ", layer_string, show=verbose)
-                        i = i + 1
-                except:
-                    layer_string = "layers.AlphaDropout("+str(self.dropout_rate)+")"
-                    self.layers_string.append(layer_string)
-                    print("Added hidden layer: ", layer_string, show=verbose)
-                    i = i + 1
-        if self.batch_norm == True and "dense" in layer_string.lower():
-            self.layers_string.append("layers.BatchNormalization()")
-            print("Added hidden layer: layers.BatchNormalization()", show=verbose)
-        #outputLayer = layers.Dense(1, activation=self.act_func_out_layer)
-
-        layer_string = "layers.Dense(1, activation='"+str(self.act_func_out_layer)+"')"
-        self.layers_string.append(layer_string)
-        print("Added Output layer: ", layer_string,".\n", show=verbose)
+            else:
+                print("Added Output layer: ", layer_string, show=verbose)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "layers set",
                                "metrics": self.layers_string}
@@ -1336,15 +1326,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
                     cb_string = "callbacks.TensorBoard(log_dir=r'" + self.output_tensorboard_log_dir+"')"
                 elif cb == "PlotLossesKeras":
-                    #self.output_figure_plot_losses_keras_file = self.output_figures_base_file_name+"_plot_losses_keras.pdf"
-                    #utils.check_rename_file(self.output_figure_plot_losses_keras_file)
-                    #string = "PlotLossesKeras(fig_path='" + self.output_figure_plot_losses_keras_file+"')"
-                    cb_string = "PlotLossesKeras()"
-                elif cb == "ModelCheckpoint":
-                    self.output_checkpoints_folder = path.join(self.output_folder, "checkpoints")
-                    self.output_checkpoints_files = path.join(self.output_checkpoints_folder, self.name+"_checkpoint.{epoch:02d}-{val_loss:.2f}.h5")
-                    utils.check_create_folder(self.output_checkpoints_folder)
-                    cb_string = "callbacks.ModelCheckpoint(filepath=r'" + self.output_checkpoints_files+"')"
+                    self.output_figure_plot_losses_keras_file = self.output_figures_base_file_path+"_plot_losses_keras.pdf"
+                    utils.check_rename_file(self.output_figure_plot_losses_keras_file)
+                    cb_string = "PlotLossesKeras(outputs=[MatplotlibPlot(figpath=r'" + self.output_figure_plot_losses_keras_file+"'), 'ExtremaPrinter'])"
+                    #cb_string = "PlotLossesKeras()"
                 else:
                     if "(" in cb:
                         cb_string = "callbacks."+cb.replace("callbacks.","")
@@ -1373,6 +1358,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     utils.check_create_folder(self.output_tensorboard_log_dir)
                     #utils.check_create_folder(path.join(self.output_folder, "tensorboard_logs/fit"))
                     kwargs["log_dir"] = self.output_tensorboard_log_dir
+                elif name == "PlotLossesKeras":
+                    self.output_figure_plot_losses_keras_file = self.output_figures_base_file_path+"_plot_losses_keras.pdf"
+                    utils.check_rename_file(self.output_figure_plot_losses_keras_file)
+                    kwargs["figpath"] = self.output_figure_plot_losses_keras_file
                 for key, value in kwargs.items():
                     if key == "monitor" and type(value) == str:
                         if "val_" in value:
@@ -1382,6 +1371,27 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                         else:
                             value = "val_" + custom_losses.metric_name_unabbreviate(value)
                 cb_string = utils.build_method_string_from_dict("callbacks", name, args, kwargs)
+                if "PlotLossesKeras" in cb_string:
+                    if "outputs" in cb_string:
+                        cb_string = cb_string.replace("])",", 'ExtremaPrinter'])")
+                    if "custom_after_subplot" in cb_string:
+                        try:
+                            from .custom_losses import custom_after_subplot
+                            cb_string = cb_string.replace("'custom_after_subplot'","custom_after_subplot")
+                        except:
+                            print("To use 'custom_after_subplot' PlotLossesKeras function you need to define it in the custom_losses.py file.",show=verbose)
+                    if "custom_before_subplot" in cb_string:
+                        try:
+                            from .custom_losses import custom_before_subplot
+                            cb_string = cb_string.replace("'custom_before_subplot'","custom_before_subplot")
+                        except:
+                            print("To use 'custom_before_subplot' PlotLossesKeras function you need to define it in the custom_losses.py file.",show=verbose)
+                    if "custom_after_plot" in cb_string:
+                        try:
+                            from .custom_losses import custom_after_plot
+                            cb_string = cb_string.replace("'custom_after_plot'","custom_after_plot")
+                        except:
+                            print("To use 'custom_after_plot' PlotLossesKeras function you need to define it in the custom_losses.py file.",show=verbose)
             else:
                 cb_string = None
                 print("Invalid input for callback: ", cb,". The callback will not be added to the model.", show=verbose)
@@ -1390,9 +1400,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                     eval(cb_string)
                     self.callbacks_strings.append(cb_string)
                     print("\tAdded callback:", cb_string, show=verbose)
-                except Exception as e:
-                    print("Could not set callback", cb_string, "\n",show=verbose)
-                    print(e)
+                except:
+                    #print("Could not set callback", cb_string, "\n",show=verbose)
+                    try:
+                        cb_string_rep = cb_string.replace("callbacks.","")
+                        #print("Trying with callback", cb_string_rep, "\n",show=verbose)
+                        eval(cb_string_rep)
+                        self.callbacks_strings.append(cb_string_rep)
+                        print("\tAdded callback:", cb_string_rep, show=verbose)
+                    except Exception as e:
+                        print("Could not set callback", cb_string, " nor callback", cb_string_rep, "\n",show=verbose)
+                        print(e)
             else:
                 print("Could not set callback", cb_string, "\n",show=verbose)
         for cb_string in self.callbacks_strings:
@@ -3170,12 +3188,21 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nPlotting training history\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        try:
+            self.fig_base_title
+        except:
+            self.generate_fig_base_title()
+        try:
+            self.summary_text
+        except:
+            self.generate_summary_text()
         plt.style.use(mplstyle_path)
         metrics = np.unique(metrics)
         for metric in metrics:
             start = timer()
             metric = custom_losses.metric_name_unabbreviate(metric)
             val_metric = "val_"+ metric
+            ax = plt.axes()
             plt.plot(self.history[metric])
             plt.plot(self.history[val_metric])
             plt.yscale(yscale)
@@ -3186,7 +3213,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             plt.ylabel(r"%s" % ylabel)
             plt.legend([r"training", r"validation"])
             plt.tight_layout()
-            ax = plt.axes()
             #x1, x2, y1, y2 = plt.axis()
             plt.text(0.967, 0.2, r"%s" % self.summary_text, fontsize=7, bbox=dict(facecolor="green", alpha=0.15,
                      edgecolor="black", boxstyle="round,pad=0.5"), ha="right", ma="left", transform=ax.transAxes)
@@ -3213,6 +3239,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nPlotting t_mu test statistics\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        try:
+            self.fig_base_title
+        except:
+            self.generate_fig_base_title()
         plt.style.use(mplstyle_path)
         start = timer()
         pars_dict = {}
@@ -3264,6 +3294,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nPlotting parameters coverage\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        try:
+            self.fig_base_title
+        except:
+            self.generate_fig_base_title()
         plt.style.use(mplstyle_path)
         if pars == None:
             pars = self.pars_pos_poi
@@ -3327,6 +3361,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nPlotting likelihood distribution\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        try:
+            self.fig_base_title
+        except:
+            self.generate_fig_base_title()
         plt.style.use(mplstyle_path)
         start = timer()
         if loglik:
@@ -3397,6 +3435,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nPlotting 2d posterior distributions for single sample\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        try:
+            self.fig_base_title
+        except:
+            self.generate_fig_base_title()
         plt.style.use(mplstyle_path)
         start = timer()
         linewidth = 1.3
@@ -3512,6 +3554,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         print(header_string,"\nPlotting 2d posterior distributions for two samples comparison\n",show=verbose)
         if timestamp is None:
             timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
+        try:
+            self.fig_base_title
+        except:
+            self.generate_fig_base_title()
         plt.style.use(mplstyle_path)
         start = timer()
         linewidth = 1.3
@@ -4210,7 +4256,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         summary_text = summary_text + "Trainable pars: " + str(self.model_trainable_params) + "\n"
         summary_text = summary_text + "Scaled X/Y: " + str(self.scalerX_bool) +"/"+ str(self.scalerY_bool) + "\n"
         summary_text = summary_text + "Dropout: " + str(self.dropout_rate) + "\n"
-        summary_text = summary_text + "AF out: " + self.act_func_out_layer + "\n"
         summary_text = summary_text + "Batch norm: " + str(self.batch_norm) + "\n"
         summary_text = summary_text + "Loss: " + self.loss_string + "\n"
         optimizer_string = self.optimizer_string.replace("optimizers.","")
@@ -4393,7 +4438,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         elif overwrite == "dump":
             output_tf_model_onnx_file = utils.generate_dump_file_name(self.output_tf_model_onnx_file, timestamp=timestamp)
         try:
-            onnx_model = keras2onnx.convert_keras(self.model, self.name)
+            onnx_model = tf2onnx.convert_keras(self.model, self.name)
         except:
             print(header_string,"\nModel not defined. No file is saved.\n")
             return
@@ -4605,7 +4650,10 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         except:
             print(header_string,"\nModel not defined. No file is saved.\n")
             return
-        utils.make_pdf_from_img(png_file)
+        try:
+            utils.make_pdf_from_img(png_file)
+        except:
+            pass
         try:
             remove(png_file)
         except:
