@@ -1,6 +1,9 @@
 from distutils import dir_util
 import inspect
 import itertools
+import numpy as np
+from numpy import typing as npt
+from typing import Union, List, Dict, Tuple, Optional, NewType, Type, Generic, Any
 import json
 import math
 import os
@@ -10,7 +13,6 @@ from fpdf import FPDF
 from PIL import Image
 import sys
 import h5py
-import numpy as np
 from matplotlib import pyplot as plt
 from datetime import datetime
 from timeit import default_timer as timer
@@ -21,31 +23,6 @@ from .show_prints import print
 
 header_string = "=============================="
 footer_string = "------------------------------"
-
-class _FunctionWrapper(object):
-    """
-    This is a hack to make the likelihood function pickleable when ``args``
-    or ``kwargs`` are also included.
-    Copied from emcee.
-    """
-    def __init__(self, f, args, kwargs):
-        self.f = f
-        self.args = [] if args == None else args
-        self.kwargs = {} if kwargs == None else kwargs
-
-    def __call__(self, x):
-        try:
-            return self.f(x, *self.args, **self.kwargs)
-        except:  # pragma: no cover
-            import traceback
-
-            print("emcee: Exception while calling your likelihood function:")
-            print("  params:", x)
-            print("  args:", self.args)
-            print("  kwargs:", self.kwargs)
-            print("  exception:")
-            traceback.print_exc()
-            raise
 
 #class InputError(Exception):
 #    """Base class for data error exceptions"""
@@ -62,6 +39,9 @@ class _FunctionWrapper(object):
 #def flatten_list(l):
 #    l = [item for sublist in l for item in sublist]
 #    return l
+
+def generate_timestamp():
+    return "datetime_" + datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
 
 def flatten_list(lst):
     out = []
@@ -95,57 +75,6 @@ def chunks(lst, n):
         res.append(lst[i:i + n])
     return res
 
-def check_create_folder(path):
-    os.makedirs(path, exist_ok=True)
-    #if not os.path.exists(path):
-    #    os.mkdir(path)
-        #print("Folder",path,"has been created.")
-    return path
-
-def get_parent_path(path, level):
-    for i in range(level):
-        path = os.path.abspath(os.path.join(os.path.abspath(path), os.pardir))
-    return path
-
-def filename_without_datetime(name):
-    file, extension = os.path.splitext(name)
-    try:
-        match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', file).group()
-    except:
-        match = ""
-    if match != "":
-        file = file.replace(match, "")+extension
-    else:
-        file = file+"_"+extension
-
-def generate_dump_file_name(filename, timestamp=None):
-    if timestamp is None:
-        timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-    file, extension = os.path.splitext(filename)
-    dump_filename = os.path.join("dump_"+file+"_"+timestamp+extension)
-    return dump_filename
-
-def replace_strings_in_file(filename, old_strings, new_string):
-    # Safely read the input filename using 'with'
-    with open(filename) as f:
-        found_any = []
-        s = f.read()
-        for old_string in old_strings:
-            if old_string not in s:
-                found_any.append(False)
-                #print('"{old_string}" not found in {filename}.'.format(**locals()))
-            else:
-                found_any.append(True)
-                #print('"{old_string}" found in {filename}.'.format(**locals()))
-        found_any = np.any(found_any)
-        if not found_any:
-            return
-    # Safely write the changed content, if found in the file
-    with open(filename, 'w') as f:
-        #print('Changing "{old_string}" to "{new_string}" in {filename}'.format(**locals()))
-        for old_string in old_strings:
-            s = s.replace(old_string, new_string)
-        f.write(s)
 
 def savefig(path,**kwargs):
     """
@@ -157,7 +86,7 @@ def savefig(path,**kwargs):
         plt.savefig(path, **kwargs)
 
 def build_method_string_from_dict(class_name=None, method_name=None, args=None, kwargs=None):
-    if class_name != None:
+    if class_name is not None:
         method_string = class_name+"."+method_name+"("
     else:
         method_string = method_name+"("
@@ -276,94 +205,6 @@ def build_method_string_from_dict(class_name=None, method_name=None, args=None, 
         method_string = method_string.rstrip(", ")+")"
     return method_string
 
-def check_rename_file(path,timestamp=None,return_value=None,verbose=True):
-    if os.path.exists(path):
-        if timestamp == None:
-            now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        else:
-            now = timestamp
-        file, extension = os.path.splitext(path)
-        filepath, filename = os.path.split(file)
-        try:
-            match = re.search(r'\d{4}-\d{2}-\d{2}-\d{2}-\d{2}-\d{2}', file).group()
-        except:
-            match = ""
-        if match != "":
-            new_name = filename.replace(match, now)+extension
-            new_path = file.replace(match,now)+extension
-        else:
-            new_name = "old_"+now+"_"+filename+extension
-            new_path = os.path.join(filepath, new_name)
-        if 'win32' in sys.platform:
-            shutil.move("\\\\?\\" + path, "\\\\?\\" + new_path)
-        else:
-            shutil.move(path, new_path)
-        print(header_string,"\nThe file\n\t",path,"\nalready exists and has been moved to\n\t",new_path,"\n",show=verbose)
-        if return_value == "file_path":
-            return new_path
-        elif return_value == "file_name":
-            return new_name
-
-def check_delete_files(paths):
-    paths = np.array([paths]).flatten()
-    for path in paths:
-        path = os.path.abspath(path)
-        if os.path.exists(path):
-            os.remove(path)
-
-def check_delete_all_files_in_path(path):
-    paths=[os.path.join(path, q) for q in os.listdir(path)]
-    check_delete_files(paths)
-
-def check_rename_folder(path, timestamp=None,verbose=None):
-    if os.path.exists(path):
-        if timestamp == None:
-            now = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        else:
-            now = timestamp.replace("datetime_","")
-        try:
-            match = re.search(r'\d{4}_\d{2}_\d{2}_\d{2}_\d{2}_\d{2}_\d{4}', path).group()
-        except:
-            match = ""
-        if match != "":
-            new_path = path.replace(match, now)
-        else:
-            new_path = path+"_"+now
-        shutil.move(path, new_path)
-        print(header_string,"\nThe folder\n\t",path,"\nalready exists and has been moved to\n\t",new_path,"\n",show=verbose)
-    #return path
-
-def copy_and_save_folder(from_path, to_path, timestamp=None,verbose=None):
-    if not os.path.exists(from_path):
-        raise Exception("The source folder does not exist")
-    check_rename_folder(to_path, timestamp=timestamp,verbose=verbose)
-    shutil.copytree(os.path.abspath(from_path), os.path.abspath(to_path))
-
-    #print("Content of folder\n\t",from_path,"\ncopied to folder\n\t",to_path,".",show=verbose)
-
-def save_samples(allsamples, logpdf_values, data_sample_filename, name):
-    start = timer()
-    data_sample_filename = check_rename_file(data_sample_filename)
-    data_sample_shape = np.shape(allsamples)
-    #data_sample_timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-    #data_sample_name = name+"_"+data_sample_timestamp
-    h5_out = h5py.File(data_sample_filename, "w")
-    grp = h5_out.create_group(name)
-    grp["shape"] = data_sample_shape
-    grp["allsamples"] = allsamples
-    grp["logpdf_values"] = logpdf_values
-    h5_out.close()
-    statinfo = os.stat(data_sample_filename)
-    end = timer()
-    print(header_string,"\nFile\n\t",data_sample_filename,"\nsaved in", end-start,"seconds.\nFile size is", statinfo.st_size, ".\n")
-
-#def set_param(obj_name, par_name):
-#    if eval(par_name) == None:
-#        exec("%s = %s" % (par_name, obj_name+"."+par_name))
-#    else:
-#        setattr(eval(obj_name), par_name, eval(par_name))
-#    return eval(par_name)
-
 def check_set_dict_keys(dic, keys, vals,verbose=None):
     #keys = np.array([keys]).flatten()
     #vals = np.array([vals]).flatten()
@@ -385,39 +226,6 @@ def check_repeated_elements_at_start(lst):
         else:
             return n
     return n
-
-def show_figures(fig_list):
-    fig_list = np.array(fig_list).flatten().tolist()
-    for fig in fig_list:
-        try:
-            os.startfile(r'%s'%fig)
-            print(header_string,"\nFile\n\t", fig, "\nopened.\n")
-        except:
-            print(header_string,"\nFile\n\t", fig, "\nnot found.\n")
-
-def check_figures_list(fig_list,output_figures_folder=None):
-    new_fig_list = []
-    for fig in fig_list:
-        fig_path = os.path.join(output_figures_folder,fig)
-        if os.path.exists(fig_path):
-            new_fig_list.append(fig)
-    #new_fig_path = output_figures_folder
-    #for fig in fig_list:
-    #    old_fig_path = os.path.split(os.path.abspath(fig))[0]
-    #    if new_fig_path is not None:
-    #        if old_fig_path != new_fig_path:
-    #            fig = fig.replace(old_fig_path,new_fig_path)
-    #    if os.path.exists(fig):
-    #        new_fig_list.append(fig)
-    return new_fig_list
-
-def check_figures_dic(fig_dic,output_figures_folder=None):
-    new_fig_dic = {}
-    for k in fig_dic.keys():
-        new_fig_dic[k] = check_figures_list(fig_dic[k],output_figures_folder)
-        if new_fig_dic[k] == {}:
-            del new_fig_dic[k]
-    return new_fig_dic
 
 def get_spaced_elements(array, numElems=5):
     out = array[np.round(np.linspace(0, len(array)-1, numElems)).astype(int)]
@@ -468,7 +276,10 @@ def product_dict(**kwargs):
     for instance in itertools.product(*vals):
         yield dict(zip(keys, instance))
 
-def dic_minus_keys(dictionary, keys):
+
+def dic_minus_keys(dictionary: Dict[Any, Any],
+                   keys: List[str],
+                  ) -> Dict[Any, Any]:
     if type(keys) == str:
         shallow_copy = dict(dictionary)
         try:
@@ -483,7 +294,9 @@ def dic_minus_keys(dictionary, keys):
                 del shallow_copy[i]
             except:
                 pass
-        return shallow_copy
+    else:
+        raise ValueError("Invalid value for 'keys' argument. The argument should be either a string or a list.")
+    return shallow_copy
 
 def string_split_at_char(s, c):
     mid = len(s)//2
@@ -539,19 +352,6 @@ def get_sorted_grid(pars_ranges, spacing="grid"):
         pars_vals = pars_vals[pars_vals[:, q].argsort(kind='mergesort')]
     q = q-1
     return pars_vals
-
-def define_pars_labels_auto(pars_pos_poi, pars_pos_nuis):
-    pars_labels_auto = []
-    i_poi = 1
-    i_nuis = 1
-    for i in range(len(pars_pos_poi)+len(pars_pos_nuis)):
-        if i in pars_pos_poi:
-            pars_labels_auto.append(r"$\theta_{%d}$" % i_poi)
-            i_poi = i_poi+1
-        else:
-            pars_labels_auto.append(r"$\nu_{%d}$" % i_nuis)
-            i_nuis = i_nuis+1
-    return pars_labels_auto
 
 def latex_float(f):
     float_str = "{0:.2g}".format(f)

@@ -229,7 +229,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
     dim = lbdim + plotdim + trdim
 
     # Create a new figure if one wasn't provided.
-    if fig == None:
+    if fig is None:
         fig, axes = pl.subplots(K, K, figsize=(dim, dim))
     else:
         try:
@@ -248,7 +248,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
     if hist_kwargs is None:
         hist_kwargs = dict()
     hist_kwargs["color"] = hist_kwargs.get("color", color)
-    if smooth1d == None:
+    if smooth1d is None:
         hist_kwargs["histtype"] = hist_kwargs.get("histtype", "step")
 
     for i, x in enumerate(xs):
@@ -264,14 +264,14 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             else:
                 ax = axes[i, i]
         # Plot the histograms.
-        if smooth1d == None:
+        if smooth1d is None:
             if normalize1d:
                 weights = weights/len(x)
             bins_1d = int(max(1, np.round(hist_bin_factor[i] * bins[i])))
             n, _, _ = ax.hist(x, bins=bins[i], weights=weights,
                               range=np.sort(range[i]), **hist_kwargs)
         else:
-            if gaussian_filter == None:
+            if gaussian_filter is None:
                 raise ImportError("Please install scipy for smoothing")
             n, b = np.histogram(x, bins=bins[i], weights=weights,
                                 range=np.sort(range[i]))
@@ -282,7 +282,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             y0 = np.array(list(zip(n, n))).flatten()
             ax.plot(x0, y0, **hist_kwargs)
 
-        if truths != None and truths[i] != None:
+        if truths is not None and truths[i] is not None:
             ax.axvline(truths[i], color=truth_color)
 
         # Plot quantiles if wanted.
@@ -297,7 +297,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
 
         if show_titles:
             title = None
-            if title_fmt != None:
+            if title_fmt is not None:
                 # Compute the quantiles for the title. This might redo
                 # unneeded computation but who cares.
                 q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84],
@@ -310,13 +310,13 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
 
                 # Add in the column name if it's given.
-                if labels != None:
+                if labels is not None:
                     title = "{0} = {1}".format(labels[i], title)
 
-            elif labels != None:
+            elif labels is not None:
                 title = "{0}".format(labels[i])
 
-            if title != None:
+            if title is not None:
                 if reverse:
                     ax.set_xlabel(title, **title_kwargs)
                 else:
@@ -347,7 +347,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
             if reverse:
                 ax.xaxis.tick_top()
             [l.set_rotation(45) for l in ax.get_xticklabels()]
-            if labels != None:
+            if labels is not None:
                 if reverse:
                     ax.set_title(labels[i], y=1.25, **label_kwargs)
                 else:
@@ -392,12 +392,12 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                        color=color, smooth=smooth, bins=[bins[j], bins[i]],
                        **hist2d_kwargs)
 
-            if truths != None:
-                if truths[i] != None and truths[j] != None:
+            if truths is not None:
+                if truths[i] is not None and truths[j] is not None:
                     ax.plot(truths[j], truths[i], "s", color=truth_color)
-                if truths[j] != None:
+                if truths[j] is not None:
                     ax.axvline(truths[j], color=truth_color)
-                if truths[i] != None:
+                if truths[i] is not None:
                     ax.axhline(truths[i], color=truth_color)
 
             if max_n_ticks == 0:
@@ -415,7 +415,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 if reverse:
                     ax.xaxis.tick_top()
                 [l.set_rotation(45) for l in ax.get_xticklabels()]
-                if labels != None:
+                if labels is not None:
                     ax.set_xlabel(labels[j], **label_kwargs)
                     if reverse:
                         ax.xaxis.set_label_coords(0.5, 1.4)
@@ -432,7 +432,7 @@ def corner(xs, bins=20, range=None, weights=None, color="k", hist_bin_factor=1,
                 if reverse:
                     ax.yaxis.tick_right()
                 [l.set_rotation(45) for l in ax.get_yticklabels()]
-                if labels != None:
+                if labels is not None:
                     if reverse:
                         ax.set_ylabel(labels[i], rotation=-90, **label_kwargs)
                         ax.yaxis.set_label_coords(1.3, 0.5)
@@ -559,7 +559,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
         adding the density colormap.
 
     """
-    if ax == None:
+    if ax is None:
         ax = pl.gca()
 
     # Set the default range based on the data range if not provided.
@@ -572,7 +572,7 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
             range = [[x.min(), x.max()], [y.min(), y.max()]]
 
     # Set up the default plotting arguments.
-    if color == None:
+    if color is None:
         color = "k"
 
     # Choose the default "sigma" contour levels.
@@ -605,8 +605,8 @@ def hist2d(x, y, bins=20, range=None, weights=None, levels=None, smooth=None,
                          "have no dynamic range. You could try using the "
                          "'range' argument.")
 
-    if smooth != None:
-        if gaussian_filter == None:
+    if smooth is not None:
+        if gaussian_filter is None:
             raise ImportError("Please install scipy for smoothing")
         H = gaussian_filter(H, smooth)
 
