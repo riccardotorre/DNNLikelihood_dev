@@ -309,9 +309,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             print(header_string,"\nNo DnnLik input files and folders specified.\n", show=verbose)
         else:
             self.input_file = path.abspath(path.splitext(self.input_file)[0])
-            print("1 ",self.input_file)
             self.input_json_file = self.input_file+".json"
-            print("2 ",self.input_json_file)
             self.input_history_json_file = self.input_file+"_history.json"
             self.input_idx_h5_file = self.input_file+"_idx.h5"
             self.input_log_file = self.input_file+".log"
@@ -739,6 +737,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         #print(header_string,"\nLoading main object attributes and log\n",show=verbose)
         start = timer()
+        print("2 ",self.input_json_file)
         with open(self.input_json_file) as json_file:
             dictionary = json.load(json_file)
         self.__dict__.update(dictionary)
