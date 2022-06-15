@@ -737,7 +737,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         verbose, verbose_sub = self.set_verbosity(verbose)
         #print(header_string,"\nLoading main object attributes and log\n",show=verbose)
         start = timer()
-        print("1 ",self.input_json_file," ",type(self.input_json_file))
         with open(self.input_json_file) as json_file:
             dictionary = json.load(json_file)
         self.__dict__.update(dictionary)
@@ -748,8 +747,6 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
         self.log = dictionary
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
-        print("2 ",self.input_json_file," ",type(self.input_json_file))
-        print("3 ",path.split(self.input_json_file)[-1])
         self.log[timestamp] = {"action": "loaded object and log json",
                                "files names": [path.split(self.input_json_file)[-1],
                                                path.split(self.input_log_file)[-1]]}
@@ -4507,7 +4504,7 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                                          "input_files_base_name", "input_folder", "input_history_json_file",
                                                          "input_idx_h5_file","input_log_file", "input_likelihood_file",
                                                          "input_predictions_h5_file",
-                                                         "input_preprocessing_pickle_file","input_file",
+                                                         "input_preprocessing_pickle_file","input_file", "input_json_file",
                                                          "input_tf_model_h5_file", "input_data_file",
                                                          "layers","likelihood","load_on_RAM",
                                                          "log","loss","metrics","model","optimizer",
