@@ -825,6 +825,17 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             except:
                 print(header_string,"\nNo training history file available.\n",show=verbose)
                 return
+            #convert all items of model.metrics_names to str
+            #metrics_names = []
+            #for mn in self.model.metrics_names:
+            #    if type(mn) is str:
+            #        metrics_names.append(mn)
+            #    else:
+            #        try:
+            #            metrics_names.append(mn.__name__)
+            #        except:
+            #            print(header_string,"\nCould not convert metric",str(mn),"to string.\n",show=verbose)
+            #self.model.metrics_names = metrics_names
         end = timer()
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "loaded tf model h5 and tf model history pickle",
@@ -3842,9 +3853,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
                                       [{},{},{}], verbose=verbose_sub)
             print(header_string,"\nEvaluating all metrics on (scaled) train/val/test using best models\n", show=verbose)
             metrics_names = self.model.metrics_names
-            metrics_names_train = [i+"_best" for i in self.model.metrics_names]
-            metrics_names_val = ["val_"+i+"_best" for i in self.model.metrics_names]
-            metrics_names_test = ["test_"+i+"_best" for i in self.model.metrics_names]
+            metrics_names_train = [i+"_best" for i in metrics_names ]
+            metrics_names_val = ["val_"+i+"_best" for i in metrics_names ]
+            metrics_names_test = ["test_"+i+"_best" for i in metrics_names ]
             metrics_train = self.model_evaluate(self.X_train, self.Y_train, batch_size=self.batch_size,verbose=verbose_sub)[0][0:len(metrics_names)]
             metrics_val = self.model_evaluate(self.X_val, self.Y_val, batch_size=self.batch_size,verbose=verbose_sub)[0][0:len(metrics_names)]
             metrics_test = self.model_evaluate(self.X_test, self.Y_test, batch_size=self.batch_size,verbose=verbose_sub)[0][0:len(metrics_names)]
@@ -3856,9 +3867,9 @@ class DnnLik(Resources): #show_prints.Verbosity inherited from resources.Resourc
             Y_pred_test, prediction_time3 = model_predict_sub(self.X_test)
             self.predictions["Model_evaluation"]["Prediction_time"][timestamp] = (prediction_time1+prediction_time2+prediction_time3)/3
             print(header_string,"\nEvaluating all metrics on (un-scaled) trai[timestamp]n/val/test using best models\n", show=verbose)
-            metrics_names_train = [i+"_best_unscaled" for i in self.model.metrics_names]
-            metrics_names_val = ["val_"+i+"_best_unscaled" for i in self.model.metrics_names]
-            metrics_names_test = ["test_"+i +"_best_unscaled" for i in self.model.metrics_names]
+            metrics_names_train = [i+"_best_unscaled" for i in metrics_names ]
+            metrics_names_val = ["val_"+i+"_best_unscaled" for i in metrics_names ]
+            metrics_names_test = ["test_"+i +"_best_unscaled" for i in metrics_names ]
             metrics_train_unscaled = [metric(self.Y_train,Y_pred_train).numpy() for metric in [self.loss]+self.metrics]
             metrics_val_unscaled = [metric(self.Y_val,Y_pred_val).numpy() for metric in [self.loss]+self.metrics]
             metrics_test_unscaled = [metric(self.Y_test,Y_pred_test).numpy() for metric in [self.loss]+self.metrics]
