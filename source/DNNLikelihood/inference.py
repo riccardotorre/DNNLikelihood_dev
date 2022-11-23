@@ -344,3 +344,25 @@ def compute_profiled_maximum_sample(pars,
         x_max = X[pos_max]
         x_next_max = X[pos_next_max]
     return [x_max, y_max, np.abs(x_next_max-x_max), np.abs(y_next_max-y_max), npoints]
+
+def corr_from_cov(cov):
+    v = np.sqrt(np.diag(cov))
+    outer_v = np.outer(v, v)
+    corr = cov / outer_v
+    corr[cov == 0] = 0
+    return corr
+
+def corr_diff(X,X_pred,W=None,W_pred=None):
+    if W is None:
+        W = np.ones(len(X))
+    if W_pred is None:
+        W_pred = np.ones(len(X_pred))
+    data_cov=np.cov(X,rowvar=False, aweights=W)
+    pred_cov = np.cov(X_pred,rowvar=False, aweights=W_pred)
+    data_corr=corr_from_cov(data_cov)
+    pred_corr=corr_from_cov(pred_cov)
+    matrix_diff=pred_corr-data_corr
+    matrix_sum=pred_corr+data_corr
+    frob_norm=np.linalg.norm(matrix_diff, ord='fro')
+    mean_rel_err = np.mean(np.nan_to_num(2*matrix_diff/matrix_sum))
+    return frob_norm,mean_rel_err,data_corr,pred_corr

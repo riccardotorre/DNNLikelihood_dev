@@ -5,6 +5,7 @@ sys.dont_write_bytecode = True
 from .show_prints import Verbosity
 from .show_prints import print
 from .resources import Resources
+from . import custom_losses
 from . import utils
 from .utils import _FunctionWrapper
 from . import inference

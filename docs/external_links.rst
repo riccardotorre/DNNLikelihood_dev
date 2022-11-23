@@ -140,6 +140,10 @@
     
    <a href="https://github.com/stared/livelossplot/"  target="_blank"> livelossplot</a> 
 
+.. |tf_keras_model_compile_link| raw:: html
+    
+   <a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#compile"  target="_blank"> tf.keras.model.compile</a> 
+
 .. |tf_keras_model_checkpoint_callback_link| raw:: html
     
    <a href="https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/ModelCheckpoint"  target="_blank"> tf.keras.callbacks.ModelCheckpoint</a> 

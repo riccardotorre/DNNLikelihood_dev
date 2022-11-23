@@ -270,17 +270,12 @@ class Lik(Verbosity):
         verbose, _ = self.set_verbosity(verbose)
         if self.pars_central is not None:
             self.pars_central = np.array(self.pars_central)
-            self.ndims = len(self.pars_central)
+            if len(self.pars_central) != self.ndims:
+                raise Exception("The length of the parameters central values array does not match the number of dimensions.")
         else:
-            try:
-                self.__check_define_ndims()
-                self.pars_central = np.zeros(self.ndims)
-                print(header_string,"\nNo central values for the parameters 'pars_central' has been specified. The number of dimensions \
-                    have been automatically determined from 'logpdf' and the central values have been set to zero for all \
-                    parameters. If they are known it is better to build the object providing parameters central values.\n", show=verbose)
-            except:
-                raise Exception("Impossible to determine the number of parameters/dimensions and the parameters central values. \
-                    Please specify the input parameter 'pars_central'.")
+            self.pars_central = np.zeros(self.ndims)
+            print(header_string,"\nNo central values for the parameters 'pars_central' has been specified. They have been set to zero for all\
+                parameters. If they are known it == better to build the object providing parameters central values.\n", show=verbose)
         if self.pars_pos_nuis is not None and self.pars_pos_poi is not None:
             if len(self.pars_pos_poi)+len(self.pars_pos_nuis) == self.ndims:
                 self.pars_pos_nuis = np.array(self.pars_pos_nuis)
@@ -288,18 +283,17 @@ class Lik(Verbosity):
             else:
                 raise Exception("The number of parameters positions do not match the number of dimensions.")
         elif self.pars_pos_nuis is None and self.pars_pos_poi is None:
-            print(header_string,"\nThe positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified.\
-                Assuming all parameters are parameters of interest.\n", show=verbose)
+            print(header_string,"\nThe positions of the parameters of interest (pars_pos_poi) and of the nuisance parameters (pars_pos_nuis) have not been specified. Assuming all parameters are parameters of interest.\n", show=verbose)
             self.pars_pos_nuis = np.array([])
             self.pars_pos_poi = np.array(list(range(self.ndims)))
         elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
-            print(header_string,"\nOnly the positions of the nuisance parameters have been specified.\
-                Assuming all other parameters are parameters of interest.\n", show=verbose)
+            print(header_string,"\nOnly the positions of the nuisance parameters have been specified. Assuming all other parameters are parameters of interest.\n", show=verbose)
+            self.pars_pos_nuis = np.array(self.pars_pos_nuis)
             self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_nuis))
         elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
-            print(header_string,"\nOnly the positions of the parameters of interest.\
-                Assuming all other parameters are nuisance parameters.\n", show=verbose)
+            print(header_string,"\nOnly the positions of the parameters of interest have been specified. Assuming all other parameters are nuisance parameters.\n", show=verbose)
             self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_poi))
+            self.pars_pos_poi = np.array(self.pars_pos_poi)
         self.pars_labels_auto = utils.define_pars_labels_auto(self.pars_pos_poi, self.pars_pos_nuis)
         if self.pars_labels is None:
             self.pars_labels = self.pars_labels_auto

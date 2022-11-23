@@ -41,8 +41,7 @@ Attributes
    If the object is initialized from input arguments it is set to the value of :argument:`model_define_inputs`
    otherwise is set from the file corresponding to the 
    :attr:`DnnLik.input_file <DNNLikelihood.DnnLik.input_file>` attribute.
-   If ``"act_func_out_layer"`, ``"dropout_rate"``,
-   and/or ``"batch_norm"`` are not specified than they are set to ``"linear"``, ``0``, and ``False``, respectively.
+   If ``"dropout_rate"`` and/or ``"batch_norm"`` are not specified than they are set to ``0`` and ``False``, respectively.
 
       - **type**: ``dict`` (see :argument:`model_define_inputs` for the dictionary structure).
 
@@ -72,15 +71,6 @@ Attributes
    :meth:`DnnLik.__set_resources <DNNLikelihood.DnnLik._DnnLik__set_resources>` private method.
 
       - **type**: ``dict`` (see :argument:`resources_inputs` for the dictionary structure).
-
-.. py:attribute:: DnnLik.act_func_out_layer
-
-   String representing the activation function in the output layer. 
-   It is set from the 
-   :attr:`DnnLik.__model_define_inputs <DNNLikelihood.DnnLik._DnnLik__model_define_inputs>`
-   dictionary.
-
-      - **type**: ``str``
 
 .. py:attribute:: DnnLik.active_gpus
 
@@ -508,6 +498,14 @@ Attributes
    |tf_keras_model_link| object representing the DNNLikelihood.
 
       - **type**: |tf_keras_model_link| object
+
+.. py:attribute:: DnnLik.model_compile_kwargs
+
+   Additional keyword arguments (on top of "loss" and "metrics") to be
+   passed to the |tf_keras_model_compile_link| method in the
+   :meth:`DNNLik.model_compile <DNNLikelihood.DNNLik.model_compile>`
+
+      - **type**: ``dict``
 
 .. py:attribute:: DnnLik.model_max
 

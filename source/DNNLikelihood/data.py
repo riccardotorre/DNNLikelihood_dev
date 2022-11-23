@@ -309,10 +309,12 @@ class Data(Verbosity):
             self.pars_pos_poi = np.array(list(range(self.ndims)))
         elif self.pars_pos_nuis is not None and self.pars_pos_poi is None:
             print(header_string,"\nOnly the positions of the nuisance parameters have been specified. Assuming all other parameters are parameters of interest.\n", show=verbose)
+            self.pars_pos_nuis = np.array(self.pars_pos_nuis)
             self.pars_pos_poi = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_nuis))
         elif self.pars_pos_nuis is None and self.pars_pos_poi is not None:
             print(header_string,"\nOnly the positions of the parameters of interest have been specified. Assuming all other parameters are nuisance parameters.\n", show=verbose)
             self.pars_pos_nuis = np.setdiff1d(np.array(range(self.ndims)), np.array(self.pars_pos_poi))
+            self.pars_pos_poi = np.array(self.pars_pos_poi)
         self.pars_labels_auto = utils.define_pars_labels_auto(self.pars_pos_poi, self.pars_pos_nuis)
         if self.pars_labels is None:
             self.pars_labels = self.pars_labels_auto
@@ -803,9 +805,9 @@ class Data(Verbosity):
         _, verbose_sub = self.set_verbosity(verbose)
         np.random.seed(seed)
         idx_train = np.random.choice(self.train_range, npoints_train+npoints_val, replace=False)
-        idx_train, idx_val = [np.sort(idx) for idx in train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val, shuffle=False)]
-        self.data_dictionary["idx_train"] = idx_train
-        self.data_dictionary["idx_val"] = idx_val
+        idx_train, idx_val = train_test_split(idx_train, train_size=npoints_train, test_size=npoints_val, shuffle=False)
+        self.data_dictionary["idx_train"] = np.sort(idx_train)
+        self.data_dictionary["idx_val"] = np.sort(idx_val)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_train", "idx_val"],
@@ -1015,7 +1017,7 @@ class Data(Verbosity):
         _, verbose_sub = self.set_verbosity(verbose)
         np.random.seed(seed)
         idx_test = np.random.choice(self.test_range, npoints_test, replace=False)
-        self.data_dictionary["idx_test"] = idx_test
+        self.data_dictionary["idx_test"] = np.sort(idx_test)
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
                                "data": ["idx_test"],
@@ -1095,9 +1097,9 @@ class Data(Verbosity):
                 See :argument:`verbose <common_methods_arguments.verbose>`.
         """
         _, verbose_sub = self.set_verbosity(verbose)
-        existing_test = np.sort(self.data_dictionary["idx_test"])
+        existing_test = self.data_dictionary["idx_test"]
         np.random.seed(seed)
-        idx_test = np.random.choice(np.setdiff1d(np.array(self.test_range), existing_test), npoints_test, replace=False)
+        idx_test = np.sort(np.random.choice(np.setdiff1d(np.array(self.test_range), existing_test), npoints_test, replace=False))
         self.data_dictionary["idx_test"] = np.sort(np.concatenate((self.data_dictionary["idx_test"],idx_test)))
         timestamp = "datetime_"+datetime.now().strftime("%Y_%m_%d_%H_%M_%S_%fZ")[:-3]
         self.log[timestamp] = {"action": "updated data dictionary",
